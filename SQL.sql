@@ -8,8 +8,8 @@ CREATE TABLE Accounts (
   Password VARCHAR(255) NOT NULL,
   Email VARCHAR(150) UNIQUE,
   Phone VARCHAR(20),
-  Status ENUM('Active','Locked','Pending') DEFAULT 'Pending',
-  IsVerified BOOLEAN DEFAULT FALSE,
+  Status ENUM('Active','Locked') DEFAULT 'Active',
+
   CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
   LastLogin DATETIME,
   LastPasswordChange DATETIME
@@ -82,7 +82,7 @@ CREATE TABLE Products (
   Name VARCHAR(200),
   Description TEXT,
   Price DECIMAL(12,2),
-  DiscountPrice DECIMAL(12,2),
+  SoldCount INT DEFAULT 0,
   StockQuantity INT,
   Status ENUM('Active','OutOfStock','Hidden') DEFAULT 'Active',
   CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -110,13 +110,7 @@ CREATE TABLE ProductVariants (
   FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 );
 
-CREATE TABLE ProductAttributes (
-  AttributeID INT AUTO_INCREMENT PRIMARY KEY,
-  ProductID INT,
-  AttributeName VARCHAR(100),
-  AttributeValue VARCHAR(200),
-  FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
-);
+
 
 CREATE TABLE Promotions (
   PromotionID INT AUTO_INCREMENT PRIMARY KEY,
@@ -192,15 +186,6 @@ CREATE TABLE SellerRequests (
   FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID)
 );
 
-CREATE TABLE AdminLogs (
-  LogID INT AUTO_INCREMENT PRIMARY KEY,
-  AdminAccountID INT,
-  Action VARCHAR(200),
-  TargetTable VARCHAR(100),
-  TargetID INT,
-  Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (AdminAccountID) REFERENCES Accounts(AccountID)
-);
 
 CREATE TABLE Carts (
   CartID INT AUTO_INCREMENT PRIMARY KEY,
@@ -256,36 +241,38 @@ CREATE TABLE VoucherUsages (
   FOREIGN KEY (OrderID) REFERENCES Orders(OrderID)
 );
 
-CREATE TABLE Conversations (
-  ConversationID INT AUTO_INCREMENT PRIMARY KEY,
-  CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE Conversations (
+--   ConversationID INT AUTO_INCREMENT PRIMARY KEY,
+--   CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+-- );
 
-CREATE TABLE ConversationMembers (
-  MemberID INT AUTO_INCREMENT PRIMARY KEY,
-  ConversationID INT,
-  AccountID INT,
-  JoinedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (ConversationID) REFERENCES Conversations(ConversationID),
-  FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID)
-);
+-- CREATE TABLE ConversationMembers (
+--   MemberID INT AUTO_INCREMENT PRIMARY KEY,
+--   ConversationID INT,
+--   AccountID INT,
+--   JoinedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+--   FOREIGN KEY (ConversationID) REFERENCES Conversations(ConversationID),
+--   FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID)
+-- );
 
-CREATE TABLE ChatMessages (
-  MessageID INT AUTO_INCREMENT PRIMARY KEY,
-  ConversationID INT,
-  SenderAccountID INT,
-  Message TEXT,
-  MessageType ENUM('text','image','file','system') DEFAULT 'text',
-  IsRead BOOLEAN DEFAULT FALSE,
-  CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (ConversationID) REFERENCES Conversations(ConversationID),
-  FOREIGN KEY (SenderAccountID) REFERENCES Accounts(AccountID)
-);
+-- CREATE TABLE ChatMessages (
+--   MessageID INT AUTO_INCREMENT PRIMARY KEY,
+--   ConversationID INT,
+--   SenderAccountID INT,
+--   Message TEXT,
+--   MessageType ENUM('text','image','file','system') DEFAULT 'text',
+--   IsRead BOOLEAN DEFAULT FALSE,
+--   CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+--   FOREIGN KEY (ConversationID) REFERENCES Conversations(ConversationID),
+--   FOREIGN KEY (SenderAccountID) REFERENCES Accounts(AccountID)
+-- );
 
-CREATE TABLE MessageAttachments (
-  AttachmentID INT AUTO_INCREMENT PRIMARY KEY,
-  MessageID INT,
-  FileURL VARCHAR(255),
-  FileType VARCHAR(50),
-  FOREIGN KEY (MessageID) REFERENCES ChatMessages(MessageID)
-);
+-- CREATE TABLE MessageAttachments (
+--   AttachmentID INT AUTO_INCREMENT PRIMARY KEY,
+--   MessageID INT,
+--   FileURL VARCHAR(255),
+--   FileType VARCHAR(50),
+--   FOREIGN KEY (MessageID) REFERENCES ChatMessages(MessageID)
+-- );
+
+-- luot mua trong product
