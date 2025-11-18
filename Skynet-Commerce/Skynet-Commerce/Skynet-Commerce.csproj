@@ -46,27 +46,72 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Models\UserSessionDTO.cs" />
+    <Compile Include="DAL\Config\DBConnection.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\FrmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\FrmMain.Designer.cs">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcCategoryItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcCategoryItem.Designer.cs">
+      <DependentUpon>UcCategoryItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\General\UcFooter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\General\UcFooter.Designer.cs">
+      <DependentUpon>UcFooter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\General\UcHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\General\UcHeader.Designer.cs">
+      <DependentUpon>UcHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcHomePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcHomePage.Designer.cs">
+      <DependentUpon>UcHomePage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GUI\Forms\FrmMain.resx">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\General\UcFooter.resx">
+      <DependentUpon>UcFooter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\General\UcHeader.resx">
+      <DependentUpon>UcHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\UcHomePage.resx">
+      <DependentUpon>UcHomePage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -77,10 +122,27 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BLL\" />
-    <Folder Include="DAL\" />
-    <Folder Include="GUI\" />
-    <Folder Include="Models\" />
+    <Folder Include="BLL\Helpers\" />
+    <Folder Include="BLL\Services\" />
+    <Folder Include="DAL\Entities\" />
+    <Folder Include="DAL\Repositories\" />
+    <Folder Include="GUI\UserControls\Product\" />
+    <Folder Include="GUI\UserControls\Seller\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\1413908.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\slide2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\slide1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\slide3.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

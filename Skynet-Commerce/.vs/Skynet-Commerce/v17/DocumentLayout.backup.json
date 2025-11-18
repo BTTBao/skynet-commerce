@@ -1,10 +1,86 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\web\\skynet-commerce\\Skynet-Commerce\\",
+  "WorkspaceRootPath": "C:\\BTL\\Skynet-Commerce\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\web\\skynet-commerce\\skynet-commerce\\skynet-commerce\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\usercontrols\\pages\\uchomepage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\pages\\uchomepage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\btl\\skynet-commerce\\skynet-commerce\\properties\\resources.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\properties\\resources.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\btl\\skynet-commerce\\skynet-commerce\\gui\\usercontrols\\pages\\uchomepage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\pages\\uchomepage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\btl\\skynet-commerce\\skynet-commerce\\gui\\usercontrols\\pages\\uchomepage.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\pages\\uchomepage.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\btl\\skynet-commerce\\skynet-commerce\\gui\\usercontrols\\components\\uccategoryitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\components\\uccategoryitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\usercontrols\\general\\ucheader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\general\\ucheader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\btl\\skynet-commerce\\skynet-commerce\\gui\\usercontrols\\pages\\uchomepage.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\pages\\uchomepage.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\btl\\skynet-commerce\\skynet-commerce\\gui\\usercontrols\\components\\uccategoryitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\components\\uccategoryitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\forms\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\forms\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\usercontrols\\general\\ucheader.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\general\\ucheader.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\usercontrols\\general\\ucfooter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\general\\ucfooter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\usercontrols\\general\\ucheader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\general\\ucheader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\btl\\skynet-commerce\\skynet-commerce\\gui\\forms\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\forms\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|c:\\btl\\skynet-commerce\\skynet-commerce\\bll\\models\\usersessiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\bll\\models\\usersessiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\forms\\frmmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\forms\\frmmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\usercontrols\\general\\ucfooter.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\general\\ucfooter.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\gui\\usercontrols\\general\\ucfooter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\gui\\usercontrols\\general\\ucfooter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\dal\\config\\dbconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\dal\\config\\dbconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|C:\\BTL\\Skynet-Commerce\\skynet-commerce\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{C00FFCEF-9A32-44A8-B0CB-2E784EBACD67}|Skynet-Commerce\\Skynet-Commerce.csproj|solutionrelative:skynet-commerce\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,41 +90,265 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 8,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UcHeader.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:19:41.832Z",
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Resources.resx",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\Properties\\Resources.resx",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\Properties\\Resources.resx",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\Properties\\Resources.resx",
+              "RelativeToolTip": "Skynet-Commerce\\Properties\\Resources.resx",
+              "ViewState": "AgIAAGwAAAAAAAAAAADwv3gAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-11-18T08:47:54.614Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UcHomePage.resx",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.resx",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.resx",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.resx",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.resx",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-11-18T08:44:54.519Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UcCategoryItem.cs [Design]",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Components\\UcCategoryItem.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\Components\\UcCategoryItem.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Components\\UcCategoryItem.cs [Design]",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\Components\\UcCategoryItem.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T08:34:28.118Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UcHomePage.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T08:00:28.43Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FrmMain.cs [Design]",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\Forms\\FrmMain.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\Forms\\FrmMain.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\Forms\\FrmMain.cs [Design]",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\Forms\\FrmMain.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:03:38.246Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "FrmMain.Designer.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\Forms\\FrmMain.Designer.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\Forms\\FrmMain.Designer.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\Forms\\FrmMain.Designer.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\Forms\\FrmMain.Designer.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAADwvzUAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:03:53.58Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "C:\\web\\skynet-commerce\\Skynet-Commerce\\Skynet-Commerce\\Form1.cs",
-              "RelativeDocumentMoniker": "Skynet-Commerce\\Form1.cs",
-              "ToolTip": "C:\\web\\skynet-commerce\\Skynet-Commerce\\Skynet-Commerce\\Form1.cs [Design]",
-              "RelativeToolTip": "Skynet-Commerce\\Form1.cs [Design]",
+              "Title": "UcHomePage.cs [Design]",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.cs [Design]",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T04:10:45.68Z",
+              "WhenOpened": "2025-11-18T05:32:17.808Z",
               "EditorCaption": " [Design]"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
-            }
-          ]
-        },
-        {
-          "DockedWidth": 498,
-          "SelectedChildIndex": -1,
-          "Children": [
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "UcFooter.cs [Design]",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.cs [Design]",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:13:58.146Z",
+              "EditorCaption": " [Design]"
+            },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UcCategoryItem.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Components\\UcCategoryItem.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\Components\\UcCategoryItem.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Components\\UcCategoryItem.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\Components\\UcCategoryItem.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAEMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T08:34:49.395Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UcHomePage.Designer.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.Designer.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.Designer.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.Designer.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\Pages\\UcHomePage.Designer.cs",
+              "ViewState": "AgIAAJAAAAAAAAAAAAAiwMMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:34:10.272Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UcHeader.Designer.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.Designer.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.Designer.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.Designer.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.Designer.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAiwG0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:19:44.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "UcHeader.cs [Design]",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.cs [Design]",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\General\\UcHeader.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:13:47.09Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "FrmMain.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\Forms\\FrmMain.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\Forms\\FrmMain.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\Forms\\FrmMain.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\Forms\\FrmMain.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAiwDYAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T06:24:59.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "UserSessionDTO.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\BLL\\Models\\UserSessionDTO.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\BLL\\Models\\UserSessionDTO.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\BLL\\Models\\UserSessionDTO.cs",
+              "RelativeToolTip": "Skynet-Commerce\\BLL\\Models\\UserSessionDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T06:58:27.574Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\Program.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\Program.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\Program.cs",
+              "RelativeToolTip": "Skynet-Commerce\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T04:09:30.403Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "UcFooter.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:14:07.093Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "UcFooter.Designer.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.Designer.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.Designer.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.Designer.cs",
+              "RelativeToolTip": "Skynet-Commerce\\GUI\\UserControls\\General\\UcFooter.Designer.cs",
+              "ViewState": "AgIAAOAAAAAAAAAAAAAiwPUAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T05:14:09.667Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "DBConnection.cs",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\DAL\\Config\\DBConnection.cs",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\DAL\\Config\\DBConnection.cs",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\DAL\\Config\\DBConnection.cs",
+              "RelativeToolTip": "Skynet-Commerce\\DAL\\Config\\DBConnection.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T04:12:29.353Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "App.config",
+              "DocumentMoniker": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\App.config",
+              "RelativeDocumentMoniker": "Skynet-Commerce\\App.config",
+              "ToolTip": "C:\\BTL\\Skynet-Commerce\\Skynet-Commerce\\App.config",
+              "RelativeToolTip": "Skynet-Commerce\\App.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-11-18T04:12:11.164Z",
+              "EditorCaption": ""
             }
           ]
         }
