@@ -26,18 +26,18 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.pnlBanner = new System.Windows.Forms.Panel();
             this.btnNextBanner = new System.Windows.Forms.Button();
             this.btnPrevBanner = new System.Windows.Forms.Button();
+            this.pbBanner = new System.Windows.Forms.PictureBox();
             this.pnlCategoryGrid = new System.Windows.Forms.Panel();
             this.flpCategories = new System.Windows.Forms.FlowLayoutPanel();
             this.lblCategoryTitle = new System.Windows.Forms.Label();
             this.lblRecommendedTitle = new System.Windows.Forms.Label();
             this.flpRecommendedProducts = new System.Windows.Forms.FlowLayoutPanel();
             this.tmrBannerSlide = new System.Windows.Forms.Timer(this.components);
-            this.pbBanner = new System.Windows.Forms.PictureBox();
             this.pnlScrollContainer.SuspendLayout();
             this.flpSections.SuspendLayout();
             this.pnlBanner.SuspendLayout();
-            this.pnlCategoryGrid.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbBanner)).BeginInit();
+            this.pnlCategoryGrid.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlScrollContainer
@@ -60,7 +60,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.flpSections.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSections.Location = new System.Drawing.Point(0, 0);
             this.flpSections.Name = "flpSections";
-            this.flpSections.Size = new System.Drawing.Size(1106, 1000);
+            this.flpSections.Size = new System.Drawing.Size(1106, 879);
             this.flpSections.TabIndex = 0;
             this.flpSections.WrapContents = false;
             // 
@@ -91,6 +91,17 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.btnPrevBanner.TabIndex = 1;
             this.btnPrevBanner.Text = "<";
             this.btnPrevBanner.UseVisualStyleBackColor = true;
+            // 
+            // pbBanner
+            // 
+            this.pbBanner.BackColor = System.Drawing.Color.LightGray;
+            this.pbBanner.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbBanner.Location = new System.Drawing.Point(0, 0);
+            this.pbBanner.Name = "pbBanner";
+            this.pbBanner.Size = new System.Drawing.Size(1100, 300);
+            this.pbBanner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbBanner.TabIndex = 0;
+            this.pbBanner.TabStop = false;
             // 
             // pnlCategoryGrid
             // 
@@ -142,17 +153,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             // 
             this.tmrBannerSlide.Interval = 5000;
             // 
-            // pbBanner
-            // 
-            this.pbBanner.BackColor = System.Drawing.Color.LightGray;
-            this.pbBanner.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbBanner.Location = new System.Drawing.Point(0, 0);
-            this.pbBanner.Name = "pbBanner";
-            this.pbBanner.Size = new System.Drawing.Size(1100, 300);
-            this.pbBanner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbBanner.TabIndex = 0;
-            this.pbBanner.TabStop = false;
-            // 
             // UcHomePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -165,9 +165,9 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.flpSections.ResumeLayout(false);
             this.flpSections.PerformLayout();
             this.pnlBanner.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbBanner)).EndInit();
             this.pnlCategoryGrid.ResumeLayout(false);
             this.pnlCategoryGrid.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbBanner)).EndInit();
             this.ResumeLayout(false);
 
         }

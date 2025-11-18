@@ -46,14 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Models\CartItemDTO.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
     <Compile Include="DAL\Config\DBConnection.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\Forms\FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +60,12 @@
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcCategoryItem.Designer.cs">
       <DependentUpon>UcCategoryItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcProductItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcProductItem.Designer.cs">
+      <DependentUpon>UcProductItem.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\General\UcFooter.cs">
       <SubType>UserControl</SubType>
@@ -78,11 +79,23 @@
     <Compile Include="GUI\UserControls\General\UcHeader.Designer.cs">
       <DependentUpon>UcHeader.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcCartPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcCartPage.Designer.cs">
+      <DependentUpon>UcCartPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\UserControls\Pages\UcHomePage.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcHomePage.Designer.cs">
       <DependentUpon>UcHomePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcProductDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcProductDetail.Designer.cs">
+      <DependentUpon>UcProductDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -143,6 +156,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\Debug\img\slide3.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\profile.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trash.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

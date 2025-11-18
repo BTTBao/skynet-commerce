@@ -64,5 +64,8 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             this.Controls.Add(pnlBackground);
             this.Controls.Add(lblName);
         }
+        // Sửa lại constructor để nhận thêm productId
+       
+        
     }
 }

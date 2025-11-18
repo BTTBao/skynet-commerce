@@ -2,79 +2,104 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Skynet_Commerce.GUI.UserControls.Components; // Import namespace chứa thẻ Danh mục
+using Skynet_Commerce.GUI.UserControls.Components; // Import để dùng UcProductItem và UcCategoryItem
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
     public partial class UcHomePage : UserControl
     {
-        // 1. Danh sách đường dẫn ảnh Banner (Bạn có thể thay bằng link ảnh thật của bạn)
+        // Danh sách ảnh banner (Local)
         private List<string> _bannerUrls = new List<string>
         {
-            @"img\slide1.jpg", // Ảnh 1
-            @"img\slide2.jpg", // Ảnh 2
-            @"img\slide3.jpg"  // Ảnh 3
+            @"img\slide1.jpg",
+            @"img\slide2.jpg",
+            @"img\slide3.jpg"
         };
-
-        private int _currentBannerIndex = 0; // Đang hiện ảnh số mấy
+        private int _currentBannerIndex = 0;
 
         public UcHomePage()
         {
             InitializeComponent();
 
-            // --- CẤU HÌNH BANNER ---
+            // 1. Khởi chạy Banner
             LoadBanners();
-
-            // Gắn sự kiện cho Timer và Nút bấm (Code logic thay vì kéo thả)
-            tmrBannerSlide.Interval = 3000; // 3 giây đổi 1 lần
-            tmrBannerSlide.Tick += TmrBannerSlide_Tick;
+            tmrBannerSlide.Interval = 3000;
+            tmrBannerSlide.Tick += (s, e) => ChangeBanner(1);
             tmrBannerSlide.Start();
+            btnNextBanner.Click += (s, e) => ChangeBanner(1);
+            btnPrevBanner.Click += (s, e) => ChangeBanner(-1);
 
-            btnNextBanner.Click += (s, e) => ChangeBanner(1);  // Next: +1
-            btnPrevBanner.Click += (s, e) => ChangeBanner(-1); // Prev: -1
+            // 2. Tải Danh Mục
+            LoadCategories();
 
-            // --- CẤU HÌNH CÁC PHẦN KHÁC ---
-            LoadCategories(); // Tải danh mục
-            LoadSuggestedProducts(); // Tải sản phẩm gợi ý
+            // 3. Tải Sản Phẩm Gợi Ý (QUAN TRỌNG: Đây là hàm làm đầy phần đang trống)
+            LoadSuggestedProducts();
         }
 
-        // Hàm khởi tạo Banner ban đầu
+        // --- HÀM TẠO SẢN PHẨM GỢI Ý ---
+        private void LoadSuggestedProducts()
+        {
+            flpRecommendedProducts.Controls.Clear();
+            flpRecommendedProducts.WrapContents = true;
+
+            // 1. Đặt chiều rộng cố định (đảm bảo đủ chỗ cho 5 sản phẩm/hàng)
+            // 1 thẻ ~ 200px (gồm margin) x 5 thẻ = 1000px. 
+            // Để rộng 1150px là an toàn.
+            flpRecommendedProducts.Width = 1150;
+
+            // 2. [QUAN TRỌNG] Thêm Padding để căn chỉnh
+            // Padding(Trái, Trên, Phải, Dưới)
+            // Đẩy sang trái 55px để nhìn cân đối hơn với tiêu đề
+            flpRecommendedProducts.Padding = new Padding(55, 10, 0, 20);
+
+            // --- Phần vòng lặp tạo sản phẩm (Giữ nguyên code cũ) ---
+            for (int i = 1; i <= 5; i++)
+            {
+                string name = $"Sản phẩm demo mẫu số {i} phong cách React";
+                decimal price = 150000 + (i * 25000);
+                double rating = 4.0 + (i % 10) * 0.1;
+                int sold = 50 * i;
+                string imgPath = @"img\download.png";
+
+                // SỬA: Thêm tham số cuối cùng là ProductID (i)
+                UcProductItem item = new UcProductItem(
+                    name,
+                    price,
+                    rating,
+                    sold,
+                    imgPath,
+                    i // Biến i là ProductID giả lập
+                );
+
+                flpRecommendedProducts.Controls.Add(item);
+            }
+        }
+
+        // --- HÀM XỬ LÝ BANNER (Giữ nguyên) ---
         private void LoadBanners()
         {
             if (_bannerUrls.Count > 0)
             {
-                pbBanner.ImageLocation = _bannerUrls[0]; // Load ảnh đầu tiên từ URL
-                pbBanner.SizeMode = PictureBoxSizeMode.StretchImage; // Co dãn ảnh cho vừa khung
+                string fullPath = System.IO.Path.Combine(Application.StartupPath, _bannerUrls[0]);
+                if (System.IO.File.Exists(fullPath))
+                {
+                    pbBanner.ImageLocation = fullPath;
+                    pbBanner.SizeMode = PictureBoxSizeMode.StretchImage;
+                }
             }
         }
 
-        // Sự kiện Timer tự động chạy sau mỗi 3 giây
-        private void TmrBannerSlide_Tick(object sender, EventArgs e)
-        {
-            ChangeBanner(1); // Tự động chuyển sang ảnh tiếp theo
-        }
-
-        // Hàm xử lý chuyển ảnh (dùng chung cho cả Timer và Nút bấm)
         private void ChangeBanner(int step)
         {
-            // Tính toán chỉ số ảnh mới
             _currentBannerIndex += step;
+            if (_currentBannerIndex >= _bannerUrls.Count) _currentBannerIndex = 0;
+            if (_currentBannerIndex < 0) _currentBannerIndex = _bannerUrls.Count - 1;
 
-            // Nếu vượt quá ảnh cuối -> Quay về ảnh đầu
-            if (_currentBannerIndex >= _bannerUrls.Count)
-                _currentBannerIndex = 0;
-
-            // Nếu lùi quá ảnh đầu -> Nhảy về ảnh cuối
-            if (_currentBannerIndex < 0)
-                _currentBannerIndex = _bannerUrls.Count - 1;
-
-            // Cập nhật ảnh lên PictureBox
-            pbBanner.ImageLocation = _bannerUrls[_currentBannerIndex];
+            string fullPath = System.IO.Path.Combine(Application.StartupPath, _bannerUrls[_currentBannerIndex]);
+            if (System.IO.File.Exists(fullPath)) pbBanner.ImageLocation = fullPath;
         }
 
-        // ---------------------------------------------------------
-        // PHẦN CODE DANH MỤC (Giữ nguyên từ bước trước)
-        // ---------------------------------------------------------
+        // --- HÀM XỬ LÝ DANH MỤC (Giữ nguyên) ---
         private void LoadCategories()
         {
             flpCategories.Controls.Clear();
@@ -95,15 +120,11 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
             foreach (var cat in categories)
             {
-                // Nếu chưa tạo file UcCategoryItem thì comment dòng dưới lại để tránh lỗi
+                // Nếu chưa có UcCategoryItem thì comment dòng này lại
                 UcCategoryItem item = new UcCategoryItem(cat.Name, cat.Color);
                 flpCategories.Controls.Add(item);
             }
         }
-
-        private void LoadSuggestedProducts()
-        {
-            // Code giả lập sản phẩm (để trống hoặc thêm code hiển thị sản phẩm ở đây)
-        }
     }
-}
+}   
+

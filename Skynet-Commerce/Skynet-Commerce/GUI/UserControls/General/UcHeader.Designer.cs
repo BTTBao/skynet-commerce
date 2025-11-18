@@ -37,20 +37,22 @@
             this.pnlUserActions = new System.Windows.Forms.Panel();
             this.pnlSearch = new System.Windows.Forms.Panel();
             this.txtSearch = new System.Windows.Forms.TextBox();
+            this.btnSearch = new System.Windows.Forms.Button();
             this.lblHome = new System.Windows.Forms.Label();
             this.lblOrders = new System.Windows.Forms.Label();
             this.btnSellerDashboard = new System.Windows.Forms.Button();
             this.lblAccount = new System.Windows.Forms.Label();
             this.pbLogo = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.btnSearch = new System.Windows.Forms.Button();
+            this.profileIcon = new System.Windows.Forms.PictureBox();
+            this.cartIcon = new System.Windows.Forms.PictureBox();
             this.pnlMainBar.SuspendLayout();
             this.tlpMainContent.SuspendLayout();
             this.pnlLogo.SuspendLayout();
             this.pnlUserActions.SuspendLayout();
             this.pnlSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profileIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cartIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlTopBar
@@ -106,10 +108,12 @@
             this.lblAppName.Size = new System.Drawing.Size(100, 23);
             this.lblAppName.TabIndex = 0;
             this.lblAppName.Text = "ShopViet";
+            this.lblAppName.Click += new System.EventHandler(this.lblAppName_Click);
             // 
             // pnlUserActions
             // 
-            this.pnlUserActions.Controls.Add(this.pictureBox1);
+            this.pnlUserActions.Controls.Add(this.profileIcon);
+            this.pnlUserActions.Controls.Add(this.cartIcon);
             this.pnlUserActions.Location = new System.Drawing.Point(950, 8);
             this.pnlUserActions.Name = "pnlUserActions";
             this.pnlUserActions.Size = new System.Drawing.Size(200, 44);
@@ -131,6 +135,15 @@
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(465, 35);
             this.txtSearch.TabIndex = 0;
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(87)))), ((int)(((byte)(34)))));
+            this.btnSearch.Location = new System.Drawing.Point(468, 3);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(75, 38);
+            this.btnSearch.TabIndex = 1;
+            this.btnSearch.UseVisualStyleBackColor = false;
             // 
             // lblHome
             // 
@@ -168,26 +181,31 @@
             this.pbLogo.TabIndex = 1;
             this.pbLogo.TabStop = false;
             // 
-            // pictureBox1
+            // profileIcon
             // 
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.pictureBox1.Image = global::Skynet_Commerce.Properties.Resources._1413908;
-            this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
-            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(46, 35);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.profileIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.profileIcon.Image = global::Skynet_Commerce.Properties.Resources.profile;
+            this.profileIcon.InitialImage = ((System.Drawing.Image)(resources.GetObject("profileIcon.InitialImage")));
+            this.profileIcon.Location = new System.Drawing.Point(128, -2);
+            this.profileIcon.Name = "profileIcon";
+            this.profileIcon.Size = new System.Drawing.Size(56, 46);
+            this.profileIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.profileIcon.TabIndex = 1;
+            this.profileIcon.TabStop = false;
+            this.profileIcon.Click += new System.EventHandler(this.profileIcon_Click);
             // 
-            // btnSearch
+            // cartIcon
             // 
-            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(87)))), ((int)(((byte)(34)))));
-            this.btnSearch.Location = new System.Drawing.Point(468, 3);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(75, 38);
-            this.btnSearch.TabIndex = 1;
-            this.btnSearch.UseVisualStyleBackColor = false;
+            this.cartIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.cartIcon.Image = global::Skynet_Commerce.Properties.Resources._1413908;
+            this.cartIcon.InitialImage = ((System.Drawing.Image)(resources.GetObject("cartIcon.InitialImage")));
+            this.cartIcon.Location = new System.Drawing.Point(44, 3);
+            this.cartIcon.Name = "cartIcon";
+            this.cartIcon.Size = new System.Drawing.Size(46, 35);
+            this.cartIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.cartIcon.TabIndex = 0;
+            this.cartIcon.TabStop = false;
+            this.cartIcon.Click += new System.EventHandler(this.cartIcon_Click);
             // 
             // UcHeader
             // 
@@ -202,7 +220,8 @@
             this.pnlSearch.ResumeLayout(false);
             this.pnlSearch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profileIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cartIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -228,6 +247,7 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox cartIcon;
+        private System.Windows.Forms.PictureBox profileIcon;
     }
 }
