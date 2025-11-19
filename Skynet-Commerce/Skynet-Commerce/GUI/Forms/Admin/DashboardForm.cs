@@ -91,11 +91,23 @@ namespace Skynet_Commerce.GUI.Forms
                     break;
 
                 case "Shops":
-                    MessageBox.Show("Tính năng đang phát triển!");
+                    LoadPage(new ShopsForm());
+                    break;
+
+                case "Products":
+                    LoadPage(new ProductsForm());
+                    break;
+
+                case "Orders":
+                    LoadPage(new OrdersForm());
+                    break;
+
+                case "Categories":
+                    LoadPage(new CategoriesForm());
                     break;
 
                 default:
-                    // Các mục khác...
+                    MessageBox.Show("Tính năng đang phát triển!");
                     break;
             }
         }

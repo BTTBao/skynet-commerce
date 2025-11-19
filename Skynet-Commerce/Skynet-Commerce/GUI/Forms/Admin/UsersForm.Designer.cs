@@ -70,7 +70,7 @@
             this._mainCard.Name = "_mainCard";
             this._mainCard.ShadowDecoration.Depth = 5;
             this._mainCard.ShadowDecoration.Enabled = true;
-            this._mainCard.Size = new System.Drawing.Size(997, 650);
+            this._mainCard.Size = new System.Drawing.Size(997, 538);
             this._mainCard.TabIndex = 2;
             // 
             // _userListContainer
@@ -94,7 +94,7 @@
             this._panelListHeader.Controls.Add(this._labelH1);
             this._panelListHeader.Location = new System.Drawing.Point(20, 80);
             this._panelListHeader.Name = "_panelListHeader";
-            this._panelListHeader.Size = new System.Drawing.Size(1020, 40);
+            this._panelListHeader.Size = new System.Drawing.Size(974, 40);
             this._panelListHeader.TabIndex = 4;
             // 
             // _labelH7
