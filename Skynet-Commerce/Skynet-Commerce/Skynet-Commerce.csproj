@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
       <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
     </Reference>
@@ -48,9 +54,12 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -66,11 +75,44 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Models\Admin\UserViewModel.cs" />
     <Compile Include="BLL\Models\CartItemDTO.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
-    <Compile Include="BLL\Services\DashboardService.cs" />
+    <Compile Include="BLL\Services\Admin\DashboardService.cs" />
+    <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="DAL\Config\DBConnection.cs" />
-    <Compile Include="DAL\Entities\DashboardEntities.cs" />
+    <Compile Include="DAL\Entities\Account.cs" />
+    <Compile Include="DAL\Config\ApplicationDbContext.cs" />
+    <Compile Include="DAL\Entities\Cart.cs" />
+    <Compile Include="DAL\Entities\CartItem.cs" />
+    <Compile Include="DAL\Entities\Category.cs" />
+    <Compile Include="DAL\Entities\ChatAttachment.cs" />
+    <Compile Include="DAL\Entities\ChatMessage.cs" />
+    <Compile Include="DAL\Entities\ChatRoom.cs" />
+    <Compile Include="BLL\Models\Admin\DashboardModel.cs" />
+    <Compile Include="DAL\Entities\FlashSale.cs" />
+    <Compile Include="DAL\Entities\FlashSaleProduct.cs" />
+    <Compile Include="DAL\Entities\Notification.cs" />
+    <Compile Include="DAL\Entities\Order.cs" />
+    <Compile Include="DAL\Entities\OrderDetail.cs" />
+    <Compile Include="DAL\Entities\OrderGroup.cs" />
+    <Compile Include="DAL\Entities\OrderShippingInfo.cs" />
+    <Compile Include="DAL\Entities\OrderStatusHistory.cs" />
+    <Compile Include="DAL\Entities\Payment.cs" />
+    <Compile Include="DAL\Entities\Product.cs" />
+    <Compile Include="DAL\Entities\ProductImage.cs" />
+    <Compile Include="DAL\Entities\ProductVariant.cs" />
+    <Compile Include="DAL\Entities\Review.cs" />
+    <Compile Include="DAL\Entities\ShippingPartner.cs" />
+    <Compile Include="DAL\Entities\Shop.cs" />
+    <Compile Include="DAL\Entities\ShopRegistration.cs" />
+    <Compile Include="DAL\Entities\User.cs" />
+    <Compile Include="DAL\Entities\UserAddress.cs" />
+    <Compile Include="DAL\Entities\UserRole.cs" />
+    <Compile Include="DAL\Entities\Voucher.cs" />
+    <Compile Include="DAL\Entities\Wishlist.cs" />
+    <Compile Include="DAL\Repositories\Admin\AccountRepository.cs" />
+    <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
     <Compile Include="GUI\Forms\Admin\CategoriesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +130,12 @@
     </Compile>
     <Compile Include="GUI\Forms\Admin\DashboardOverviewForm.Designer.cs">
       <DependentUpon>DashboardOverviewForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\FormUserDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\FormUserDetails.Designer.cs">
+      <DependentUpon>FormUserDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Forms\Admin\OrdersForm.cs">
       <SubType>Form</SubType>
@@ -214,6 +262,9 @@
     <EmbeddedResource Include="GUI\Forms\Admin\DashboardOverviewForm.resx">
       <DependentUpon>DashboardOverviewForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\FormUserDetails.resx">
+      <DependentUpon>FormUserDetails.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\OrdersForm.resx">
       <DependentUpon>OrdersForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -279,7 +330,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BLL\Helpers\" />
-    <Folder Include="DAL\Repositories\" />
     <Folder Include="GUI\UserControls\Product\" />
     <Folder Include="GUI\UserControls\Seller\" />
   </ItemGroup>

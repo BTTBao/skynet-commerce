@@ -80,11 +80,12 @@
             this._btnApprove.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this._btnApprove.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnApprove.ForeColor = System.Drawing.Color.White;
-            this._btnApprove.Location = new System.Drawing.Point(860, 10);
+            this._btnApprove.Location = new System.Drawing.Point(854, 10);
             this._btnApprove.Name = "_btnApprove";
-            this._btnApprove.Size = new System.Drawing.Size(80, 30);
+            this._btnApprove.Size = new System.Drawing.Size(90, 30);
             this._btnApprove.TabIndex = 5;
             this._btnApprove.Text = "✓ Approve";
+            this._btnApprove.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             // 
             // _btnReject
             // 

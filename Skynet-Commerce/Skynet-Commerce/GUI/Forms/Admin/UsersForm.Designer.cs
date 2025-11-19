@@ -79,7 +79,7 @@
             this._userListContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this._userListContainer.Location = new System.Drawing.Point(20, 125);
             this._userListContainer.Name = "_userListContainer";
-            this._userListContainer.Size = new System.Drawing.Size(974, 400);
+            this._userListContainer.Size = new System.Drawing.Size(974, 410);
             this._userListContainer.TabIndex = 5;
             this._userListContainer.WrapContents = false;
             // 
@@ -94,13 +94,13 @@
             this._panelListHeader.Controls.Add(this._labelH1);
             this._panelListHeader.Location = new System.Drawing.Point(20, 80);
             this._panelListHeader.Name = "_panelListHeader";
-            this._panelListHeader.Size = new System.Drawing.Size(974, 40);
+            this._panelListHeader.Size = new System.Drawing.Size(1020, 40);
             this._panelListHeader.TabIndex = 4;
             // 
             // _labelH7
             // 
             this._labelH7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._labelH7.Location = new System.Drawing.Point(890, 10);
+            this._labelH7.Location = new System.Drawing.Point(830, 10);
             this._labelH7.Name = "_labelH7";
             this._labelH7.Size = new System.Drawing.Size(100, 23);
             this._labelH7.TabIndex = 0;
