@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using Skynet_Commerce.BLL.Models; // [Quan trọng] Thêm dòng này để nhận diện UserSessionDTO
+using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.GUI.Forms.User; // [Quan trọng] Thêm dòng này để nhận diện UserSessionDTO
 
 namespace Skynet_Commerce.GUI.UserControls.General
 {
@@ -56,7 +57,9 @@ namespace Skynet_Commerce.GUI.UserControls.General
 
         private void profileIcon_Click(object sender, EventArgs e)
         {
-
+            Authentication a = new Authentication();
+            a.ShowLogin();
+            a.Show();
         }
     }
 }
