@@ -1,79 +1,152 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using Skynet_Commerce.GUI.UserControls.General;
 using Skynet_Commerce.GUI.UserControls.Pages;
-using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.BLL.Models; // Sử dụng ProductDTO
 
 namespace Skynet_Commerce.GUI.Forms
 {
     public partial class FrmMain : Form
     {
-        // QUAN TRỌNG: Thêm thuộc tính tĩnh để truy cập Form chính từ mọi nơi
-        public static FrmMain Instance { get; private set; }
+        // Dictionary để lưu trữ các UserControl đã được khởi tạo
+        private Dictionary<string, UserControl> pageCache;
+        // Đã xóa bỏ khai báo thừa 'private ProductDTO _productData;'
 
-        // Stack lưu trữ lịch sử chuyển trang (Giống lịch sử trình duyệt)
-        private Stack<UserControl> _history = new Stack<UserControl>();
-
-        private UserSessionDTO _currentUser;
+        // Màu sắc để highlight link menu
+        private Color ActiveColor = Color.White;
+        private Color InactiveColor = Color.FromArgb(220, 220, 220); // Màu xám nhạt
 
         public FrmMain()
         {
             InitializeComponent();
-            Instance = this; // Gán tham chiếu của instance hiện tại vào thuộc tính tĩnh
+            this.Load += FrmMain_Load;
 
-            // TẠM THỜI: Tạo dữ liệu người dùng mẫu
-            _currentUser = new UserSessionDTO
-            {
-                AccountID = 1,
-                FullName = "Nguyễn Văn A",
-                Role = "Seller",
-                CartCount = 3
-            };
-
-            LoadStaticControls();
-
-            // Tải trang mặc định (HomePage)
-            LoadUserControl(new UcHomePage());
+            // Khởi tạo Dictionary và gán sự kiện cho Menu
+            pageCache = new Dictionary<string, UserControl>();
+            SetupMenuEvents();
         }
 
-        // 1. Tải các controls cố định
-        private void LoadStaticControls()
+        private void FrmMain_Load(object sender, EventArgs e)
         {
-            // Khởi tạo UcHeader (truyền thông tin user vào)
-            UcHeader headerControl = new UcHeader(_currentUser);
-            pnlHeader.Controls.Add(headerControl);
-            headerControl.Dock = DockStyle.Fill;
-
-            // Khởi tạo UcFooter
-            UcFooter footerControl = new UcFooter();
-            pnlFooter.Controls.Add(footerControl);
-            footerControl.Dock = DockStyle.Fill;
+            // Tải trang chủ mặc định khi Form Load
+            LoadPage("Home");
         }
 
-        // 2. Hàm để Tải/Chuyển đổi các trang (Page UCs)
-        public void LoadUserControl(UserControl newControl)
+        /// <summary>
+        /// Gán các sự kiện click cho các Label menu.
+        /// </summary>
+        private void SetupMenuEvents()
         {
-            // Lưu trang cũ vào lịch sử trước khi chuyển
-            if (pnlContent.Controls.Count > 0)
+            lblHome.Click += (sender, e) => LoadPage("Home");
+            lblOrders.Click += (sender, e) => LoadPage("Orders");
+            btnCart.Click += (sender, e) => LoadPage("Cart"); // Thêm sự kiện cho nút Giỏ hàng
+        }
+
+        /// <summary>
+        /// Tải UserControl tương ứng vào pnlContent.
+        /// </summary>
+        /// <param name="pageName">Tên trang cần tải (Home, Orders, Cart...)</param>
+        public void LoadPage(string pageName, ProductDTO productData = null)
+        {
+            UserControl targetPage = null;
+
+            // Tên trang chi tiết sẽ là PageName_ProductID để phân biệt (Dùng cho caching)
+            string cacheKey = pageName;
+            if (productData != null)
             {
-                _history.Push((UserControl)pnlContent.Controls[0]);
+                cacheKey = $"Detail_{productData.ProductId}";
             }
 
-            pnlContent.Controls.Clear();
-            pnlContent.Controls.Add(newControl);
-            newControl.Dock = DockStyle.Fill;
+            // 1. Kiểm tra trong Cache
+            if (pageCache.ContainsKey(cacheKey))
+            {
+                targetPage = pageCache[cacheKey];
+            }
+            else
+            {
+                // 2. Khởi tạo trang mới
+                switch (pageName)
+                {
+                    case "Home":
+                        targetPage = new UcHomePage();
+                        break;
+                    case "Cart":
+                        targetPage = new UcCartPage();
+                        break;
+                    case "ProductDetail":
+                        if (productData != null)
+                        {
+                            targetPage = new UcProductDetail(productData); // Sử dụng constructor nhận DTO
+                        }
+                        else
+                        {
+                            targetPage = new UcHomePage(); // Trường hợp lỗi DTO, chuyển về Home
+                        }
+                        break;
+                    case "Orders":
+                        // Giả định bạn có UcOrderPage
+                        // targetPage = new UcOrderPage();
+                        targetPage = new UcHomePage(); // Dùng tạm
+                        break;
+                    default:
+                        return;
+                }
+
+                // Cài đặt thuộc tính cơ bản và lưu vào cache
+                if (targetPage != null)
+                {
+                    targetPage.Dock = DockStyle.Fill;
+                    pageCache.Add(cacheKey, targetPage); // Lưu vào cache với key mới
+                    pnlContent.Controls.Add(targetPage);
+                }
+            }
+
+            // 3. Hiển thị trang
+            if (targetPage != null)
+            {
+                // Ẩn tất cả các controls cũ
+                foreach (UserControl uc in pnlContent.Controls)
+                {
+                    uc.Visible = false;
+                }
+
+                // Hiển thị targetPage
+                targetPage.Visible = true;
+                targetPage.BringToFront();
+
+                // Cập nhật tiêu đề Form
+                this.Text = $"ShopViet - {(productData != null ? productData.Name : pageName)}";
+            }
+
+            // 4. Cập nhật trạng thái Active của Menu (Chỉ Home/Orders)
+            UpdateMenuState(pageName);
         }
 
-        // 3. Hàm Quay lại trang trước
-        public void GoBack()
+        private void UpdateMenuState(string activePage)
         {
-            if (_history.Count > 0)
+            // Đặt lại font style và màu sắc cho tất cả các Label menu
+            lblHome.Font = new Font(lblHome.Font, FontStyle.Regular);
+            lblOrders.Font = new Font(lblOrders.Font, FontStyle.Regular);
+            lblHome.ForeColor = InactiveColor;
+            lblOrders.ForeColor = InactiveColor;
+
+            Label activeLabel = null;
+            if (activePage == "Home")
             {
-                UserControl previousControl = _history.Pop();
-                pnlContent.Controls.Clear();
-                pnlContent.Controls.Add(previousControl);
-                previousControl.Dock = DockStyle.Fill;
+                activeLabel = lblHome;
+            }
+            else if (activePage == "Orders")
+            {
+                activeLabel = lblOrders;
+            }
+
+            // Highlight Label đang active
+            if (activeLabel != null)
+            {
+                activeLabel.Font = new Font(activeLabel.Font, FontStyle.Bold);
+                activeLabel.ForeColor = ActiveColor;
             }
         }
     }

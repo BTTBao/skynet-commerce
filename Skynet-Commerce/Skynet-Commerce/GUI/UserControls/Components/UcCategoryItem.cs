@@ -1,71 +1,94 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D; // Cần thêm cái này để bo tròn góc
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using Guna.UI2.WinForms; // Cần thiết để truy cập Guna2Panel và Guna2PictureBox
 
 namespace Skynet_Commerce.GUI.UserControls.Components
 {
     public partial class UcCategoryItem : UserControl
     {
+        // -------------------------------------------------------------
+        // I. PROPERTIES CÔNG KHAI (Public Properties)
+        // Dùng để thiết lập dữ liệu từ bên ngoài (ví dụ: UcHomePage)
+        // -------------------------------------------------------------
+
+        public string CategoryName
+        {
+            get => lblCategoryName.Text;
+            set => lblCategoryName.Text = value;
+        }
+
+        public Color IconBackgroundColor
+        {
+            get => pnlIconContainer.FillColor;
+            set => pnlIconContainer.FillColor = value;
+        }
+
+        public Image IconImage
+        {
+            get => pbIcon.Image;
+            set => pbIcon.Image = value;
+        }
+
+
+        // -------------------------------------------------------------
+        // II. CONSTRUCTOR
+        // -------------------------------------------------------------
+
+        // Constructor mặc định (dùng cho Designer)
         public UcCategoryItem()
         {
             InitializeComponent();
+            SetupHoverEffect();
         }
 
-        // Constructor nhận thông tin: Tên danh mục, Màu nền, Icon (tạm thời chưa có icon thì dùng màu)
-        public UcCategoryItem(string categoryName, Color backgroundColor) : this()
+        /// <summary>
+        /// Constructor để khởi tạo UcCategoryItem với dữ liệu
+        /// </summary>
+        /// <param name="name">Tên danh mục</param>
+        /// <param name="bgColor">Màu nền của icon (Color)</param>
+        /// <param name="icon">Hình ảnh icon (Image)</param>
+        public UcCategoryItem(string name, Color bgColor, Image icon) : this()
         {
-            // 1. Thiết lập chung cho thẻ
-            this.Size = new Size(120, 120); // Kích thước vuông vức
-            this.BackColor = Color.Transparent; // Để nhìn thấy bo góc
-            this.Margin = new Padding(10, 0, 10, 0); // Khoảng cách giữa các ô
-
-            // 2. Tạo Panel nền màu (để bo tròn)
-            Panel pnlBackground = new Panel();
-            pnlBackground.Size = new Size(120, 90); // Phần màu chiếm 3/4 phía trên
-            pnlBackground.Dock = DockStyle.Top;
-            pnlBackground.BackColor = backgroundColor;
-
-            // --- Xử lý bo tròn góc (Nâng cao một chút cho đẹp) ---
-            pnlBackground.Paint += (s, e) =>
-            {
-                GraphicsPath path = new GraphicsPath();
-                int radius = 20; // Độ bo tròn
-                Rectangle rect = pnlBackground.ClientRectangle;
-                path.AddArc(rect.X, rect.Y, radius, radius, 180, 90);
-                path.AddArc(rect.Right - radius, rect.Y, radius, radius, 270, 90);
-                path.AddArc(rect.Right - radius, rect.Bottom - radius, radius, radius, 0, 90);
-                path.AddArc(rect.X, rect.Bottom - radius, radius, radius, 90, 90);
-                path.CloseFigure();
-                pnlBackground.Region = new Region(path);
-            };
-
-            // 3. Icon (PictureBox) nằm giữa phần màu
-            PictureBox pbIcon = new PictureBox();
-            pbIcon.Size = new Size(50, 50);
-            pbIcon.SizeMode = PictureBoxSizeMode.Zoom;
-            pbIcon.BackColor = Color.Transparent;
-            // Canh giữa icon trong Panel màu
-            pbIcon.Location = new Point((120 - 50) / 2, (90 - 50) / 2);
-            // Tạm thời chưa có ảnh thật thì để trống hoặc dùng icon mặc định hệ thống
-            // pbIcon.Image = Properties.Resources.IconThoiTrang; (Sau này bạn bỏ ảnh vào đây)
-
-            pnlBackground.Controls.Add(pbIcon);
-
-            // 4. Tên danh mục (Label) nằm ở dưới
-            Label lblName = new Label();
-            lblName.Text = categoryName;
-            lblName.TextAlign = ContentAlignment.MiddleCenter;
-            lblName.Dock = DockStyle.Bottom;
-            lblName.Height = 30; // Chiều cao phần chữ
-            lblName.Font = new Font("Arial", 9, FontStyle.Regular);
-
-            // Thêm các thành phần vào UserControl
-            this.Controls.Add(pnlBackground);
-            this.Controls.Add(lblName);
+            this.CategoryName = name;
+            this.IconBackgroundColor = bgColor;
+            this.IconImage = icon;
         }
-        // Sửa lại constructor để nhận thêm productId
-       
-        
+
+
+        // -------------------------------------------------------------
+        // III. HÀM XỬ LÝ SỰ KIỆN VÀ HIỆU ỨNG
+        // -------------------------------------------------------------
+
+        /// <summary>
+        /// Thiết lập hiệu ứng khi di chuột vào (hover)
+        /// </summary>
+        private void SetupHoverEffect()
+        {
+            this.Cursor = Cursors.Hand;
+
+            // Xử lý hiệu ứng khi di chuột vào toàn bộ UserControl
+            this.MouseEnter += (s, e) => ApplyHover(true);
+            this.MouseLeave += (s, e) => ApplyHover(false);
+
+            // Đảm bảo hiệu ứng cũng áp dụng cho các controls con
+            lblCategoryName.MouseEnter += (s, e) => ApplyHover(true);
+            pnlIconContainer.MouseEnter += (s, e) => ApplyHover(true);
+        }
+
+        private void ApplyHover(bool isHovering)
+        {
+            if (isHovering)
+            {
+                // Khi di chuột vào: Nâng nhẹ container icon
+                pnlIconContainer.Location = new Point(pnlIconContainer.Left, pnlIconContainer.Top - 3);
+            }
+            else
+            {
+                // Khi di chuột ra: Đặt lại vị trí ban đầu
+                pnlIconContainer.Location = new Point(pnlIconContainer.Left, pnlIconContainer.Top + 3);
+            }
+        }
     }
 }
