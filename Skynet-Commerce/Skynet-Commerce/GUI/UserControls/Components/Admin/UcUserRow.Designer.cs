@@ -79,9 +79,9 @@
             this._btnRole.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this._btnRole.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this._btnRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this._btnRole.Location = new System.Drawing.Point(600, 14);
+            this._btnRole.Location = new System.Drawing.Point(578, 14);
             this._btnRole.Name = "_btnRole";
-            this._btnRole.Size = new System.Drawing.Size(60, 24);
+            this._btnRole.Size = new System.Drawing.Size(74, 24);
             this._btnRole.TabIndex = 4;
             this._btnRole.Text = "Buyer";
             // 

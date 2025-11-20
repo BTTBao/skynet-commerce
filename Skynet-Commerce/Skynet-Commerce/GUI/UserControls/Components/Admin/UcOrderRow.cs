@@ -15,9 +15,9 @@ namespace Skynet_Commerce.GUI.UserControls
             };
         }
 
-        public void SetData(string id, string buyer, string shop, string items, string amount, string date, string status)
+        public void SetData(int id, string buyer, string shop, string items, string amount, string date, string status)
         {
-            _lblId.Text = id;
+            _lblId.Text = id.ToString();
             _lblBuyer.Text = buyer;
             _lblShop.Text = shop;
             _lblItems.Text = items;

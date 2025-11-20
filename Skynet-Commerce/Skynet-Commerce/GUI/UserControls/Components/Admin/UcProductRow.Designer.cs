@@ -28,10 +28,11 @@
             ((System.ComponentModel.ISupportInitialize)(this._picImage)).BeginInit();
             this.SuspendLayout();
             // 
-            // _picImage (Hình ảnh sản phẩm)
+            // _picImage
             // 
             this._picImage.BorderRadius = 8;
             this._picImage.FillColor = System.Drawing.Color.LightGray;
+            this._picImage.ImageRotate = 0F;
             this._picImage.Location = new System.Drawing.Point(20, 10);
             this._picImage.Name = "_picImage";
             this._picImage.Size = new System.Drawing.Size(50, 50);
@@ -39,24 +40,24 @@
             this._picImage.TabIndex = 0;
             this._picImage.TabStop = false;
             // 
-            // _lblName (Tên sản phẩm)
+            // _lblName
             // 
             this._lblName.AutoSize = true;
             this._lblName.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._lblName.Location = new System.Drawing.Point(85, 15);
             this._lblName.Name = "_lblName";
-            this._lblName.Size = new System.Drawing.Size(123, 15);
+            this._lblName.Size = new System.Drawing.Size(126, 15);
             this._lblName.TabIndex = 1;
             this._lblName.Text = "Wireless Headphones";
             // 
-            // _lblId (Mã SP)
+            // _lblId
             // 
             this._lblId.AutoSize = true;
             this._lblId.Font = new System.Drawing.Font("Segoe UI", 8F);
             this._lblId.ForeColor = System.Drawing.Color.Gray;
             this._lblId.Location = new System.Drawing.Point(85, 35);
             this._lblId.Name = "_lblId";
-            this._lblId.Size = new System.Drawing.Size(51, 13);
+            this._lblId.Size = new System.Drawing.Size(50, 13);
             this._lblId.TabIndex = 2;
             this._lblId.Text = "PRD-001";
             // 
@@ -86,7 +87,7 @@
             this._lblPrice.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._lblPrice.Location = new System.Drawing.Point(500, 25);
             this._lblPrice.Name = "_lblPrice";
-            this._lblPrice.Size = new System.Drawing.Size(49, 15);
+            this._lblPrice.Size = new System.Drawing.Size(52, 15);
             this._lblPrice.TabIndex = 5;
             this._lblPrice.Text = "$129.99";
             // 
@@ -94,7 +95,7 @@
             // 
             this._lblStock.AutoSize = true;
             this._lblStock.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._lblStock.Location = new System.Drawing.Point(580, 25);
+            this._lblStock.Location = new System.Drawing.Point(584, 25);
             this._lblStock.Name = "_lblStock";
             this._lblStock.Size = new System.Drawing.Size(19, 15);
             this._lblStock.TabIndex = 6;
@@ -166,6 +167,7 @@
             ((System.ComponentModel.ISupportInitialize)(this._picImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
