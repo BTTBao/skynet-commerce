@@ -63,7 +63,7 @@ namespace WindowsFormsApp11
             this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSettings.BackColor = System.Drawing.Color.White;
             this.btnSettings.Font = new System.Drawing.Font("Times New Roman", 16F);
-            this.btnSettings.Image = LoadImage("settings.png");
+            //this.btnSettings.Image = LoadImage("settings.png");
             this.btnSettings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSettings.Location = new System.Drawing.Point(0, 265);
             this.btnSettings.Name = "btnSettings";
@@ -79,7 +79,7 @@ namespace WindowsFormsApp11
             this.btnOrders.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOrders.BackColor = System.Drawing.Color.White;
             this.btnOrders.Font = new System.Drawing.Font("Times New Roman", 16F);
-            this.btnOrders.Image = LoadImage("order.png");
+            //this.btnOrders.Image = LoadImage("order.png");
             this.btnOrders.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnOrders.Location = new System.Drawing.Point(0, 210);
             this.btnOrders.Name = "btnOrders";
@@ -95,7 +95,7 @@ namespace WindowsFormsApp11
             this.btnProducts.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnProducts.BackColor = System.Drawing.Color.White;
             this.btnProducts.Font = new System.Drawing.Font("Times New Roman", 16F);
-            this.btnProducts.Image = LoadImage("product.png");
+            //this.btnProducts.Image = LoadImage("product.png");
             this.btnProducts.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnProducts.Location = new System.Drawing.Point(0, 155);
             this.btnProducts.Name = "btnProducts";
@@ -111,7 +111,7 @@ namespace WindowsFormsApp11
             this.btnOverview.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOverview.BackColor = System.Drawing.Color.White;
             this.btnOverview.Font = new System.Drawing.Font("Times New Roman", 16F);
-            this.btnOverview.Image = LoadImage("overview.png");
+            //this.btnOverview.Image = LoadImage("overview.png");
             this.btnOverview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnOverview.Location = new System.Drawing.Point(0, 100);
             this.btnOverview.Name = "btnOverview";
