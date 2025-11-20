@@ -83,10 +83,20 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Helpers\UserValidator.cs" />
+    <Compile Include="BLL\Models\Admin\CategoryViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\OrderViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\PendingShopViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ProductViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ShopViewModel.cs" />
     <Compile Include="BLL\Models\Admin\UserViewModel.cs" />
     <Compile Include="BLL\Models\CartItemDTO.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
+    <Compile Include="BLL\Services\Admin\CategoryService.cs" />
     <Compile Include="BLL\Services\Admin\DashboardService.cs" />
+    <Compile Include="BLL\Services\Admin\OrderService.cs" />
+    <Compile Include="BLL\Services\Admin\ProductService.cs" />
+    <Compile Include="BLL\Services\Admin\ShopService.cs" />
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="DAL\Config\DBConnection.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
@@ -329,6 +339,9 @@
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcInfoCard.resx">
       <DependentUpon>UcInfoCard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcProductRow.resx">
+      <DependentUpon>UcProductRow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcUserRow.resx">
       <DependentUpon>UcUserRow.cs</DependentUpon>
     </EmbeddedResource>
@@ -366,7 +379,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BLL\Helpers\" />
     <Folder Include="GUI\UserControls\Product\" />
     <Folder Include="GUI\UserControls\Seller\" />
   </ItemGroup>
