@@ -15,9 +15,9 @@ namespace Skynet_Commerce.GUI.UserControls
             };
         }
 
-        public void SetData(string id, string name, string totalProducts, string subcategories)
+        public void SetData(int id, string name, string totalProducts, string subcategories)
         {
-            _lblId.Text = id;
+            _lblId.Text = id.ToString();
             _lblName.Text = name;
             _lblProducts.Text = totalProducts;
             _lblSubcats.Text = subcategories;

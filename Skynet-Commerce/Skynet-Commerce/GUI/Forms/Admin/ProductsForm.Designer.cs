@@ -93,6 +93,7 @@
             this._txtSearch.SelectedText = "";
             this._txtSearch.Size = new System.Drawing.Size(250, 36);
             this._txtSearch.TabIndex = 1;
+            this._txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this._txtSearch_KeyDown);
             // 
             // _comboCategory
             // 
@@ -214,6 +215,7 @@
             this.Controls.Add(this._pageTitle);
             this.Name = "ProductsForm";
             this.Text = "Product Management";
+            this.Load += new System.EventHandler(this.ProductsForm_Load);
             this._cardMain.ResumeLayout(false);
             this._cardMain.PerformLayout();
             this._headerPanel.ResumeLayout(false);

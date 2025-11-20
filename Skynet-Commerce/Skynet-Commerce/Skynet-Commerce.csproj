@@ -92,12 +92,22 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Helpers\UserValidator.cs" />
+    <Compile Include="BLL\Models\Admin\CategoryViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\OrderViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\PendingShopViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ProductViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ShopViewModel.cs" />
     <Compile Include="BLL\Models\Admin\UserViewModel.cs" />
     <Compile Include="BLL\Models\CartItemDTO.cs" />
     <Compile Include="BLL\Models\ProductDTO.cs" />
     <Compile Include="BLL\Models\SampleDataGenerator.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
+    <Compile Include="BLL\Services\Admin\CategoryService.cs" />
     <Compile Include="BLL\Services\Admin\DashboardService.cs" />
+    <Compile Include="BLL\Services\Admin\OrderService.cs" />
+    <Compile Include="BLL\Services\Admin\ProductService.cs" />
+    <Compile Include="BLL\Services\Admin\ShopService.cs" />
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="DAL\Config\DBConnection.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
@@ -194,7 +204,7 @@
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcCartItem.Designer.CS">
       <DependentUpon>UcCartItem.CS</DependentUpon>
-
+	</Compile>
     <Compile Include="GUI\Forms\User\Authentication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -242,7 +252,6 @@
     </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcProductRow.Designer.cs">
       <DependentUpon>UcProductRow.cs</DependentUpon>
-
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcCategoryItem.cs">
       <SubType>UserControl</SubType>
@@ -256,13 +265,12 @@
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcOptionButton.Designer.cs">
       <DependentUpon>UcOptionButton.cs</DependentUpon>
-
+	</Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.Designer.cs">
       <DependentUpon>UcInfoCard.cs</DependentUpon>
-
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcProductItem.cs">
       <SubType>UserControl</SubType>
@@ -276,13 +284,12 @@
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcThumbnail.Designer.cs">
       <DependentUpon>UcThumbnail.cs</DependentUpon>
-
+	</Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcUserRow.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcUserRow.Designer.cs">
       <DependentUpon>UcUserRow.cs</DependentUpon>
-
     </Compile>
     <Compile Include="GUI\UserControls\General\UcFooter.cs">
       <SubType>UserControl</SubType>
@@ -352,7 +359,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\UcProductItem.resx">
       <DependentUpon>UcProductItem.cs</DependentUpon>
-
+	</EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\User\Authentication.resx">
       <DependentUpon>Authentication.cs</DependentUpon>
     </EmbeddedResource>
@@ -374,9 +381,11 @@
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcInfoCard.resx">
       <DependentUpon>UcInfoCard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcProductRow.resx">
+      <DependentUpon>UcProductRow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcUserRow.resx">
       <DependentUpon>UcUserRow.cs</DependentUpon>
-
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\General\UcFooter.resx">
       <DependentUpon>UcFooter.cs</DependentUpon>
@@ -415,7 +424,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BLL\Helpers\" />
     <Folder Include="GUI\UserControls\Product\" />
     <Folder Include="GUI\UserControls\Seller\" />
   </ItemGroup>

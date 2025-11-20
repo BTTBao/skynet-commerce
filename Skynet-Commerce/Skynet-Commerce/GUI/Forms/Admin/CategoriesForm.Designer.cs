@@ -167,6 +167,7 @@
             this.Controls.Add(this._pageTitle);
             this.Name = "CategoriesForm";
             this.Text = "Category Management";
+            this.Load += new System.EventHandler(this.CategoriesForm_Load);
             this._cardMain.ResumeLayout(false);
             this._cardMain.PerformLayout();
             this._headerPanel.ResumeLayout(false);

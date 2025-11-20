@@ -201,6 +201,7 @@
             this.Controls.Add(this._pageTitle);
             this.Name = "OrdersForm";
             this.Text = "Order Management";
+            this.Load += new System.EventHandler(this.OrdersForm_Load);
             this._cardMain.ResumeLayout(false);
             this._cardMain.PerformLayout();
             this._headerPanel.ResumeLayout(false);

@@ -1,54 +1,72 @@
-﻿using System;
+﻿using Skynet_Commerce.BLL.Models.Admin;
+using Skynet_Commerce.GUI.UserControls;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Skynet_Commerce.GUI.UserControls;
 
 namespace Skynet_Commerce.GUI.Forms
 {
     public partial class ShopsForm : Form
     {
+        private readonly ShopService _shopService;
         public ShopsForm()
         {
             InitializeComponent();
+            _shopService = new ShopService();
             LoadPendingShops();
             LoadActiveShops();
         }
 
         private void LoadPendingShops()
         {
-            var pendingList = new List<dynamic>
-            {
-                new { Id="SHOP-P01", Name="TechGadgets Pro", Owner="Alice Johnson", Email="alice@tech.com", Date="2025-11-15" },
-                new { Id="SHOP-P02", Name="Fashion Fusion", Owner="Bob Smith", Email="bob@fashion.com", Date="2025-11-16" },
-                new { Id="SHOP-P03", Name="Home Essentials", Owner="Carol White", Email="carol@home.com", Date="2025-11-17" }
-            };
-
             _pendingContainer.Controls.Clear();
-            foreach (var shop in pendingList)
+
+            // 1. Gọi Service lấy danh sách từ bảng ShopRegistration
+            List<PendingShopViewModel> pendingList = _shopService.GetPendingRegistrations();
+
+            if (pendingList.Count == 0)
+            {
+                // Ẩn card Pending
+                _cardPending.Visible = false;
+
+                // Kéo cardAllShops lên vị trí của pending
+                _cardAllShops.Location = _cardPending.Location;
+
+                // Tăng chiều cao cho cardAllShops nếu muốn
+                _cardAllShops.Height += _cardPending.Height;
+                _activeContainer.Height += _cardPending.Height;
+                return;
+            }
+
+            // Nếu có pending thì hiển thị bình thường
+            _cardPending.Visible = true;
+            // 2. Duyệt và hiển thị lên giao diện
+            foreach (var item in pendingList)
             {
                 var row = new UcPendingShopRow();
-                row.SetData(shop.Id, shop.Name, shop.Owner, shop.Email, shop.Date);
+
+                string displayId = item.RegistrationID.ToString();
+                string dateStr = item.RequestDate.ToString("dd/MM/yyyy");
+
+                // Truyền dữ liệu vào UserControl
+                // Lưu ý: Bạn nên truyền cả item.RegistrationID gốc vào một biến ẩn trong UC để dùng cho nút Duyệt/Từ chối sau này
+                row.SetData(displayId, item.ShopName, item.OwnerName, item.Email, dateStr);
+
+                // Gắn Tag để sau này dễ lấy ID khi click nút
+                row.Tag = item.RegistrationID;
+
                 _pendingContainer.Controls.Add(row);
             }
         }
-
         private void LoadActiveShops()
         {
-            var activeList = new List<dynamic>
-            {
-                new { Id="SHOP-001", Name="TechStore", Owner="John Doe", Rate="4.8", Prod="234", Status="Active" },
-                new { Id="SHOP-002", Name="Fashion Hub", Owner="Jane Smith", Rate="4.6", Prod="456", Status="Active" },
-                new { Id="SHOP-003", Name="HomeDecor", Owner="Mike Johnson", Rate="4.9", Prod="189", Status="Active" },
-                new { Id="SHOP-004", Name="Sports World", Owner="Tom Brown", Rate="4.7", Prod="312", Status="Active" },
-                new { Id="SHOP-005", Name="Beauty Shop", Owner="Emily Davis", Rate="4.5", Prod="267", Status="Suspended" },
-                new { Id="SHOP-006", Name="Electronics Plus", Owner="David Lee", Rate="4.8", Prod="421", Status="Active" }
-            };
+            List<ShopViewModel> shops = _shopService.GetShops();
 
             _activeContainer.Controls.Clear();
-            foreach (var shop in activeList)
+            foreach (var shop in shops)
             {
                 var row = new UcActiveShopRow();
-                row.SetData(shop.Id, shop.Name, shop.Owner, shop.Rate, shop.Prod, shop.Status);
+                row.SetData(shop);
                 _activeContainer.Controls.Add(row);
             }
         }

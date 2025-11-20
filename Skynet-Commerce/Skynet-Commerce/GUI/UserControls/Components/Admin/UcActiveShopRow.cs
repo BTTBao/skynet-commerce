@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Skynet_Commerce.BLL.Models.Admin;
+using Skynet_Commerce.DAL.Entities;
+using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.UserControls
@@ -14,23 +17,36 @@ namespace Skynet_Commerce.GUI.UserControls
             };
         }
 
-        public void SetData(string id, string name, string owner, string rating, string products, string status)
+        public void SetData(ShopViewModel shop)
         {
-            _lblId.Text = id;
-            _lblName.Text = name;
-            _lblOwner.Text = owner;
-            _lblRating.Text = "★ " + rating;
-            _lblProducts.Text = products;
-            _badgeStatus.Text = status;
+            if (shop == null) return;
 
-            if (status == "Active")
+            // 1. Gán dữ liệu từ ViewModel vào các Label
+            _lblId.Text = shop.ShopID.ToString();
+            _lblName.Text = shop.ShopName;
+
+            // Giả sử bạn đã thêm OwnerName vào ViewModel như Bước 1
+            // Nếu chưa có, bạn có thể tạm dùng AccountID: shop.AccountID.ToString();
+            _lblOwner.Text = shop.OwnerName;
+
+            _lblRating.Text = "★ " + (shop.RatingAverage.HasValue ? Math.Round(shop.RatingAverage.Value, 1).ToString() : "0");
+
+            _lblProducts.Text = shop.StockQuantity.HasValue ? shop.StockQuantity.ToString() + "" : "0";
+
+            _badgeStatus.Text = shop.Status;
+
+            // 2. Xử lý màu sắc dựa trên Status
+            if (shop.Status == "Active")
             {
                 _badgeStatus.FillColor = Color.FromArgb(79, 70, 229); // Xanh tím
+                _badgeStatus.ForeColor = Color.White;
             }
-            else // Suspended
+            else // Suspended hoặc Inactive
             {
                 _badgeStatus.FillColor = Color.FromArgb(220, 38, 38); // Đỏ
+                _badgeStatus.ForeColor = Color.White;
             }
         }
+    
     }
 }
