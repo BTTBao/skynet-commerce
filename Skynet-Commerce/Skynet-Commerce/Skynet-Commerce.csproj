@@ -35,6 +35,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+
+    <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
+      <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
+    </Reference>
+
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -61,15 +66,19 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
-    <Reference Include="System.Web" />
+    
     <Reference Include="System.Xaml" />
+
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -91,6 +100,8 @@
     <Compile Include="BLL\Models\Admin\ShopViewModel.cs" />
     <Compile Include="BLL\Models\Admin\UserViewModel.cs" />
     <Compile Include="BLL\Models\CartItemDTO.cs" />
+    <Compile Include="BLL\Models\ProductDTO.cs" />
+    <Compile Include="BLL\Models\SampleDataGenerator.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
     <Compile Include="BLL\Services\Admin\CategoryService.cs" />
     <Compile Include="BLL\Services\Admin\DashboardService.cs" />
@@ -187,6 +198,13 @@
     <Compile Include="GUI\Forms\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
+
+    <Compile Include="GUI\UserControls\Components\UcCartItem.CS">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcCartItem.Designer.CS">
+      <DependentUpon>UcCartItem.CS</DependentUpon>
+	</Compile>
     <Compile Include="GUI\Forms\User\Authentication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -241,6 +259,13 @@
     <Compile Include="GUI\UserControls\Components\UcCategoryItem.Designer.cs">
       <DependentUpon>UcCategoryItem.cs</DependentUpon>
     </Compile>
+
+    <Compile Include="GUI\UserControls\Components\UcOptionButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcOptionButton.Designer.cs">
+      <DependentUpon>UcOptionButton.cs</DependentUpon>
+	</Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -253,6 +278,13 @@
     <Compile Include="GUI\UserControls\Components\UcProductItem.Designer.cs">
       <DependentUpon>UcProductItem.cs</DependentUpon>
     </Compile>
+
+    <Compile Include="GUI\UserControls\Components\UcThumbnail.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcThumbnail.Designer.cs">
+      <DependentUpon>UcThumbnail.cs</DependentUpon>
+	</Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcUserRow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -318,6 +350,16 @@
     <EmbeddedResource Include="GUI\Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
+
+    <EmbeddedResource Include="GUI\UserControls\Components\UcCartItem.resx">
+      <DependentUpon>UcCartItem.CS</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Components\UcOptionButton.resx">
+      <DependentUpon>UcOptionButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Components\UcProductItem.resx">
+      <DependentUpon>UcProductItem.cs</DependentUpon>
+	</EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\User\Authentication.resx">
       <DependentUpon>Authentication.cs</DependentUpon>
     </EmbeddedResource>
@@ -353,6 +395,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Pages\UcHomePage.resx">
       <DependentUpon>UcHomePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\UcProductDetail.resx">
+      <DependentUpon>UcProductDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -402,6 +447,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\trash.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\anh nen.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\img\product1.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

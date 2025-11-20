@@ -108,7 +108,7 @@
             this.lblAppName.Size = new System.Drawing.Size(100, 23);
             this.lblAppName.TabIndex = 0;
             this.lblAppName.Text = "ShopViet";
-            this.lblAppName.Click += new System.EventHandler(this.lblAppName_Click);
+            //this.lblAppName.Click += new System.EventHandler(this.lblAppName_Click);
             // 
             // pnlUserActions
             // 
@@ -192,7 +192,7 @@
             this.profileIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.profileIcon.TabIndex = 1;
             this.profileIcon.TabStop = false;
-            this.profileIcon.Click += new System.EventHandler(this.profileIcon_Click);
+            //this.profileIcon.Click += new System.EventHandler(this.profileIcon_Click);
             // 
             // cartIcon
             // 
@@ -205,7 +205,7 @@
             this.cartIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.cartIcon.TabIndex = 0;
             this.cartIcon.TabStop = false;
-            this.cartIcon.Click += new System.EventHandler(this.cartIcon_Click);
+            //this.cartIcon.Click += new System.EventHandler(this.cartIcon_Click);
             // 
             // UcHeader
             // 

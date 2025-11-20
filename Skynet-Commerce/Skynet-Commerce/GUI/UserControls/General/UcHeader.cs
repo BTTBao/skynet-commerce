@@ -7,6 +7,7 @@ namespace Skynet_Commerce.GUI.UserControls.General
 {
     public partial class UcHeader : UserControl
     {
+
         // Biến lưu trữ thông tin user được truyền sang
         private UserSessionDTO _currentUser;
 
@@ -38,21 +39,21 @@ namespace Skynet_Commerce.GUI.UserControls.General
         private void lblAppName_Click(object sender, EventArgs e)
         {
             // Kiểm tra xem FrmMain có đang chạy không
-            if (Forms.FrmMain.Instance != null)
-            {
-                // Chuyển về trang HomePage (luôn tạo mới để đảm bảo fresh data)
-                Forms.FrmMain.Instance.LoadUserControl(new Pages.UcHomePage());
-            }
+            //if (Forms.FrmMain.Instance != null)
+            //{
+            //    // Chuyển về trang HomePage (luôn tạo mới để đảm bảo fresh data)
+            //    Forms.FrmMain.Instance.LoadUserControl(new Pages.UcHomePage());
+            //}
         }
 
         private void cartIcon_Click(object sender, EventArgs e)
         {
             // Kiểm tra xem FrmMain có đang chạy không
-            if (Forms.FrmMain.Instance != null)
-            {
-                // 1. Chuyển sang trang Giỏ hàng (UcCartPage)
-                Forms.FrmMain.Instance.LoadUserControl(new Pages.UcCartPage());
-            }
+            //if (Forms.FrmMain.Instance != null)
+            //{
+            //    // 1. Chuyển sang trang Giỏ hàng (UcCartPage)
+            //    Forms.FrmMain.Instance.LoadUserControl(new Pages.UcCartPage());
+            //}
         }
 
         private void profileIcon_Click(object sender, EventArgs e)
@@ -61,5 +62,6 @@ namespace Skynet_Commerce.GUI.UserControls.General
             a.ShowLogin();
             a.Show();
         }
+
     }
 }
