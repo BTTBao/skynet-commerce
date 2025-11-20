@@ -1,102 +1,116 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Skynet_Commerce.GUI.Forms; // Cần import FrmMain
-using Skynet_Commerce.GUI.UserControls.Pages; // Cần import UcProductDetail
+using Skynet_Commerce.GUI.Forms;
+using Skynet_Commerce.GUI.UserControls.Pages;
+using Skynet_Commerce.BLL.Models; // Quan trọng: Đã đổi tên thành ProductDTO
 
 namespace Skynet_Commerce.GUI.UserControls.Components
 {
     public partial class UcProductItem : UserControl
     {
-        private int _productId; // Biến lưu trữ ID sản phẩm
+        private int _productId;
+        private ProductDTO _productData; // <<< THÊM: Trường để lưu trữ toàn bộ dữ liệu sản phẩm
 
-        public UcProductItem()
+        // -------------------------------------------------------------
+        // I. CONSTRUCTORS
+        // -------------------------------------------------------------
+
+        // Constructor mặc định (dùng cho Designer)
+        public UcProductItem()
         {
             InitializeComponent();
+            SetupCardEvents(); // Thiết lập sự kiện click/hover
+        }
+
+        /// <summary>
+        /// Constructor chính nhận đối tượng ProductDTO
+        /// </summary>
+        /// <param name="productData">Đối tượng ProductDTO chứa dữ liệu sản phẩm.</param>
+        public UcProductItem(ProductDTO productData) : this()
+        {
+            this._productData = productData; // <<< CẬP NHẬT: Lưu trữ DTO
+            LoadProductData(productData);
         }
 
-        // Sửa Constructor để nhận thêm productId
-        public UcProductItem(string name, decimal price, double rating, int sold, string imgPath, int productId) : this()
+        // -------------------------------------------------------------
+        // II. LOGIC HIỂN THỊ DỮ LIỆU
+        // -------------------------------------------------------------
+
+        private void LoadProductData(ProductDTO data)
         {
-            this._productId = productId; // Gán ID sản phẩm
+            this._productId = data.ProductId;
 
-            // --- SETUP CHUNG ---
-            this.Size = new Size(190, 280);
-            this.BackColor = Color.White;
-            this.Margin = new Padding(5);
-            this.Cursor = Cursors.Hand;
+            // Tên sản phẩm
+            lblProductName.Text = data.Name;
 
-            // Gán sự kiện Click cho thẻ cha
-            this.Click += (s, e) => NavigateToDetail();
+            // Giá hiện tại
+            lblPrice.Text = $"{data.Price:N0}₫";
 
-            // --- Hiệu ứng Hover ---
-            this.MouseEnter += (s, e) => this.BackColor = Color.WhiteSmoke;
-            this.MouseLeave += (s, e) => this.BackColor = Color.White;
-
-            // --- 1. ẢNH SẢN PHẨM ---
-            PictureBox pbImage = new PictureBox();
-            pbImage.Size = new Size(190, 190);
-            pbImage.Dock = DockStyle.Top;
-            pbImage.SizeMode = PictureBoxSizeMode.Zoom;
-
-            // Gán sự kiện Click cho ảnh
-            pbImage.Click += (s, e) => NavigateToDetail();
-
-            // Xử lý load ảnh local
-            string fullPath = System.IO.Path.Combine(Application.StartupPath, imgPath);
-            if (System.IO.File.Exists(fullPath))
-                pbImage.ImageLocation = fullPath;
-            else
-                pbImage.BackColor = Color.LightGray;
-
-            // --- 2. TÊN SẢN PHẨM ---
-            Label lblName = new Label();
-            lblName.Text = name;
-            lblName.Location = new Point(8, 200);
-            lblName.Size = new Size(174, 36);
-            lblName.Font = new Font("Arial", 9, FontStyle.Regular);
-            lblName.AutoEllipsis = true;
-            lblName.Click += (s, e) => NavigateToDetail(); // Gán sự kiện Click cho tên
-
-            // --- 3. KHU VỰC ĐÁNH GIÁ & ĐÃ BÁN ---
-            FlowLayoutPanel pnlStats = new FlowLayoutPanel();
-            pnlStats.Location = new Point(8, 236);
-            pnlStats.Size = new Size(174, 20);
-            pnlStats.FlowDirection = FlowDirection.LeftToRight;
-            pnlStats.WrapContents = false;
-            pnlStats.Click += (s, e) => NavigateToDetail(); // Gán sự kiện Click cho panel chứa stats
-
-            // Ngôi sao, Điểm đánh giá, Số lượng bán (Giữ nguyên logic tạo control)
-            // ... (Code tạo lblStar, lblRating, lblSold và thêm vào pnlStats giữ nguyên) ...
-
-            // Tạm thời bỏ qua logic chi tiết các label con để tập trung vào Click chính
-
-            // --- 4. GIÁ TIỀN ---
-            Label lblPrice = new Label();
-            lblPrice.Text = price.ToString("N0") + "đ";
-            lblPrice.Location = new Point(8, 255);
-            lblPrice.ForeColor = Color.Red;
-            lblPrice.Font = new Font("Arial", 11, FontStyle.Bold);
-            lblPrice.AutoSize = true;
-            lblPrice.Click += (s, e) => NavigateToDetail(); // Gán sự kiện Click cho giá
-
-            // --- THÊM VÀO USER CONTROL ---
-            this.Controls.Add(lblPrice);
-            this.Controls.Add(pnlStats);
-            this.Controls.Add(lblName);
-            this.Controls.Add(pbImage);
-        }
-
-        // Hàm chuyển trang
-        private void NavigateToDetail()
-        {
-            if (FrmMain.Instance != null)
+            // Giá cũ 
+            if (data.OldPrice.HasValue && data.DiscountPercent > 0)
             {
-                // 1. Tạo trang chi tiết mới và truyền ID sản phẩm
-                UcProductDetail detailPage = new UcProductDetail(this._productId);
+                lblOldPrice.Text = $"{data.OldPrice.Value:N0}₫";
+                lblOldPrice.Visible = true;
+            }
+            else
+            {
+                lblOldPrice.Visible = false;
+            }
 
-                // 2. Yêu cầu FrmMain chuyển sang trang này
-                FrmMain.Instance.LoadUserControl(detailPage);
+            // Rating và Sold
+            if (data.Rating.HasValue)
+            {
+                // Hiển thị Rating với biểu tượng ngôi sao
+                lblRating.Text = $"★ {data.Rating.Value:N1}"; // Ví dụ: ★ 4.8
+                lblSold.Text = $"| Đã bán {data.SoldQuantity:N0}"; // Format số lượng đã bán
+            }
+            else
+            {
+                lblRating.Visible = false;
+                lblSold.Visible = false;
+            }
+
+            // Hình ảnh
+            if (data.Image != null)
+            {
+                pbProductImage.Image = data.Image;
+            }
+            else if (!string.IsNullOrEmpty(data.ImagePath) && System.IO.File.Exists(data.ImagePath))
+            {
+                pbProductImage.ImageLocation = data.ImagePath;
+            }
+        }
+
+        // -------------------------------------------------------------
+        // III. XỬ LÝ SỰ KIỆN CLICK (Mở trang chi tiết)
+        // -------------------------------------------------------------
+
+        private void SetupCardEvents()
+        {
+            // Xử lý sự kiện click trên toàn bộ card
+            this.Click += UcProductItem_Click;
+            pnlCard.Click += UcProductItem_Click;
+            // Đảm bảo các controls con cũng kích hoạt sự kiện này
+            foreach (Control control in pnlCard.Controls)
+            {
+                control.Click += UcProductItem_Click;
+            }
+        }
+
+        private void UcProductItem_Click(object sender, EventArgs e)
+        {
+            // Logic khi click: Mở trang chi tiết sản phẩm
+
+            // 1. Tìm Form chính (FrmMain)
+            FrmMain mainForm = this.FindForm() as FrmMain;
+
+            // 2. Gọi hàm LoadPage bằng DTO
+            if (mainForm != null && _productData != null)
+            {
+                // CẬP NHẬT: Chỉ cần truyền tên trang "ProductDetail" và đối tượng DTO.
+                // Logic tạo key caching đã được xử lý trong FrmMain.LoadPage
+                mainForm.LoadPage("ProductDetail", _productData);
             }
         }
     }

@@ -7,6 +7,7 @@ namespace Skynet_Commerce.GUI.UserControls.General
 {
     public partial class UcHeader : UserControl
     {
+
         // Biến lưu trữ thông tin user được truyền sang
         private UserSessionDTO _currentUser;
 
@@ -61,5 +62,6 @@ namespace Skynet_Commerce.GUI.UserControls.General
             a.ShowLogin();
             a.Show();
         }
+
     }
 }
