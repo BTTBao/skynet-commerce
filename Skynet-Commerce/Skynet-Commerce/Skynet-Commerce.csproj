@@ -35,11 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-
     <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
       <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
     </Reference>
-
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -66,19 +64,15 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
     <Reference Include="System.Web" />
-
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
-    
     <Reference Include="System.Xaml" />
-
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -94,6 +88,7 @@
   <ItemGroup>
     <Compile Include="BLL\Helpers\UserValidator.cs" />
     <Compile Include="BLL\Models\Admin\CategoryViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\DashboardDTO.cs" />
     <Compile Include="BLL\Models\Admin\OrderViewModel.cs" />
     <Compile Include="BLL\Models\Admin\PendingShopViewModel.cs" />
     <Compile Include="BLL\Models\Admin\ProductViewModel.cs" />
@@ -198,13 +193,12 @@
     <Compile Include="GUI\Forms\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-
     <Compile Include="GUI\UserControls\Components\UcCartItem.CS">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcCartItem.Designer.CS">
       <DependentUpon>UcCartItem.CS</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="GUI\Forms\User\Authentication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -259,13 +253,12 @@
     <Compile Include="GUI\UserControls\Components\UcCategoryItem.Designer.cs">
       <DependentUpon>UcCategoryItem.cs</DependentUpon>
     </Compile>
-
     <Compile Include="GUI\UserControls\Components\UcOptionButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcOptionButton.Designer.cs">
       <DependentUpon>UcOptionButton.cs</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -278,13 +271,12 @@
     <Compile Include="GUI\UserControls\Components\UcProductItem.Designer.cs">
       <DependentUpon>UcProductItem.cs</DependentUpon>
     </Compile>
-
     <Compile Include="GUI\UserControls\Components\UcThumbnail.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcThumbnail.Designer.cs">
       <DependentUpon>UcThumbnail.cs</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcUserRow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -350,7 +342,6 @@
     <EmbeddedResource Include="GUI\Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="GUI\UserControls\Components\UcCartItem.resx">
       <DependentUpon>UcCartItem.CS</DependentUpon>
     </EmbeddedResource>
@@ -359,7 +350,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\UcProductItem.resx">
       <DependentUpon>UcProductItem.cs</DependentUpon>
-	</EmbeddedResource>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\User\Authentication.resx">
       <DependentUpon>Authentication.cs</DependentUpon>
     </EmbeddedResource>

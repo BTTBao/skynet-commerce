@@ -13,66 +13,152 @@ namespace Skynet_Commerce.GUI.Forms
 {
     public partial class DashboardOverviewForm : Form
     {
-        private DashboardService _service;
+        private readonly DashboardService _service;
 
         public DashboardOverviewForm()
         {
-            // Hàm này giờ gọi từ file Designer.cs, không tự viết nữa
             InitializeComponent();
-
             _service = new DashboardService();
 
-            // Chỉ gọi hàm load dữ liệu
-            LoadDataToUI();
+            // Gọi hàm tải dữ liệu khi form khởi tạo
+            this.Load += DashboardOverviewForm_Load;
         }
 
-        // Đã xóa hàm InitializeLayout() vì Designer đã lo việc này
-
-        private void LoadDataToUI()
+        private void DashboardOverviewForm_Load(object sender, EventArgs e)
         {
-            var stats = _service.GetSummaryStats();
-            foreach (var stat in stats)
+            LoadSummaryCards();
+            LoadCharts();
+        }
+
+        private void LoadSummaryCards()
+        {
+            try
             {
-                // Đảm bảo bạn đã có UserControl tên là UcInfoCard
-                var card = new UcInfoCard();
-                card.SetData(stat.Title, stat.Value, stat.Percent, stat.IsIncrease);
-                card.Margin = new Padding(0, 0, 20, 0);
-                _statsContainer.Controls.Add(card);
+                _statsContainer.Controls.Clear();
+                var stats = _service.GetSummaryStats();
+
+                foreach (var stat in stats)
+                {
+                    var card = new UcInfoCard();
+                    // SetData(Title, Value, PercentText, IsIncrease)
+                    card.SetData(stat.Title, stat.Value, stat.Percent, stat.IsIncrease);
+                    card.Margin = new Padding(0, 0, 15, 15); // Khoảng cách giữa các thẻ
+                    _statsContainer.Controls.Add(card);
+                }
             }
-
-            LoadSalesChart();
-            LoadUsersChart();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải thống kê: " + ex.Message);
+            }
         }
 
-        private void LoadSalesChart()
+        private void LoadCharts()
         {
-            Guna2Panel chartPanel = new Guna2Panel { Dock = DockStyle.Fill, FillColor = Color.White, BorderRadius = 12, Margin = new Padding(0, 10, 10, 10), Padding = new Padding(10) };
-            chartPanel.Controls.Add(new Label { Text = "Monthly Sales", Font = new Font("Segoe UI", 12, FontStyle.Bold), Dock = DockStyle.Top, Height = 30 });
+            try
+            {
+                _chartsContainer.Controls.Clear(); // Xóa chart cũ nếu có
 
-            var data = _service.GetSalesChartData();
-            var chart = new LiveCharts.WinForms.CartesianChart { Dock = DockStyle.Fill, Hoverable = true };
+                // --- CHART 1: REVENUE (Doanh thu) ---
+                var revenueData = _service.GetRevenueChartData();
 
-            chart.Series = new SeriesCollection { new ColumnSeries { Title = "Revenue", Values = new ChartValues<double>(data.Select(x => x.Value)), Fill = System.Windows.Media.Brushes.RoyalBlue, MaxColumnWidth = 35 } };
-            chart.AxisX.Add(new Axis { Labels = data.Select(x => x.Label).ToList(), Separator = new Separator { Step = 1, IsEnabled = false } });
-            chart.AxisY.Add(new Axis { LabelFormatter = val => val.ToString("N0") });
+                var pnlRevenue = CreateChartPanel("Doanh thu 6 tháng gần nhất");
+                var chartRevenue = new LiveCharts.WinForms.CartesianChart
+                {
+                    Dock = DockStyle.Fill,
+                    Hoverable = true,
+                    DisableAnimations = false
+                };
 
-            chartPanel.Controls.Add(chart);
-            _chartsContainer.Controls.Add(chartPanel, 0, 0);
+                chartRevenue.Series = new SeriesCollection
+                {
+                    new ColumnSeries
+                    {
+                        Title = "Revenue",
+                        Values = new ChartValues<double>(revenueData.Select(x => x.Value)),
+                        Fill = System.Windows.Media.Brushes.RoyalBlue, // Màu xanh
+                        MaxColumnWidth = 30
+                    }
+                };
+
+                // Cấu hình trục X (Tháng)
+                chartRevenue.AxisX.Add(new Axis
+                {
+                    Labels = revenueData.Select(x => x.Label).ToList(),
+                    Separator = new Separator { Step = 1, IsEnabled = false }
+                });
+
+                // Cấu hình trục Y (Tiền tệ - rút gọn k/M nếu cần)
+                chartRevenue.AxisY.Add(new Axis
+                {
+                    LabelFormatter = val => val > 1000 ? (val / 1000).ToString("N0") + "k" : val.ToString("N0")
+                });
+
+                pnlRevenue.Controls.Add(chartRevenue);
+                _chartsContainer.Controls.Add(pnlRevenue, 0, 0); // Cột 0, Hàng 0
+
+
+                // --- CHART 2: ORDERS (Số lượng đơn) ---
+                var orderData = _service.GetOrderGrowthChartData();
+
+                var pnlOrders = CreateChartPanel("Đơn đặt hàng hàng tháng");
+                var chartOrders = new LiveCharts.WinForms.CartesianChart
+                {
+                    Dock = DockStyle.Fill,
+                    Hoverable = true
+                };
+
+                chartOrders.Series = new SeriesCollection
+                {
+                    new LineSeries
+                    {
+                        Title = "Orders",
+                        Values = new ChartValues<double>(orderData.Select(x => x.Value)),
+                        Stroke = System.Windows.Media.Brushes.DarkOrange,
+                        Fill = System.Windows.Media.Brushes.Transparent, // Chỉ vẽ đường line
+                        PointGeometrySize = 10,
+                        LineSmoothness = 0.5
+                    }
+                };
+
+                chartOrders.AxisX.Add(new Axis
+                {
+                    Labels = orderData.Select(x => x.Label).ToList(),
+                    Separator = new Separator { IsEnabled = false }
+                });
+
+                pnlOrders.Controls.Add(chartOrders);
+                _chartsContainer.Controls.Add(pnlOrders, 1, 0); // Cột 1, Hàng 0
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải biểu đồ: " + ex.Message);
+            }
         }
 
-        private void LoadUsersChart()
+        // Helper tạo Panel bao quanh Chart cho đẹp
+        private Guna2Panel CreateChartPanel(string title)
         {
-            Guna2Panel chartPanel = new Guna2Panel { Dock = DockStyle.Fill, FillColor = Color.White, BorderRadius = 12, Margin = new Padding(10, 10, 0, 10), Padding = new Padding(10) };
-            chartPanel.Controls.Add(new Label { Text = "New Users", Font = new Font("Segoe UI", 12, FontStyle.Bold), Dock = DockStyle.Top, Height = 30 });
+            Guna2Panel panel = new Guna2Panel
+            {
+                Dock = DockStyle.Fill,
+                FillColor = Color.White,
+                BorderRadius = 12,
+                Margin = new Padding(10),
+                Padding = new Padding(15),
+                ShadowDecoration = { Enabled = true, Depth = 5 }
+            };
 
-            var data = _service.GetUserGrowthData();
-            var chart = new LiveCharts.WinForms.CartesianChart { Dock = DockStyle.Fill, Hoverable = true };
+            Label lblTitle = new Label
+            {
+                Text = title,
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                ForeColor = Color.DimGray,
+                Dock = DockStyle.Top,
+                Height = 40
+            };
 
-            chart.Series = new SeriesCollection { new LineSeries { Title = "Users", Values = new ChartValues<double>(data.Select(x => x.Value)), Stroke = System.Windows.Media.Brushes.RoyalBlue, Fill = System.Windows.Media.Brushes.Transparent, PointGeometrySize = 10, LineSmoothness = 1 } };
-            chart.AxisX.Add(new Axis { Labels = data.Select(x => x.Label).ToList(), Separator = new Separator { IsEnabled = false } });
-
-            chartPanel.Controls.Add(chart);
-            _chartsContainer.Controls.Add(chartPanel, 1, 0);
+            panel.Controls.Add(lblTitle);
+            return panel;
         }
     }
 }
