@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using Skynet_Commerce.BLL.Services.Admin;
+using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.GUI.UserControls;
 
 namespace Skynet_Commerce.GUI.Forms
@@ -8,6 +10,7 @@ namespace Skynet_Commerce.GUI.Forms
     public partial class UsersForm : Form
     {
         private readonly UserService _userService;
+        private readonly ApplicationDbContext _context;
 
         public UsersForm()
         {
@@ -48,8 +51,13 @@ namespace Skynet_Commerce.GUI.Forms
                         FormUserDetails frm = new FormUserDetails(u, isEditMode: true);
                         if (frm.ShowDialog() == DialogResult.OK)
                         {
-                            row.SetData(u);
-                            // TODO: Update DB here if needed
+                            row.SetData(frm._user);
+                            var success = _userService.UpdateUser(frm._user);
+
+                            if (success)
+                                MessageBox.Show("Cập nhật user thành công!");
+                            else
+                                MessageBox.Show("Không thể cập nhật dữ liệu!");
                         }
                     };
 

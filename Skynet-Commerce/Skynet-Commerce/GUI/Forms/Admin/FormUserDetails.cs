@@ -1,5 +1,9 @@
-﻿using Skynet_Commerce.BLL.Models.Admin;
+﻿using Skynet_Commerce.BLL.Helpers;
+using Skynet_Commerce.BLL.Models.Admin;
+using Skynet_Commerce.DAL.Entities;
 using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -7,13 +11,15 @@ namespace Skynet_Commerce.GUI.Forms
 {
     public partial class FormUserDetails : Form
     {
-        private UserViewModel _user;
+        public UserViewModel _user { get; private set; }
+        private ApplicationDbContext _context;
         private bool _isEditMode;
 
         // Constructor nhận vào User và chế độ (View hay Edit)
         public FormUserDetails(UserViewModel user, bool isEditMode)
         {
             InitializeComponent();
+            _context = new ApplicationDbContext();
             _user = user;
             _isEditMode = isEditMode;
 
@@ -97,16 +103,38 @@ namespace Skynet_Commerce.GUI.Forms
         {
             if (_user == null) return;
 
-            // Validate dữ liệu cơ bản (Ví dụ: không được để trống tên)
-            if (string.IsNullOrWhiteSpace(txtName.Text.Trim()))
+            string fullName = txtName.Text.Trim();
+            string phone = txtPhone.Text.Trim();
+            string email = txtEmail.Text.Trim();
+
+            string cleanPhone = txtPhone.Text.Trim();
+
+            bool exists = _context.Accounts.Any(x =>
+                x.Phone != null &&
+                x.Phone == cleanPhone &&
+                x.AccountID != _user.AccountID
+            );
+
+            if (exists)
             {
-                MessageBox.Show("Tên người dùng không được để trống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Số điện thoại này đã được sử dụng bởi tài khoản khác!", "Cảnh báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Cập nhật lại object _user từ giao diện
-            _user.FullName = txtName.Text.Trim();
-            _user.Phone = txtPhone.Text.Trim();
+            string error = UserValidator.Validate(fullName, cleanPhone, email);
+
+            if (error != null)
+            {
+                MessageBox.Show(error, "Cảnh báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Hợp lệ -> cập nhật user
+            _user.FullName = fullName;
+            _user.Phone = cleanPhone;
+            _user.Email = email;
 
             if (cboRole.SelectedItem != null)
                 _user.RoleName = cboRole.SelectedItem.ToString();
@@ -115,10 +143,10 @@ namespace Skynet_Commerce.GUI.Forms
                 _user.Status = cboStatus.SelectedItem.ToString();
 
             // Thông báo và đóng form
-            MessageBox.Show("Đã lưu thông tin tạm thời (Cần Save xuống DB).", "Thông báo");
+            MessageBox.Show("Đã lưu thông tin !!", "Thông báo");
 
-            this.DialogResult = DialogResult.OK; // Báo cho form cha biết là đã bấm Save
-            this.Close();
+            DialogResult = DialogResult.OK; // Báo cho form cha biết là đã bấm Save
+            Close();
         }
 
         private void btnClose_Click(object sender, EventArgs e)

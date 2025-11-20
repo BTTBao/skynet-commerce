@@ -1,6 +1,8 @@
 ﻿using Skynet_Commerce.BLL.Models.Admin;
+using Skynet_Commerce.DAL.Entities;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.UserControls
@@ -9,7 +11,7 @@ namespace Skynet_Commerce.GUI.UserControls
     {
         // 1. Lưu trữ dữ liệu của dòng hiện tại
         private UserViewModel _currentUser;
-
+        private ApplicationDbContext _context;
         // 2. Định nghĩa các sự kiện (Event) để Form cha đăng ký lắng nghe
         public event EventHandler<UserViewModel> ViewClicked;
         public event EventHandler<UserViewModel> EditClicked;
@@ -21,7 +23,7 @@ namespace Skynet_Commerce.GUI.UserControls
             this.Paint += (s, e) => {
                 e.Graphics.DrawLine(new Pen(Color.FromArgb(240, 240, 240)), 0, this.Height - 1, this.Width, this.Height - 1);
             };
-
+            _context = new ApplicationDbContext();
             // 3. Gán sự kiện Click cho các nút
             _btnView.Click += (s, e) => ViewClicked?.Invoke(this, _currentUser);
             _btnEdit.Click += (s, e) => EditClicked?.Invoke(this, _currentUser);
@@ -34,6 +36,8 @@ namespace Skynet_Commerce.GUI.UserControls
             _lblName.Text = user.FullName;
             _lblEmail.Text = user.Email;
             _lblPhone.Text = user.Phone;
+            _btnRole.Text = user.RoleName;
+            _btnStatus.Text = user.Status;
 
             _currentUser = user;
 
@@ -91,7 +95,12 @@ namespace Skynet_Commerce.GUI.UserControls
             {
                 // Cập nhật dữ liệu logic
                 _currentUser.Status = "Banned";
-
+                var user = _context.Accounts.FirstOrDefault(x => x.AccountID == _currentUser.AccountID);
+                if (user != null)
+                {
+                    user.IsActive = false;
+                    _context.SaveChanges();
+                }
                 // Cập nhật giao diện ngay lập tức
                 UpdateStatusUI("Banned");
 
