@@ -184,7 +184,7 @@
             // profileIcon
             // 
             this.profileIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.profileIcon.Image = global::Skynet_Commerce.Properties.Resources.profile;
+            this.profileIcon.Image = global::Skynet_Commerce.Properties.Resources.trash;
             this.profileIcon.InitialImage = ((System.Drawing.Image)(resources.GetObject("profileIcon.InitialImage")));
             this.profileIcon.Location = new System.Drawing.Point(128, -2);
             this.profileIcon.Name = "profileIcon";
@@ -197,7 +197,7 @@
             // cartIcon
             // 
             this.cartIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.cartIcon.Image = global::Skynet_Commerce.Properties.Resources._1413908;
+            this.cartIcon.Image = global::Skynet_Commerce.Properties.Resources.trash;
             this.cartIcon.InitialImage = ((System.Drawing.Image)(resources.GetObject("cartIcon.InitialImage")));
             this.cartIcon.Location = new System.Drawing.Point(44, 3);
             this.cartIcon.Name = "cartIcon";

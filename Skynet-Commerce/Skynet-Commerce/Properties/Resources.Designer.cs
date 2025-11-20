@@ -63,6 +63,7 @@ namespace Skynet_Commerce.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+
         internal static System.Drawing.Bitmap _1413908 {
             get {
                 object obj = ResourceManager.GetObject("1413908", resourceCulture);
@@ -133,6 +134,7 @@ namespace Skynet_Commerce.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+
         internal static System.Drawing.Bitmap trash {
             get {
                 object obj = ResourceManager.GetObject("trash", resourceCulture);
