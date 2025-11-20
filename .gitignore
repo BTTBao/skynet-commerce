@@ -43,3 +43,17 @@ Skynet-Commerce/.vs/Skynet-Commerce/v17/DocumentLayout.backup.json
 Skynet-Commerce/.vs/Skynet-Commerce/v17/.suo
 Skynet-Commerce/.vs/Skynet-Commerce/FileContentIndex/e3623641-c83e-41fc-8e01-e165361b6044.vsidx
 Skynet-Commerce/.vs/Skynet-Commerce/CopilotIndices/17.14.1431.25910/CodeChunks.db
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.bak
+*.pdb
+*.obj
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Caches and temporary files
+*.cache
