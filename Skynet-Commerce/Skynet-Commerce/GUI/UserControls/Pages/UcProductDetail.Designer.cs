@@ -288,7 +288,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             // lblQuantityAvailable
             // 
             this.lblQuantityAvailable.AutoSize = true;
-            this.lblQuantityAvailable.Location = new System.Drawing.Point(150, 8);
+            this.lblQuantityAvailable.Location = new System.Drawing.Point(116, 8);
             this.lblQuantityAvailable.Name = "lblQuantityAvailable";
             this.lblQuantityAvailable.Size = new System.Drawing.Size(118, 13);
             this.lblQuantityAvailable.TabIndex = 3;
