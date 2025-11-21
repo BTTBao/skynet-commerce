@@ -444,7 +444,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Pages\UcProductDetail.resx">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
-    <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
+    </EmbeddedResource>  <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
       <DependentUpon>UcProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
