@@ -73,7 +73,7 @@ namespace Skynet_Commerce.GUI.Forms
                 {
                     new ColumnSeries
                     {
-                        Title = "Revenue",
+                        Title = "Doanh thu",
                         Values = new ChartValues<double>(revenueData.Select(x => x.Value)),
                         Fill = System.Windows.Media.Brushes.RoyalBlue, // Màu xanh
                         MaxColumnWidth = 30
@@ -111,7 +111,7 @@ namespace Skynet_Commerce.GUI.Forms
                 {
                     new LineSeries
                     {
-                        Title = "Orders",
+                        Title = "Đơn đặt hàng",
                         Values = new ChartValues<double>(orderData.Select(x => x.Value)),
                         Stroke = System.Windows.Media.Brushes.DarkOrange,
                         Fill = System.Windows.Media.Brushes.Transparent, // Chỉ vẽ đường line

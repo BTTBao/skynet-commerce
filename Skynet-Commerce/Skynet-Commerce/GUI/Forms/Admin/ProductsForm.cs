@@ -10,6 +10,7 @@ namespace Skynet_Commerce.GUI.Forms
     public partial class ProductsForm : Form
     {
         private readonly ProductService _productService;
+
         public ProductsForm()
         {
             InitializeComponent();
@@ -85,7 +86,7 @@ namespace Skynet_Commerce.GUI.Forms
                 _comboCategory.Items.Clear();
 
                 // 3. Thêm item mặc định đầu tiên
-                _comboCategory.Items.Add("All Categories");
+                _comboCategory.Items.Add("Tất cả");
 
                 // 4. Thêm danh sách từ DB vào
                 // Hàm AddRange nhận mảng object[], nên cần convert hoặc add từng cái

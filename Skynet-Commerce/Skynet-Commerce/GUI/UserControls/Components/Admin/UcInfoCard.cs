@@ -26,28 +26,28 @@ namespace Skynet_Commerce.GUI.UserControls
 
             switch (title)
             {
-                case "Total Users":
+                case "Tổng số người dùng":
                     // Thay link ảnh thật của bạn vào đây
                     imageUrl = "https://cdn-icons-png.flaticon.com/512/1077/1077114.png";
                     _picIcon.FillColor = Color.FromArgb(224, 231, 255);
                     break;
 
-                case "Active Sellers":
+                case "Tổng số shop":
                     imageUrl = "https://cdn-icons-png.flaticon.com/128/3733/3733203.png";
                     _picIcon.FillColor = Color.FromArgb(254, 243, 199);
                     break;
 
-                case "Total Orders":
+                case "Tổng số đơn đặt hàng":
                     imageUrl = "https://cdn-icons-png.flaticon.com/512/1170/1170678.png";
                     _picIcon.FillColor = Color.FromArgb(220, 252, 231);
                     break;
 
-                case "Revenue":
+                case "Doanh thu":
                     imageUrl = "https://cdn-icons-png.flaticon.com/512/2454/2454282.png";
                     _picIcon.FillColor = Color.FromArgb(255, 237, 213);
                     break;
 
-                case "Products":
+                case "Tổng số sản phẩm":
                     imageUrl = "https://cdn-icons-png.flaticon.com/512/679/679720.png";
                     _picIcon.FillColor = Color.FromArgb(243, 232, 255);
                     break;

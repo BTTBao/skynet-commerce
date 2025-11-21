@@ -33,7 +33,7 @@ namespace Skynet_Commerce.GUI.UserControls
 
             _lblProducts.Text = shop.StockQuantity.HasValue ? shop.StockQuantity.ToString() + "" : "0";
 
-            _badgeStatus.Text = shop.Status;
+            _badgeStatus.Text = shop.Status == "Active" ? "Hoạt động" : "Khoá" ;
 
             // 2. Xử lý màu sắc dựa trên Status
             if (shop.Status == "Active")

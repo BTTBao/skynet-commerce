@@ -79,7 +79,7 @@
             this._lblDate.AutoSize = true;
             this._lblDate.Font = new System.Drawing.Font("Segoe UI", 9F);
             this._lblDate.ForeColor = System.Drawing.Color.DimGray;
-            this._lblDate.Location = new System.Drawing.Point(600, 18);
+            this._lblDate.Location = new System.Drawing.Point(606, 18);
             this._lblDate.Name = "_lblDate";
             this._lblDate.Size = new System.Drawing.Size(65, 15);
             this._lblDate.TabIndex = 5;
@@ -91,11 +91,11 @@
             this._badgeStatus.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
             this._badgeStatus.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this._badgeStatus.ForeColor = System.Drawing.Color.White;
-            this._badgeStatus.Location = new System.Drawing.Point(720, 14);
+            this._badgeStatus.Location = new System.Drawing.Point(719, 14);
             this._badgeStatus.Name = "_badgeStatus";
             this._badgeStatus.Size = new System.Drawing.Size(100, 24);
             this._badgeStatus.TabIndex = 6;
-            this._badgeStatus.Text = "Completed";
+            this._badgeStatus.Text = "Hoàn thành";
             // 
             // _btnView
             // 
@@ -103,11 +103,11 @@
             this._btnView.FillColor = System.Drawing.Color.Transparent;
             this._btnView.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this._btnView.Location = new System.Drawing.Point(887, 12);
+            this._btnView.Location = new System.Drawing.Point(852, 12);
             this._btnView.Name = "_btnView";
-            this._btnView.Size = new System.Drawing.Size(79, 30);
+            this._btnView.Size = new System.Drawing.Size(111, 30);
             this._btnView.TabIndex = 7;
-            this._btnView.Text = "👁 View Details";
+            this._btnView.Text = "👁 Xem chi tiết";
             this._btnView.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // UcOrderRow

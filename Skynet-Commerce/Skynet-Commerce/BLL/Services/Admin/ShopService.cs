@@ -52,9 +52,10 @@ public class ShopService
     }
 
     // Lấy danh sách Shop
-    public List<ShopViewModel> GetShops()
+    // Cập nhật hàm này để nhận tham số lọc
+    public List<ShopViewModel> GetShops(string keyword = "", string status = "All Status")
     {
-        // Logic: Lấy shop có IsActive = true
+        // 1. Khởi tạo Query cơ bản
         var query = from s in _context.Shops
                     join u in _context.Users on s.AccountID equals u.AccountID
                     select new
@@ -64,7 +65,23 @@ public class ShopService
                         ProductCount = s.Products.Count()
                     };
 
-        // Query DB và convert sang ViewModel
+        // 2. Lọc theo Keyword (Tên Shop hoặc Tên Chủ Shop)
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            query = query.Where(x => x.Shop.ShopName.Contains(keyword) || x.OwnerName.Contains(keyword));
+        }
+
+        // 3. Lọc theo Status
+        if (status == "Active")
+        {
+            query = query.Where(x => x.Shop.IsActive == true);
+        }
+        else if (status == "Suspended") // Giả sử Suspended là IsActive = false
+        {
+            query = query.Where(x => x.Shop.IsActive == false);
+        }
+
+        // 4. Thực thi và Mapping (Projection)
         return query.ToList().Select(x => new ShopViewModel
         {
             ShopID = x.Shop.ShopID,
@@ -72,7 +89,7 @@ public class ShopService
             OwnerName = x.OwnerName,
             RatingAverage = x.Shop.RatingAverage ?? 0,
             StockQuantity = x.ProductCount,
-            Status = "Active"
+            Status = (x.Shop.IsActive == true) ? "Active" : "Suspended"
         }).ToList();
     }
 

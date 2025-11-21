@@ -51,9 +51,9 @@
             this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblHeader.Location = new System.Drawing.Point(25, 20);
             this.lblHeader.Name = "lblHeader";
-            this.lblHeader.Size = new System.Drawing.Size(165, 25);
+            this.lblHeader.Size = new System.Drawing.Size(211, 25);
             this.lblHeader.TabIndex = 0;
-            this.lblHeader.Text = "User Information";
+            this.lblHeader.Text = "Thông tin người dùng";
             // 
             // lblId
             // 
@@ -98,7 +98,7 @@
             this.txtName.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtName.Location = new System.Drawing.Point(145, 79);
             this.txtName.Name = "txtName";
-            this.txtName.PlaceholderText = "Enter full name";
+            this.txtName.PlaceholderText = "Nhập họ và tên ...";
             this.txtName.SelectedText = "";
             this.txtName.Size = new System.Drawing.Size(235, 36);
             this.txtName.TabIndex = 4;
@@ -110,9 +110,9 @@
             this.lblName.ForeColor = System.Drawing.Color.Gray;
             this.lblName.Location = new System.Drawing.Point(142, 60);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(62, 15);
+            this.lblName.Size = new System.Drawing.Size(61, 15);
             this.lblName.TabIndex = 3;
-            this.lblName.Text = "Full Name";
+            this.lblName.Text = "Họ và tên";
             // 
             // txtEmail
             // 
@@ -127,7 +127,7 @@
             this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtEmail.Location = new System.Drawing.Point(30, 154);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.PlaceholderText = "Enter email address";
+            this.txtEmail.PlaceholderText = "Nhập email ...";
             this.txtEmail.SelectedText = "";
             this.txtEmail.Size = new System.Drawing.Size(350, 36);
             this.txtEmail.TabIndex = 6;
@@ -156,7 +156,7 @@
             this.txtPhone.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtPhone.Location = new System.Drawing.Point(30, 229);
             this.txtPhone.Name = "txtPhone";
-            this.txtPhone.PlaceholderText = "Enter phone number";
+            this.txtPhone.PlaceholderText = "Nhập số điện thoại";
             this.txtPhone.SelectedText = "";
             this.txtPhone.Size = new System.Drawing.Size(350, 36);
             this.txtPhone.TabIndex = 8;
@@ -168,9 +168,9 @@
             this.lblPhone.ForeColor = System.Drawing.Color.Gray;
             this.lblPhone.Location = new System.Drawing.Point(27, 210);
             this.lblPhone.Name = "lblPhone";
-            this.lblPhone.Size = new System.Drawing.Size(42, 15);
+            this.lblPhone.Size = new System.Drawing.Size(80, 15);
             this.lblPhone.TabIndex = 7;
-            this.lblPhone.Text = "Phone";
+            this.lblPhone.Text = "Số điện thoại";
             // 
             // cboRole
             // 
@@ -195,9 +195,9 @@
             this.lblRole.ForeColor = System.Drawing.Color.Gray;
             this.lblRole.Location = new System.Drawing.Point(27, 285);
             this.lblRole.Name = "lblRole";
-            this.lblRole.Size = new System.Drawing.Size(32, 15);
+            this.lblRole.Size = new System.Drawing.Size(43, 15);
             this.lblRole.TabIndex = 9;
-            this.lblRole.Text = "Role";
+            this.lblRole.Text = "Vai trò";
             // 
             // cboStatus
             // 
@@ -222,9 +222,9 @@
             this.lblStatus.ForeColor = System.Drawing.Color.Gray;
             this.lblStatus.Location = new System.Drawing.Point(207, 285);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(42, 15);
+            this.lblStatus.Size = new System.Drawing.Size(62, 15);
             this.lblStatus.TabIndex = 11;
-            this.lblStatus.Text = "Status";
+            this.lblStatus.Text = "Trạng thái";
             // 
             // btnSave
             // 
@@ -240,7 +240,7 @@
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(150, 40);
             this.btnSave.TabIndex = 13;
-            this.btnSave.Text = "Save Changes";
+            this.btnSave.Text = "Lưu thay đổi";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnClose
@@ -259,7 +259,7 @@
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(100, 40);
             this.btnClose.TabIndex = 14;
-            this.btnClose.Text = "Close";
+            this.btnClose.Text = "Đóng";
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // FormUserDetails

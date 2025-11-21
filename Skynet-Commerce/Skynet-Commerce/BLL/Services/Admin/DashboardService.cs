@@ -56,37 +56,37 @@ namespace Skynet_Commerce.BLL.Services
                 {
                     new StatCardData
                     {
-                        Title = "Total Users",
+                        Title = "Tổng số người dùng",
                         Value = totalUsers.ToString("N0"),
                         Percent = "--",
                         IsIncrease = true
                     },
                     new StatCardData
                     {
-                        Title = "Active Sellers",
+                        Title = "Tổng số shop",
                         Value = activeShops.ToString("N0"),
-                        Percent = "Active",
+                        Percent = "Hoạt động",
                         IsIncrease = true
                     },
                     new StatCardData
                     {
-                        Title = "Total Orders",
+                        Title = "Tổng số đơn đặt hàng",
                         Value = totalOrders.ToString("N0"),
                         Percent = $"{orderGrowth:+#0.0;-#0.0}%",
                         IsIncrease = orderGrowth >= 0
                     },
                     new StatCardData
                     {
-                        Title = "Revenue",
-                        Value = totalRevenue.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("en-US")),
+                        Title = "Doanh thu",
+                        Value = totalRevenue.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")),
                         Percent = $"{revenueGrowth:+#0.0;-#0.0}%",
                         IsIncrease = revenueGrowth >= 0
                     },
                     new StatCardData
                     {
-                        Title = "Products",
+                        Title = "Tổng số sản phẩm",
                         Value = totalProducts.ToString("N0"),
-                        Percent = "In Stock",
+                        Percent = "Còn hàng",
                         IsIncrease = true
                     }
                 };

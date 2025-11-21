@@ -23,7 +23,6 @@ namespace Skynet_Commerce.GUI.UserControls
             _lblItems.Text = items;
             _lblAmount.Text = amount;
             _lblDate.Text = date;
-            _badgeStatus.Text = status;
 
             // Xử lý màu sắc Status dựa trên ảnh
             // Completed: Xanh đậm, Chữ trắng
@@ -33,16 +32,19 @@ namespace Skynet_Commerce.GUI.UserControls
                 case "Completed":
                     _badgeStatus.FillColor = Color.FromArgb(79, 70, 229); // Xanh tím (Indigo)
                     _badgeStatus.ForeColor = Color.White;
+                    _badgeStatus.Text = "Hoàn thành";
                     break;
 
                 case "Processing":
                     _badgeStatus.FillColor = Color.FromArgb(229, 231, 235); // Xám nhạt
                     _badgeStatus.ForeColor = Color.FromArgb(31, 41, 55);    // Chữ xám đậm
+                    _badgeStatus.Text = "Đang xử lý";
                     break;
 
                 case "Pending":
                     _badgeStatus.FillColor = Color.FromArgb(254, 243, 199); // Vàng nhạt (cho khác biệt xíu) hoặc giữ xám
                     _badgeStatus.ForeColor = Color.FromArgb(146, 64, 14);   // Chữ nâu
+                    _badgeStatus.Text = "Đang chờ";
                     // Hoặc nếu muốn giống hệt ảnh (màu nhạt):
                     // _badgeStatus.FillColor = Color.FromArgb(243, 244, 246);
                     // _badgeStatus.ForeColor = Color.Black;
@@ -51,6 +53,7 @@ namespace Skynet_Commerce.GUI.UserControls
                 case "Shipped":
                     _badgeStatus.FillColor = Color.FromArgb(209, 250, 229); // Xanh ngọc nhạt
                     _badgeStatus.ForeColor = Color.FromArgb(6, 95, 70);     // Chữ xanh đậm
+                    _badgeStatus.Text = "Đã giao";
                     break;
 
                 default:

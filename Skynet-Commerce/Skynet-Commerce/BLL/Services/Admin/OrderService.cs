@@ -17,33 +17,52 @@ namespace Skynet_Commerce.BLL.Services.Admin
             _context = new ApplicationDbContext();
         }
         // Hàm lấy danh sách Order cho trang Admin
-        public List<OrderViewModel> GetAllOrders()
+        public List<OrderViewModel> GetAllOrders(string keyword = "", string status = "All")
         {
-
-            // Sử dụng LINQ để join các bảng: Order, Shop, User (thông qua Account), OrderDetail
+            // 1. Khởi tạo query cơ bản (Joins)
             var query = from o in _context.Orders
                         join s in _context.Shops on o.ShopID equals s.ShopID
-                        // Join vào bảng User để lấy tên người mua (dựa trên AccountID)
-                        // Dùng Left Join (DefaultIfEmpty) để tránh lỗi nếu Account chưa có User Profile
                         join u in _context.Users on o.AccountID equals u.AccountID into userGroup
                         from u in userGroup.DefaultIfEmpty()
-
-                        orderby o.CreatedAt descending // Đơn mới nhất lên đầu
-
-                        select new OrderViewModel
+                        select new
                         {
-                            OrderID = o.OrderID,
-                            BuyerName = u.FullName,
-                            ShopName = s.ShopName,
-
-                            // Tính tổng số lượng item trong đơn hàng
-                            TotalItems = o.OrderDetails.Sum(od => od.Quantity) ?? 0,
-
-                            TotalAmount = o.TotalAmount ?? 0,
-                            CreatedAt = o.CreatedAt ?? DateTime.Now,
-                            Status = o.Status
+                            o,
+                            s,
+                            u
                         };
-            return query.ToList();
+
+            // 2. Xử lý Tìm kiếm (Nếu có keyword)
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                keyword = keyword.ToLower(); // Chuyển về chữ thường để tìm tương đối
+                query = query.Where(x =>
+                    x.o.OrderID.ToString().Contains(keyword) ||       // Tìm theo ID đơn
+                    x.s.ShopName.ToLower().Contains(keyword) ||      // Tìm theo tên Shop
+                    (x.u.FullName != null && x.u.FullName.ToLower().Contains(keyword)) // Tìm theo tên người mua
+                );
+            }
+
+            // 3. Xử lý Lọc theo trạng thái (Nếu status khác "All")
+            if (!string.IsNullOrEmpty(status) && status != "All")
+            {
+                query = query.Where(x => x.o.Status == status);
+            }
+
+            // 4. Sắp xếp và Projection (Chuyển đổi sang ViewModel)
+            var result = query.OrderByDescending(x => x.o.CreatedAt)
+                              .Select(x => new OrderViewModel
+                              {
+                                  OrderID = x.o.OrderID,
+                                  BuyerName = x.u.FullName ?? "Unknown", // Xử lý null
+                                  ShopName = x.s.ShopName,
+                                  // Tính tổng số lượng (dùng null coalescing)
+                                  TotalItems = x.o.OrderDetails.Sum(od => (int?)od.Quantity) ?? 0,
+                                  TotalAmount = x.o.TotalAmount ?? 0,
+                                  CreatedAt = x.o.CreatedAt ?? DateTime.Now,
+                                  Status = x.o.Status
+                              });
+
+            return result.ToList();
         }
     }
 }

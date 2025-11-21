@@ -2,17 +2,57 @@
 using Skynet_Commerce.GUI.UserControls;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.Forms
 {
+    public class ShopStatusOption
+    {
+        public string DisplayName { get; set; } // Tiếng Việt
+        public string Value { get; set; }       // Tiếng Anh (Logic/DB)
+    }
+
     public partial class ShopsForm : Form
     {
         private readonly ShopService _shopService;
+
         public ShopsForm()
         {
             InitializeComponent();
             _shopService = new ShopService();
+
+            SetupStatusFilter();
+        }
+
+
+        private void SetupStatusFilter()
+        {
+            // A. Gỡ sự kiện để tránh lỗi Timing (sự kiện chạy khi chưa load xong data)
+            _comboStatus.SelectedIndexChanged -= _comboStatus_SelectedIndexChanged;
+
+            // B. Tạo danh sách tùy chọn
+            var statusList = new List<ShopStatusOption>()
+            {
+                new ShopStatusOption { DisplayName = "Tất cả trạng thái", Value = "All Status" },
+                new ShopStatusOption { DisplayName = "Đang hoạt động",    Value = "Active" },
+                new ShopStatusOption { DisplayName = "Bị đình chỉ",       Value = "Suspended" }
+            };
+
+            // C. Gán dữ liệu (Binding)
+            _comboStatus.DataSource = statusList;
+            _comboStatus.DisplayMember = "DisplayName"; // Hiển thị tiếng Việt
+            _comboStatus.ValueMember = "Value";         // Giá trị tiếng Anh
+
+            // Chọn mặc định dòng đầu
+            _comboStatus.StartIndex = 0;
+
+            // D. Gán lại sự kiện sau khi đã setup xong
+            _comboStatus.SelectedIndexChanged += _comboStatus_SelectedIndexChanged;
+        }
+
+        private void ShopsForm_Load(object sender, EventArgs e)
+        {
             LoadPendingShops();
             LoadActiveShops();
         }
@@ -58,18 +98,82 @@ namespace Skynet_Commerce.GUI.Forms
                 _pendingContainer.Controls.Add(row);
             }
         }
+        // -- PHẦN ACTIVE SHOPS(ASYNC + FILTER) ---
         private void LoadActiveShops()
         {
-            List<ShopViewModel> shops = _shopService.GetShops();
+            Cursor.Current = Cursors.WaitCursor;
 
-            _activeContainer.Controls.Clear();
-            foreach (var shop in shops)
+            try
             {
-                var row = new UcActiveShopRow();
-                row.SetData(shop);
-                _activeContainer.Controls.Add(row);
+                // 1. Lấy tham số từ UI
+                string keyword = _txtSearch.Text.Trim();
+                string status = "All Status";
+
+                if (_comboStatus.SelectedValue != null)
+                {
+                    // Kiểm tra kiểu dữ liệu để tránh crash nếu SelectedValue trả về object
+                    if (_comboStatus.SelectedValue is ShopStatusOption opt)
+                    {
+                        status = opt.Value;
+                    }
+                    else
+                    {
+                        status = _comboStatus.SelectedValue.ToString();
+                    }
+                }
+
+                // 2. Gọi Service ở Background Thread
+                List<ShopViewModel> shops = _shopService.GetShops(keyword, status);
+
+                // 3. Cập nhật UI
+                _activeContainer.SuspendLayout(); // Chống giật khi vẽ lại
+                _activeContainer.Controls.Clear();
+
+                if (shops.Count == 0)
+                {
+                    Label lblEmpty = new Label
+                    {
+                        Text = "Không tìm thấy cửa hàng nào.",
+                        AutoSize = true,
+                        Padding = new Padding(20),
+                        Font = new System.Drawing.Font("Segoe UI", 10, System.Drawing.FontStyle.Italic),
+                        ForeColor = System.Drawing.Color.Gray
+                    };
+                    _activeContainer.Controls.Add(lblEmpty);
+                }
+                else
+                {
+                    foreach (var shop in shops)
+                    {
+                        var row = new UcActiveShopRow();
+                        row.SetData(shop);
+                        _activeContainer.Controls.Add(row);
+                    }
+                }
+                _activeContainer.ResumeLayout();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh sách cửa hàng: " + ex.Message);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
             }
         }
 
+        private void _txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Chặn tiếng bip hệ thống
+                LoadActiveShops();
+            }
+        }
+
+        private void _comboStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadActiveShops();
+        }
     }
 }

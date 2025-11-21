@@ -28,7 +28,7 @@
             this._lblId.Font = new System.Drawing.Font("Segoe UI", 9F);
             this._lblId.Location = new System.Drawing.Point(20, 18);
             this._lblId.Name = "_lblId";
-            this._lblId.Size = new System.Drawing.Size(52, 15);
+            this._lblId.Size = new System.Drawing.Size(51, 15);
             this._lblId.TabIndex = 0;
             this._lblId.Text = "CAT-001";
             // 
@@ -38,7 +38,7 @@
             this._lblName.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._lblName.Location = new System.Drawing.Point(150, 18);
             this._lblName.Name = "_lblName";
-            this._lblName.Size = new System.Drawing.Size(64, 15);
+            this._lblName.Size = new System.Drawing.Size(67, 15);
             this._lblName.TabIndex = 1;
             this._lblName.Text = "Electronics";
             // 
@@ -67,22 +67,22 @@
             this._btnEdit.FillColor = System.Drawing.Color.Transparent;
             this._btnEdit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnEdit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this._btnEdit.Location = new System.Drawing.Point(880, 10);
+            this._btnEdit.Location = new System.Drawing.Point(789, 10);
             this._btnEdit.Name = "_btnEdit";
             this._btnEdit.Size = new System.Drawing.Size(70, 30);
             this._btnEdit.TabIndex = 4;
-            this._btnEdit.Text = "📝 Edit";
+            this._btnEdit.Text = "📝 Sửa";
             // 
             // _btnDelete
             // 
             this._btnDelete.FillColor = System.Drawing.Color.Transparent;
             this._btnDelete.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this._btnDelete.Location = new System.Drawing.Point(960, 10);
+            this._btnDelete.Location = new System.Drawing.Point(880, 10);
             this._btnDelete.Name = "_btnDelete";
-            this._btnDelete.Size = new System.Drawing.Size(80, 30);
+            this._btnDelete.Size = new System.Drawing.Size(67, 30);
             this._btnDelete.TabIndex = 5;
-            this._btnDelete.Text = "🗑 Delete";
+            this._btnDelete.Text = "🗑 Xoá";
             // 
             // UcCategoryRow
             // 

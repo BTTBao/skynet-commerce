@@ -44,7 +44,7 @@ namespace Skynet_Commerce.BLL.Services.Admin
             }
 
             // 3. Áp dụng bộ lọc DANH MỤC (nếu không phải chọn tất cả)
-            if (!string.IsNullOrEmpty(categoryName) && categoryName != "All Categories")
+            if (!string.IsNullOrEmpty(categoryName) && categoryName != "Tất cả")
             {
                 query = query.Where(x => x.CategoryName == categoryName);
             }

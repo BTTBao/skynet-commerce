@@ -29,7 +29,6 @@ namespace Skynet_Commerce.GUI.UserControls
             _lblCategory.Text = item.CategoryName;
             _lblPrice.Text = item.Price.ToString("C0", CultureInfo.GetCultureInfo("vi-VN")); ; // Format tiền tệ
             _lblStock.Text = item.StockQuantity.ToString();
-            _badgeStatus.Text = item.Status;
 
             // Xử lý màu sắc trạng thái (Optional)
             UpdateStatusColor(item.Status);
@@ -43,15 +42,18 @@ namespace Skynet_Commerce.GUI.UserControls
                 case "Active":
                     _badgeStatus.FillColor = Color.FromArgb(79, 70, 229); // Xanh tím
                     _badgeStatus.ForeColor = Color.White;
+                    _badgeStatus.Text = "Còn hàng";
                     break;
                 case "Out of Stock":
                     _badgeStatus.FillColor = Color.FromArgb(220, 38, 38); // Đỏ
                     _badgeStatus.ForeColor = Color.White;
                     _badgeStatus.Width = 100; // Nới rộng nút vì chữ dài
+                    _badgeStatus.Text = "Hết hàng";
                     break;
                 case "Hidden":
                     _badgeStatus.FillColor = Color.FromArgb(229, 231, 235); // Xám nhạt
-                    _badgeStatus.ForeColor = Color.DimGray;
+                    _badgeStatus.ForeColor = Color.DimGray; 
+                    _badgeStatus.Text = "Ẩn";
                     break;
                 default:
                     _badgeStatus.FillColor = Color.Gray;
