@@ -2,6 +2,7 @@ using Skynet_Commerce.BLL.Models.Admin;
 using Skynet_Commerce.DAL.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
@@ -28,7 +29,7 @@ namespace Skynet_Commerce.BLL.Services.Seller
                         join u in _context.Users on o.AccountID equals u.AccountID into userJoin
                         from uj in userJoin.DefaultIfEmpty()
                         join p in _context.Products on od.ProductID equals p.ProductID
-                        join img in _context.ProductImages.Where(i => i.IsPrimary == 1)
+                        join img in _context.ProductImages.Where(i => i.IsPrimary == true)
                             on p.ProductID equals img.ProductID into imgJoin
                         from imgPrimary in imgJoin.DefaultIfEmpty()
                         join v in _context.ProductVariants on od.VariantID equals v.VariantID into vJoin
@@ -42,11 +43,11 @@ namespace Skynet_Commerce.BLL.Services.Seller
                             ProductName = p.Name,
                             Variant = variant != null ? (variant.Size + " - " + variant.Color) : "Không có",
                             ImageURL = imgPrimary.ImageURL,
-                            CreatedAt = o.CreatedAt,
-                            UnitPrice = od.UnitPrice,
-                            Quantity = od.Quantity,
-                            SubTotal = od.SubTotal,
-                            TotalOrderAmount = o.TotalAmount,
+                            CreatedAt = (DateTime)o.CreatedAt,
+                            UnitPrice = (decimal)od.UnitPrice,
+                            Quantity = (int)od.Quantity,
+                            SubTotal = (decimal)od.SubTotal,
+                            TotalOrderAmount = (decimal)o.TotalAmount,
                             Status = o.Status,
                             AddressFull = ua.AddressLine + ", " + ua.Ward + ", " + ua.District + ", " + ua.Province
                         };

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp11
+namespace Skynet_Commerce
 {
     public partial class VariantControl : UserControl
     {
@@ -30,6 +30,6 @@ namespace WindowsFormsApp11
         public string ColorValue => txtColor.Text;
         public string SKUValue => txtSKU.Text;
         public int StockValue => (int)numericStock.Value;
-        public decimal PriceValue => numericPrice.Value;
+        public decimal PriceValue => decimal.Parse(numericPrice.Text.ToString());
     }
 }
