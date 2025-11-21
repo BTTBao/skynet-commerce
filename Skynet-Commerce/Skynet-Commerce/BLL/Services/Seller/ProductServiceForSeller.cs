@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Skynet_Commerce.BLL.Services.Admin
+namespace Skynet_Commerce.BLL.Services.Seller
 {
-    public class ProductService
+    public class ProductServiceForSeller
     {
         private readonly ApplicationDbContext _context;
 
-        public ProductService()
+        public ProductServiceForSeller()
         {
             _context = new ApplicationDbContext();
         }

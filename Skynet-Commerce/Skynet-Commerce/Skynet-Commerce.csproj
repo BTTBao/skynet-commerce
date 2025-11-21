@@ -100,12 +100,17 @@
     <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
     <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
+    <Compile Include="BLL\Models\Seller\OrderSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
     <Compile Include="BLL\Services\Admin\CategoryService.cs" />
     <Compile Include="BLL\Services\Admin\DashboardService.cs" />
     <Compile Include="BLL\Services\Admin\OrderService.cs" />
     <Compile Include="BLL\Services\Admin\ProductService.cs" />
     <Compile Include="BLL\Services\Admin\ShopService.cs" />
     <Compile Include="BLL\Services\Admin\UserService.cs" />
+    <Compile Include="BLL\Services\Seller\OrderServiceForSeller.cs" />
+    <Compile Include="BLL\Services\Seller\ProductServiceForSeller.cs" />
     <Compile Include="DAL\Config\DBConnection.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
@@ -141,6 +146,30 @@
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
     <Compile Include="DAL\Entities\User.cs" />
     <Compile Include="DAL\Entities\UserRoles.cs" />
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.Designer.cs">
+      <DependentUpon>ucOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucProduct.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucProduct.Designer.cs">
+      <DependentUpon>ucProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucShopSetting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucShopSetting.Designer.cs">
+      <DependentUpon>ucShopSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\VariantControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\VariantControl.Designer.cs">
+      <DependentUpon>VariantControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\Admin\CategoriesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -283,30 +312,6 @@
     <Compile Include="GUI\UserControls\Components\UcProductItem.Designer.cs">
       <DependentUpon>UcProductItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.Designer.cs">
-      <DependentUpon>ucOrder.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\ucProduct.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\ucProduct.Designer.cs">
-      <DependentUpon>ucProduct.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\ucShopSetting.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\ucShopSetting.Designer.cs">
-      <DependentUpon>ucShopSetting.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\VariantControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\VariantControl.Designer.cs">
-      <DependentUpon>VariantControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\UserControls\Components\UcThumbnail.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -351,6 +356,19 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+
+    <EmbeddedResource Include="GUI\UserControls\Components\UCSeller\ucOrder.resx">
+      <DependentUpon>ucOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Components\UCSeller\ucProduct.resx">
+      <DependentUpon>ucProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Components\UCSeller\ucShopSetting.resx">
+      <DependentUpon>ucShopSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Components\UCSeller\VariantControl.resx">
+      <DependentUpon>VariantControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\CategoriesForm.resx">
       <DependentUpon>CategoriesForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -378,11 +396,11 @@
     <EmbeddedResource Include="GUI\Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Seller\FormAddProduct.resx">
+      <DependentUpon>FormAddProduct.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Seller\SellerLayout.resx">
       <DependentUpon>SellerLayout.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcCategoryRow.resx">
-      <DependentUpon>UcCategoryRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\UcCartItem.resx">
       <DependentUpon>UcCartItem.CS</DependentUpon>
