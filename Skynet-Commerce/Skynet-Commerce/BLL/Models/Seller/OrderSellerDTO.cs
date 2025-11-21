@@ -1,3 +1,5 @@
+using System;
+
 public class OrderSellerDTO
 {
     public int OrderID { get; set; }

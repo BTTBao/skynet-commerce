@@ -1,54 +1,55 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
-namespace WindowsFormsApp11
+namespace Skynet_Commerce
 {
     partial class ucShopSetting
     {
         private System.ComponentModel.IContainer components = null;
 
-        // --- Controls
-        private Panel pnlMain;
+        // --- Controls (Đổi sang Guna)
+        private Guna2Panel pnlMain;
         private Label lblTitle;
         private Label lblSubtitle;
 
         // --- Hình ảnh Shop
-        private Panel pnlImageSection;
+        private Guna2Panel pnlImageSection;
         private Label lblImageShop;
         private Label lblAvatarTitle;
-        private PictureBox pbAvatar;
-        private Button btnChangeAvatar;
+        private Guna2CirclePictureBox pbAvatar; // Dùng Guna2CirclePictureBox cho Avatar
+        private Guna2Button btnChangeAvatar;
         private Label lblCoverTitle;
-        private PictureBox pbCover;
-        private Button btnChangeCover;
+        private Guna2PictureBox pbCover;
+        private Guna2Button btnChangeCover;
 
         // --- Thông tin cơ bản
-        private Panel pnlBasicInfo;
+        private Guna2Panel pnlBasicInfo;
         private Label lblBasicTitle;
         private Label lblShopName;
-        private TextBox txtShopName;
+        private Guna2TextBox txtShopName;
         private Label lblDescription;
-        private TextBox txtDescription;
+        private Guna2TextBox txtDescription;
         private Label lblPhone;
-        private TextBox txtPhone;
+        private Guna2TextBox txtPhone;
         private Label lblEmail;
-        private TextBox txtEmail;
+        private Guna2TextBox txtEmail;
         private Label lblAddress;
-        private TextBox txtAddress;
+        private Guna2TextBox txtAddress;
         private Label lblOperatingHours;
-        private TextBox txtOperatingHours;
+        private Guna2TextBox txtOperatingHours;
 
         // --- Thông tin Thuế & Ngân hàng
-        private Panel pnlBankInfo;
+        private Guna2Panel pnlBankInfo;
         private Label lblBankTitle;
         private Label lblTaxID;
-        private TextBox txtTaxID;
+        private Guna2TextBox txtTaxID;
         private Label lblBankName;
-        private TextBox txtBankName;
+        private Guna2TextBox txtBankName;
         private Label lblBankAccount;
-        private TextBox txtBankAccount;
+        private Guna2TextBox txtBankAccount;
 
-        private Button btnSave; // Nút lưu chung
+        private Guna2Button btnSave; // Nút lưu chung
 
         protected override void Dispose(bool disposing)
         {
@@ -63,16 +64,16 @@ namespace WindowsFormsApp11
 
         private void InitializeComponent()
         {
-            this.pnlMain = new System.Windows.Forms.Panel();
+            this.pnlMain = new Guna.UI2.WinForms.Guna2Panel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblSubtitle = new System.Windows.Forms.Label();
 
             // Sections
-            this.pnlImageSection = new System.Windows.Forms.Panel();
-            this.pnlBasicInfo = new System.Windows.Forms.Panel();
-            this.pnlBankInfo = new System.Windows.Forms.Panel();
+            this.pnlImageSection = new Guna.UI2.WinForms.Guna2Panel();
+            this.pnlBasicInfo = new Guna.UI2.WinForms.Guna2Panel();
+            this.pnlBankInfo = new Guna.UI2.WinForms.Guna2Panel();
 
-            this.btnSave = new System.Windows.Forms.Button();
+            this.btnSave = new Guna.UI2.WinForms.Guna2Button();
 
             // Khởi tạo các Control
             this.InitializeImageControls();
@@ -81,7 +82,7 @@ namespace WindowsFormsApp11
 
             // --- Cấu hình chung cho UserControl
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackColor = System.Drawing.Color.Gainsboro;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
             this.Controls.Add(this.pnlMain);
             this.Name = "ucShopSetting";
             this.Size = new System.Drawing.Size(1000, 900);
@@ -93,36 +94,50 @@ namespace WindowsFormsApp11
 
             // Tiêu đề
             this.lblTitle.Text = "CÀI ĐẶT SHOP";
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold); // Tăng size
             this.lblTitle.Location = new System.Drawing.Point(20, 20);
             this.lblTitle.AutoSize = true;
 
             this.lblSubtitle.Text = "Quản lý thông tin và cài đặt shop của bạn";
-            this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 12F); // Tăng size
             this.lblSubtitle.Location = new System.Drawing.Point(20, 60);
             this.lblSubtitle.AutoSize = true;
 
-            // Thêm các Panel vào Main Panel
+            // Thêm các Panel vào Main Panel (Bố cục 2 cột cho các sections chính)
+            int panelWidth = 480; // Chiều rộng cho các panel 
+            int column1X = 20;
+            int column2X = 500;
             int currentY = 100;
-            int sectionSpacing = 30;
+            int sectionSpacing = 20;
 
-            this.pnlImageSection.Location = new System.Drawing.Point(20, currentY);
-            currentY += this.pnlImageSection.Height + sectionSpacing;
+            // Dùng cột 1 cho ImageSection và cột 2 cho BankInfo (Yêu cầu căn ngang hàng)
+            // Lần lượt đặt các Panel vào vị trí
 
-            this.pnlBasicInfo.Location = new System.Drawing.Point(20, currentY);
-            currentY += this.pnlBasicInfo.Height + sectionSpacing;
+            // COLUMN 1: Image Section
+            this.pnlImageSection.Location = new System.Drawing.Point(column1X, currentY);
+            this.pnlImageSection.Width = panelWidth;
 
-            this.pnlBankInfo.Location = new System.Drawing.Point(20, currentY);
-            currentY += this.pnlBankInfo.Height + sectionSpacing;
+            // COLUMN 2: Bank Info Section
+            this.pnlBankInfo.Location = new System.Drawing.Point(column2X + 30, currentY);
+            this.pnlBankInfo.Width = panelWidth;
 
-            this.btnSave.Location = new System.Drawing.Point(20, currentY);
+            // Thêm pnlBasicInfo xuống dưới pnlImageSection (cột 1)
+            int basicInfoY = currentY + this.pnlImageSection.Height + sectionSpacing;
+            this.pnlBasicInfo.Location = new System.Drawing.Point(column1X, basicInfoY);
+            this.pnlBasicInfo.Width = panelWidth * 2 + 20; // Dùng chiều rộng lớn hơn cho Basic Info
+
+            // Nút lưu
+            int saveButtonY = basicInfoY + this.pnlBasicInfo.Height + sectionSpacing;
+            this.btnSave.Location = new System.Drawing.Point(column1X, saveButtonY);
             this.btnSave.Text = "LƯU CÀI ĐẶT";
-            this.btnSave.BackColor = System.Drawing.Color.Orange;
+            this.btnSave.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0))))); // Màu cam
             this.btnSave.ForeColor = System.Drawing.Color.White;
-            this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSave.Height = 40;
-            this.btnSave.Width = 150;
+            this.btnSave.BorderRadius = 10;
+            this.btnSave.Height = 45;
+            this.btnSave.Width = 180;
+            this.btnSave.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+
 
             // Thêm tất cả vào Main Panel
             this.pnlMain.Controls.Add(this.lblTitle);
@@ -132,71 +147,76 @@ namespace WindowsFormsApp11
             this.pnlMain.Controls.Add(this.pnlBankInfo);
             this.pnlMain.Controls.Add(this.btnSave);
 
-            // Điều chỉnh kích thước các panel sau khi đã thêm controls (giả định chiều rộng cố định)
-            int panelWidth = 800;
-            this.pnlImageSection.Width = panelWidth;
-            this.pnlBasicInfo.Width = panelWidth;
-            this.pnlBankInfo.Width = panelWidth;
-
             this.pnlMain.ResumeLayout(false);
             this.pnlMain.PerformLayout();
         }
 
         private void InitializeImageControls()
         {
-            this.pnlImageSection.BackColor = System.Drawing.Color.White;
-            this.pnlImageSection.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlImageSection.FillColor = System.Drawing.Color.White;
+            this.pnlImageSection.BorderRadius = 15; // Bo góc
             this.pnlImageSection.Padding = new System.Windows.Forms.Padding(15);
-            int currentY = 10;
+            int currentY = 15;
+            int sectionPadding = 15;
 
             // Title
             this.lblImageShop = new System.Windows.Forms.Label();
-            this.lblImageShop.Text = "Hình ảnh Shop";
-            this.lblImageShop.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblImageShop.Location = new System.Drawing.Point(15, currentY);
+            this.lblImageShop.Text = "🖼️ Hình ảnh Shop";
+            this.lblImageShop.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblImageShop.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblImageShop.AutoSize = true;
-            currentY += 40;
+            this.lblImageShop.BackColor = System.Drawing.Color.Transparent;
+            currentY += 45;
 
             // Avatar Section
             this.lblAvatarTitle = new System.Windows.Forms.Label();
             this.lblAvatarTitle.Text = "Ảnh đại diện Shop";
-            this.lblAvatarTitle.Location = new System.Drawing.Point(15, currentY);
+            this.lblAvatarTitle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblAvatarTitle.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblAvatarTitle.AutoSize = true;
-            currentY += 25;
+            this.lblAvatarTitle.BackColor = System.Drawing.Color.Transparent;
+            currentY += 30;
 
-            this.pbAvatar = new System.Windows.Forms.PictureBox();
-            this.pbAvatar.BorderStyle = BorderStyle.FixedSingle;
+            this.pbAvatar = new Guna2CirclePictureBox();
             this.pbAvatar.Size = new System.Drawing.Size(80, 80);
-            this.pbAvatar.Location = new System.Drawing.Point(15, currentY);
-            this.pbAvatar.SizeMode = PictureBoxSizeMode.Zoom;
-            this.pbAvatar.Image = new Bitmap(80, 80); // Placeholder image
+            this.pbAvatar.Location = new System.Drawing.Point(sectionPadding, currentY);
+            this.pbAvatar.SizeMode = PictureBoxSizeMode.StretchImage; // Sử dụng StretchImage
 
-            this.btnChangeAvatar = new System.Windows.Forms.Button();
+            this.btnChangeAvatar = new Guna2Button();
             this.btnChangeAvatar.Text = "Upload Ảnh";
-            this.btnChangeAvatar.Location = new System.Drawing.Point(110, currentY + 30);
-            this.btnChangeAvatar.Click += (s, e) => MessageBox.Show("Thay đổi ảnh đại diện");
+            this.btnChangeAvatar.FillColor = System.Drawing.Color.LightGray;
+            this.btnChangeAvatar.ForeColor = System.Drawing.Color.Black;
+            this.btnChangeAvatar.BorderRadius = 8;
+            this.btnChangeAvatar.Height = 35;
+            this.btnChangeAvatar.Location = new System.Drawing.Point(110, currentY + 25);
+            this.btnChangeAvatar.Click += new System.EventHandler(this.btnChangeAvatar_Click);
             currentY += 100;
 
             // Cover Section
             this.lblCoverTitle = new System.Windows.Forms.Label();
-            this.lblCoverTitle.Text = "Ảnh bìa Shop";
-            this.lblCoverTitle.Location = new System.Drawing.Point(15, currentY);
+            this.lblCoverTitle.Text = "Ảnh bìa Shop (Tỉ lệ 16:4)";
+            this.lblCoverTitle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblCoverTitle.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblCoverTitle.AutoSize = true;
-            currentY += 25;
+            this.lblCoverTitle.BackColor = System.Drawing.Color.Transparent;
+            currentY += 30;
 
-            this.pbCover = new System.Windows.Forms.PictureBox();
-            this.pbCover.BorderStyle = BorderStyle.FixedSingle;
-            this.pbCover.Size = new System.Drawing.Size(750, 150);
-            this.pbCover.Location = new System.Drawing.Point(15, currentY);
-            this.pbCover.SizeMode = PictureBoxSizeMode.Zoom;
-            this.pbCover.Image = new Bitmap(750, 150); // Placeholder image
+            this.pbCover = new Guna2PictureBox();
+            this.pbCover.BorderRadius = 10;
+            this.pbCover.Size = new System.Drawing.Size(440, 110); // Tỉ lệ ~ 4:1
+            this.pbCover.Location = new System.Drawing.Point(sectionPadding, currentY);
+            this.pbCover.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            this.btnChangeCover = new System.Windows.Forms.Button();
+            this.btnChangeCover = new Guna2Button();
             this.btnChangeCover.Text = "Upload Ảnh";
-            this.btnChangeCover.Location = new System.Drawing.Point(650, currentY + 160);
-            this.btnChangeCover.Click += (s, e) => MessageBox.Show("Thay đổi ảnh bìa");
+            this.btnChangeCover.FillColor = System.Drawing.Color.LightGray;
+            this.btnChangeCover.ForeColor = System.Drawing.Color.Black;
+            this.btnChangeCover.BorderRadius = 8;
+            this.btnChangeCover.Height = 35;
+            this.btnChangeCover.Location = new System.Drawing.Point(280, currentY + 120); // Đặt nút bên phải ảnh bìa
+            this.btnChangeCover.Click += new System.EventHandler(this.btnChangeCover_Click);
 
-            currentY += 150 + 50; // Total height of this section
+            currentY += 110 + 50; // Total height of this section
 
             this.pnlImageSection.Controls.AddRange(new Control[] {
                 this.lblImageShop, this.lblAvatarTitle, this.pbAvatar, this.btnChangeAvatar,
@@ -207,92 +227,149 @@ namespace WindowsFormsApp11
 
         private void InitializeBasicInfoControls()
         {
-            this.pnlBasicInfo.BackColor = System.Drawing.Color.White;
-            this.pnlBasicInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlBasicInfo.FillColor = System.Drawing.Color.White;
+            this.pnlBasicInfo.BorderRadius = 15;
             this.pnlBasicInfo.Padding = new System.Windows.Forms.Padding(15);
-            int currentY = 10;
-            int inputWidth = 350;
+            int currentY = 15;
+            int sectionPadding = 15;
+
+            int panelWidth = 480;
+            int sectionMargin = 30;
+            int inputWidthOneColumn = panelWidth * 2 + sectionMargin;
+            int inputWidthTwoColumns = 465;
+            int inputHeight = 40;
+
+            Font inputFont = new System.Drawing.Font("Times New Roman", 11F);
 
             // Title
             this.lblBasicTitle = new System.Windows.Forms.Label();
-            this.lblBasicTitle.Text = "Thông tin cơ bản";
-            this.lblBasicTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblBasicTitle.Location = new System.Drawing.Point(15, currentY);
+            this.lblBasicTitle.Text = "📝 Thông tin cơ bản";
+            this.lblBasicTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblBasicTitle.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblBasicTitle.AutoSize = true;
-            currentY += 40;
+            this.lblBasicTitle.BackColor = System.Drawing.Color.Transparent;
+            currentY += 45;
 
             // Shop Name
             this.lblShopName = new System.Windows.Forms.Label();
             this.lblShopName.Text = "Tên Shop *";
-            this.lblShopName.Location = new System.Drawing.Point(15, currentY);
+            this.lblShopName.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblShopName.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblShopName.AutoSize = true;
-            currentY += 20;
-            this.txtShopName = new System.Windows.Forms.TextBox();
-            this.txtShopName.Text = "Fashion Store";
-            this.txtShopName.Location = new System.Drawing.Point(15, currentY);
-            this.txtShopName.Width = inputWidth;
-            currentY += 30;
+            this.lblShopName.BackColor = System.Drawing.Color.Transparent;
+            currentY += 25;
+
+            this.txtShopName = new Guna2TextBox();
+            this.txtShopName.PlaceholderText = "Nhập tên Shop";
+            this.txtShopName.Text = "";
+            this.txtShopName.ForeColor = System.Drawing.Color.Black;
+            this.txtShopName.Font = inputFont;
+            this.txtShopName.Location = new System.Drawing.Point(sectionPadding, currentY);
+            this.txtShopName.Width = inputWidthOneColumn;
+            this.txtShopName.Height = inputHeight;
+            this.txtShopName.BorderRadius = 8;
+            currentY += inputHeight + 20;
 
             // Description
             this.lblDescription = new System.Windows.Forms.Label();
             this.lblDescription.Text = "Mô tả Shop *";
-            this.lblDescription.Location = new System.Drawing.Point(15, currentY);
+            this.lblDescription.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblDescription.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblDescription.AutoSize = true;
-            currentY += 20;
-            this.txtDescription = new System.Windows.Forms.TextBox();
-            this.txtDescription.Text = "Chuyên cung cấp các sản phẩm thời trang chất lượng cao, phong cách trẻ trung và hiện đại.";
-            this.txtDescription.Location = new System.Drawing.Point(15, currentY);
-            this.txtDescription.Width = inputWidth * 2 + 30; // Full width
-            this.txtDescription.Height = 70;
+            this.lblDescription.BackColor = System.Drawing.Color.Transparent;
+            currentY += 25;
+
+            this.txtDescription = new Guna2TextBox();
+            this.txtDescription.PlaceholderText = "Nhập mô tả Shop";
+            this.txtDescription.Text = "";
+            this.txtDescription.ForeColor = System.Drawing.Color.Black;
+            this.txtDescription.Font = inputFont;
+            this.txtDescription.Location = new System.Drawing.Point(sectionPadding, currentY);
+            this.txtDescription.Width = inputWidthOneColumn;
+            this.txtDescription.Height = 100;
             this.txtDescription.Multiline = true;
-            currentY += 80;
+            this.txtDescription.ScrollBars = ScrollBars.Vertical;
+            this.txtDescription.BorderRadius = 8;
+            currentY += 110;
 
             // Phone and Email (Two columns)
+            int labelY = currentY;
+            int controlY = currentY + 25;
+
             this.lblPhone = new System.Windows.Forms.Label();
             this.lblPhone.Text = "Số điện thoại *";
-            this.lblPhone.Location = new System.Drawing.Point(15, currentY);
+            this.lblPhone.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblPhone.Location = new System.Drawing.Point(sectionPadding, labelY);
             this.lblPhone.AutoSize = true;
+            this.lblPhone.BackColor = System.Drawing.Color.Transparent;
 
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblEmail.Text = "Email *";
-            this.lblEmail.Location = new System.Drawing.Point(inputWidth + 30, currentY);
+            this.lblEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblEmail.Location = new System.Drawing.Point(inputWidthTwoColumns + sectionMargin, labelY);
             this.lblEmail.AutoSize = true;
-            currentY += 20;
+            this.lblEmail.BackColor = System.Drawing.Color.Transparent;
 
-            this.txtPhone = new System.Windows.Forms.TextBox();
-            this.txtPhone.Text = "0912345678";
-            this.txtPhone.Location = new System.Drawing.Point(15, currentY);
-            this.txtPhone.Width = inputWidth;
+            this.txtPhone = new Guna2TextBox();
+            this.txtPhone.PlaceholderText = "Nhập SĐT";
+            this.txtPhone.Text = "";
+            this.txtPhone.ForeColor = System.Drawing.Color.Black;
+            this.txtPhone.Font = inputFont;
+            this.txtPhone.Location = new System.Drawing.Point(sectionPadding, controlY);
+            this.txtPhone.Width = inputWidthTwoColumns;
+            this.txtPhone.Height = inputHeight;
+            this.txtPhone.BorderRadius = 8;
 
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.txtEmail.Text = "fashionstore@example.com";
-            this.txtEmail.Location = new System.Drawing.Point(inputWidth + 30, currentY);
-            this.txtEmail.Width = inputWidth;
-            currentY += 40;
+            this.txtEmail = new Guna2TextBox();
+            this.txtEmail.PlaceholderText = "Nhập Email";
+            this.txtEmail.Text = "";
+            this.txtEmail.ForeColor = System.Drawing.Color.Black;
+            this.txtEmail.Font = inputFont;
+            this.txtEmail.Location = new System.Drawing.Point(inputWidthTwoColumns + sectionMargin, controlY);
+            this.txtEmail.Width = inputWidthTwoColumns;
+            this.txtEmail.Height = inputHeight;
+            this.txtEmail.BorderRadius = 8;
+            currentY = controlY + inputHeight + 20;
 
             // Address
             this.lblAddress = new System.Windows.Forms.Label();
             this.lblAddress.Text = "Địa chỉ *";
-            this.lblAddress.Location = new System.Drawing.Point(15, currentY);
+            this.lblAddress.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblAddress.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblAddress.AutoSize = true;
-            currentY += 20;
-            this.txtAddress = new System.Windows.Forms.TextBox();
-            this.txtAddress.Text = "128 Đường ABC, Quận 1, TP. Hồ Chí Minh";
-            this.txtAddress.Location = new System.Drawing.Point(15, currentY);
-            this.txtAddress.Width = inputWidth * 2 + 30; // Full width
-            currentY += 40;
+            this.lblAddress.BackColor = System.Drawing.Color.Transparent;
+            currentY += 25;
+
+            this.txtAddress = new Guna2TextBox();
+            this.txtAddress.PlaceholderText = "Nhập địa chỉ";
+            this.txtAddress.Text = "";
+            this.txtAddress.ForeColor = System.Drawing.Color.Black;
+            this.txtAddress.Font = inputFont;
+            this.txtAddress.Location = new System.Drawing.Point(sectionPadding, currentY);
+            this.txtAddress.Width = inputWidthOneColumn;
+            this.txtAddress.Height = inputHeight;
+            this.txtAddress.BorderRadius = 8;
+            currentY += inputHeight + 20;
 
             // Operating Hours
             this.lblOperatingHours = new System.Windows.Forms.Label();
             this.lblOperatingHours.Text = "Giờ hoạt động";
-            this.lblOperatingHours.Location = new System.Drawing.Point(15, currentY);
+            this.lblOperatingHours.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblOperatingHours.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblOperatingHours.AutoSize = true;
-            currentY += 20;
-            this.txtOperatingHours = new System.Windows.Forms.TextBox();
-            this.txtOperatingHours.Text = "8:00 - 22:00";
-            this.txtOperatingHours.Location = new System.Drawing.Point(15, currentY);
-            this.txtOperatingHours.Width = inputWidth;
-            currentY += 40;
+            this.lblOperatingHours.BackColor = System.Drawing.Color.Transparent;
+            currentY += 25;
+
+            this.txtOperatingHours = new Guna2TextBox();
+            this.txtOperatingHours.PlaceholderText = "Ví dụ: 8:00 - 22:00";
+            this.txtOperatingHours.Text = "";
+            this.txtOperatingHours.ForeColor = System.Drawing.Color.Black;
+            this.txtOperatingHours.Font = inputFont;
+            this.txtOperatingHours.Location = new System.Drawing.Point(sectionPadding, currentY);
+            this.txtOperatingHours.Width = inputWidthTwoColumns;
+            this.txtOperatingHours.Height = inputHeight;
+            this.txtOperatingHours.BorderRadius = 8;
+            currentY += inputHeight + 20;
 
             this.pnlBasicInfo.Controls.AddRange(new Control[] {
                 this.lblBasicTitle, this.lblShopName, this.txtShopName,
@@ -306,55 +383,84 @@ namespace WindowsFormsApp11
 
         private void InitializeBankInfoControls()
         {
-            this.pnlBankInfo.BackColor = System.Drawing.Color.White;
-            this.pnlBankInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlBankInfo.FillColor = System.Drawing.Color.White;
+            this.pnlBankInfo.BorderRadius = 15;
             this.pnlBankInfo.Padding = new System.Windows.Forms.Padding(15);
-            int currentY = 10;
-            int inputWidth = 350;
+            int currentY = 15;
+            int sectionPadding = 15;
+            int inputWidth = 450;
+            int inputHeight = 40;
+
+            Font inputFont = new System.Drawing.Font("Times New Roman", 11F);
 
             // Title
             this.lblBankTitle = new System.Windows.Forms.Label();
-            this.lblBankTitle.Text = "Thông tin thuế & ngân hàng";
-            this.lblBankTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblBankTitle.Location = new System.Drawing.Point(15, currentY);
+            this.lblBankTitle.Text = "💳 Thông tin thuế & ngân hàng";
+            this.lblBankTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblBankTitle.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblBankTitle.AutoSize = true;
-            currentY += 40;
+            this.lblBankTitle.BackColor = System.Drawing.Color.Transparent;
+            currentY += 45;
 
             // Tax ID
             this.lblTaxID = new System.Windows.Forms.Label();
             this.lblTaxID.Text = "Mã số thuế";
-            this.lblTaxID.Location = new System.Drawing.Point(15, currentY);
+            this.lblTaxID.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblTaxID.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblTaxID.AutoSize = true;
-            currentY += 20;
-            this.txtTaxID = new System.Windows.Forms.TextBox();
-            this.txtTaxID.Text = "0123456789";
-            this.txtTaxID.Location = new System.Drawing.Point(15, currentY);
+            this.lblTaxID.BackColor = System.Drawing.Color.Transparent;
+            currentY += 25;
+
+            this.txtTaxID = new Guna2TextBox();
+            this.txtTaxID.PlaceholderText = "Nhập mã số thuế";
+            this.txtTaxID.Text = "";
+            this.txtTaxID.ForeColor = System.Drawing.Color.Black;
+            this.txtTaxID.Font = inputFont;
+            this.txtTaxID.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.txtTaxID.Width = inputWidth;
-            currentY += 40;
+            this.txtTaxID.Height = inputHeight;
+            this.txtTaxID.BorderRadius = 8;
+            currentY += inputHeight + 20;
 
             // Bank Name
             this.lblBankName = new System.Windows.Forms.Label();
             this.lblBankName.Text = "Tên ngân hàng";
-            this.lblBankName.Location = new System.Drawing.Point(15, currentY);
+            this.lblBankName.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblBankName.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblBankName.AutoSize = true;
-            currentY += 20;
-            this.txtBankName = new System.Windows.Forms.TextBox();
-            this.txtBankName.Text = "Ngân hàng TMCP Công thương Việt Nam";
-            this.txtBankName.Location = new System.Drawing.Point(15, currentY);
-            this.txtBankName.Width = inputWidth * 2 + 30; // Full width
-            currentY += 40;
+            this.lblBankName.BackColor = System.Drawing.Color.Transparent;
+            currentY += 25;
+
+            this.txtBankName = new Guna2TextBox();
+            this.txtBankName.PlaceholderText = "Nhập tên ngân hàng";
+            this.txtBankName.Text = "";
+            this.txtBankName.ForeColor = System.Drawing.Color.Black;
+            this.txtBankName.Font = inputFont;
+            this.txtBankName.Location = new System.Drawing.Point(sectionPadding, currentY);
+            this.txtBankName.Width = inputWidth;
+            this.txtBankName.Height = inputHeight;
+            this.txtBankName.BorderRadius = 8;
+            currentY += inputHeight + 20;
 
             // Bank Account Number
             this.lblBankAccount = new System.Windows.Forms.Label();
             this.lblBankAccount.Text = "Số tài khoản";
-            this.lblBankAccount.Location = new System.Drawing.Point(15, currentY);
+            this.lblBankAccount.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblBankAccount.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.lblBankAccount.AutoSize = true;
-            currentY += 20;
-            this.txtBankAccount = new System.Windows.Forms.TextBox();
-            this.txtBankAccount.Text = "1234567890";
-            this.txtBankAccount.Location = new System.Drawing.Point(15, currentY);
+            this.lblBankAccount.BackColor = System.Drawing.Color.Transparent;
+            currentY += 25;
+
+            this.txtBankAccount = new Guna2TextBox();
+            this.txtBankAccount.PlaceholderText = "Nhập số tài khoản";
+            this.txtBankAccount.Text = "";
+            this.txtBankAccount.ForeColor = System.Drawing.Color.Black;
+            this.txtBankAccount.Font = inputFont;
+            this.txtBankAccount.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.txtBankAccount.Width = inputWidth;
-            currentY += 40;
+            this.txtBankAccount.Height = inputHeight;
+            this.txtBankAccount.BorderRadius = 8;
+            currentY += inputHeight + 20;
 
             this.pnlBankInfo.Controls.AddRange(new Control[] {
                 this.lblBankTitle, this.lblTaxID, this.txtTaxID,

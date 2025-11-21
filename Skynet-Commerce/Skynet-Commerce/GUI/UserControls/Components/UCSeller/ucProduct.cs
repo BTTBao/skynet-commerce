@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp11
+namespace Skynet_Commerce
 {
     public partial class ucProduct : UserControl
     {
@@ -23,11 +23,11 @@ namespace WindowsFormsApp11
 
         private void LoadSampleData()
         {
-            List<Product> products = new List<Product>
+            List<ProductUI> products = new List<ProductUI>
             {
-                new Product { ID="SP001", ProductName = "Áo thun nam basic", Price = "148.000₫", Stock = 50, Sold = 245, Status = "Hiển thị", ProductImage = null },
-                new Product { ID="SP002", ProductName = "Áo khoác denim", Price = "450.000₫", Stock = 30, Sold = 123, Status = "Hiển thị", ProductImage = null },
-                new Product { ID="SP003", ProductName = "Giày thể thao nam", Price = "1.200.000₫", Stock = 15, Sold = 89, Status = "Hiển thị", ProductImage = null }
+                new ProductUI { ID="SP001", ProductName = "Áo thun nam basic", Price = "148.000₫", Stock = 50, Sold = 245, Status = "Hiển thị", ProductImage = null },
+                new ProductUI { ID="SP002", ProductName = "Áo khoác denim", Price = "450.000₫", Stock = 30, Sold = 123, Status = "Hiển thị", ProductImage = null },
+                new ProductUI { ID="SP003", ProductName = "Giày thể thao nam", Price = "1.200.000₫", Stock = 15, Sold = 89, Status = "Hiển thị", ProductImage = null }
             };
 
             dgvProducts.DataSource = products;
@@ -40,7 +40,7 @@ namespace WindowsFormsApp11
             {
                 e.PaintBackground(e.CellBounds, true);
 
-                var product = dgvProducts.Rows[e.RowIndex].DataBoundItem as Product;
+                var product = dgvProducts.Rows[e.RowIndex].DataBoundItem as ProductUI;
                 if (product != null)
                 {
                     int padding = 5;
@@ -66,7 +66,7 @@ namespace WindowsFormsApp11
             {
                 e.PaintBackground(e.CellBounds, true);
 
-                var product = dgvProducts.Rows[e.RowIndex].DataBoundItem as Product;
+                var product = dgvProducts.Rows[e.RowIndex].DataBoundItem as ProductUI;
                 if (product != null)
                 {
                     int buttonWidth = 50; // chiều rộng nút
@@ -111,7 +111,7 @@ namespace WindowsFormsApp11
         }
     }
 
-    public class Product
+    public class ProductUI
     {
         public string ID { get; set; }
         public string ProductName { get; set; }
@@ -120,5 +120,13 @@ namespace WindowsFormsApp11
         public int Stock { get; set; }
         public int Sold { get; set; }
         public string Status { get; set; }
+        public int ShopID { get; internal set; }
+        public int CategoryID { get; internal set; }
+        public int ProductID { get; internal set; }
+        public string Name { get; internal set; }
+        public string Description { get; internal set; }
+        public int StockQuantity { get; internal set; }
+        public int SoldCount { get; internal set; }
+        public DateTime CreatedAt { get; internal set; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp11
+namespace Skynet_Commerce
 {
     public partial class ucShopSetting : UserControl
     {
@@ -37,7 +39,43 @@ namespace WindowsFormsApp11
                             MessageBoxIcon.Information);
         }
 
-        // Phương thức giả định để xử lý việc tải ảnh (nếu cần)
-        // public void LoadShopImages(string avatarPath, string coverPath) { ... }
+        private void btnChangeAvatar_Click(object sender, EventArgs e)
+        {
+            UploadImage(pbAvatar);
+        }
+
+        private void btnChangeCover_Click(object sender, EventArgs e)
+        {
+            UploadImage(pbCover);
+        }
+
+        // Đặt phương thức này vào class ucShopSetting (trong file ucShopSetting.cs)
+        private void UploadImage(PictureBox pictureBox)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            // Đặt bộ lọc chỉ cho phép chọn các file hình ảnh
+            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+            openFileDialog.Title = "Chọn ảnh cho Shop";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    // Đọc hình ảnh từ file đã chọn
+                    string imagePath = openFileDialog.FileName;
+
+                    // Sử dụng FileStream để mở file và tạo Image (tránh khóa file sau khi đóng dialog)
+                    using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+                    {
+                        Image originalImage = Image.FromStream(fs);
+                        pictureBox.Image = originalImage;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
     }
 }

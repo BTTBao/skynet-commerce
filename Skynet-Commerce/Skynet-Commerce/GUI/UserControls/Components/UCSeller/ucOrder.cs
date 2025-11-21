@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp11
+namespace Skynet_Commerce
 {
     public partial class ucOrder : UserControl
     {
