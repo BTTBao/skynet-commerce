@@ -143,6 +143,12 @@
     <Compile Include="DAL\Repositories\Admin\AccountRepository.cs" />
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
     <Compile Include="DAL\Entities\UserRoles.cs" />
+    <Compile Include="GUI\Forms\User\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\User\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -359,10 +365,22 @@
     <Compile Include="GUI\UserControls\Pages\UcProductDetail.Designer.cs">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\Pages\UcProfile.cs">
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\UserControls\Pages\UcProfile.Designer.cs">
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderDetail.Designer.cs">
+      <DependentUpon>UcOrderDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderHistory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderHistory.Designer.cs">
+      <DependentUpon>UcOrderHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcProfile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcProfile.Designer.cs">
       <DependentUpon>UcProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -396,6 +414,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Seller\SellerLayout.resx">
       <DependentUpon>SellerLayout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\User\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\UcCartItem.resx">
       <DependentUpon>UcCartItem.CS</DependentUpon>
@@ -444,7 +465,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Pages\UcProductDetail.resx">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
-    </EmbeddedResource>  <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcOrderHistory.resx">
+      <DependentUpon>UcOrderHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcProfile.resx">
       <DependentUpon>UcProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
