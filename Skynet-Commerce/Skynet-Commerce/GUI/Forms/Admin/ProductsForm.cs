@@ -45,7 +45,8 @@ namespace Skynet_Commerce.GUI.Forms
             try
             {
                 // 2. Gọi Service với các tham số lọc
-                List<ProductViewModel> productList = _productService.GetAllProducts(keyword, category);
+                var service = new ProductService();
+                List<ProductViewModel> productList = service.GetAllProducts(keyword, category);
 
                 // 3. Xóa cũ và Vẽ mới
                 _flowPanel.Controls.Clear();
@@ -56,6 +57,55 @@ namespace Skynet_Commerce.GUI.Forms
                     var row = new UcProductRow();
                     row.SetData(item);
                     row.Margin = new Padding(0, 0, 0, 5);
+
+                    // 1. SỰ KIỆN SỬA
+                    row.OnEditClicked += (s, e) =>
+                    {
+                        var uc = s as UcProductRow;
+                        using (var f = new ProductDetailForm(uc.ProductId))
+                        {
+                            if (f.ShowDialog() == DialogResult.OK)
+                            {
+                                LoadProductData(); // Load lại list sau khi sửa xong
+                            }
+                        }
+                    };
+
+                    // 2. SỰ KIỆN ẨN/HIỆN
+                    row.OnToggleClicked += (s, e) =>
+                    {
+                        var uc = s as UcProductRow;
+                        string action = uc.CurrentStatus == "Active" ? "ẩn" : "hiện";
+                        if (MessageBox.Show($"Bạn có muốn {action} sản phẩm này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            try
+                            {
+                                new ProductService().ToggleProductStatus(uc.ProductId);
+                                LoadProductData();
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                    };
+
+                    // 3. SỰ KIỆN XÓA
+                    row.OnDeleteClicked += (s, e) =>
+                    {
+                        var uc = s as UcProductRow;
+                        if (MessageBox.Show("Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này?", "Cảnh báo nguy hiểm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                        {
+                            try
+                            {
+                                new ProductService().DeleteProduct(uc.ProductId);
+                                MessageBox.Show("Đã xóa thành công.");
+                                LoadProductData();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Không thể xóa (có thể do ràng buộc đơn hàng).\nLỗi: " + ex.Message);
+                            }
+                        }
+                    };
+
                     _flowPanel.Controls.Add(row);
                 }
 

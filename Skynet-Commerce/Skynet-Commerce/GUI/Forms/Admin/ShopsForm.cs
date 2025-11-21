@@ -7,12 +7,6 @@ using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.Forms
 {
-    public class ShopStatusOption
-    {
-        public string DisplayName { get; set; } // Tiếng Việt
-        public string Value { get; set; }       // Tiếng Anh (Logic/DB)
-    }
-
     public partial class ShopsForm : Form
     {
         private readonly ShopService _shopService;
@@ -85,19 +79,59 @@ namespace Skynet_Commerce.GUI.Forms
             {
                 var row = new UcPendingShopRow();
 
-                string displayId = item.RegistrationID.ToString();
                 string dateStr = item.RequestDate.ToString("dd/MM/yyyy");
 
                 // Truyền dữ liệu vào UserControl
                 // Lưu ý: Bạn nên truyền cả item.RegistrationID gốc vào một biến ẩn trong UC để dùng cho nút Duyệt/Từ chối sau này
-                row.SetData(displayId, item.ShopName, item.OwnerName, item.Email, dateStr);
+                row.SetData(item.RegistrationID, item.ShopName, item.OwnerName, item.Email, dateStr);
 
+                // --- XỬ LÝ SỰ KIỆN DUYỆT ---
+                row.OnApproveClicked += (sender, args) =>
+                {
+                    var uc = sender as UcPendingShopRow;
+                    if (MessageBox.Show($"Bạn có chắc muốn duyệt đơn đăng ký của '{item.ShopName}'?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            _shopService.ApproveShopRegistration(uc.RegistrationID);
+                            MessageBox.Show("Đã duyệt thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            // Reload lại cả 2 danh sách vì Shop Active sẽ tăng lên 1
+                            LoadPendingShops();
+                            LoadActiveShops();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Lỗi: " + ex.Message);
+                        }
+                    }
+                };
+
+                // --- XỬ LÝ SỰ KIỆN TỪ CHỐI ---
+                row.OnRejectClicked += (sender, args) =>
+                {
+                    var uc = sender as UcPendingShopRow;
+                    if (MessageBox.Show($"Từ chối đơn đăng ký này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            _shopService.RejectShopRegistration(uc.RegistrationID);
+                            MessageBox.Show("Đã từ chối đơn đăng ký.", "Thông báo");
+                            LoadPendingShops();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Lỗi: " + ex.Message);
+                        }
+                    }
+                };
                 // Gắn Tag để sau này dễ lấy ID khi click nút
-                row.Tag = item.RegistrationID;
+                //row.Tag = item.RegistrationID;
 
                 _pendingContainer.Controls.Add(row);
             }
         }
+        
         // -- PHẦN ACTIVE SHOPS(ASYNC + FILTER) ---
         private void LoadActiveShops()
         {
@@ -123,7 +157,8 @@ namespace Skynet_Commerce.GUI.Forms
                 }
 
                 // 2. Gọi Service ở Background Thread
-                List<ShopViewModel> shops = _shopService.GetShops(keyword, status);
+                ShopService service = new ShopService();
+                List<ShopViewModel> shops = service.GetShops(keyword, status);
 
                 // 3. Cập nhật UI
                 _activeContainer.SuspendLayout(); // Chống giật khi vẽ lại
@@ -147,6 +182,27 @@ namespace Skynet_Commerce.GUI.Forms
                     {
                         var row = new UcActiveShopRow();
                         row.SetData(shop);
+
+                        // --- XỬ LÝ SỰ KIỆN XEM CHI TIẾT ---
+                        row.OnViewClicked += (sender, args) =>
+                        {
+                            var uc = sender as UcActiveShopRow;
+
+                            // Tạo form chi tiết
+                            using (var detailForm = new ShopDetailForm(uc.ShopID))
+                            {
+                                // Hiện form và chờ kết quả trả về
+                                var result = detailForm.ShowDialog();
+
+                                // [QUAN TRỌNG] Kiểm tra nếu Form con trả về OK (tức là có thay đổi dữ liệu)
+                                if (result == DialogResult.OK)
+                                {
+                                    // Thì load lại danh sách ở Form cha
+                                    LoadActiveShops();
+                                }
+                            }
+                        };
+
                         _activeContainer.Controls.Add(row);
                     }
                 }
@@ -176,4 +232,11 @@ namespace Skynet_Commerce.GUI.Forms
             LoadActiveShops();
         }
     }
+
+    public class ShopStatusOption
+    {
+        public string DisplayName { get; set; } // Tiếng Việt
+        public string Value { get; set; }       // Tiếng Anh (Logic/DB)
+    }
+
 }

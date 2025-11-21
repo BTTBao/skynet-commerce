@@ -6,6 +6,11 @@ namespace Skynet_Commerce.GUI.UserControls
 {
     public partial class UcOrderRow : UserControl
     {
+        // 1. Định nghĩa sự kiện
+        public event EventHandler OnViewClicked;
+
+        // 2. Thuộc tính lưu ID
+        public int OrderID { get; private set; }
         public UcOrderRow()
         {
             InitializeComponent();
@@ -13,10 +18,15 @@ namespace Skynet_Commerce.GUI.UserControls
             this.Paint += (s, e) => {
                 e.Graphics.DrawLine(new Pen(Color.FromArgb(240, 240, 240)), 0, this.Height - 1, this.Width, this.Height - 1);
             };
+
+            // 3. Gắn sự kiện click cho nút View
+            _btnView.Click += (s, e) => OnViewClicked?.Invoke(this, EventArgs.Empty);
         }
 
         public void SetData(int id, string buyer, string shop, string items, string amount, string date, string status)
         {
+            this.OrderID = id;
+
             _lblId.Text = id.ToString();
             _lblBuyer.Text = buyer;
             _lblShop.Text = shop;

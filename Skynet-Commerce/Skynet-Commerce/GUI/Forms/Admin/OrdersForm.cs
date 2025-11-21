@@ -21,14 +21,14 @@ namespace Skynet_Commerce.GUI.Forms
         {
             // Tạo danh sách các lựa chọn
             var statusList = new List<StatusOption>()
-    {
-        new StatusOption { DisplayName = "Tất cả",         Value = "All" },
-        new StatusOption { DisplayName = "Chờ xác nhận",   Value = "Pending" },
-        new StatusOption { DisplayName = "Đang xử lý",     Value = "Processing" },
-        new StatusOption { DisplayName = "Đang giao",      Value = "Shipped" },
-        new StatusOption { DisplayName = "Đã hoàn thành",  Value = "Completed" },
-        new StatusOption { DisplayName = "Đã hủy",         Value = "Cancelled" }
-    };
+            {
+                new StatusOption { DisplayName = "Tất cả",         Value = "All" },
+                new StatusOption { DisplayName = "Chờ xác nhận",   Value = "Pending" },
+                new StatusOption { DisplayName = "Đang xử lý",     Value = "Processing" },
+                new StatusOption { DisplayName = "Đang giao",      Value = "Shipped" },
+                new StatusOption { DisplayName = "Đã hoàn thành",  Value = "Completed" },
+                new StatusOption { DisplayName = "Đã hủy",         Value = "Cancelled" }
+            };
 
             // Cấu hình ComboBox để hiểu hiển thị cái gì và lấy giá trị gì
             _cboStatus.DataSource = statusList;
@@ -86,6 +86,16 @@ namespace Skynet_Commerce.GUI.Forms
                         item.Status             // Status: Completed
                     );
                     row.Width = _flowPanel.Width - 25;
+                    // --- PHẦN THÊM MỚI: XỬ LÝ SỰ KIỆN XEM CHI TIẾT ---
+                    row.OnViewClicked += (sender, args) =>
+                    {
+                        var uc = sender as UcOrderRow;
+                        // Mở form chi tiết dưới dạng Dialog
+                        using (var frmDetail = new OrderDetailForm(uc.OrderID))
+                        {
+                            frmDetail.ShowDialog();
+                        }
+                    };
                     // Thêm vào panel
                     _flowPanel.Controls.Add(row);
                 }

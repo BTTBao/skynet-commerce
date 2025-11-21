@@ -103,7 +103,7 @@
             this._btnView.FillColor = System.Drawing.Color.Transparent;
             this._btnView.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this._btnView.Location = new System.Drawing.Point(852, 12);
+            this._btnView.Location = new System.Drawing.Point(847, 12);
             this._btnView.Name = "_btnView";
             this._btnView.Size = new System.Drawing.Size(111, 30);
             this._btnView.TabIndex = 7;

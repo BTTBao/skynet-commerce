@@ -62,6 +62,7 @@
             this._btnAdd.Size = new System.Drawing.Size(140, 40);
             this._btnAdd.TabIndex = 0;
             this._btnAdd.Text = "+ Thêm danh mục";
+            this._btnAdd.Click += new System.EventHandler(this._btnAdd_Click);
             // 
             // _cardMain
             // 

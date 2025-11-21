@@ -146,6 +146,30 @@
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
     <Compile Include="DAL\Entities\User.cs" />
     <Compile Include="DAL\Entities\UserRoles.cs" />
+    <Compile Include="GUI\Forms\Admin\CategoryDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\CategoryDetailForm.Designer.cs">
+      <DependentUpon>CategoryDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\OrderDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\OrderDetailForm.Designer.cs">
+      <DependentUpon>OrderDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ProductDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ProductDetailForm.Designer.cs">
+      <DependentUpon>ProductDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ShopDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ShopDetailForm.Designer.cs">
+      <DependentUpon>ShopDetailForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -206,7 +230,9 @@
     <Compile Include="GUI\Forms\Admin\ProductsForm.Designer.cs">
       <DependentUpon>ProductsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\Admin\ShopsForm.cs" />
+    <Compile Include="GUI\Forms\Admin\ShopsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\Forms\Admin\ShopsForm.Designer.cs">
       <DependentUpon>ShopsForm.cs</DependentUpon>
     </Compile>
@@ -356,19 +382,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-
-    <EmbeddedResource Include="GUI\UserControls\Components\UCSeller\ucOrder.resx">
-      <DependentUpon>ucOrder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Components\UCSeller\ucProduct.resx">
-      <DependentUpon>ucProduct.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Components\UCSeller\ucShopSetting.resx">
-      <DependentUpon>ucShopSetting.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Components\UCSeller\VariantControl.resx">
-      <DependentUpon>VariantControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\CategoriesForm.resx">
       <DependentUpon>CategoriesForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -387,6 +400,9 @@
     <EmbeddedResource Include="GUI\Forms\Admin\ProductsForm.resx">
       <DependentUpon>ProductsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\ShopDetailForm.resx">
+      <DependentUpon>ShopDetailForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\ShopsForm.resx">
       <DependentUpon>ShopsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -395,9 +411,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Forms\Seller\FormAddProduct.resx">
-      <DependentUpon>FormAddProduct.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Seller\SellerLayout.resx">
       <DependentUpon>SellerLayout.cs</DependentUpon>

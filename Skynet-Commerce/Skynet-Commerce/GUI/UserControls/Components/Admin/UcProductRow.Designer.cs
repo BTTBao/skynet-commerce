@@ -23,7 +23,7 @@
             this._lblStock = new System.Windows.Forms.Label();
             this._badgeStatus = new Guna.UI2.WinForms.Guna2Button();
             this._btnEdit = new Guna.UI2.WinForms.Guna2Button();
-            this._btnHide = new Guna.UI2.WinForms.Guna2Button();
+            this._btnToggle = new Guna.UI2.WinForms.Guna2Button();
             this._btnDelete = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this._picImage)).BeginInit();
             this.SuspendLayout();
@@ -124,16 +124,16 @@
             this._btnEdit.TabIndex = 8;
             this._btnEdit.Text = "✎ Sửa";
             // 
-            // _btnHide
+            // _btnToggle
             // 
-            this._btnHide.FillColor = System.Drawing.Color.Transparent;
-            this._btnHide.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._btnHide.ForeColor = System.Drawing.Color.DimGray;
-            this._btnHide.Location = new System.Drawing.Point(839, 20);
-            this._btnHide.Name = "_btnHide";
-            this._btnHide.Size = new System.Drawing.Size(56, 30);
-            this._btnHide.TabIndex = 9;
-            this._btnHide.Text = "Ø Ẩn";
+            this._btnToggle.FillColor = System.Drawing.Color.Transparent;
+            this._btnToggle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this._btnToggle.ForeColor = System.Drawing.Color.DimGray;
+            this._btnToggle.Location = new System.Drawing.Point(839, 20);
+            this._btnToggle.Name = "_btnToggle";
+            this._btnToggle.Size = new System.Drawing.Size(56, 30);
+            this._btnToggle.TabIndex = 9;
+            this._btnToggle.Text = "Ø Ẩn";
             // 
             // _btnDelete
             // 
@@ -152,7 +152,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this._btnDelete);
-            this.Controls.Add(this._btnHide);
+            this.Controls.Add(this._btnToggle);
             this.Controls.Add(this._btnEdit);
             this.Controls.Add(this._badgeStatus);
             this.Controls.Add(this._lblStock);
@@ -181,7 +181,7 @@
         private System.Windows.Forms.Label _lblStock;
         private Guna.UI2.WinForms.Guna2Button _badgeStatus;
         private Guna.UI2.WinForms.Guna2Button _btnEdit;
-        private Guna.UI2.WinForms.Guna2Button _btnHide;
+        private Guna.UI2.WinForms.Guna2Button _btnToggle;
         private Guna.UI2.WinForms.Guna2Button _btnDelete;
     }
 }

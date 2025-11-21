@@ -64,6 +64,60 @@ namespace Skynet_Commerce.BLL.Services.Admin
 
             return result.ToList();
         }
+
+        public OrderDetailDTO GetOrderDetail(int orderId)
+        {
+            var order = _context.Orders.FirstOrDefault(o => o.OrderID == orderId);
+            if (order == null) return null;
+
+            var user = _context.Users.FirstOrDefault(u => u.AccountID == order.AccountID);
+            var account = _context.Accounts.FirstOrDefault(a => a.AccountID == order.AccountID);
+
+            // Lấy danh sách sản phẩm trong đơn
+            var items = (from od in _context.OrderDetails
+                         join p in _context.Products on od.ProductID equals p.ProductID
+                         where od.OrderID == orderId
+                         select new OrderItemDTO
+                         {
+                             ProductName = p.Name,
+                             Quantity = od.Quantity ?? 0,
+                             Price = od.UnitPrice ?? 0
+                         }).ToList();
+
+            return new OrderDetailDTO
+            {
+                OrderID = order.OrderID,
+                OrderDate = order.CreatedAt ?? DateTime.Now,
+                Status = order.Status,
+                TotalAmount = order.TotalAmount ?? 0,
+                BuyerName = user != null ? user.FullName : "Unknown",
+                BuyerEmail = account != null ? account.Email : "",
+                Items = items
+            };
+        }
+    }
+
+    public class OrderDetailDTO
+    {
+        public int OrderID { get; set; }
+        public DateTime OrderDate { get; set; }
+        public string Status { get; set; }
+        public decimal TotalAmount { get; set; }
+
+        // Thông tin người mua
+        public string BuyerName { get; set; }
+        public string BuyerEmail { get; set; } // Nếu có trong bảng Account/User
+
+        // Danh sách sản phẩm
+        public List<OrderItemDTO> Items { get; set; }
+    }
+
+    public class OrderItemDTO
+    {
+        public string ProductName { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+        public decimal SubTotal => Quantity * Price;
     }
 }
 

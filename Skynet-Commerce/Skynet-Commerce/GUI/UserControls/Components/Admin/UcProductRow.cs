@@ -8,7 +8,12 @@ namespace Skynet_Commerce.GUI.UserControls
 {
     public partial class UcProductRow : UserControl
     {
+        public event EventHandler OnEditClicked;
+        public event EventHandler OnToggleClicked;
+        public event EventHandler OnDeleteClicked;
+
         public int ProductId { get; private set; }
+        public string CurrentStatus { get; private set; }
         public UcProductRow()
         {
             InitializeComponent();
@@ -16,12 +21,17 @@ namespace Skynet_Commerce.GUI.UserControls
             this.Paint += (s, e) => {
                 e.Graphics.DrawLine(new Pen(Color.FromArgb(240, 240, 240)), 0, this.Height - 1, this.Width, this.Height - 1);
             };
+
+            _btnEdit.Click += (s, e) => OnEditClicked?.Invoke(this, EventArgs.Empty);
+            _btnToggle.Click += (s, e) => OnToggleClicked?.Invoke(this, EventArgs.Empty);
+            _btnDelete.Click += (s, e) => OnDeleteClicked?.Invoke(this, EventArgs.Empty);
         }
 
         // Hàm SetData mới nhận ViewModel
         public void SetData(ProductViewModel item)
         {
             this.ProductId = item.ProductID;
+            this.CurrentStatus = item.Status;
 
             _lblName.Text = item.ProductName;
             _lblId.Text = item.ProductID.ToString();
