@@ -52,9 +52,10 @@ public class ShopService
     }
 
     // Lấy danh sách Shop
-    public List<ShopViewModel> GetShops()
+    // Cập nhật hàm này để nhận tham số lọc
+    public List<ShopViewModel> GetShops(string keyword = "", string status = "All Status")
     {
-        // Logic: Lấy shop có IsActive = true
+        // 1. Khởi tạo Query cơ bản
         var query = from s in _context.Shops
                     join u in _context.Users on s.AccountID equals u.AccountID
                     select new
@@ -64,7 +65,23 @@ public class ShopService
                         ProductCount = s.Products.Count()
                     };
 
-        // Query DB và convert sang ViewModel
+        // 2. Lọc theo Keyword (Tên Shop hoặc Tên Chủ Shop)
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            query = query.Where(x => x.Shop.ShopName.Contains(keyword) || x.OwnerName.Contains(keyword));
+        }
+
+        // 3. Lọc theo Status
+        if (status == "Active")
+        {
+            query = query.Where(x => x.Shop.IsActive == true);
+        }
+        else if (status == "Suspended") // Giả sử Suspended là IsActive = false
+        {
+            query = query.Where(x => x.Shop.IsActive == false);
+        }
+
+        // 4. Thực thi và Mapping (Projection)
         return query.ToList().Select(x => new ShopViewModel
         {
             ShopID = x.Shop.ShopID,
@@ -72,7 +89,7 @@ public class ShopService
             OwnerName = x.OwnerName,
             RatingAverage = x.Shop.RatingAverage ?? 0,
             StockQuantity = x.ProductCount,
-            Status = "Active"
+            Status = (x.Shop.IsActive == true) ? "Active" : "Suspended"
         }).ToList();
     }
 
@@ -133,5 +150,69 @@ public class ShopService
                     };
 
         return query.ToList();
+    }
+
+    public void ApproveShopRegistration(int registrationId)
+    {
+        var reg = _context.ShopRegistrations.FirstOrDefault(r => r.RegistrationID == registrationId);
+        if (reg == null) throw new Exception("Không tìm thấy đơn đăng ký.");
+
+        // Chú ý: Kiểm tra kỹ chữ hoa/thường trong DB ("Pending" hay "pending")
+        if (!reg.Status.Equals("pending", StringComparison.OrdinalIgnoreCase))
+            throw new Exception("Đơn này đã được xử lý trước đó.");
+
+        // KIỂM TRA LOGIC: 1 Account chỉ 1 Shop
+        if (_context.Shops.Any(s => s.AccountID == reg.AccountID))
+        {
+            throw new Exception($"Tài khoản {reg.AccountID} đã sở hữu một cửa hàng rồi.");
+        }
+
+        try
+        {
+            // 2. Tạo Shop mới
+            var newShop = new Shop
+            {
+                ShopName = reg.ShopName,
+                AccountID = reg.AccountID,
+                IsActive = true, // Shop hoạt động luôn
+                RatingAverage = 0,
+                CreatedAt = DateTime.Now,
+                Description = reg.Description
+                // Map thêm các field khác nếu có (Description, Address...)
+            };
+            _context.Shops.Add(newShop);
+
+            // 3. Cập nhật trạng thái đơn đăng ký
+            reg.Status = "Approved";
+            // reg.UpdatedAt = DateTime.Now; // Nếu có cột này
+
+            _context.SaveChanges();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public void RejectShopRegistration(int registrationId)
+    {
+        var reg = _context.ShopRegistrations.FirstOrDefault(r => r.RegistrationID == registrationId);
+        if (reg == null) throw new Exception("Không tìm thấy đơn đăng ký.");
+
+        // Cập nhật trạng thái
+        reg.Status = "Rejected";
+        _context.SaveChanges();
+    }
+
+    public void ToggleShopStatus(int shopId)
+    {
+        var shop = _context.Shops.FirstOrDefault(s => s.ShopID == shopId);
+        if (shop == null) throw new Exception("Không tìm thấy cửa hàng.");
+
+        // Đảo ngược trạng thái: Nếu đang True (Active) -> False (Suspended) và ngược lại
+        bool currentStatus = shop.IsActive ?? false;
+        shop.IsActive = !currentStatus;
+
+        _context.SaveChanges();
     }
 }

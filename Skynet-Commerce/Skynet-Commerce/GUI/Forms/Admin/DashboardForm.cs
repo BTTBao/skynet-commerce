@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Guna.UI2.WinForms;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Guna.UI2.WinForms;
 
 namespace Skynet_Commerce.GUI.Forms
 {
@@ -12,7 +13,7 @@ namespace Skynet_Commerce.GUI.Forms
         public DashboardForm()
         {
             InitializeComponent(); // Khởi tạo các control từ Designer
-
+            guna2PictureBox1.LoadAsync("https://cdn-icons-png.flaticon.com/128/1533/1533565.png");
             CreateSidebarItems();
 
             // Mặc định load trang Overview
@@ -39,14 +40,25 @@ namespace Skynet_Commerce.GUI.Forms
 
         private void CreateSidebarItems()
         {
-            string[] menus = { "Dashboard", "Users", "Shops", "Products", "Orders", "Categories" };
+            // Dictionary: <Key (Tiếng Anh - Tag), Value (Tiếng Việt - Text)>
+            Dictionary<string, string> menuMap = new Dictionary<string, string>()
+            {
+                { "Dashboard", "Tổng quan" },
+                { "Users", "Người dùng" },
+                { "Shops", "Cửa hàng" },
+                { "Products", "Sản phẩm" },
+                { "Orders", "Đơn hàng" },
+                { "Categories", "Danh mục" }
+            };
+
             int yPos = 80;
 
-            foreach (var item in menus)
+            // Duyệt qua từng phần tử trong Dictionary
+            foreach (var menu in menuMap)
             {
                 Guna2Button btn = new Guna2Button
                 {
-                    Text = item,
+                    Text = menu.Value, // HIỂN THỊ: Tiếng Việt (ví dụ: "Tổng quan")
                     FillColor = Color.White,
                     ForeColor = Color.DimGray,
                     Font = new Font("Segoe UI", 10, FontStyle.Regular),
@@ -58,26 +70,26 @@ namespace Skynet_Commerce.GUI.Forms
                     ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton,
                     CheckedState = { FillColor = Color.FromArgb(79, 70, 229), ForeColor = Color.White },
                     TextOffset = new Point(10, 0),
-                    Tag = item // QUAN TRỌNG: Lưu tên menu vào Tag để bắt sự kiện
+
+                    Tag = menu.Key // LOGIC: Tiếng Anh (ví dụ: "Dashboard")
                 };
 
                 // Gán sự kiện Click
                 btn.Click += Sidebar_Click;
 
-                if (item == "Dashboard") btn.Checked = true;
+                // Kiểm tra theo Key tiếng Anh để set mặc định
+                if (menu.Key == "Dashboard") btn.Checked = true;
 
-                // _sidebar đã được tạo trong Designer, chỉ cần Add vào
                 _sidebar.Controls.Add(btn);
                 yPos += 50;
             }
         }
-
         private void Sidebar_Click(object sender, EventArgs e)
         {
-            // Ép kiểu an toàn để tránh lỗi NullReference
             Guna2Button btn = sender as Guna2Button;
             if (btn == null) return;
 
+            // Lấy Tag (là tiếng Anh) để xử lý switch case
             string menuName = btn.Tag?.ToString() ?? "";
 
             switch (menuName)

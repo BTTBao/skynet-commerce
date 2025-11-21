@@ -23,7 +23,7 @@
             this._lblStock = new System.Windows.Forms.Label();
             this._badgeStatus = new Guna.UI2.WinForms.Guna2Button();
             this._btnEdit = new Guna.UI2.WinForms.Guna2Button();
-            this._btnHide = new Guna.UI2.WinForms.Guna2Button();
+            this._btnToggle = new Guna.UI2.WinForms.Guna2Button();
             this._btnDelete = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this._picImage)).BeginInit();
             this.SuspendLayout();
@@ -75,7 +75,7 @@
             // 
             this._lblCategory.AutoSize = true;
             this._lblCategory.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._lblCategory.Location = new System.Drawing.Point(380, 25);
+            this._lblCategory.Location = new System.Drawing.Point(390, 25);
             this._lblCategory.Name = "_lblCategory";
             this._lblCategory.Size = new System.Drawing.Size(64, 15);
             this._lblCategory.TabIndex = 4;
@@ -95,7 +95,7 @@
             // 
             this._lblStock.AutoSize = true;
             this._lblStock.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._lblStock.Location = new System.Drawing.Point(584, 25);
+            this._lblStock.Location = new System.Drawing.Point(589, 25);
             this._lblStock.Name = "_lblStock";
             this._lblStock.Size = new System.Drawing.Size(19, 15);
             this._lblStock.TabIndex = 6;
@@ -107,44 +107,44 @@
             this._badgeStatus.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
             this._badgeStatus.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this._badgeStatus.ForeColor = System.Drawing.Color.White;
-            this._badgeStatus.Location = new System.Drawing.Point(650, 22);
+            this._badgeStatus.Location = new System.Drawing.Point(653, 22);
             this._badgeStatus.Name = "_badgeStatus";
             this._badgeStatus.Size = new System.Drawing.Size(90, 24);
             this._badgeStatus.TabIndex = 7;
-            this._badgeStatus.Text = "Active";
+            this._badgeStatus.Text = "Còn hàng";
             // 
             // _btnEdit
             // 
             this._btnEdit.FillColor = System.Drawing.Color.Transparent;
             this._btnEdit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnEdit.ForeColor = System.Drawing.Color.DimGray;
-            this._btnEdit.Location = new System.Drawing.Point(780, 20);
+            this._btnEdit.Location = new System.Drawing.Point(763, 20);
             this._btnEdit.Name = "_btnEdit";
-            this._btnEdit.Size = new System.Drawing.Size(60, 30);
+            this._btnEdit.Size = new System.Drawing.Size(65, 30);
             this._btnEdit.TabIndex = 8;
-            this._btnEdit.Text = "✎ Edit";
+            this._btnEdit.Text = "✎ Sửa";
             // 
-            // _btnHide
+            // _btnToggle
             // 
-            this._btnHide.FillColor = System.Drawing.Color.Transparent;
-            this._btnHide.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._btnHide.ForeColor = System.Drawing.Color.DimGray;
-            this._btnHide.Location = new System.Drawing.Point(850, 20);
-            this._btnHide.Name = "_btnHide";
-            this._btnHide.Size = new System.Drawing.Size(70, 30);
-            this._btnHide.TabIndex = 9;
-            this._btnHide.Text = "Ø Hide";
+            this._btnToggle.FillColor = System.Drawing.Color.Transparent;
+            this._btnToggle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this._btnToggle.ForeColor = System.Drawing.Color.DimGray;
+            this._btnToggle.Location = new System.Drawing.Point(839, 20);
+            this._btnToggle.Name = "_btnToggle";
+            this._btnToggle.Size = new System.Drawing.Size(56, 30);
+            this._btnToggle.TabIndex = 9;
+            this._btnToggle.Text = "Ø Ẩn";
             // 
             // _btnDelete
             // 
             this._btnDelete.FillColor = System.Drawing.Color.Transparent;
             this._btnDelete.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this._btnDelete.Location = new System.Drawing.Point(930, 20);
+            this._btnDelete.Location = new System.Drawing.Point(895, 20);
             this._btnDelete.Name = "_btnDelete";
-            this._btnDelete.Size = new System.Drawing.Size(80, 30);
+            this._btnDelete.Size = new System.Drawing.Size(66, 30);
             this._btnDelete.TabIndex = 10;
-            this._btnDelete.Text = "🗑 Delete";
+            this._btnDelete.Text = "🗑 Xoá";
             // 
             // UcProductRow
             // 
@@ -152,7 +152,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this._btnDelete);
-            this.Controls.Add(this._btnHide);
+            this.Controls.Add(this._btnToggle);
             this.Controls.Add(this._btnEdit);
             this.Controls.Add(this._badgeStatus);
             this.Controls.Add(this._lblStock);
@@ -163,7 +163,7 @@
             this.Controls.Add(this._lblName);
             this.Controls.Add(this._picImage);
             this.Name = "UcProductRow";
-            this.Size = new System.Drawing.Size(1050, 70);
+            this.Size = new System.Drawing.Size(1010, 70);
             ((System.ComponentModel.ISupportInitialize)(this._picImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -181,7 +181,7 @@
         private System.Windows.Forms.Label _lblStock;
         private Guna.UI2.WinForms.Guna2Button _badgeStatus;
         private Guna.UI2.WinForms.Guna2Button _btnEdit;
-        private Guna.UI2.WinForms.Guna2Button _btnHide;
+        private Guna.UI2.WinForms.Guna2Button _btnToggle;
         private Guna.UI2.WinForms.Guna2Button _btnDelete;
     }
 }

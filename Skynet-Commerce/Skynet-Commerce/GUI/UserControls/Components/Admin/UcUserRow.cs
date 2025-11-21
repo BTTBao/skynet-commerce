@@ -55,6 +55,7 @@ namespace Skynet_Commerce.GUI.UserControls
             }
             else if (role == "Seller")
             {
+                _btnRole.Text = "Người bán";
                 _btnRole.FillColor = Color.White;
                 _btnRole.BorderThickness = 1;
                 _btnRole.BorderColor = Color.LightGray;
@@ -62,6 +63,7 @@ namespace Skynet_Commerce.GUI.UserControls
             }
             else // Buyer
             {
+                _btnRole.Text = "Người mua";
                 _btnRole.FillColor = Color.FromArgb(243, 244, 246);
                 _btnRole.ForeColor = Color.Black;
             }
@@ -70,7 +72,7 @@ namespace Skynet_Commerce.GUI.UserControls
         // Tách hàm UI Status cho gọn
         private void UpdateStatusUI(string status)
         {
-            _btnStatus.Text = status;
+            _btnStatus.Text = status == "Active" ? "Hoạt động" : "Khoá";
             if (status == "Active")
             {
                 _btnStatus.FillColor = Color.FromArgb(79, 70, 229);

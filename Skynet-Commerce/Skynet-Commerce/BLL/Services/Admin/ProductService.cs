@@ -44,7 +44,7 @@ namespace Skynet_Commerce.BLL.Services.Admin
             }
 
             // 3. Áp dụng bộ lọc DANH MỤC (nếu không phải chọn tất cả)
-            if (!string.IsNullOrEmpty(categoryName) && categoryName != "All Categories")
+            if (!string.IsNullOrEmpty(categoryName) && categoryName != "Tất cả")
             {
                 query = query.Where(x => x.CategoryName == categoryName);
             }
@@ -73,6 +73,48 @@ namespace Skynet_Commerce.BLL.Services.Admin
                            .OrderBy(c => c.CategoryName) // Sắp xếp A-Z
                            .Select(c => c.CategoryName)  // Chỉ lấy tên
                            .ToList();
+        }
+
+        public Product GetProductById(int id)
+        {
+            return _context.Products.FirstOrDefault(p => p.ProductID == id);
+        }
+
+        public void UpdateProduct(int id, string name, decimal price, int stock)
+        {
+            var p = _context.Products.FirstOrDefault(x => x.ProductID == id);
+            if (p == null) throw new Exception("Không tìm thấy sản phẩm");
+
+            p.Name = name;
+            p.Price = price;
+            p.StockQuantity = stock;
+
+            // Tự động cập nhật Status nếu hết hàng
+            if (stock > 0 && p.Status == "Out of Stock") p.Status = "Active";
+            if (stock == 0) p.Status = "Out of Stock";
+
+            _context.SaveChanges();
+        }
+
+        public void ToggleProductStatus(int id)
+        {
+            var p = _context.Products.FirstOrDefault(x => x.ProductID == id);
+            if (p == null) throw new Exception("Không tìm thấy sản phẩm");
+
+            // Logic: Nếu Active -> Hidden, Ngược lại -> Active
+            if (p.Status == "Active") p.Status = "Hidden";
+            else p.Status = "Active";
+
+            _context.SaveChanges();
+        }
+
+        public void DeleteProduct(int id)
+        {
+            var p = _context.Products.FirstOrDefault(x => x.ProductID == id);
+            if (p == null) throw new Exception("Không tìm thấy sản phẩm");
+
+            _context.Products.Remove(p);
+            _context.SaveChanges();
         }
     }
 }

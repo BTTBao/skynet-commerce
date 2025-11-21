@@ -27,7 +27,7 @@
             // 
             this._lblId.AutoSize = true;
             this._lblId.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._lblId.Location = new System.Drawing.Point(20, 18);
+            this._lblId.Location = new System.Drawing.Point(35, 18);
             this._lblId.Name = "_lblId";
             this._lblId.Size = new System.Drawing.Size(62, 15);
             this._lblId.TabIndex = 0;
@@ -68,7 +68,7 @@
             // 
             this._lblDate.AutoSize = true;
             this._lblDate.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._lblDate.Location = new System.Drawing.Point(650, 18);
+            this._lblDate.Location = new System.Drawing.Point(599, 18);
             this._lblDate.Name = "_lblDate";
             this._lblDate.Size = new System.Drawing.Size(65, 15);
             this._lblDate.TabIndex = 4;
@@ -80,11 +80,11 @@
             this._btnApprove.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this._btnApprove.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnApprove.ForeColor = System.Drawing.Color.White;
-            this._btnApprove.Location = new System.Drawing.Point(854, 10);
+            this._btnApprove.Location = new System.Drawing.Point(779, 10);
             this._btnApprove.Name = "_btnApprove";
-            this._btnApprove.Size = new System.Drawing.Size(90, 30);
+            this._btnApprove.Size = new System.Drawing.Size(97, 30);
             this._btnApprove.TabIndex = 5;
-            this._btnApprove.Text = "✓ Approve";
+            this._btnApprove.Text = "✓ Chấp nhận";
             this._btnApprove.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             // 
             // _btnReject
@@ -93,11 +93,11 @@
             this._btnReject.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this._btnReject.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnReject.ForeColor = System.Drawing.Color.White;
-            this._btnReject.Location = new System.Drawing.Point(950, 10);
+            this._btnReject.Location = new System.Drawing.Point(882, 10);
             this._btnReject.Name = "_btnReject";
-            this._btnReject.Size = new System.Drawing.Size(80, 30);
+            this._btnReject.Size = new System.Drawing.Size(82, 30);
             this._btnReject.TabIndex = 6;
-            this._btnReject.Text = "✕ Reject";
+            this._btnReject.Text = "✕ Từ chối";
             // 
             // UcPendingShopRow
             // 
@@ -112,7 +112,7 @@
             this.Controls.Add(this._lblName);
             this.Controls.Add(this._lblId);
             this.Name = "UcPendingShopRow";
-            this.Size = new System.Drawing.Size(1050, 50);
+            this.Size = new System.Drawing.Size(1008, 50);
             this.ResumeLayout(false);
             this.PerformLayout();
 

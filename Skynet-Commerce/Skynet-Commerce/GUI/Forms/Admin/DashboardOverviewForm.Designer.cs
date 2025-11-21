@@ -38,7 +38,7 @@
             this._statsContainer.Dock = System.Windows.Forms.DockStyle.Top;
             this._statsContainer.Location = new System.Drawing.Point(20, 20);
             this._statsContainer.Name = "_statsContainer";
-            this._statsContainer.Size = new System.Drawing.Size(760, 160);
+            this._statsContainer.Size = new System.Drawing.Size(1010, 160);
             this._statsContainer.TabIndex = 0;
             this._statsContainer.WrapContents = false;
             // 
@@ -53,8 +53,8 @@
             this._chartsContainer.Name = "_chartsContainer";
             this._chartsContainer.Padding = new System.Windows.Forms.Padding(0, 20, 0, 0);
             this._chartsContainer.RowCount = 1;
-            this._chartsContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this._chartsContainer.Size = new System.Drawing.Size(760, 250);
+            this._chartsContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this._chartsContainer.Size = new System.Drawing.Size(1010, 479);
             this._chartsContainer.TabIndex = 1;
             // 
             // DashboardOverviewForm
@@ -62,7 +62,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1050, 679);
             this.Controls.Add(this._chartsContainer);
             this.Controls.Add(this._statsContainer);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

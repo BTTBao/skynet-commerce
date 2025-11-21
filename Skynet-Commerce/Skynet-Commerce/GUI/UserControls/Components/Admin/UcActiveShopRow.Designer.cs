@@ -80,9 +80,9 @@
             this._badgeStatus.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(70)))), ((int)(((byte)(229)))));
             this._badgeStatus.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this._badgeStatus.ForeColor = System.Drawing.Color.White;
-            this._badgeStatus.Location = new System.Drawing.Point(700, 14);
+            this._badgeStatus.Location = new System.Drawing.Point(688, 14);
             this._badgeStatus.Name = "_badgeStatus";
-            this._badgeStatus.Size = new System.Drawing.Size(80, 22);
+            this._badgeStatus.Size = new System.Drawing.Size(101, 22);
             this._badgeStatus.TabIndex = 5;
             this._badgeStatus.Text = "Active";
             // 
@@ -92,11 +92,11 @@
             this._btnView.FillColor = System.Drawing.Color.Transparent;
             this._btnView.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._btnView.ForeColor = System.Drawing.Color.Gray;
-            this._btnView.Location = new System.Drawing.Point(884, 14);
+            this._btnView.Location = new System.Drawing.Point(872, 10);
             this._btnView.Name = "_btnView";
             this._btnView.Size = new System.Drawing.Size(73, 30);
             this._btnView.TabIndex = 6;
-            this._btnView.Text = "👁 View Details";
+            this._btnView.Text = "👁 Xem";
             this._btnView.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // UcActiveShopRow

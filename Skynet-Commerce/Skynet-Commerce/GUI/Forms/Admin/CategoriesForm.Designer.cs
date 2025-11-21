@@ -36,9 +36,9 @@
             this._pageTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this._pageTitle.Location = new System.Drawing.Point(20, 20);
             this._pageTitle.Name = "_pageTitle";
-            this._pageTitle.Size = new System.Drawing.Size(217, 25);
+            this._pageTitle.Size = new System.Drawing.Size(173, 25);
             this._pageTitle.TabIndex = 3;
-            this._pageTitle.Text = "Category Management";
+            this._pageTitle.Text = "Quản lý danh mục";
             // 
             // _pageSub
             // 
@@ -47,9 +47,9 @@
             this._pageSub.ForeColor = System.Drawing.Color.Gray;
             this._pageSub.Location = new System.Drawing.Point(22, 50);
             this._pageSub.Name = "_pageSub";
-            this._pageSub.Size = new System.Drawing.Size(265, 19);
+            this._pageSub.Size = new System.Drawing.Size(255, 19);
             this._pageSub.TabIndex = 2;
-            this._pageSub.Text = "Organize and manage product categories.";
+            this._pageSub.Text = "Sắp xếp và quản lý danh mục sản phẩm.";
             // 
             // _btnAdd
             // 
@@ -61,7 +61,8 @@
             this._btnAdd.Name = "_btnAdd";
             this._btnAdd.Size = new System.Drawing.Size(140, 40);
             this._btnAdd.TabIndex = 0;
-            this._btnAdd.Text = "+ Add Category";
+            this._btnAdd.Text = "+ Thêm danh mục";
+            this._btnAdd.Click += new System.EventHandler(this._btnAdd_Click);
             // 
             // _cardMain
             // 
@@ -84,9 +85,9 @@
             this._lblCardTitle.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this._lblCardTitle.Location = new System.Drawing.Point(25, 25);
             this._lblCardTitle.Name = "_lblCardTitle";
-            this._lblCardTitle.Size = new System.Drawing.Size(106, 20);
+            this._lblCardTitle.Size = new System.Drawing.Size(124, 20);
             this._lblCardTitle.TabIndex = 0;
-            this._lblCardTitle.Text = "All Categories";
+            this._lblCardTitle.Text = "Tất cả danh mục";
             // 
             // _headerPanel
             // 
@@ -107,7 +108,7 @@
             this._lblH_Id.Name = "_lblH_Id";
             this._lblH_Id.Size = new System.Drawing.Size(100, 23);
             this._lblH_Id.TabIndex = 0;
-            this._lblH_Id.Text = "Category ID";
+            this._lblH_Id.Text = "Mã danh mục";
             // 
             // _lblH_Name
             // 
@@ -116,7 +117,7 @@
             this._lblH_Name.Name = "_lblH_Name";
             this._lblH_Name.Size = new System.Drawing.Size(100, 23);
             this._lblH_Name.TabIndex = 1;
-            this._lblH_Name.Text = "Name";
+            this._lblH_Name.Text = "Tên danh mục";
             // 
             // _lblH_Products
             // 
@@ -125,7 +126,7 @@
             this._lblH_Products.Name = "_lblH_Products";
             this._lblH_Products.Size = new System.Drawing.Size(100, 23);
             this._lblH_Products.TabIndex = 2;
-            this._lblH_Products.Text = "Total Products";
+            this._lblH_Products.Text = "Tổng sản phẩm";
             // 
             // _lblH_Subcats
             // 
@@ -134,16 +135,16 @@
             this._lblH_Subcats.Name = "_lblH_Subcats";
             this._lblH_Subcats.Size = new System.Drawing.Size(100, 23);
             this._lblH_Subcats.TabIndex = 3;
-            this._lblH_Subcats.Text = "Subcategories";
+            this._lblH_Subcats.Text = "Danh mục con";
             // 
             // _lblH_Actions
             // 
             this._lblH_Actions.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._lblH_Actions.Location = new System.Drawing.Point(895, 4);
+            this._lblH_Actions.Location = new System.Drawing.Point(844, 4);
             this._lblH_Actions.Name = "_lblH_Actions";
             this._lblH_Actions.Size = new System.Drawing.Size(71, 23);
             this._lblH_Actions.TabIndex = 4;
-            this._lblH_Actions.Text = "Actions";
+            this._lblH_Actions.Text = "Hành động";
             // 
             // _flowPanel
             // 

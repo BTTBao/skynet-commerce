@@ -100,7 +100,7 @@
             this._btnPercent.ForeColor = System.Drawing.Color.White;
             this._btnPercent.Location = new System.Drawing.Point(15, 85);
             this._btnPercent.Name = "_btnPercent";
-            this._btnPercent.Size = new System.Drawing.Size(70, 25);
+            this._btnPercent.Size = new System.Drawing.Size(150, 25);
             this._btnPercent.TabIndex = 4;
             this._btnPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this._btnPercent.TextOffset = new System.Drawing.Point(-5, 0);
