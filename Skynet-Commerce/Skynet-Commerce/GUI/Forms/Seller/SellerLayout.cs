@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Skynet_Commerce.GUI.UserControls.Components.UCSeller;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp11
+namespace Skynet_Commerce
 {
     public partial class SellerLayout : Form
     {
@@ -52,7 +53,7 @@ namespace WindowsFormsApp11
             {
                 case "btnOverview":
                     // Thay thế bằng new ucOverview() thực tế nếu có
-                    //newContent = new Label() { Text = "Tổng quan shop", Font = new Font("Segoe UI", 16), Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter };
+                    newContent = new ucSellerDashboard();
                     titleText = "Kênh người bán - Tổng quan";
                     break;
 

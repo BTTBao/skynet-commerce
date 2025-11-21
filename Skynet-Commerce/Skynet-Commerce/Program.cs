@@ -1,8 +1,5 @@
-﻿using Skynet_Commerce.GUI.Forms;
+﻿
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce
@@ -17,8 +14,9 @@ namespace Skynet_Commerce
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain()); // của bảo ở đây nhé
+            //Application.Run(new FrmMain()); // của bảo ở đây nhé
             // Application.Run(new DashboardForm());
+            Application.Run(new SellerLayout());
         }
     }
 }

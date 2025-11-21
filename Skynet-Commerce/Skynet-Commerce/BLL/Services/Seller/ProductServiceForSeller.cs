@@ -1,4 +1,5 @@
 using Skynet_Commerce.BLL.Models.Admin;
+using Skynet_Commerce.BLL.Models.Seller;
 using Skynet_Commerce.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -75,7 +76,7 @@ namespace Skynet_Commerce.BLL.Services.Seller
                     ImageID = img.ImageID,
                     ImageURL = img.ImageURL,
                     ImagePublicId = img.ImagePublicId,
-                    IsPrimary = img.IsPrimary
+                    IsPrimary = (bool)img.IsPrimary
                 })
                 .ToList();
 
@@ -88,7 +89,7 @@ namespace Skynet_Commerce.BLL.Services.Seller
                     Color = v.Color,
                     SKU = v.SKU,
                     Price = v.Price,
-                    StockQuantity = v.StockQuantity
+                    StockQuantity = (int)v.StockQuantity
                 })
                 .ToList();
 
