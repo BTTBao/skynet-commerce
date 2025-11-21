@@ -180,6 +180,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.btnViewShop.Size = new System.Drawing.Size(120, 30);
             this.btnViewShop.TabIndex = 3;
             this.btnViewShop.Text = "Xem Shop";
+            this.btnViewShop.Click += new System.EventHandler(this.BtnViewShop_Click);
             // 
             // lblShopStats
             // 

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Skynet_Commerce.GUI.UserControls.General;
 using Skynet_Commerce.GUI.UserControls.Pages;
 using Skynet_Commerce.BLL.Models; // Sử dụng ProductDTO
+using Skynet_Commerce.GUI.UserControls.Components; // Cần cho các controls khác
 
 namespace Skynet_Commerce.GUI.Forms
 {
@@ -12,7 +13,8 @@ namespace Skynet_Commerce.GUI.Forms
     {
         // Dictionary để lưu trữ các UserControl đã được khởi tạo
         private Dictionary<string, UserControl> pageCache;
-        // Đã xóa bỏ khai báo thừa 'private ProductDTO _productData;'
+        // Giả định pnlContent đã được khai báo trong Designer
+        // private Panel pnlContent; 
 
         // Màu sắc để highlight link menu
         private Color ActiveColor = Color.White;
@@ -47,17 +49,35 @@ namespace Skynet_Commerce.GUI.Forms
         /// <summary>
         /// Tải UserControl tương ứng vào pnlContent.
         /// </summary>
-        /// <param name="pageName">Tên trang cần tải (Home, Orders, Cart...)</param>
-        public void LoadPage(string pageName, ProductDTO productData = null)
+        /// <param name="pageName">Tên trang cần tải (Home, Orders, Cart, ShopDetail, ProductDetail...)</param>
+        /// <param name="data">Dữ liệu đi kèm (ProductDTO hoặc ShopID)</param>
+        public void LoadPage(string pageName, object data = null)
         {
             UserControl targetPage = null;
 
-            // Tên trang chi tiết sẽ là PageName_ProductID để phân biệt (Dùng cho caching)
+            // Tên trang chi tiết sẽ là PageName_ID để phân biệt (Dùng cho caching)
             string cacheKey = pageName;
-            if (productData != null)
+            int entityId = 0; // Dùng để xác định ProductID hoặc ShopID
+
+            // Xử lý key cache và ID từ dữ liệu đầu vào
+            if (pageName == "ProductDetail" && data is ProductDTO productData)
             {
-                cacheKey = $"Detail_{productData.ProductId}";
+                entityId = productData.ProductId;
+                cacheKey = $"ProductDetail_{entityId}";
             }
+            else if (pageName == "ShopDetail" && data is int shopId)
+            {
+                entityId = shopId;
+                cacheKey = $"ShopDetail_{entityId}";
+            }
+            else if (pageName == "ShopDetail" && data is ProductDTO shopProduct)
+            {
+                // Giả định ProductDTO có thuộc tính ShopId
+                // entityId = shopProduct.ShopId; 
+                entityId = 1; // Dùng ShopID giả lập
+                cacheKey = $"ShopDetail_{entityId}";
+            }
+
 
             // 1. Kiểm tra trong Cache
             if (pageCache.ContainsKey(cacheKey))
@@ -76,13 +96,18 @@ namespace Skynet_Commerce.GUI.Forms
                         targetPage = new UcCartPage();
                         break;
                     case "ProductDetail":
-                        if (productData != null)
+                        if (data is ProductDTO pd)
                         {
-                            targetPage = new UcProductDetail(productData); // Sử dụng constructor nhận DTO
+                            targetPage = new UcProductDetail(pd); // Sử dụng constructor nhận DTO
                         }
-                        else
+                        break;
+                    case "ShopDetail":
+                        // Cần có Shop ID để tải dữ liệu
+                        if (entityId != 0)
                         {
-                            targetPage = new UcHomePage(); // Trường hợp lỗi DTO, chuyển về Home
+                            UcShopDetail shopPage = new UcShopDetail();
+                            shopPage.LoadShopData(entityId); // Gọi hàm tải dữ liệu shop
+                            targetPage = shopPage;
                         }
                         break;
                     case "Orders":
@@ -98,7 +123,11 @@ namespace Skynet_Commerce.GUI.Forms
                 if (targetPage != null)
                 {
                     targetPage.Dock = DockStyle.Fill;
-                    pageCache.Add(cacheKey, targetPage); // Lưu vào cache với key mới
+                    pageCache.Add(cacheKey, targetPage);
+
+                    // Thêm vào Controls lần đầu
+                    // *Chú ý: Nếu pnlContent là FlowLayoutPanel hoặc TableLayoutPanel, 
+                    // cách quản lý Controls sẽ khác một chút.*
                     pnlContent.Controls.Add(targetPage);
                 }
             }
@@ -107,7 +136,7 @@ namespace Skynet_Commerce.GUI.Forms
             if (targetPage != null)
             {
                 // Ẩn tất cả các controls cũ
-                foreach (UserControl uc in pnlContent.Controls)
+                foreach (Control uc in pnlContent.Controls)
                 {
                     uc.Visible = false;
                 }
@@ -116,14 +145,21 @@ namespace Skynet_Commerce.GUI.Forms
                 targetPage.Visible = true;
                 targetPage.BringToFront();
 
-                // Cập nhật tiêu đề Form
-                this.Text = $"ShopViet - {(productData != null ? productData.Name : pageName)}";
+                // 4. Cập nhật tiêu đề Form
+                string title = pageName;
+                if (pageName == "ProductDetail" && data is ProductDTO pdTitle)
+                    title = pdTitle.Name;
+                else if (pageName == "ShopDetail")
+                    title = $"Shop ID {entityId}"; // Cần cập nhật Title sau khi UcShopDetail.LoadShopData chạy
+
+                this.Text = $"ShopViet - {title}";
             }
 
-            // 4. Cập nhật trạng thái Active của Menu (Chỉ Home/Orders)
+            // 5. Cập nhật trạng thái Active của Menu (Chỉ Home/Orders)
             UpdateMenuState(pageName);
         }
 
+        // ... Hàm UpdateMenuState giữ nguyên ...
         private void UpdateMenuState(string activePage)
         {
             // Đặt lại font style và màu sắc cho tất cả các Label menu

@@ -25,14 +25,23 @@ namespace Skynet_Commerce.GUI.UserControls.Components
 
         private void InitializeComponent()
         {
-            // SỬA: BỎ KHAI BÁO NÀY KHỎI PHẦN FIELD (VÌ NÓ TỰ ĐỘNG KHAI BÁO LẠI BÊN DƯỚI)
-            // this.pbThumbnail = new Guna.UI2.WinForms.Guna2PictureBox(); 
+            this.thumbnailBox = new Guna.UI2.WinForms.Guna2PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.thumbnailBox)).BeginInit();
+            this.SuspendLayout();
 
-            // LƯU Ý: Nếu Designer Host cần khai báo, nó sẽ tự thêm lại, 
-            // nhưng lỗi Ambiguity thường xuất phát từ việc thêm thủ công
+            // thumbnailBox
+            this.thumbnailBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.thumbnailBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.thumbnailBox.Name = "thumbnailBox";
+            this.thumbnailBox.TabStop = false;
 
-            // ... (Phần InitializeComponent giữ nguyên)
+            // Add Controls
+            this.Controls.Add(this.thumbnailBox);
+
+            ((System.ComponentModel.ISupportInitialize)(this.thumbnailBox)).EndInit();
+            this.ResumeLayout(false);
         }
+        private Guna2PictureBox thumbnailBox;
 
         #endregion
     }
