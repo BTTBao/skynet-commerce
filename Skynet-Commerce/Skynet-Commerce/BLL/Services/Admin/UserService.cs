@@ -11,40 +11,77 @@ namespace Skynet_Commerce.BLL.Services.Admin
 {
     public class UserService
     {
-        private readonly UserRepository _repoUser;
-        private readonly AccountRepository _repoAccount;
         private readonly ApplicationDbContext _context;
 
         public UserService()
         {
-            _repoUser = new UserRepository();
-            _repoAccount = new AccountRepository();
             _context = new ApplicationDbContext();
         }
-        public List<UserViewModel> GetAllUsersForView()
+        // Cập nhật hàm này nhận tham số keyword và role
+        public List<UserViewModel> GetAllUsersForView(string keyword = "", string role = "All Roles")
         {
-            var users = _repoUser.GetAll();
-            var viewModels = new List<UserViewModel>();
+            // 1. Khởi tạo query cơ bản
+            var query = _context.Users
+                .Include("Account")
+                .Include("Account.UserRoles")
+                .AsQueryable();
 
-            foreach(var s in users)
+            // 2. Lọc theo Role (nếu không phải "All Roles")
+            if (!string.IsNullOrEmpty(role) && role != "All Roles")
             {
-                if (s.AccountID == null)
-                    return null;
-
-                var account = _repoAccount.GetByAccountId(s.AccountID.Value);
-                var role = _context.UserRoles.FirstOrDefault(x => x.AccountID == s.AccountID);
-
-                viewModels.Add(new UserViewModel
-                {
-                    UserID = s.UserID,
-                    FullName = s.FullName,
-                    Email = account.Email,
-                    Phone = account.Phone,
-                    RoleName = role.RoleName,
-                    Status = account.IsActive == true ? "Active" : "Banned"
-                });
+                // Lọc những user có Account chứa RoleName tương ứng
+                query = query.Where(u => u.Account.UserRoles.Any(r => r.RoleName == role));
             }
-            return viewModels;
+
+            // 3. Lọc theo Keyword (Tên, Email hoặc Phone)
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(u =>
+                    u.FullName.Contains(keyword) ||
+                    u.Account.Email.Contains(keyword) ||
+                    u.Account.Phone.Contains(keyword)
+                );
+            }
+
+            // 4. Select ra ViewModel (Projection)
+            var result = query.Select(u => new UserViewModel
+            {
+                UserID = u.UserID,
+                AccountID = u.Account.AccountID,
+                FullName = u.FullName,
+                Email = u.Account.Email,
+                Phone = u.Account.Phone,
+                RoleName = u.Account.UserRoles.FirstOrDefault().RoleName,
+                Status = u.Account.IsActive == true ? "Active" : "Banned"
+            })
+            .ToList();
+
+            return result;
         }
+        public bool UpdateUser(UserViewModel vm)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.UserID == vm.UserID);
+            if (user == null) return false;
+
+            var account = _context.Accounts.FirstOrDefault(x => x.AccountID == user.AccountID);
+            if (account == null) return false;
+
+            // Update User table
+            user.FullName = vm.FullName;
+
+            // Update Account table
+            account.Email = vm.Email;
+            account.Phone = vm.Phone;
+            account.IsActive = vm.Status == "Active";
+
+            // Update Role
+            var role = _context.UserRoles.FirstOrDefault(x => x.AccountID == account.AccountID);
+            if (role != null)
+                role.RoleName = vm.RoleName;
+
+            _context.SaveChanges();
+            return true;
+        }
+
     }
 }

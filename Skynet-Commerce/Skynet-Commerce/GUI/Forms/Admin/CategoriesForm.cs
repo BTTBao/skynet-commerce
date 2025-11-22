@@ -1,37 +1,96 @@
-﻿using System;
+﻿using Skynet_Commerce.BLL.Services.Admin;
+using Skynet_Commerce.GUI.UserControls;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Skynet_Commerce.GUI.UserControls;
 
 namespace Skynet_Commerce.GUI.Forms
 {
     public partial class CategoriesForm : Form
     {
+        private readonly CategoryService _categoryService;
         public CategoriesForm()
         {
             InitializeComponent();
-            LoadDummyData();
+            _categoryService = new CategoryService();
         }
 
-        private void LoadDummyData()
+        private void CategoriesForm_Load(object sender, EventArgs e)
         {
-            var categories = new List<dynamic>
-            {
-                new { Id="CAT-001", Name="Electronics", Total="1234", Sub="8" },
-                new { Id="CAT-002", Name="Fashion", Total="2456", Sub="12" },
-                new { Id="CAT-003", Name="Home & Garden", Total="987", Sub="6" },
-                new { Id="CAT-004", Name="Sports", Total="654", Sub="5" },
-                new { Id="CAT-005", Name="Beauty & Health", Total="1567", Sub="9" },
-                new { Id="CAT-006", Name="Books & Media", Total="432", Sub="4" }
-            };
+            LoadCategoriesFromDb();
+        }
 
-            _flowPanel.Controls.Clear();
-
-            foreach (var cat in categories)
+        private void LoadCategoriesFromDb()
+        {
+            try
             {
-                var row = new UcCategoryRow();
-                row.SetData(cat.Id, cat.Name, cat.Total, cat.Sub);
-                _flowPanel.Controls.Add(row);
+                _flowPanel.Controls.Clear();
+                _flowPanel.SuspendLayout(); // Tối ưu hiệu năng vẽ
+
+                // Luôn lấy dữ liệu mới nhất
+                var data = new CategoryService().GetAllCategories();
+
+                foreach (var item in data)
+                {
+                    var row = new UcCategoryRow();
+                    row.SetData(
+                        item.CategoryID,
+                        item.NameDisplay,
+                        item.ProductCountDisplay,
+                        item.SubCatCountDisplay
+                    );
+                    row.Width = _flowPanel.Width - 25; // Chỉnh chiều rộng cho đẹp
+
+                    // --- XỬ LÝ SỰ KIỆN SỬA ---
+                    row.OnEditClicked += (s, e) =>
+                    {
+                        var uc = s as UcCategoryRow;
+                        using (var f = new CategoryDetailForm(uc.CategoryID))
+                        {
+                            if (f.ShowDialog() == DialogResult.OK)
+                                LoadCategoriesFromDb(); // Load lại danh sách
+                        }
+                    };
+
+                    // --- XỬ LÝ SỰ KIỆN XÓA ---
+                    row.OnDeleteClicked += (s, e) =>
+                    {
+                        var uc = s as UcCategoryRow;
+                        if (MessageBox.Show($"Bạn có chắc chắn muốn xóa danh mục ID {uc.CategoryID}?",
+                            "Cảnh báo", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                        {
+                            try
+                            {
+                                new CategoryService().DeleteCategory(uc.CategoryID);
+                                MessageBox.Show("Đã xóa thành công.");
+                                LoadCategoriesFromDb();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Không thể xóa!\nLý do: " + ex.Message, "Lỗi ràng buộc", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    };
+
+                    _flowPanel.Controls.Add(row);
+                }
+
+                _flowPanel.ResumeLayout();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh mục: " + ex.Message);
+            }
+        }
+
+        private void _btnAdd_Click(object sender, EventArgs e)
+        {
+            using (var f = new CategoryDetailForm()) // Constructor không tham số = Thêm mới
+            {
+                if (f.ShowDialog() == DialogResult.OK)
+                {
+                    LoadCategoriesFromDb();
+                }
             }
         }
     }

@@ -16,13 +16,17 @@
         {
             this._sidebar = new Guna.UI2.WinForms.Guna2Panel();
             this._header = new Guna.UI2.WinForms.Guna2Panel();
-            this._txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
             this._mainPanel = new System.Windows.Forms.Panel();
+            this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
+            this._sidebar.SuspendLayout();
             this._header.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // _sidebar
             // 
+            this._sidebar.Controls.Add(this.guna2PictureBox1);
             this._sidebar.Dock = System.Windows.Forms.DockStyle.Left;
             this._sidebar.FillColor = System.Drawing.Color.White;
             this._sidebar.Location = new System.Drawing.Point(0, 0);
@@ -34,26 +38,13 @@
             // 
             // _header
             // 
-            this._header.Controls.Add(this._txtSearch);
+            this._header.Controls.Add(this.guna2HtmlLabel1);
             this._header.Dock = System.Windows.Forms.DockStyle.Top;
             this._header.FillColor = System.Drawing.Color.White;
             this._header.Location = new System.Drawing.Point(250, 0);
             this._header.Name = "_header";
             this._header.Size = new System.Drawing.Size(1050, 70);
             this._header.TabIndex = 1;
-            // 
-            // _txtSearch
-            // 
-            this._txtSearch.BorderRadius = 8;
-            this._txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this._txtSearch.DefaultText = "";
-            this._txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._txtSearch.Location = new System.Drawing.Point(20, 17);
-            this._txtSearch.Name = "_txtSearch";
-            this._txtSearch.PlaceholderText = "Search...";
-            this._txtSearch.SelectedText = "";
-            this._txtSearch.Size = new System.Drawing.Size(300, 36);
-            this._txtSearch.TabIndex = 0;
             // 
             // _mainPanel
             // 
@@ -63,6 +54,29 @@
             this._mainPanel.Name = "_mainPanel";
             this._mainPanel.Size = new System.Drawing.Size(1050, 679);
             this._mainPanel.TabIndex = 2;
+            // 
+            // guna2HtmlLabel1
+            // 
+            this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel1.Font = new System.Drawing.Font("MV Boli", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.guna2HtmlLabel1.ForeColor = System.Drawing.Color.MediumBlue;
+            this.guna2HtmlLabel1.Location = new System.Drawing.Point(296, 12);
+            this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            this.guna2HtmlLabel1.Size = new System.Drawing.Size(498, 51);
+            this.guna2HtmlLabel1.TabIndex = 1;
+            this.guna2HtmlLabel1.Text = "ShopViet Admin Dashboard";
+            // 
+            // guna2PictureBox1
+            // 
+            this.guna2PictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2PictureBox1.ImageRotate = 0F;
+            this.guna2PictureBox1.Location = new System.Drawing.Point(13, 8);
+            this.guna2PictureBox1.Name = "guna2PictureBox1";
+            this.guna2PictureBox1.Size = new System.Drawing.Size(231, 58);
+            this.guna2PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.guna2PictureBox1.TabIndex = 0;
+            this.guna2PictureBox1.TabStop = false;
+            this.guna2PictureBox1.UseTransparentBackground = true;
             // 
             // DashboardForm
             // 
@@ -76,7 +90,10 @@
             this.Name = "DashboardForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MarketPlace Admin";
+            this._sidebar.ResumeLayout(false);
             this._header.ResumeLayout(false);
+            this._header.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -86,7 +103,8 @@
         // Khai báo biến (đã có ở đây nên bên .cs không được khai báo lại)
         private Guna.UI2.WinForms.Guna2Panel _sidebar;
         private Guna.UI2.WinForms.Guna2Panel _header;
-        private Guna.UI2.WinForms.Guna2TextBox _txtSearch;
         public System.Windows.Forms.Panel _mainPanel; // Public để dễ truy cập nếu cần
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
+        private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox1;
     }
 }

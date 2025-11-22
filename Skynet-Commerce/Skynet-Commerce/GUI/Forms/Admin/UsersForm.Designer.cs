@@ -40,9 +40,9 @@
             this._pageTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this._pageTitle.Location = new System.Drawing.Point(20, 20);
             this._pageTitle.Name = "_pageTitle";
-            this._pageTitle.Size = new System.Drawing.Size(175, 25);
+            this._pageTitle.Size = new System.Drawing.Size(192, 25);
             this._pageTitle.TabIndex = 0;
-            this._pageTitle.Text = "User Management";
+            this._pageTitle.Text = "Quản lý người dùng";
             // 
             // _pageSub
             // 
@@ -51,9 +51,9 @@
             this._pageSub.ForeColor = System.Drawing.Color.Gray;
             this._pageSub.Location = new System.Drawing.Point(22, 50);
             this._pageSub.Name = "_pageSub";
-            this._pageSub.Size = new System.Drawing.Size(312, 19);
+            this._pageSub.Size = new System.Drawing.Size(345, 19);
             this._pageSub.TabIndex = 1;
-            this._pageSub.Text = "Manage and monitor all users in the marketplace.";
+            this._pageSub.Text = "Quản lý và giám sát tất cả người dùng trong hệ thống.";
             // 
             // _mainCard
             // 
@@ -100,11 +100,11 @@
             // _labelH7
             // 
             this._labelH7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._labelH7.Location = new System.Drawing.Point(830, 10);
+            this._labelH7.Location = new System.Drawing.Point(862, 10);
             this._labelH7.Name = "_labelH7";
             this._labelH7.Size = new System.Drawing.Size(100, 23);
             this._labelH7.TabIndex = 0;
-            this._labelH7.Text = "Actions";
+            this._labelH7.Text = "Hành động";
             // 
             // _labelH6
             // 
@@ -113,7 +113,7 @@
             this._labelH6.Name = "_labelH6";
             this._labelH6.Size = new System.Drawing.Size(100, 23);
             this._labelH6.TabIndex = 1;
-            this._labelH6.Text = "Status";
+            this._labelH6.Text = "Trạng thái";
             // 
             // _labelH5
             // 
@@ -122,7 +122,7 @@
             this._labelH5.Name = "_labelH5";
             this._labelH5.Size = new System.Drawing.Size(100, 23);
             this._labelH5.TabIndex = 2;
-            this._labelH5.Text = "Role";
+            this._labelH5.Text = "Vai trò";
             // 
             // _labelH4
             // 
@@ -131,7 +131,7 @@
             this._labelH4.Name = "_labelH4";
             this._labelH4.Size = new System.Drawing.Size(100, 23);
             this._labelH4.TabIndex = 3;
-            this._labelH4.Text = "Phone";
+            this._labelH4.Text = "Điện thoại";
             // 
             // _labelH3
             // 
@@ -149,7 +149,7 @@
             this._labelH2.Name = "_labelH2";
             this._labelH2.Size = new System.Drawing.Size(100, 23);
             this._labelH2.TabIndex = 5;
-            this._labelH2.Text = "Name";
+            this._labelH2.Text = "Họ và tên";
             // 
             // _labelH1
             // 
@@ -178,16 +178,12 @@
             this._comboRole.Font = new System.Drawing.Font("Segoe UI", 10F);
             this._comboRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this._comboRole.ItemHeight = 30;
-            this._comboRole.Items.AddRange(new object[] {
-            "All Roles",
-            "Buyer",
-            "Seller",
-            "Admin"});
             this._comboRole.Location = new System.Drawing.Point(836, 20);
             this._comboRole.Name = "_comboRole";
             this._comboRole.Size = new System.Drawing.Size(140, 36);
             this._comboRole.StartIndex = 0;
             this._comboRole.TabIndex = 2;
+            this._comboRole.SelectedIndexChanged += new System.EventHandler(this._comboRole_SelectedIndexChanged);
             // 
             // _txtSearch
             // 
@@ -197,10 +193,11 @@
             this._txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this._txtSearch.Location = new System.Drawing.Point(565, 20);
             this._txtSearch.Name = "_txtSearch";
-            this._txtSearch.PlaceholderText = "Search users...";
+            this._txtSearch.PlaceholderText = "Tìm kiếm và nhấn Enter...";
             this._txtSearch.SelectedText = "";
             this._txtSearch.Size = new System.Drawing.Size(250, 36);
             this._txtSearch.TabIndex = 1;
+            this._txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this._txtSearch_KeyDown);
             // 
             // _lblAllUsers
             // 
@@ -208,9 +205,9 @@
             this._lblAllUsers.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this._lblAllUsers.Location = new System.Drawing.Point(25, 30);
             this._lblAllUsers.Name = "_lblAllUsers";
-            this._lblAllUsers.Size = new System.Drawing.Size(71, 20);
+            this._lblAllUsers.Size = new System.Drawing.Size(136, 20);
             this._lblAllUsers.TabIndex = 0;
-            this._lblAllUsers.Text = "All Users";
+            this._lblAllUsers.Text = "Tất cả người dùng";
             // 
             // UsersForm
             // 
@@ -223,6 +220,7 @@
             this.Controls.Add(this._pageTitle);
             this.Name = "UsersForm";
             this.Text = "Users Management";
+            this.Load += new System.EventHandler(this.UsersForm_Load);
             this._mainCard.ResumeLayout(false);
             this._mainCard.PerformLayout();
             this._panelListHeader.ResumeLayout(false);

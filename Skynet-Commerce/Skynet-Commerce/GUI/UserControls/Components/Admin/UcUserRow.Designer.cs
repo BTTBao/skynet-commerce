@@ -79,9 +79,9 @@
             this._btnRole.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this._btnRole.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this._btnRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this._btnRole.Location = new System.Drawing.Point(600, 14);
+            this._btnRole.Location = new System.Drawing.Point(578, 14);
             this._btnRole.Name = "_btnRole";
-            this._btnRole.Size = new System.Drawing.Size(60, 24);
+            this._btnRole.Size = new System.Drawing.Size(98, 24);
             this._btnRole.TabIndex = 4;
             this._btnRole.Text = "Buyer";
             // 
@@ -93,9 +93,9 @@
             this._btnStatus.ForeColor = System.Drawing.Color.White;
             this._btnStatus.Location = new System.Drawing.Point(720, 14);
             this._btnStatus.Name = "_btnStatus";
-            this._btnStatus.Size = new System.Drawing.Size(60, 24);
+            this._btnStatus.Size = new System.Drawing.Size(91, 24);
             this._btnStatus.TabIndex = 5;
-            this._btnStatus.Text = "Active";
+            this._btnStatus.Text = "Hoạt động";
             // 
             // _btnView
             // 
@@ -107,7 +107,7 @@
             this._btnView.Name = "_btnView";
             this._btnView.Size = new System.Drawing.Size(60, 24);
             this._btnView.TabIndex = 6;
-            this._btnView.Text = "View";
+            this._btnView.Text = "Xem";
             // 
             // _btnEdit
             // 
@@ -118,7 +118,7 @@
             this._btnEdit.Name = "_btnEdit";
             this._btnEdit.Size = new System.Drawing.Size(50, 24);
             this._btnEdit.TabIndex = 7;
-            this._btnEdit.Text = "Edit";
+            this._btnEdit.Text = "Sửa";
             // 
             // _btnBan
             // 
@@ -127,9 +127,9 @@
             this._btnBan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this._btnBan.Location = new System.Drawing.Point(940, 14);
             this._btnBan.Name = "_btnBan";
-            this._btnBan.Size = new System.Drawing.Size(50, 24);
+            this._btnBan.Size = new System.Drawing.Size(54, 24);
             this._btnBan.TabIndex = 8;
-            this._btnBan.Text = "Ban";
+            this._btnBan.Text = "Khoá";
             // 
             // UcUserRow
             // 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -36,14 +35,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
+      <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
       <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -81,15 +86,35 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Helpers\UserValidator.cs" />
+    <Compile Include="BLL\Models\Admin\CategoryViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\DashboardDTO.cs" />
+    <Compile Include="BLL\Models\Admin\OrderViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\PendingShopViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ProductViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ShopViewModel.cs" />
     <Compile Include="BLL\Models\Admin\UserViewModel.cs" />
     <Compile Include="BLL\Models\CartItemDTO.cs" />
     <Compile Include="BLL\Models\ProductDTO.cs" />
     <Compile Include="BLL\Models\SampleDataGenerator.cs" />
+    <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
+    <Compile Include="BLL\Models\Seller\OrderSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
+    <Compile Include="BLL\Services\Admin\CategoryService.cs" />
     <Compile Include="BLL\Services\Admin\DashboardService.cs" />
+    <Compile Include="BLL\Services\Admin\OrderService.cs" />
+    <Compile Include="BLL\Services\Admin\ProductService.cs" />
+    <Compile Include="BLL\Services\Admin\ShopService.cs" />
     <Compile Include="BLL\Services\Admin\UserService.cs" />
+    <Compile Include="BLL\Services\Seller\OrderServiceForSeller.cs" />
+    <Compile Include="BLL\Services\Seller\ProductServiceForSeller.cs" />
+    <Compile Include="DAL\Config\DBConnection.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
+    <Compile Include="DAL\Entities\AppSession.cs" />
     <Compile Include="DAL\Entities\Cart.cs" />
     <Compile Include="DAL\Entities\CartItem.cs" />
     <Compile Include="DAL\Entities\Category.cs" />
@@ -121,6 +146,60 @@
     <Compile Include="DAL\Repositories\Admin\AccountRepository.cs" />
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
     <Compile Include="DAL\Entities\UserRoles.cs" />
+    <Compile Include="GUI\Forms\Admin\CategoryDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\CategoryDetailForm.Designer.cs">
+      <DependentUpon>CategoryDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\OrderDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\OrderDetailForm.Designer.cs">
+      <DependentUpon>OrderDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ProductDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ProductDetailForm.Designer.cs">
+      <DependentUpon>ProductDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ShopDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ShopDetailForm.Designer.cs">
+      <DependentUpon>ShopDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.Designer.cs">
+      <DependentUpon>ucOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucProduct.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucProduct.Designer.cs">
+      <DependentUpon>ucProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucSellerDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucSellerDashboard.Designer.cs">
+      <DependentUpon>ucSellerDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucShopSetting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucShopSetting.Designer.cs">
+      <DependentUpon>ucShopSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\VariantControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\VariantControl.Designer.cs">
+      <DependentUpon>VariantControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\Admin\CategoriesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -174,6 +253,18 @@
     </Compile>
     <Compile Include="GUI\Forms\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\FormAddProduct.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\FormAddProduct.Designer.cs">
+      <DependentUpon>FormAddProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerLayout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerLayout.Designer.cs">
+      <DependentUpon>SellerLayout.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcCartItem.CS">
       <SubType>UserControl</SubType>
@@ -295,9 +386,11 @@
     <Compile Include="GUI\UserControls\Pages\UcProductDetail.Designer.cs">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\Pages\UcShopDetail.cs" />
-    <Compile Include="GUI\UserControls\Pages\UcShopDetail.Designer.cs">
-      <DependentUpon>UcShopDetail.cs</DependentUpon>
+    <Compile Include="GUI\UserControls\Pages\UcProfile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcProfile.Designer.cs">
+      <DependentUpon>UcProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -319,6 +412,9 @@
     <EmbeddedResource Include="GUI\Forms\Admin\ProductsForm.resx">
       <DependentUpon>ProductsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\ShopDetailForm.resx">
+      <DependentUpon>ShopDetailForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\ShopsForm.resx">
       <DependentUpon>ShopsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -327,6 +423,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Seller\SellerLayout.resx">
+      <DependentUpon>SellerLayout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\UcCartItem.resx">
       <DependentUpon>UcCartItem.CS</DependentUpon>
@@ -358,6 +457,9 @@
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcInfoCard.resx">
       <DependentUpon>UcInfoCard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcProductRow.resx">
+      <DependentUpon>UcProductRow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcUserRow.resx">
       <DependentUpon>UcUserRow.cs</DependentUpon>
     </EmbeddedResource>
@@ -367,14 +469,13 @@
     <EmbeddedResource Include="GUI\UserControls\General\UcHeader.resx">
       <DependentUpon>UcHeader.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\UcCartPage.resx">
-      <DependentUpon>UcCartPage.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Pages\UcHomePage.resx">
       <DependentUpon>UcHomePage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Pages\UcProductDetail.resx">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
+    </EmbeddedResource>  <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
+      <DependentUpon>UcProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -401,7 +502,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BLL\Helpers\" />
     <Folder Include="GUI\UserControls\Product\" />
     <Folder Include="GUI\UserControls\Seller\" />
   </ItemGroup>
@@ -431,14 +531,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\img\product1.jpg" />
+    <Content Include="database\SQL.sql" />
+    <Content Include="Resources\1413908.png" />
+    <Content Include="Resources\download.png" />
+    <Content Include="Resources\product1.jpg" />
+    <Content Include="Resources\slide1.jpg" />
+    <Content Include="Resources\slide2.jpg" />
+    <Content Include="Resources\slide3.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
   </Target>
-  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
 </Project>

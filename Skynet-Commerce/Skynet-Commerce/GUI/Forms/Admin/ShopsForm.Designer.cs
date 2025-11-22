@@ -38,6 +38,7 @@
             this._lblH_A_Stat = new System.Windows.Forms.Label();
             this._lblH_A_Act = new System.Windows.Forms.Label();
             this._activeContainer = new System.Windows.Forms.FlowLayoutPanel();
+            this._comboStatus = new Guna.UI2.WinForms.Guna2ComboBox();
             this._cardPending.SuspendLayout();
             this._headerPending.SuspendLayout();
             this._cardAllShops.SuspendLayout();
@@ -50,9 +51,9 @@
             this._pageTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this._pageTitle.Location = new System.Drawing.Point(20, 20);
             this._pageTitle.Name = "_pageTitle";
-            this._pageTitle.Size = new System.Drawing.Size(181, 25);
+            this._pageTitle.Size = new System.Drawing.Size(167, 25);
             this._pageTitle.TabIndex = 3;
-            this._pageTitle.Text = "Shop Management";
+            this._pageTitle.Text = "Quản lý cửa hàng";
             // 
             // _pageSub
             // 
@@ -61,9 +62,9 @@
             this._pageSub.ForeColor = System.Drawing.Color.Gray;
             this._pageSub.Location = new System.Drawing.Point(22, 50);
             this._pageSub.Name = "_pageSub";
-            this._pageSub.Size = new System.Drawing.Size(308, 19);
+            this._pageSub.Size = new System.Drawing.Size(334, 19);
             this._pageSub.TabIndex = 2;
-            this._pageSub.Text = "Review and manage all shops in the marketplace.";
+            this._pageSub.Text = "Rà soát và quản lý tất cả các cửa hàng trên hệ thống.";
             // 
             // _cardPending
             // 
@@ -88,7 +89,7 @@
             this._lblPendingTitle.Name = "_lblPendingTitle";
             this._lblPendingTitle.Size = new System.Drawing.Size(202, 20);
             this._lblPendingTitle.TabIndex = 0;
-            this._lblPendingTitle.Text = "Pending Shop Registrations";
+            this._lblPendingTitle.Text = "Đang chờ đăng ký cửa hàng";
             // 
             // _headerPending
             // 
@@ -119,16 +120,16 @@
             this._lblH_P_Name.Name = "_lblH_P_Name";
             this._lblH_P_Name.Size = new System.Drawing.Size(87, 23);
             this._lblH_P_Name.TabIndex = 1;
-            this._lblH_P_Name.Text = "Shop Name";
+            this._lblH_P_Name.Text = "Tên cửa hàng";
             // 
             // _lblH_P_Owner
             // 
             this._lblH_P_Owner.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._lblH_P_Owner.Location = new System.Drawing.Point(290, 4);
             this._lblH_P_Owner.Name = "_lblH_P_Owner";
-            this._lblH_P_Owner.Size = new System.Drawing.Size(57, 23);
+            this._lblH_P_Owner.Size = new System.Drawing.Size(93, 23);
             this._lblH_P_Owner.TabIndex = 2;
-            this._lblH_P_Owner.Text = "Owner";
+            this._lblH_P_Owner.Text = "Người sở hữu";
             // 
             // _lblH_P_Email
             // 
@@ -142,20 +143,20 @@
             // _lblH_P_Sub
             // 
             this._lblH_P_Sub.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._lblH_P_Sub.Location = new System.Drawing.Point(647, 4);
+            this._lblH_P_Sub.Location = new System.Drawing.Point(602, 4);
             this._lblH_P_Sub.Name = "_lblH_P_Sub";
             this._lblH_P_Sub.Size = new System.Drawing.Size(74, 23);
             this._lblH_P_Sub.TabIndex = 4;
-            this._lblH_P_Sub.Text = "Submitted";
+            this._lblH_P_Sub.Text = "Ngày gửi";
             // 
             // _lblH_P_Act
             // 
             this._lblH_P_Act.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._lblH_P_Act.Location = new System.Drawing.Point(887, 4);
+            this._lblH_P_Act.Location = new System.Drawing.Point(830, 4);
             this._lblH_P_Act.Name = "_lblH_P_Act";
-            this._lblH_P_Act.Size = new System.Drawing.Size(52, 23);
+            this._lblH_P_Act.Size = new System.Drawing.Size(72, 23);
             this._lblH_P_Act.TabIndex = 5;
-            this._lblH_P_Act.Text = "Actions";
+            this._lblH_P_Act.Text = "Hành động";
             // 
             // _pendingContainer
             // 
@@ -175,6 +176,7 @@
             this._cardAllShops.Controls.Add(this._txtSearch);
             this._cardAllShops.Controls.Add(this._headerActive);
             this._cardAllShops.Controls.Add(this._activeContainer);
+            this._cardAllShops.Controls.Add(this._comboStatus);
             this._cardAllShops.FillColor = System.Drawing.Color.White;
             this._cardAllShops.Location = new System.Drawing.Point(25, 360);
             this._cardAllShops.Name = "_cardAllShops";
@@ -189,9 +191,9 @@
             this._lblAllShopsTitle.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this._lblAllShopsTitle.Location = new System.Drawing.Point(20, 20);
             this._lblAllShopsTitle.Name = "_lblAllShopsTitle";
-            this._lblAllShopsTitle.Size = new System.Drawing.Size(74, 20);
+            this._lblAllShopsTitle.Size = new System.Drawing.Size(119, 20);
             this._lblAllShopsTitle.TabIndex = 0;
-            this._lblAllShopsTitle.Text = "All Shops";
+            this._lblAllShopsTitle.Text = "Tất cả cửa hàng";
             // 
             // _txtSearch
             // 
@@ -199,12 +201,13 @@
             this._txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
             this._txtSearch.DefaultText = "";
             this._txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._txtSearch.Location = new System.Drawing.Point(704, 11);
+            this._txtSearch.Location = new System.Drawing.Point(560, 11);
             this._txtSearch.Name = "_txtSearch";
-            this._txtSearch.PlaceholderText = "Search shops...";
+            this._txtSearch.PlaceholderText = "Tìm kiếm và nhấn Enter...";
             this._txtSearch.SelectedText = "";
             this._txtSearch.Size = new System.Drawing.Size(250, 36);
             this._txtSearch.TabIndex = 1;
+            this._txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this._txtSearch_KeyDown);
             // 
             // _headerActive
             // 
@@ -234,18 +237,18 @@
             this._lblH_A_Name.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._lblH_A_Name.Location = new System.Drawing.Point(118, 4);
             this._lblH_A_Name.Name = "_lblH_A_Name";
-            this._lblH_A_Name.Size = new System.Drawing.Size(77, 23);
+            this._lblH_A_Name.Size = new System.Drawing.Size(95, 23);
             this._lblH_A_Name.TabIndex = 1;
-            this._lblH_A_Name.Text = "Shop Name";
+            this._lblH_A_Name.Text = "Tên cửa hàng";
             // 
             // _lblH_A_Owner
             // 
             this._lblH_A_Owner.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._lblH_A_Owner.Location = new System.Drawing.Point(300, 4);
             this._lblH_A_Owner.Name = "_lblH_A_Owner";
-            this._lblH_A_Owner.Size = new System.Drawing.Size(66, 23);
+            this._lblH_A_Owner.Size = new System.Drawing.Size(92, 23);
             this._lblH_A_Owner.TabIndex = 2;
-            this._lblH_A_Owner.Text = "Owner";
+            this._lblH_A_Owner.Text = "Người sỡ hữu";
             // 
             // _lblH_A_Rate
             // 
@@ -254,7 +257,7 @@
             this._lblH_A_Rate.Name = "_lblH_A_Rate";
             this._lblH_A_Rate.Size = new System.Drawing.Size(56, 23);
             this._lblH_A_Rate.TabIndex = 3;
-            this._lblH_A_Rate.Text = "Rating";
+            this._lblH_A_Rate.Text = "Đánh giá";
             // 
             // _lblH_A_Prod
             // 
@@ -263,25 +266,25 @@
             this._lblH_A_Prod.Name = "_lblH_A_Prod";
             this._lblH_A_Prod.Size = new System.Drawing.Size(65, 23);
             this._lblH_A_Prod.TabIndex = 4;
-            this._lblH_A_Prod.Text = "Products";
+            this._lblH_A_Prod.Text = "Sản phẩm";
             // 
             // _lblH_A_Stat
             // 
             this._lblH_A_Stat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._lblH_A_Stat.Location = new System.Drawing.Point(713, 4);
             this._lblH_A_Stat.Name = "_lblH_A_Stat";
-            this._lblH_A_Stat.Size = new System.Drawing.Size(57, 23);
+            this._lblH_A_Stat.Size = new System.Drawing.Size(77, 23);
             this._lblH_A_Stat.TabIndex = 5;
-            this._lblH_A_Stat.Text = "Status";
+            this._lblH_A_Stat.Text = "Trạng thái";
             // 
             // _lblH_A_Act
             // 
             this._lblH_A_Act.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._lblH_A_Act.Location = new System.Drawing.Point(908, 4);
+            this._lblH_A_Act.Location = new System.Drawing.Point(876, 4);
             this._lblH_A_Act.Name = "_lblH_A_Act";
-            this._lblH_A_Act.Size = new System.Drawing.Size(51, 23);
+            this._lblH_A_Act.Size = new System.Drawing.Size(83, 23);
             this._lblH_A_Act.TabIndex = 6;
-            this._lblH_A_Act.Text = "Actions";
+            this._lblH_A_Act.Text = "Hành động";
             // 
             // _activeContainer
             // 
@@ -292,6 +295,23 @@
             this._activeContainer.Size = new System.Drawing.Size(974, 173);
             this._activeContainer.TabIndex = 3;
             this._activeContainer.WrapContents = false;
+            // 
+            // _comboStatus
+            // 
+            this._comboStatus.BackColor = System.Drawing.Color.Transparent;
+            this._comboStatus.BorderRadius = 8;
+            this._comboStatus.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this._comboStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._comboStatus.FocusedColor = System.Drawing.Color.Empty;
+            this._comboStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this._comboStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this._comboStatus.ItemHeight = 30;
+            this._comboStatus.Location = new System.Drawing.Point(829, 11);
+            this._comboStatus.Name = "_comboStatus";
+            this._comboStatus.Size = new System.Drawing.Size(150, 36);
+            this._comboStatus.StartIndex = 0;
+            this._comboStatus.TabIndex = 2;
+            this._comboStatus.SelectedIndexChanged += new System.EventHandler(this._comboStatus_SelectedIndexChanged);
             // 
             // ShopsForm
             // 
@@ -305,6 +325,7 @@
             this.Controls.Add(this._pageTitle);
             this.Name = "ShopsForm";
             this.Text = "Shop Management";
+            this.Load += new System.EventHandler(this.ShopsForm_Load);
             this._cardPending.ResumeLayout(false);
             this._cardPending.PerformLayout();
             this._headerPending.ResumeLayout(false);
@@ -332,6 +353,7 @@
         private Guna.UI2.WinForms.Guna2Panel _cardAllShops;
         private System.Windows.Forms.Label _lblAllShopsTitle;
         private Guna.UI2.WinForms.Guna2TextBox _txtSearch;
+        private Guna.UI2.WinForms.Guna2ComboBox _comboStatus;
         private System.Windows.Forms.FlowLayoutPanel _activeContainer;
         private System.Windows.Forms.Panel _headerActive;
         private System.Windows.Forms.Label _lblH_A_Id, _lblH_A_Name, _lblH_A_Owner, _lblH_A_Rate, _lblH_A_Prod, _lblH_A_Stat, _lblH_A_Act;
