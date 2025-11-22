@@ -335,5 +335,21 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         private void ValidateQuantity() { /* Logic cũ */ }
         private void BtnAddCart_Click(object sender, EventArgs e) { /* Logic cũ */ }
         private void BtnBuyNow_Click(object sender, EventArgs e) { /* Logic cũ */ }
+
+
+        private void BtnViewShop_Click(object sender, EventArgs e)
+        {
+            FrmMain mainForm = this.FindForm() as FrmMain;
+
+            // Giả định ShopId luôn là 1 trong DTO mẫu, hoặc bạn cần thêm ShopId vào ProductDTO
+            int shopId = 1;
+            // Nếu bạn đã có ShopId trong ProductDTO: int shopId = _currentProduct.ShopId;
+
+            if (mainForm != null)
+            {
+                // Gọi hàm chuyển trang trong FrmMain (đã được cập nhật)
+                mainForm.LoadPage("ShopDetail", shopId);
+            }
+        }
     }
 }

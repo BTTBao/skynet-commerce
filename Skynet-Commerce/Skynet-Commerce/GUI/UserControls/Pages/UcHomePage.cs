@@ -95,7 +95,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             // --- Dữ liệu giả lập ---
             var products = new List<ProductDTO>
     {
-        new ProductDTO { ProductId = 1, Name = "Áo khoác denim thời trang", Price = 450000, OldPrice = 550000, Rating = 4.8, SoldQuantity = 1234, ImagePath = @"img\product1.jpg" },
+        new ProductDTO { ProductId = 1, Name = "Áo khoác denim thời trang", Price = 450000, OldPrice = 550000, Rating = 4.8, SoldQuantity = 1234, ImagePath = @"img\slide1.jpg" },
         new ProductDTO { ProductId = 2, Name = "Điện thoại thông minh", Price = 8500000, OldPrice = 0, Rating = 4.9, SoldQuantity = 567, ImagePath = @"img\product1.jpg" },
         new ProductDTO { ProductId = 3, Name = "Bàn làm việc gỗ cao cấp", Price = 2500000, OldPrice = 3000000, Rating = 4.7, SoldQuantity = 234, ImagePath = @"img\product1.jpg" },
         new ProductDTO { ProductId = 4, Name = "Bộ mỹ phẩm dưỡng da", Price = 890000, OldPrice = 990000, Rating = 4.6, SoldQuantity = 890, ImagePath = @"img\product1.jpg" },
