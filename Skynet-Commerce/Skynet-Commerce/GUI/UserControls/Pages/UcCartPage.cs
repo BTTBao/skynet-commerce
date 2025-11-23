@@ -5,35 +5,59 @@ using System.Linq;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
 using Skynet_Commerce.GUI.Forms;
-using Skynet_Commerce.BLL.Helpers;
+using Skynet_Commerce.BLL.Helpers; // [QUAN TRỌNG] Để gọi SessionManager
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
     public partial class UcCartPage : UserControl
     {
-        private Color PrimaryColor = Color.FromArgb(238, 77, 45);
+        // Cấu hình hiển thị tiền tệ Việt Nam
         private CultureInfo VNCulture = new CultureInfo("vi-VN");
+        private Color PrimaryColor = Color.FromArgb(238, 77, 45); // Màu cam Shopee
 
         public UcCartPage()
         {
             InitializeComponent();
 
-            // 1. Đăng ký sự kiện cho các nút
-            btnShopNow.Click += (s, e) => GoHome(); // Nút "Mua ngay" ở màn hình trống
+            // --- 1. SỰ KIỆN NÚT "MUA NGAY" (KHI GIỎ TRỐNG) ---
+            btnShopNow.Click += (s, e) =>
+            {
+                GoToPage("Home");
+            };
 
+            // --- 2. SỰ KIỆN NÚT "MUA HÀNG" (THANH TOÁN) ---
             btnCheckout.Click += (s, e) =>
             {
+                // A. Kiểm tra giỏ hàng trống
                 if (flpCartItems.Controls.Count == 0)
                 {
                     MessageBox.Show("Giỏ hàng của bạn đang trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                FrmMain main = this.FindForm() as FrmMain;
-                if (main != null) main.LoadPage("Checkout");
+                // B. [QUAN TRỌNG] Kiểm tra Đăng nhập
+                if (SessionManager.CurrentUser == null)
+                {
+                    DialogResult result = MessageBox.Show(
+                        "Bạn cần đăng nhập để tiếp tục thanh toán.\nChuyển đến trang đăng nhập ngay?",
+                        "Yêu cầu đăng nhập",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (result == DialogResult.Yes)
+                    {
+                        // Chuyển sang trang Login và dặn nó: "Login xong thì quay lại Checkout nhé"
+                        GoToPage("Login", "Checkout");
+                    }
+                    return; // Dừng lại, không vào Checkout
+                }
+
+                // C. Đã đăng nhập + Có hàng -> Vào Checkout
+                GoToPage("Checkout");
             };
 
-            // 2. Tự động tải dữ liệu khi trang hiện lên
+            // --- 3. TỰ ĐỘNG TẢI LẠI KHI TRANG HIỆN LÊN ---
             this.VisibleChanged += (s, e) =>
             {
                 if (this.Visible) LoadCartData();
@@ -43,12 +67,17 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             LoadCartData();
         }
 
-        private void GoHome()
+        // Hàm hỗ trợ chuyển trang an toàn
+        private void GoToPage(string pageName, object data = null)
         {
             FrmMain main = this.FindForm() as FrmMain;
-            if (main != null) main.LoadPage("Home");
+            if (main != null)
+            {
+                main.LoadPage(pageName, data);
+            }
         }
 
+        // --- HÀM TẢI DỮ LIỆU TỪ SESSION ---
         public void LoadCartData()
         {
             flpCartItems.Controls.Clear();
@@ -62,8 +91,9 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
                 foreach (var item in items)
                 {
-                    // Fix lỗi giá = 0 (nếu có)
-                    decimal displayPrice = item.Price > 0 ? item.Price : 100000;
+                    // Fix lỗi hiển thị giá = 0 (nếu có)
+                    decimal displayPrice = item.Price > 0 ? item.Price : 0;
+
                     AddCartItem(item.ProductId, item.ProductName, displayPrice, item.Quantity, item.ImageUrl);
                 }
                 UpdateSummary();
@@ -98,17 +128,16 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
         }
 
+        // --- HÀM VẼ GIAO DIỆN TỪNG SẢN PHẨM ---
         private void AddCartItem(int id, string name, decimal price, int qty, string imgUrl)
         {
-            // Tạo Panel chứa sản phẩm (Row)
             Guna2Panel pnlItem = new Guna2Panel();
             pnlItem.Size = new Size(840, 110);
-            pnlItem.BackColor = Color.White; // Nền trắng
+            pnlItem.BackColor = Color.White;
             pnlItem.BorderColor = Color.FromArgb(235, 235, 235);
             pnlItem.BorderThickness = 1;
             pnlItem.BorderRadius = 3;
             pnlItem.Margin = new Padding(0, 0, 0, 10);
-            // pnlItem.UseTransparentBackground = true; <--- BỎ DÒNG NÀY ĐỂ TRÁNH LỖI HIỂN THỊ
 
             // Ảnh sản phẩm
             Guna2PictureBox pic = new Guna2PictureBox();
@@ -139,7 +168,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblPrice.AutoSize = true;
             lblPrice.ForeColor = Color.Gray;
 
-            // Nút giảm
+            // Nút Giảm
             Guna2Button btnMinus = CreateQtyButton("-", 450, 40);
 
             // Số lượng
@@ -150,7 +179,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblQty.TextAlign = ContentAlignment.MiddleCenter;
             lblQty.BackColor = Color.WhiteSmoke;
 
-            // Nút tăng
+            // Nút Tăng
             Guna2Button btnPlus = CreateQtyButton("+", 520, 40);
 
             // Thành tiền
@@ -161,7 +190,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblTotalItem.AutoSize = true;
             lblTotalItem.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             lblTotalItem.ForeColor = PrimaryColor;
-            lblTotalItem.Tag = totalItem; // Lưu giá trị để tính tổng
+            lblTotalItem.Tag = totalItem; // Lưu giá trị số để tính tổng sau này
 
             // Nút Xóa
             Guna2Button btnDel = new Guna2Button();
@@ -174,11 +203,11 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             btnDel.Size = new Size(60, 30);
             btnDel.Cursor = Cursors.Hand;
 
-            // --- SỰ KIỆN ---
+            // --- SỰ KIỆN NÚT CON ---
             btnDel.Click += (s, e) =>
             {
                 SessionManager.RemoveFromCart(id);
-                LoadCartData(); // Vẽ lại
+                LoadCartData(); // Vẽ lại toàn bộ để cập nhật
             };
 
             btnMinus.Click += (s, e) =>
@@ -186,20 +215,20 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 int q = int.Parse(lblQty.Text);
                 if (q > 1)
                 {
-                    // Cập nhật SessionManager
+                    // Giảm số lượng (-1)
                     SessionManager.AddToCart(new Skynet_Commerce.BLL.Models.ProductDTO { ProductId = id }, -1);
-                    LoadCartData(); // Vẽ lại
+                    LoadCartData();
                 }
             };
 
             btnPlus.Click += (s, e) =>
             {
-                // Cập nhật SessionManager
+                // Tăng số lượng (+1)
                 SessionManager.AddToCart(new Skynet_Commerce.BLL.Models.ProductDTO { ProductId = id }, 1);
-                LoadCartData(); // Vẽ lại
+                LoadCartData();
             };
 
-            // Add vào Panel
+            // Add controls vào Panel
             pnlItem.Controls.Add(pic);
             pnlItem.Controls.Add(lblName);
             pnlItem.Controls.Add(lblPrice);

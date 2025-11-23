@@ -6,21 +6,23 @@ namespace Skynet_Commerce.BLL.Helpers
 {
     public static class SessionManager
     {
-        // Giỏ hàng lưu trong bộ nhớ (Mất khi tắt app)
         public static List<CartItemDTO> CartItems { get; set; } = new List<CartItemDTO>();
-
-        // Hàm thêm sản phẩm vào giỏ
+        public static UserSessionDTO CurrentUser { get; set; } = null;
         public static void AddToCart(ProductDTO product, int quantity)
         {
-            // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+            // [QUAN TRỌNG] Tìm xem sản phẩm này đã có trong giỏ chưa?
+            // Lưu ý: Ở đây mình tìm theo ProductId. 
+            // Nếu sau này bạn làm biến thể (Size/Màu), phải so sánh thêm cả VariantID nữa nhé.
             var existingItem = CartItems.FirstOrDefault(x => x.ProductId == product.ProductId);
 
             if (existingItem != null)
             {
+                // NẾU ĐÃ CÓ -> CỘNG DỒN SỐ LƯỢNG
                 existingItem.Quantity += quantity;
             }
             else
             {
+                // NẾU CHƯA CÓ -> THÊM MỚI
                 CartItems.Add(new CartItemDTO
                 {
                     ProductId = product.ProductId,
@@ -32,21 +34,18 @@ namespace Skynet_Commerce.BLL.Helpers
             }
         }
 
-        // Hàm xóa khỏi giỏ
         public static void RemoveFromCart(int productId)
         {
             var item = CartItems.FirstOrDefault(x => x.ProductId == productId);
             if (item != null) CartItems.Remove(item);
         }
 
-        // Hàm tính tổng tiền
         public static decimal GetTotalAmount()
         {
             return CartItems.Sum(x => x.Price * x.Quantity);
         }
     }
 
-    // DTO đơn giản cho Cart Item
     public class CartItemDTO
     {
         public int ProductId { get; set; }
@@ -54,5 +53,12 @@ namespace Skynet_Commerce.BLL.Helpers
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public string ImageUrl { get; set; }
+    }
+    public class UserSessionDTO
+    {
+        public int AccountId { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; } // Buyer, Seller, Admin
     }
 }

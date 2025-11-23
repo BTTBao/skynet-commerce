@@ -12,13 +12,18 @@ namespace Skynet_Commerce.GUI.Forms
 {
     public partial class FrmMain : Form
     {
+        // Cache để lưu các trang đã mở (tránh new lại nhiều lần)
         private Dictionary<string, UserControl> pageCache;
+
+        // Màu sắc menu
         private Color ActiveColor = Color.White;
         private Color InactiveColor = Color.FromArgb(220, 220, 220);
 
         public FrmMain()
         {
             InitializeComponent();
+
+            // 1. Khởi tạo Cache
             pageCache = new Dictionary<string, UserControl>();
 
             this.Load += FrmMain_Load;
@@ -72,10 +77,11 @@ namespace Skynet_Commerce.GUI.Forms
             lblOrders.Click += (sender, e) => LoadPage("Orders");
             btnCart.Click += (sender, e) => LoadPage("Cart");
 
-            // Sự kiện bấm vào icon Account hoặc chữ Tài khoản -> Vào trang Profile
+            // Vào trang Profile
             btnAccount.Click += (sender, e) => LoadPage("Profile");
             lblLogin.Click += (sender, e) => LoadPage("Profile");
 
+            // Tìm kiếm
             btnSearch.Click += (sender, e) => PerformSearch();
             txtSearch.KeyDown += (sender, e) =>
             {
@@ -92,12 +98,17 @@ namespace Skynet_Commerce.GUI.Forms
             string keyword = txtSearch.Text.Trim();
             if (!string.IsNullOrEmpty(keyword))
             {
+                // Với trang Search, ta luôn muốn mới nhất nên xóa cache cũ đi
                 string cacheKey = $"Search_{keyword}";
                 if (pageCache.ContainsKey(cacheKey)) pageCache.Remove(cacheKey);
+
                 LoadPage("Search", keyword);
             }
         }
 
+        // =======================================================================
+        // HÀM LOADPAGE HOÀN CHỈNH (CÓ REFRESH GIỎ HÀNG)
+        // =======================================================================
         public void LoadPage(string pageName, object data = null)
         {
             try
@@ -109,7 +120,7 @@ namespace Skynet_Commerce.GUI.Forms
                 string cacheKey = pageName;
                 int entityId = 0;
 
-                // Xử lý Key Cache
+                // --- 1. TẠO CACHE KEY DỰA TRÊN DỮ LIỆU ---
                 if (pageName == "ProductDetail" && data is ProductDTO productData)
                 {
                     entityId = productData.ProductId;
@@ -125,13 +136,23 @@ namespace Skynet_Commerce.GUI.Forms
                     cacheKey = $"Search_{keyword}";
                 }
 
-                // Tìm hoặc tạo mới
+                // --- 2. KIỂM TRA CACHE HOẶC TẠO MỚI ---
                 if (pageCache.ContainsKey(cacheKey))
                 {
+                    // Lấy từ bộ nhớ đệm
                     targetPage = pageCache[cacheKey];
+
+                    // [CỰC KỲ QUAN TRỌNG]
+                    // Nếu là trang Giỏ hàng, phải bắt nó tải lại dữ liệu từ SessionManager
+                    // Vì giỏ hàng có thể thay đổi ở trang khác
+                    if (targetPage is UcCartPage cartPage)
+                    {
+                        cartPage.LoadCartData();
+                    }
                 }
                 else
                 {
+                    // Tạo mới nếu chưa có
                     switch (pageName)
                     {
                         case "Home":
@@ -140,16 +161,12 @@ namespace Skynet_Commerce.GUI.Forms
                         case "Cart":
                             targetPage = new UcCartPage();
                             break;
-
-                        // [MỚI] Case xử lý trang Thanh Toán (Checkout)
                         case "Checkout":
                             targetPage = new UcCheckoutPage();
                             break;
-
                         case "Profile":
                             targetPage = new UcProfile();
                             break;
-
                         case "Search":
                             string kw = data as string ?? "";
                             targetPage = new UcSearchResult(kw);
@@ -166,12 +183,13 @@ namespace Skynet_Commerce.GUI.Forms
                             }
                             break;
                         case "Orders":
-                            targetPage = new UcHomePage();
+                            targetPage = new UcHomePage(); // Demo (chưa có UcOrders)
                             break;
                         default:
                             return;
                     }
 
+                    // Lưu vào Cache
                     if (targetPage != null)
                     {
                         targetPage.Dock = DockStyle.Fill;
@@ -179,24 +197,31 @@ namespace Skynet_Commerce.GUI.Forms
                     }
                 }
 
+                // --- 3. HIỂN THỊ TRANG ---
                 if (targetPage != null)
                 {
+                    // Thêm vào Panel nếu chưa có
                     if (!pnlContent.Controls.Contains(targetPage))
                     {
                         pnlContent.Controls.Add(targetPage);
                     }
+
+                    // Đưa lên trên cùng
                     targetPage.Visible = true;
                     targetPage.BringToFront();
 
+                    // Cập nhật tiêu đề cửa sổ
                     string title = pageName;
                     if (pageName == "Search") title = $"Tìm kiếm: {data}";
                     else if (pageName == "ProductDetail" && data is ProductDTO pd) title = pd.Name;
                     else if (pageName == "Profile") title = "Hồ sơ của tôi";
                     else if (pageName == "Checkout") title = "Thanh toán";
+                    else if (pageName == "Cart") title = "Giỏ hàng";
 
                     this.Text = $"ShopViet - {title}";
                 }
 
+                // --- 4. CẬP NHẬT MENU ---
                 UpdateMenuState(pageName);
             }
             catch (Exception ex)
@@ -214,7 +239,6 @@ namespace Skynet_Commerce.GUI.Forms
             lblHome.ForeColor = InactiveColor;
             lblOrders.ForeColor = InactiveColor;
 
-            // Highlight Label Tài Khoản nếu đang ở trang Profile
             lblLogin.Font = new Font(lblLogin.Font, FontStyle.Regular);
             lblLogin.ForeColor = InactiveColor;
 
