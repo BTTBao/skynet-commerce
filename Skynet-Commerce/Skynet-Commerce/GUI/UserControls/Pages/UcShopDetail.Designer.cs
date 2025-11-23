@@ -75,8 +75,9 @@
             this.pnlMainScroll.Controls.Add(this.pnlHeaderContainer);
             this.pnlMainScroll.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMainScroll.Location = new System.Drawing.Point(0, 0);
+            this.pnlMainScroll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlMainScroll.Name = "pnlMainScroll";
-            this.pnlMainScroll.Size = new System.Drawing.Size(1200, 800);
+            this.pnlMainScroll.Size = new System.Drawing.Size(1600, 985);
             this.pnlMainScroll.TabIndex = 0;
             // 
             // flowProducts
@@ -84,11 +85,12 @@
             this.flowProducts.AutoSize = true;
             this.flowProducts.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.flowProducts.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flowProducts.Location = new System.Drawing.Point(0, 390);
-            this.flowProducts.MinimumSize = new System.Drawing.Size(1150, 500);
+            this.flowProducts.Location = new System.Drawing.Point(0, 480);
+            this.flowProducts.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flowProducts.MinimumSize = new System.Drawing.Size(1533, 615);
             this.flowProducts.Name = "flowProducts";
-            this.flowProducts.Padding = new System.Windows.Forms.Padding(15, 0, 0, 50);
-            this.flowProducts.Size = new System.Drawing.Size(1200, 500);
+            this.flowProducts.Padding = new System.Windows.Forms.Padding(20, 0, 0, 62);
+            this.flowProducts.Size = new System.Drawing.Size(1579, 615);
             this.flowProducts.TabIndex = 2;
             // 
             // pnlFilters
@@ -96,10 +98,11 @@
             this.pnlFilters.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.pnlFilters.Controls.Add(this.pnlFilterInner);
             this.pnlFilters.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlFilters.Location = new System.Drawing.Point(0, 320);
+            this.pnlFilters.Location = new System.Drawing.Point(0, 394);
+            this.pnlFilters.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlFilters.Name = "pnlFilters";
-            this.pnlFilters.Padding = new System.Windows.Forms.Padding(20, 15, 20, 15);
-            this.pnlFilters.Size = new System.Drawing.Size(1200, 70);
+            this.pnlFilters.Padding = new System.Windows.Forms.Padding(27, 18, 27, 18);
+            this.pnlFilters.Size = new System.Drawing.Size(1579, 86);
             this.pnlFilters.TabIndex = 1;
             // 
             // pnlFilterInner
@@ -107,9 +110,10 @@
             this.pnlFilterInner.BackColor = System.Drawing.Color.White;
             this.pnlFilterInner.BorderRadius = 2;
             this.pnlFilterInner.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlFilterInner.Location = new System.Drawing.Point(20, 15);
+            this.pnlFilterInner.Location = new System.Drawing.Point(27, 18);
+            this.pnlFilterInner.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlFilterInner.Name = "pnlFilterInner";
-            this.pnlFilterInner.Size = new System.Drawing.Size(1200, 40);
+            this.pnlFilterInner.Size = new System.Drawing.Size(1525, 50);
             this.pnlFilterInner.TabIndex = 0;
             // 
             // pnlHeaderContainer
@@ -124,8 +128,9 @@
             this.pnlHeaderContainer.Controls.Add(this.picBanner);
             this.pnlHeaderContainer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeaderContainer.Location = new System.Drawing.Point(0, 0);
+            this.pnlHeaderContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlHeaderContainer.Name = "pnlHeaderContainer";
-            this.pnlHeaderContainer.Size = new System.Drawing.Size(1200, 320);
+            this.pnlHeaderContainer.Size = new System.Drawing.Size(1579, 394);
             this.pnlHeaderContainer.TabIndex = 0;
             // 
             // btnChat
@@ -141,9 +146,10 @@
             this.btnChat.FillColor = System.Drawing.Color.White;
             this.btnChat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnChat.ForeColor = System.Drawing.Color.Black;
-            this.btnChat.Location = new System.Drawing.Point(340, 235);
+            this.btnChat.Location = new System.Drawing.Point(453, 289);
+            this.btnChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnChat.Name = "btnChat";
-            this.btnChat.Size = new System.Drawing.Size(110, 36);
+            this.btnChat.Size = new System.Drawing.Size(147, 44);
             this.btnChat.TabIndex = 6;
             this.btnChat.Text = "Chat";
             // 
@@ -158,9 +164,10 @@
             this.btnFollow.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
             this.btnFollow.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnFollow.ForeColor = System.Drawing.Color.White;
-            this.btnFollow.Location = new System.Drawing.Point(220, 235);
+            this.btnFollow.Location = new System.Drawing.Point(293, 289);
+            this.btnFollow.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFollow.Name = "btnFollow";
-            this.btnFollow.Size = new System.Drawing.Size(110, 36);
+            this.btnFollow.Size = new System.Drawing.Size(147, 44);
             this.btnFollow.TabIndex = 5;
             this.btnFollow.Text = "+ Theo dõi";
             // 
@@ -170,9 +177,10 @@
             this.lblLocation.BackColor = System.Drawing.Color.White;
             this.lblLocation.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblLocation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.lblLocation.Location = new System.Drawing.Point(222, 205);
+            this.lblLocation.Location = new System.Drawing.Point(296, 252);
+            this.lblLocation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLocation.Name = "lblLocation";
-            this.lblLocation.Size = new System.Drawing.Size(411, 15);
+            this.lblLocation.Size = new System.Drawing.Size(510, 20);
             this.lblLocation.TabIndex = 4;
             this.lblLocation.Text = "⭐ 4.8 (2456 đánh giá)   |   👥 12.500 người theo dõi   |   📍 TP. Hồ Chí Minh";
             // 
@@ -181,9 +189,10 @@
             this.lblShopName.AutoSize = true;
             this.lblShopName.BackColor = System.Drawing.Color.White;
             this.lblShopName.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblShopName.Location = new System.Drawing.Point(220, 170);
+            this.lblShopName.Location = new System.Drawing.Point(293, 209);
+            this.lblShopName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblShopName.Name = "lblShopName";
-            this.lblShopName.Size = new System.Drawing.Size(164, 32);
+            this.lblShopName.Size = new System.Drawing.Size(199, 41);
             this.lblShopName.TabIndex = 3;
             this.lblShopName.Text = "FashionStore";
             // 
@@ -192,10 +201,11 @@
             this.picAvatar.BackColor = System.Drawing.Color.Transparent;
             this.picAvatar.FillColor = System.Drawing.Color.WhiteSmoke;
             this.picAvatar.ImageRotate = 0F;
-            this.picAvatar.Location = new System.Drawing.Point(50, 90);
+            this.picAvatar.Location = new System.Drawing.Point(67, 111);
+            this.picAvatar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.picAvatar.Name = "picAvatar";
             this.picAvatar.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-            this.picAvatar.Size = new System.Drawing.Size(150, 150);
+            this.picAvatar.Size = new System.Drawing.Size(200, 185);
             this.picAvatar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picAvatar.TabIndex = 2;
             this.picAvatar.TabStop = false;
@@ -205,9 +215,10 @@
             // 
             this.pnlInfoArea.BackColor = System.Drawing.Color.White;
             this.pnlInfoArea.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlInfoArea.Location = new System.Drawing.Point(0, 160);
+            this.pnlInfoArea.Location = new System.Drawing.Point(0, 197);
+            this.pnlInfoArea.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlInfoArea.Name = "pnlInfoArea";
-            this.pnlInfoArea.Size = new System.Drawing.Size(1200, 160);
+            this.pnlInfoArea.Size = new System.Drawing.Size(1579, 197);
             this.pnlInfoArea.TabIndex = 1;
             // 
             // picBanner
@@ -216,21 +227,23 @@
             this.picBanner.FillColor = System.Drawing.Color.DimGray;
             this.picBanner.ImageRotate = 0F;
             this.picBanner.Location = new System.Drawing.Point(0, 0);
+            this.picBanner.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.picBanner.Name = "picBanner";
-            this.picBanner.Size = new System.Drawing.Size(1200, 160);
+            this.picBanner.Size = new System.Drawing.Size(1579, 197);
             this.picBanner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picBanner.TabIndex = 0;
             this.picBanner.TabStop = false;
             // 
             // UcShopDetail
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.Controls.Add(this.pnlMainScroll);
             this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "UcShopDetail";
-            this.Size = new System.Drawing.Size(1200, 800);
+            this.Size = new System.Drawing.Size(1600, 985);
             this.pnlMainScroll.ResumeLayout(false);
             this.pnlMainScroll.PerformLayout();
             this.pnlFilters.ResumeLayout(false);

@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.panel2 = new System.Windows.Forms.Panel();
+            this.asdasd = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.phoneLb = new Guna.UI2.WinForms.Guna2TextBox();
             this.btnBack = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2HtmlLabel4 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2TextBox3 = new Guna.UI2.WinForms.Guna2TextBox();
@@ -48,6 +50,8 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.panel2.Controls.Add(this.asdasd);
+            this.panel2.Controls.Add(this.phoneLb);
             this.panel2.Controls.Add(this.btnBack);
             this.panel2.Controls.Add(this.guna2HtmlLabel4);
             this.panel2.Controls.Add(this.guna2TextBox3);
@@ -60,8 +64,41 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(337, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(463, 450);
+            this.panel2.Size = new System.Drawing.Size(463, 547);
             this.panel2.TabIndex = 4;
+            // 
+            // asdasd
+            // 
+            this.asdasd.AutoSize = false;
+            this.asdasd.BackColor = System.Drawing.Color.Transparent;
+            this.asdasd.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.asdasd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(103)))), ((int)(((byte)(55)))));
+            this.asdasd.Location = new System.Drawing.Point(15, 366);
+            this.asdasd.Name = "asdasd";
+            this.asdasd.Size = new System.Drawing.Size(433, 31);
+            this.asdasd.TabIndex = 10;
+            this.asdasd.Text = "Phone";
+            this.asdasd.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // phoneLb
+            // 
+            this.phoneLb.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.phoneLb.DefaultText = "";
+            this.phoneLb.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.phoneLb.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.phoneLb.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.phoneLb.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.phoneLb.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.phoneLb.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.phoneLb.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.phoneLb.Location = new System.Drawing.Point(93, 404);
+            this.phoneLb.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.phoneLb.Name = "phoneLb";
+            this.phoneLb.PlaceholderForeColor = System.Drawing.Color.Gray;
+            this.phoneLb.PlaceholderText = "Phone number";
+            this.phoneLb.SelectedText = "";
+            this.phoneLb.Size = new System.Drawing.Size(286, 48);
+            this.phoneLb.TabIndex = 9;
             // 
             // btnBack
             // 
@@ -69,9 +106,9 @@
             this.btnBack.BackColor = System.Drawing.Color.Transparent;
             this.btnBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(103)))), ((int)(((byte)(55)))));
-            this.btnBack.Location = new System.Drawing.Point(72, 416);
+            this.btnBack.Location = new System.Drawing.Point(60, 513);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(330, 31);
+            this.btnBack.Size = new System.Drawing.Size(354, 31);
             this.btnBack.TabIndex = 8;
             this.btnBack.Text = "Đã có tài khoản!";
             this.btnBack.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
@@ -104,6 +141,7 @@
             this.guna2TextBox3.Location = new System.Drawing.Point(96, 311);
             this.guna2TextBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.guna2TextBox3.Name = "guna2TextBox3";
+            this.guna2TextBox3.PasswordChar = '-';
             this.guna2TextBox3.PlaceholderForeColor = System.Drawing.Color.Gray;
             this.guna2TextBox3.PlaceholderText = "Password";
             this.guna2TextBox3.SelectedText = "";
@@ -146,11 +184,11 @@
             this.btnRegister.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(103)))), ((int)(((byte)(55)))));
             this.btnRegister.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnRegister.ForeColor = System.Drawing.Color.White;
-            this.btnRegister.Location = new System.Drawing.Point(96, 366);
+            this.btnRegister.Location = new System.Drawing.Point(96, 459);
             this.btnRegister.Name = "btnRegister";
             this.btnRegister.Size = new System.Drawing.Size(286, 48);
             this.btnRegister.TabIndex = 3;
-            this.btnRegister.Text = "LOGIN";
+            this.btnRegister.Text = "REGISTER";
             // 
             // guna2HtmlLabel1
             // 
@@ -178,6 +216,7 @@
             this.guna2TextBox2.Location = new System.Drawing.Point(96, 218);
             this.guna2TextBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.guna2TextBox2.Name = "guna2TextBox2";
+            this.guna2TextBox2.PasswordChar = '-';
             this.guna2TextBox2.PlaceholderForeColor = System.Drawing.Color.Gray;
             this.guna2TextBox2.PlaceholderText = "Password";
             this.guna2TextBox2.SelectedText = "";
@@ -211,17 +250,17 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(337, 450);
+            this.panel1.Size = new System.Drawing.Size(337, 547);
             this.panel1.TabIndex = 3;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::Skynet_Commerce.Properties.Resources.trash;
-            this.pictureBox1.Location = new System.Drawing.Point(90, 135);
+            this.pictureBox1.Location = new System.Drawing.Point(88, 203);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(160, 141);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
             // UcRegister
@@ -231,7 +270,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "UcRegister";
-            this.Size = new System.Drawing.Size(800, 450);
+            this.Size = new System.Drawing.Size(800, 547);
             this.panel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -247,11 +286,13 @@
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox2;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel4;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox3;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel3;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
         private Guna.UI2.WinForms.Guna2HtmlLabel btnBack;
+        private Guna.UI2.WinForms.Guna2HtmlLabel asdasd;
+        private Guna.UI2.WinForms.Guna2TextBox phoneLb;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

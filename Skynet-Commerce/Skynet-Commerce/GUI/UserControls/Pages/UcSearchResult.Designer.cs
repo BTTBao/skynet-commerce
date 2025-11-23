@@ -28,10 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // UcSearchResult
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Name = "UcSearchResult";
+            this.Size = new System.Drawing.Size(165, 150);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
     }
 }
+

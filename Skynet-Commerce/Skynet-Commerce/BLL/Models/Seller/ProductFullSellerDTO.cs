@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Skynet_Commerce.BLL.Models.Admin
 {
@@ -7,7 +7,7 @@ namespace Skynet_Commerce.BLL.Models.Admin
         public int ProductID { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
-        public decimal Price { get; set; } 
+        public decimal Price { get; set; }
         public int CategoryID { get; set; }
         public int StockQuantity { get; set; }
         public int SoldCount { get; set; }
@@ -30,7 +30,7 @@ namespace Skynet_Commerce.BLL.Models.Admin
         public string Size { get; set; }
         public string Color { get; set; }
         public string SKU { get; set; }
-        public decimal? Price { get; set; }    
+        public decimal? Price { get; set; }
         public int StockQuantity { get; set; }
     }
 }

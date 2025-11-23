@@ -32,35 +32,71 @@ namespace Skynet_Commerce.GUI.Forms.User
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!");
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (var db = new ApplicationDbContext())
+            guna2Button1.Enabled = false;
+            guna2Button1.Text = "Đang đăng nhập...";
+
+            try
             {
-                // EF6 không có FirstOrDefaultAsync mặc định với .NET Framework < 4.5, nếu dùng EF Core thì ok
-                var account = await Task.Run(() =>
-                    db.Accounts.FirstOrDefault(a => a.Email == email && a.IsActive == true)
-                );
-
-                if (account == null)
+                using (var db = new ApplicationDbContext())
                 {
-                    MessageBox.Show("Email không tồn tại hoặc tài khoản bị khóa!");
-                    return;
-                }
+                    var account = await Task.Run(() =>
+                        db.Accounts.FirstOrDefault(a => a.Email == email && a.IsActive == true)
+                    );
 
-                if (!VerifyPassword(password, account.PasswordHash))
+                    if (account == null)
+                    {
+                        MessageBox.Show("Email không tồn tại hoặc tài khoản bị khóa!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    if (!VerifyPassword(password, account.PasswordHash))
+                    {
+                        MessageBox.Show("Sai mật khẩu!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var userRolesList = await Task.Run(() =>
+                        db.UserRoles
+                            .Where(r => r.AccountID == account.AccountID)
+                            .Select(r => r.RoleName)
+                            .ToList()
+                    );
+
+                    string finalRole = "Customer";
+
+                    if (userRolesList.Contains("Admin"))
+                    {
+                        finalRole = "Admin";
+                    }
+                    else if (userRolesList.Contains("Seller"))
+                    {
+                        finalRole = "Seller";
+                    }
+
+                    AppSession.Instance.AccountID = account.AccountID;
+                    AppSession.Instance.Email = account.Email;
+                    AppSession.Instance.Role = finalRole;
+
+                    MessageBox.Show($"Đăng nhập thành công với quyền: {finalRole}!", "Chúc mừng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.main.Hide();
+                    this.Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi kết nối cơ sở dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (this.Visible)
                 {
-                    MessageBox.Show("Sai mật khẩu!");
-                    return;
+                    guna2Button1.Enabled = true;
+                    guna2Button1.Text = "LOGIN";
                 }
-
-                // Login thành công
-                AppSession.Instance.AccountID = account.AccountID;
-                AppSession.Instance.Email = account.Email;
-
-                MessageBox.Show("Đăng nhập thành công!");
-                this.Visible = false; // ẩn login
             }
         }
 

@@ -1,4 +1,4 @@
-namespace Skynet_Commerce.BLL.Models.Seller
+﻿namespace Skynet_Commerce.BLL.Models.Seller
 {
     public class ProductSellerDTO
     {
