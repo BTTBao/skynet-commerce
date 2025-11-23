@@ -114,6 +114,7 @@
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="BLL\Services\Seller\OrderServiceForSeller.cs" />
     <Compile Include="BLL\Services\Seller\ProductServiceForSeller.cs" />
+    <Compile Include="BLL\Services\User\CartService.cs" />
     <Compile Include="BLL\Services\User\ProductService.cs" />
     <Compile Include="BLL\Services\User\UserShopService.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
@@ -194,9 +195,7 @@
     <Compile Include="GUI\UserControls\Components\UCSeller\ucProduct.Designer.cs">
       <DependentUpon>ucProduct.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\ucSellerDashboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucSellerDashboard.cs" />
     <Compile Include="GUI\UserControls\Components\UCSeller\ucSellerDashboard.Designer.cs">
       <DependentUpon>ucSellerDashboard.cs</DependentUpon>
     </Compile>
@@ -272,9 +271,7 @@
     <Compile Include="GUI\Forms\Seller\FormAddProduct.Designer.cs">
       <DependentUpon>FormAddProduct.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\Seller\SellerLayout.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerLayout.cs" />
     <Compile Include="GUI\Forms\Seller\SellerLayout.Designer.cs">
       <DependentUpon>SellerLayout.cs</DependentUpon>
     </Compile>
@@ -392,12 +389,6 @@
     <Compile Include="GUI\UserControls\Pages\UcProductDetail.Designer.cs">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\Pages\UcProfile.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\UcProfile.Designer.cs">
-      <DependentUpon>UcProfile.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\UserControls\Pages\UcSearchResult.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -409,6 +400,48 @@
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcShopDetail.Designer.cs">
       <DependentUpon>UcShopDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcChangePassword.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcChangePassword.Designer.cs">
+      <DependentUpon>UcChangePassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcEditProfile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcEditProfile.Designer.cs">
+      <DependentUpon>UcEditProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderDetail.Designer.cs">
+      <DependentUpon>UcOrderDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderHistory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderHistory.Designer.cs">
+      <DependentUpon>UcOrderHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcProfile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcProfile.Designer.cs">
+      <DependentUpon>UcProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcShopRegister.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcShopRegister.Designer.cs">
+      <DependentUpon>UcShopRegister.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcUserAddress.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcUserAddress.Designer.cs">
+      <DependentUpon>UcUserAddress.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -487,8 +520,26 @@
     <EmbeddedResource Include="GUI\UserControls\Pages\UcProductDetail.resx">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcChangePassword.resx">
+      <DependentUpon>UcChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcEditProfile.resx">
+      <DependentUpon>UcEditProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcOrderDetail.resx">
+      <DependentUpon>UcOrderDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcOrderHistory.resx">
+      <DependentUpon>UcOrderHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcProfile.resx">
       <DependentUpon>UcProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcShopRegister.resx">
+      <DependentUpon>UcShopRegister.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcUserAddress.resx">
+      <DependentUpon>UcUserAddress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

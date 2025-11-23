@@ -7,11 +7,7 @@ namespace Skynet_Commerce.GUI.UserControls.Components
 {
     public partial class UcCartItem : UserControl
     {
-        // ----------------------------------------------------------------------
-        // I. EVENTS AND PROPERTIES
-        // ----------------------------------------------------------------------
-
-        public event EventHandler ItemDataChanged; // Dùng cho cả Số lượng và CheckBox
+        public event EventHandler ItemDataChanged;
         public event EventHandler ItemRemoved;
 
         private decimal _unitPrice;
@@ -20,8 +16,7 @@ namespace Skynet_Commerce.GUI.UserControls.Components
         {
             get
             {
-                if (int.TryParse(txtQuantity.Text, out int qty))
-                    return qty;
+                if (int.TryParse(txtQuantity.Text, out int qty)) return qty;
                 return 1;
             }
             set
@@ -34,7 +29,6 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             }
         }
 
-        // Thuộc tính kiểm tra xem item có được chọn hay không
         public bool IsSelected
         {
             get { return chkSelect.Checked; }
@@ -44,16 +38,6 @@ namespace Skynet_Commerce.GUI.UserControls.Components
         public decimal TotalPrice { get; private set; }
         public int ProductId { get; set; }
 
-        // Thuộc tính để gán Text cho Label Biến thể
-        public string VariantText
-        {
-            set { lblVariant.Text = value; }
-        }
-
-        // ----------------------------------------------------------------------
-        // II. CONSTRUCTORS
-        // ----------------------------------------------------------------------
-
         public UcCartItem()
         {
             InitializeComponent();
@@ -61,9 +45,9 @@ namespace Skynet_Commerce.GUI.UserControls.Components
         }
 
         /// <summary>
-        /// Constructor đầy đủ
+        /// Constructor đầy đủ (Đã thêm tham số variantName)
         /// </summary>
-        public UcCartItem(int productId, string name, decimal price, int initialQuantity, Image image, string imagePath = null) : this()
+        public UcCartItem(int productId, string name, decimal price, int initialQuantity, Image image, string imagePath = null, string variantName = "") : this()
         {
             this.ProductId = productId;
             this.lblProductName.Text = name;
@@ -71,72 +55,57 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             this._unitPrice = price;
             this.txtQuantity.Text = initialQuantity.ToString();
 
-            // Thiết lập kích thước cố định để tránh lỗi hiển thị
+            // [CẬP NHẬT] Hiển thị biến thể
+            if (!string.IsNullOrEmpty(variantName))
+            {
+                this.lblVariant.Text = "Phân loại: " + variantName;
+                this.lblVariant.Visible = true;
+            }
+            else
+            {
+                this.lblVariant.Text = "Phân loại: Mặc định";
+                // Hoặc ẩn đi: this.lblVariant.Visible = false;
+            }
+
             this.Size = new Size(800, 110);
-            this.MinimumSize = new Size(800, 110);
             this.Visible = true;
 
             // Xử lý ảnh
             if (image != null) { this.pbProductImage.Image = image; }
-            else if (!string.IsNullOrEmpty(imagePath) && System.IO.File.Exists(imagePath)) { this.pbProductImage.ImageLocation = imagePath; }
+            else if (!string.IsNullOrEmpty(imagePath))
+            {
+                if (imagePath.StartsWith("http")) this.pbProductImage.ImageLocation = imagePath;
+                else if (File.Exists(imagePath)) this.pbProductImage.ImageLocation = imagePath;
+            }
 
             UpdatePrice();
         }
-
-        // ----------------------------------------------------------------------
-        // III. EVENT HANDLING
-        // ----------------------------------------------------------------------
 
         private void SetupEventHandlers()
         {
             btnIncrease.Click += (s, e) => Quantity++;
             btnDecrease.Click += (s, e) => Quantity--;
-
             txtQuantity.TextChanged += txtQuantity_TextChanged;
             txtQuantity.Leave += txtQuantity_Leave;
-
             btnRemove.Click += btnRemove_Click;
-
-            // Xử lý sự kiện CheckBox
-            this.chkSelect.Click += (s, e) =>
-            {
-                // Khi check thay đổi -> Bắn sự kiện ItemDataChanged để tính lại tổng tiền
-                ItemDataChanged?.Invoke(this, EventArgs.Empty);
-            };
+            this.chkSelect.Click += (s, e) => ItemDataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void btnRemove_Click(object sender, EventArgs e)
-        {
-            ItemRemoved?.Invoke(this, EventArgs.Empty);
-        }
+        private void btnRemove_Click(object sender, EventArgs e) => ItemRemoved?.Invoke(this, EventArgs.Empty);
 
-        private void txtQuantity_TextChanged(object sender, EventArgs e)
-        {
-            if (!int.TryParse(txtQuantity.Text, out _))
-            {
-                // Optional: Allow empty temporarily while typing
-            }
-        }
+        private void txtQuantity_TextChanged(object sender, EventArgs e) { if (!int.TryParse(txtQuantity.Text, out _)) { } }
 
         private void txtQuantity_Leave(object sender, EventArgs e)
         {
-            if (!int.TryParse(txtQuantity.Text, out int qty) || qty < 1)
-            {
-                Quantity = 1;
-            }
-            else
-            {
-                Quantity = qty;
-            }
+            if (!int.TryParse(txtQuantity.Text, out int qty) || qty < 1) Quantity = 1;
+            else Quantity = qty;
         }
 
         private void UpdatePrice()
         {
             this.TotalPrice = _unitPrice * Quantity;
             this.lblTotalPrice.Text = $"{this.TotalPrice:N0}₫";
-
             ItemDataChanged?.Invoke(this, EventArgs.Empty);
-
             btnDecrease.Enabled = (Quantity > 1);
         }
     }

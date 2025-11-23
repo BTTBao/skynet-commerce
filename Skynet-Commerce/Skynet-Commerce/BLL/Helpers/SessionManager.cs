@@ -1,4 +1,6 @@
 ﻿using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.BLL.Services;
+using Skynet_Commerce.DAL.Entities;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,58 +9,78 @@ namespace Skynet_Commerce.BLL.Helpers
     public static class SessionManager
     {
         public static List<CartItemDTO> CartItems { get; set; } = new List<CartItemDTO>();
-        public static UserSessionDTO CurrentUser { get; set; } = null;
-        public static void AddToCart(ProductDTO product, int quantity)
+        public static UserSessionDTO CurrentUser { get; set; } // Giữ lại để tránh lỗi legacy
+
+        // Hàm thêm (Giữ nguyên code cũ của bạn)
+        public static void AddToCart(ProductDTO product, int quantity, int? variantId = null, string variantName = "")
         {
-            // [QUAN TRỌNG] Tìm xem sản phẩm này đã có trong giỏ chưa?
-            // Lưu ý: Ở đây mình tìm theo ProductId. 
-            // Nếu sau này bạn làm biến thể (Size/Màu), phải so sánh thêm cả VariantID nữa nhé.
-            var existingItem = CartItems.FirstOrDefault(x => x.ProductId == product.ProductId);
+            // 1. Kiểm tra xem sản phẩm + biến thể này đã có trong giỏ chưa
+            var existingItem = CartItems.FirstOrDefault(x => x.ProductId == product.ProductId && x.VariantId == variantId);
 
             if (existingItem != null)
             {
-                // NẾU ĐÃ CÓ -> CỘNG DỒN SỐ LƯỢNG
                 existingItem.Quantity += quantity;
             }
             else
             {
-                // NẾU CHƯA CÓ -> THÊM MỚI
                 CartItems.Add(new CartItemDTO
                 {
                     ProductId = product.ProductId,
                     ProductName = product.Name,
-                    Price = product.Price,
+                    Price = product.Price, // Lưu ý: Nếu biến thể có giá riêng thì phải truyền giá biến thể vào
                     Quantity = quantity,
-                    ImageUrl = product.ImagePath
+                    ImageUrl = product.ImagePath,
+                    VariantId = variantId,    // [MỚI]
+                    VariantName = variantName // [MỚI]
                 });
+            }
+
+            // 2. Lưu xuống DB nếu đã đăng nhập
+            if (AppSession.Instance.IsLoggedIn)
+            {
+                try
+                {
+                    CartService service = new CartService();
+                    service.AddItemToDb(AppSession.Instance.AccountID, product.ProductId, quantity, variantId);
+                }
+                catch { }
             }
         }
 
+        // [CẬP NHẬT] Hàm xóa xử lý cả DB
         public static void RemoveFromCart(int productId)
         {
             var item = CartItems.FirstOrDefault(x => x.ProductId == productId);
-            if (item != null) CartItems.Remove(item);
+
+            if (item != null)
+            {
+                // 1. Xóa trên RAM (Giao diện cập nhật ngay)
+                CartItems.Remove(item);
+
+                // 2. Xóa dưới Database (nếu đã đăng nhập)
+                if (AppSession.Instance.IsLoggedIn)
+                {
+                    try
+                    {
+                        CartService service = new CartService();
+                        service.RemoveItemFromDb(AppSession.Instance.AccountID, productId);
+                    }
+                    catch
+                    {
+                        // Bỏ qua lỗi nếu không xóa được dưới DB (để tránh treo app)
+                    }
+                }
+            }
         }
 
         public static decimal GetTotalAmount()
         {
             return CartItems.Sum(x => x.Price * x.Quantity);
         }
-    }
 
-    public class CartItemDTO
-    {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
-        public string ImageUrl { get; set; }
-    }
-    public class UserSessionDTO
-    {
-        public int AccountId { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public string Role { get; set; } // Buyer, Seller, Admin
+        public static void ClearCart()
+        {
+            CartItems.Clear();
+        }
     }
 }

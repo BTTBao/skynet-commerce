@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Guna.UI2.WinForms;
+using Skynet_Commerce.BLL.Helpers; // Dùng cho Giỏ hàng (SessionManager)
+using Skynet_Commerce.GUI.Forms;
+using System;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using Guna.UI2.WinForms;
-using Skynet_Commerce.GUI.Forms;
-using Skynet_Commerce.BLL.Helpers; // [QUAN TRỌNG] Để gọi SessionManager
+using Skynet_Commerce.DAL.Entities; // [QUAN TRỌNG] Dùng cho AppSession
+using Skynet_Commerce.BLL.Models;
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
@@ -19,51 +21,56 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         {
             InitializeComponent();
 
-            // --- 1. SỰ KIỆN NÚT "MUA NGAY" (KHI GIỎ TRỐNG) ---
+            // 1. Nút "Mua ngay" (khi giỏ trống)
             btnShopNow.Click += (s, e) =>
             {
                 GoToPage("Home");
             };
 
-            // --- 2. SỰ KIỆN NÚT "MUA HÀNG" (THANH TOÁN) ---
+            // 2. Nút "Mua Hàng" (Thanh toán)
             btnCheckout.Click += (s, e) =>
             {
-                // A. Kiểm tra giỏ hàng trống
+                // Refresh (F5) lại dữ liệu ngay lập tức khi ấn nút
+                LoadCartData();
+
+                // Kiểm tra giỏ hàng trống sau khi refresh
                 if (flpCartItems.Controls.Count == 0)
                 {
                     MessageBox.Show("Giỏ hàng của bạn đang trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // B. [QUAN TRỌNG] Kiểm tra Đăng nhập
-                if (SessionManager.CurrentUser == null)
+                // [CẬP NHẬT MỚI]: Dùng AppSession để kiểm tra đăng nhập
+                if (AppSession.Instance.IsLoggedIn)
                 {
-                    DialogResult result = MessageBox.Show(
-                        "Bạn cần đăng nhập để tiếp tục thanh toán.\nChuyển đến trang đăng nhập ngay?",
-                        "Yêu cầu đăng nhập",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question
-                    );
+                    // TRƯỜNG HỢP ĐÃ ĐĂNG NHẬP:
+                    // Chuyển thẳng sang trang thanh toán
+                    GoToPage("Checkout");
+                }
+                else
+                {
+                    // TRƯỜNG HỢP CHƯA ĐĂNG NHẬP:
+                    // Hiện thông báo yêu cầu đăng nhập
+                    DialogResult result = MessageBox.Show("Bạn cần đăng nhập để tiếp tục thanh toán.\nChuyển đến trang đăng nhập ngay?",
+                                                          "Yêu cầu đăng nhập",
+                                                          MessageBoxButtons.YesNo,
+                                                          MessageBoxIcon.Question);
 
                     if (result == DialogResult.Yes)
                     {
-                        // Chuyển sang trang Login và dặn nó: "Login xong thì quay lại Checkout nhé"
+                        // Chuyển sang Login, tham số "Checkout" để login xong tự quay lại đây
                         GoToPage("Login", "Checkout");
                     }
-                    return; // Dừng lại, không vào Checkout
                 }
-
-                // C. Đã đăng nhập + Có hàng -> Vào Checkout
-                GoToPage("Checkout");
             };
 
-            // --- 3. TỰ ĐỘNG TẢI LẠI KHI TRANG HIỆN LÊN ---
+            // 3. Tự động tải khi hiện trang
             this.VisibleChanged += (s, e) =>
             {
                 if (this.Visible) LoadCartData();
             };
 
-            // Load lần đầu
+            // Load lần đầu khởi tạo
             LoadCartData();
         }
 
@@ -77,10 +84,13 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
         }
 
-        // --- HÀM TẢI DỮ LIỆU TỪ SESSION ---
+        // --- HÀM TẢI DỮ LIỆU TỪ SESSION (GIỎ HÀNG) ---
         public void LoadCartData()
         {
+            // Tạm dừng vẽ để tránh giật màn hình khi reload
+            flpCartItems.SuspendLayout();
             flpCartItems.Controls.Clear();
+
             var items = SessionManager.CartItems;
 
             // Kiểm tra danh sách sản phẩm
@@ -103,6 +113,9 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 // KHÔNG CÓ SẢN PHẨM -> HIỆN MÀN HÌNH TRỐNG
                 ShowEmptyCart();
             }
+
+            // Cho phép vẽ lại
+            flpCartItems.ResumeLayout();
         }
 
         private void ShowCartData()
@@ -216,7 +229,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 if (q > 1)
                 {
                     // Giảm số lượng (-1)
-                    SessionManager.AddToCart(new Skynet_Commerce.BLL.Models.ProductDTO { ProductId = id }, -1);
+                    SessionManager.AddToCart(new ProductDTO { ProductId = id }, -1);
                     LoadCartData();
                 }
             };
@@ -224,7 +237,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             btnPlus.Click += (s, e) =>
             {
                 // Tăng số lượng (+1)
-                SessionManager.AddToCart(new Skynet_Commerce.BLL.Models.ProductDTO { ProductId = id }, 1);
+                SessionManager.AddToCart(new ProductDTO { ProductId = id }, 1);
                 LoadCartData();
             };
 

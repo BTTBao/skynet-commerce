@@ -1,14 +1,14 @@
 ﻿using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.GUI.Forms;
-using Skynet_Commerce.GUI.Forms.User; // Để gọi lại Login nếu Logout
-using Skynet_Commerce.GUI.UserControls.Pages.User; // Để gọi UcOrderHistory
+using Skynet_Commerce.GUI.Forms.User;
+using Skynet_Commerce.BLL.Helpers;
 using System;
 using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
@@ -16,32 +16,43 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
     {
         private FrmMain main;
 
+        // Constructor chính nhận FrmMain
         public UcProfile(FrmMain main)
         {
-            this.main = main;
             InitializeComponent();
+            this.main = main;
+            SetupEvents();
+        }
+
+        // Constructor mặc định
+        public UcProfile()
+        {
+            InitializeComponent();
+            SetupEvents();
+        }
+
+        private void SetupEvents()
+        {
             this.Load += UcProfile_Load;
 
-            // Gán sự kiện click cho các nút (Nếu chưa gán trong Designer)
-            btnMenu1.Click += BtnMenu1_Click; // Đơn mua
-            btnMenu2.Click += BtnMenu2_Click; // Đổi mật khẩu
-            btnMenu3.Click += BtnMenu3_Click;
-            btnMenu7.Click += BtnMenu7_Click; // Đăng xuất
+            // Gán sự kiện click (Đã cập nhật tên biến theo file Designer mới)
+            if (btnOrderHistory != null) btnOrderHistory.Click += BtnOrderHistory_Click; // Đơn mua
+            if (btnChangePassword != null) btnChangePassword.Click += BtnChangePassword_Click; // Đổi mật khẩu
+            if (btnAddress != null) btnAddress.Click += BtnAddress_Click; // Địa chỉ
+            if (btnLogout != null) btnLogout.Click += BtnLogout_Click; // Đăng xuất
+
+            if (btnEditProfile != null) btnEditProfile.Click += BtnEditProfile_Click; // Nút menu Edit Profile
+            if (btnEditInfo != null) btnEditInfo.Click += BtnEditProfile_Click; // Nút Edit Info ở trên
+
+            if (btnRegisterShop != null) btnRegisterShop.Click += btnRegisterShop_Click;
         }
 
         private async void UcProfile_Load(object sender, EventArgs e)
         {
-            await LoadUserProfile();
-            SetupMenuLabels();
-        }
+            // Kiểm tra đăng nhập
+            if (AppSession.Instance.AccountID <= 0) return;
 
-        private void SetupMenuLabels()
-        {
-            //// Đặt tên cho các nút menu (nếu Designer chưa đặt)
-            //btnMenu1.Text = "  Lịch sử mua hàng";
-            //btnMenu2.Text = "  Đổi mật khẩu";
-            //btnMenu3.Text = "  Voucher của tôi"; // Ví dụ
-            btnMenu7.Text = "  Đăng xuất";
+            await LoadUserProfile();
         }
 
         public async Task LoadUserProfile()
@@ -52,82 +63,93 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
                 using (var db = new ApplicationDbContext())
                 {
-                    // Join bảng Account và User để lấy full thông tin
+                    // Lấy thông tin User
                     var userInfo = await Task.Run(() =>
                         db.Users.Include(u => u.Account)
                                 .FirstOrDefault(u => u.AccountID == accId)
                     );
 
+                    // Lấy thông tin Account
                     var account = await Task.Run(() => db.Accounts.Find(accId));
 
                     // Hiển thị Email
-                    lblEmail.Text = account.Email;
+                    if (lblEmail != null && account != null)
+                        lblEmail.Text = account.Email;
 
                     if (userInfo != null)
                     {
                         // Hiển thị Tên
-                        lblName.Text = string.IsNullOrEmpty(userInfo.FullName) ? "Chưa cập nhật tên" : userInfo.FullName;
+                        if (lblName != null)
+                            lblName.Text = string.IsNullOrEmpty(userInfo.FullName) ? "Chưa cập nhật tên" : userInfo.FullName;
 
-                        // Hiển thị Avatar (Nếu có URL)
-                        if (!string.IsNullOrEmpty(userInfo.AvatarURL))
+                        // Hiển thị Avatar
+                        if (picAvatar != null && !string.IsNullOrEmpty(userInfo.AvatarURL))
                         {
                             try
                             {
-                                picAvatar.Load(userInfo.AvatarURL); // Load ảnh từ URL
+                                if (userInfo.AvatarURL.StartsWith("http"))
+                                    picAvatar.Load(userInfo.AvatarURL);
+                                else
+                                    picAvatar.ImageLocation = userInfo.AvatarURL;
                             }
-                            catch { /* Nếu lỗi link ảnh thì thôi, giữ ảnh mặc định */ }
+                            catch { /* Giữ ảnh mặc định nếu lỗi */ }
                         }
                     }
                     else
                     {
-                        lblName.Text = "Người dùng mới";
+                        if (lblName != null) lblName.Text = "Khách hàng mới";
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+                // MessageBox.Show("Lỗi tải hồ sơ: " + ex.Message);
             }
         }
 
-        // --- CÁC SỰ KIỆN CHUYỂN TRANG ---
+        // --- CÁC SỰ KIỆN CLICK (Đã đổi tên hàm cho khớp) ---
 
-        // 1. Chuyển sang trang Chỉnh sửa thông tin
+        private void BtnOrderHistory_Click(object sender, EventArgs e)
+        {
+            if (main != null) main.LoadPage("Orders");
+        }
+
+        private void BtnChangePassword_Click(object sender, EventArgs e)
+        {
+            if (main != null) main.LoadPage("ChangePassword");
+        }
+
+        private void BtnAddress_Click(object sender, EventArgs e)
+        {
+            if (main != null) main.LoadPage("Address");
+        }
+
         private void BtnEditProfile_Click(object sender, EventArgs e)
         {
-
-            main.LoadPage("EditProfile");
+            if (main != null) main.LoadPage("EditProfile");
         }
 
-        // 2. Chuyển sang Lịch sử đơn hàng (File bạn đã có Designer)
-        private void BtnMenu1_Click(object sender, EventArgs e)
+        private void BtnLogout_Click(object sender, EventArgs e)
         {
-            main.LoadPage("Order");
-        }
-
-        private void BtnMenu3_Click(object sender, EventArgs e)
-        {
-            main.LoadPage("Address");
-        }
-        private void BtnMenu2_Click(object sender, EventArgs e)
-        {
-            main.LoadPage("ChangePassword");
-        }
-
-        // 4. Đăng xuất
-        private void BtnMenu7_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                // Xóa session
-                AppSession.Instance.AccountID = 0;
-                AppSession.Instance.Email = null;
+                // 1. Xóa Session
+                AppSession.Instance.Clear();
+                SessionManager.ClearCart();
+                // 2. Đóng Form chính
+                MessageBox.Show("Đăng xuất thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Quay về màn hình Login (Authentication Form)
-                // Tùy vào kiến trúc App của bạn, thường sẽ đóng FrmMain và mở lại Form Login
-                Authentication auth = new Authentication();
-                auth.Show();
-                main.Close(); // Đóng form chính
+                // 4. Chuyển về trang chủ (Thay vì Restart App)
+                if (main != null)
+                {
+                    main.LoadPage("Home");
+                }
+                else
+                {
+                    // Dự phòng nếu biến main bị null
+                    FrmMain parentForm = this.FindForm() as FrmMain;
+                    if (parentForm != null) parentForm.LoadPage("Home");
+                }
             }
         }
 

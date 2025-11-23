@@ -1,33 +1,54 @@
+using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.DAL.Entities;
+using Skynet_Commerce.GUI.Forms.User;
+using Skynet_Commerce.GUI.UserControls.Components;
+using Skynet_Commerce.GUI.UserControls.Pages;
+// [QUAN TRỌNG] Thêm dòng này để nhận diện các file trong thư mục User
+using Skynet_Commerce.GUI.UserControls.Pages.User;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
-using System.Net;
 using System.IO;
-using Skynet_Commerce.GUI.UserControls.Pages;
-using Skynet_Commerce.BLL.Models;
-using Skynet_Commerce.GUI.UserControls.Components;
+using System.Net;
+using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.Forms
 {
     public partial class FrmMain : Form
     {
-        // Cache để lưu các trang đã mở (tránh new lại nhiều lần)
         private Dictionary<string, UserControl> pageCache;
-
-        // Màu sắc menu
         private Color ActiveColor = Color.White;
         private Color InactiveColor = Color.FromArgb(220, 220, 220);
 
         public FrmMain()
         {
             InitializeComponent();
-
-            // 1. Khởi tạo Cache
             pageCache = new Dictionary<string, UserControl>();
 
             this.Load += FrmMain_Load;
+            this.pnlContent.Resize += PnlContent_Resize;
+
             SetupMenuEvents();
+        }
+
+        private void PnlContent_Resize(object sender, EventArgs e)
+        {
+            if (pnlContent.Controls.Count > 0)
+            {
+                var currentCtrl = pnlContent.Controls[0];
+                if (currentCtrl is UcLogin || currentCtrl is UcRegister)
+                {
+                    CenterControl(currentCtrl);
+                }
+            }
+        }
+
+        private void CenterControl(Control ctrl)
+        {
+            ctrl.Location = new Point(
+                (pnlContent.Width - ctrl.Width) / 2,
+                (pnlContent.Height - ctrl.Height) / 2
+            );
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
@@ -76,12 +97,9 @@ namespace Skynet_Commerce.GUI.Forms
             lblHome.Click += (sender, e) => LoadPage("Home");
             lblOrders.Click += (sender, e) => LoadPage("Orders");
             btnCart.Click += (sender, e) => LoadPage("Cart");
-
-            // Vào trang Profile
             btnAccount.Click += (sender, e) => LoadPage("Profile");
             lblLogin.Click += (sender, e) => LoadPage("Profile");
 
-            // Tìm kiếm
             btnSearch.Click += (sender, e) => PerformSearch();
             txtSearch.KeyDown += (sender, e) =>
             {
@@ -98,17 +116,12 @@ namespace Skynet_Commerce.GUI.Forms
             string keyword = txtSearch.Text.Trim();
             if (!string.IsNullOrEmpty(keyword))
             {
-                // Với trang Search, ta luôn muốn mới nhất nên xóa cache cũ đi
                 string cacheKey = $"Search_{keyword}";
                 if (pageCache.ContainsKey(cacheKey)) pageCache.Remove(cacheKey);
-
                 LoadPage("Search", keyword);
             }
         }
 
-        // =======================================================================
-        // HÀM LOADPAGE HOÀN CHỈNH (CÓ REFRESH GIỎ HÀNG)
-        // =======================================================================
         public void LoadPage(string pageName, object data = null)
         {
             try
@@ -120,7 +133,7 @@ namespace Skynet_Commerce.GUI.Forms
                 string cacheKey = pageName;
                 int entityId = 0;
 
-                // --- 1. TẠO CACHE KEY DỰA TRÊN DỮ LIỆU ---
+                // 1. Xử lý Key Cache đặc biệt
                 if (pageName == "ProductDetail" && data is ProductDTO productData)
                 {
                     entityId = productData.ProductId;
@@ -136,25 +149,20 @@ namespace Skynet_Commerce.GUI.Forms
                     cacheKey = $"Search_{keyword}";
                 }
 
-                // --- 2. KIỂM TRA CACHE HOẶC TẠO MỚI ---
+                // 2. Tìm trong Cache hoặc Tạo mới
                 if (pageCache.ContainsKey(cacheKey))
                 {
-                    // Lấy từ bộ nhớ đệm
                     targetPage = pageCache[cacheKey];
-
-                    // [CỰC KỲ QUAN TRỌNG]
-                    // Nếu là trang Giỏ hàng, phải bắt nó tải lại dữ liệu từ SessionManager
-                    // Vì giỏ hàng có thể thay đổi ở trang khác
-                    if (targetPage is UcCartPage cartPage)
-                    {
-                        cartPage.LoadCartData();
-                    }
+                    // Nếu là Giỏ hàng -> Refresh dữ liệu
+                    if (targetPage is UcCartPage cartPage) cartPage.LoadCartData();
+                    // Nếu là Profile -> Refresh dữ liệu user (tùy chọn)
+                    // if (targetPage is UcProfile prof) prof.LoadUserProfile(); 
                 }
                 else
                 {
-                    // Tạo mới nếu chưa có
                     switch (pageName)
                     {
+                        // --- CÁC TRANG CHÍNH ---
                         case "Home":
                             targetPage = new UcHomePage();
                             break;
@@ -165,8 +173,34 @@ namespace Skynet_Commerce.GUI.Forms
                             targetPage = new UcCheckoutPage();
                             break;
                         case "Profile":
-                            targetPage = new UcProfile();
+                            if (AppSession.Instance.IsLoggedIn) // Hoặc AppSession.Instance.AccountID > 0
+                            {
+                                // Đã đăng nhập -> Cho phép vào Profile
+                                targetPage = new UcProfile(this);
+                            }
+                            else
+                            {
+                                // Chưa đăng nhập -> Chặn lại, chuyển hướng sang Login
+                                // Truyền tham số "Profile" để đăng nhập xong nó tự quay lại Profile
+                                string nextPage = "Profile";
+                                targetPage = new UcLogin(this, nextPage);
+
+                                // Đổi tên pageName thành Login để hiển thị tiêu đề đúng
+                                pageName = "Login";
+                            }
                             break;
+
+                        // --- AUTHENTICATION ---
+                        case "Login":
+                            string nextLinkLogin = data as string;
+                            targetPage = new UcLogin(this, nextLinkLogin);
+                            break;
+                        case "Register":
+                            string nextLinkReg = data as string;
+                            targetPage = new UcRegister(this, nextLinkReg);
+                            break;
+
+                        // --- CHI TIẾT SẢN PHẨM/SHOP ---
                         case "Search":
                             string kw = data as string ?? "";
                             targetPage = new UcSearchResult(kw);
@@ -182,46 +216,77 @@ namespace Skynet_Commerce.GUI.Forms
                                 targetPage = shopPage;
                             }
                             break;
+
+                        // --- [FIX LỖI] CÁC TRANG CON CỦA USER (TRUYỀN 'this') ---
                         case "Orders":
-                            targetPage = new UcHomePage(); // Demo (chưa có UcOrders)
+                            // UcOrderHistory cũng cần FrmMain nếu bên trong nó có nút quay lại hoặc chuyển trang
+                            // Nếu UcOrderHistory() ko nhận tham số thì để trống, nếu lỗi tương tự thì thêm 'this'
+                            targetPage = new UcOrderHistory(this);
                             break;
+
+                        case "ChangePassword":
+                            targetPage = new UcChangePassword(this); // [SỬA] Thêm 'this'
+                            break;
+
+                        case "Address":
+                            targetPage = new UcUserAddress(this);    // [SỬA] Thêm 'this' và dùng đúng tên class UcUserAddress
+                            break;
+
+                        case "EditProfile":
+                            targetPage = new UcEditProfile(this);    // [SỬA] Thêm 'this'
+                            break;
+
+                        case "ShopRegister":
+                            targetPage = new UcShopRegister(this);   // [SỬA] Thêm 'this'
+                            break;
+
                         default:
                             return;
                     }
 
-                    // Lưu vào Cache
-                    if (targetPage != null)
+                    // Lưu Cache (Trừ Login/Register để tránh lỗi trạng thái)
+                    if (targetPage != null && pageName != "Login" && pageName != "Register")
                     {
                         targetPage.Dock = DockStyle.Fill;
                         pageCache.Add(cacheKey, targetPage);
                     }
                 }
 
-                // --- 3. HIỂN THỊ TRANG ---
+                // 3. Hiển thị trang
                 if (targetPage != null)
                 {
-                    // Thêm vào Panel nếu chưa có
+                    foreach (Control c in pnlContent.Controls) c.Visible = false;
+
                     if (!pnlContent.Controls.Contains(targetPage))
                     {
                         pnlContent.Controls.Add(targetPage);
                     }
 
-                    // Đưa lên trên cùng
                     targetPage.Visible = true;
                     targetPage.BringToFront();
 
-                    // Cập nhật tiêu đề cửa sổ
+                    // Căn giữa nếu là Login/Register
+                    if (pageName == "Login" || pageName == "Register")
+                    {
+                        targetPage.Dock = DockStyle.None;
+                        targetPage.Anchor = AnchorStyles.None;
+                        CenterControl(targetPage);
+                    }
+                    else
+                    {
+                        targetPage.Dock = DockStyle.Fill;
+                    }
+
+                    // Cập nhật tiêu đề
                     string title = pageName;
                     if (pageName == "Search") title = $"Tìm kiếm: {data}";
                     else if (pageName == "ProductDetail" && data is ProductDTO pd) title = pd.Name;
                     else if (pageName == "Profile") title = "Hồ sơ của tôi";
                     else if (pageName == "Checkout") title = "Thanh toán";
-                    else if (pageName == "Cart") title = "Giỏ hàng";
 
                     this.Text = $"ShopViet - {title}";
                 }
 
-                // --- 4. CẬP NHẬT MENU ---
                 UpdateMenuState(pageName);
             }
             catch (Exception ex)
@@ -238,7 +303,6 @@ namespace Skynet_Commerce.GUI.Forms
             lblOrders.Font = new Font(lblOrders.Font, FontStyle.Regular);
             lblHome.ForeColor = InactiveColor;
             lblOrders.ForeColor = InactiveColor;
-
             lblLogin.Font = new Font(lblLogin.Font, FontStyle.Regular);
             lblLogin.ForeColor = InactiveColor;
 
