@@ -2,187 +2,221 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Net;
+using System.IO;
 using Skynet_Commerce.GUI.UserControls.Pages;
-using Skynet_Commerce.BLL.Models; // Sử dụng ProductDTO
-using Skynet_Commerce.GUI.UserControls.Components; // Cần cho các controls khác
+using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.GUI.UserControls.Components;
 
 namespace Skynet_Commerce.GUI.Forms
 {
     public partial class FrmMain : Form
     {
-        // Dictionary để lưu trữ các UserControl đã được khởi tạo
         private Dictionary<string, UserControl> pageCache;
-        // Giả định pnlContent đã được khai báo trong Designer
-        // private Panel pnlContent; 
-
-        // Màu sắc để highlight link menu
         private Color ActiveColor = Color.White;
-        private Color InactiveColor = Color.FromArgb(220, 220, 220); // Màu xám nhạt
+        private Color InactiveColor = Color.FromArgb(220, 220, 220);
 
         public FrmMain()
         {
             InitializeComponent();
-            this.Load += FrmMain_Load;
-
-            // Khởi tạo Dictionary và gán sự kiện cho Menu
             pageCache = new Dictionary<string, UserControl>();
+
+            this.Load += FrmMain_Load;
             SetupMenuEvents();
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
-            // Tải trang chủ mặc định khi Form Load
             LoadPage("Home");
+            LoadHeaderIconsAsync();
         }
 
-        /// <summary>
-        /// Gán các sự kiện click cho các Label menu.
-        /// </summary>
+        private async void LoadHeaderIconsAsync()
+        {
+            try
+            {
+                string urlAccount = "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSR2eevKwdaJI3fmx_crf4K-v4Nwp2lBBuX4nOpmIWxDgtrGS5lKCG5VmQfySftR49-jQmuoGXdFQlWpbJWgMSZNeb9vjGbf3a98TdQP40_iWtHyMI";
+                string urlCart = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1T7upN8AoHCJ5aBH6QEFO_ryc2FNbm60uKA&s";
+                string urlSearch = "https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcQzoLSBkRjyDSEDu8ja6kPTYjysvWpCShlRZOU-LUkgTe_Vj7_wJIGjvP-B6miRuodC8iqOpU6tj4FImP2JerBKe0qtqs4pp6H6SOdiy9UCYQeCQio";
+
+                Image imgAccount = await System.Threading.Tasks.Task.Run(() => LoadImageFromUrl(urlAccount));
+                Image imgCart = await System.Threading.Tasks.Task.Run(() => LoadImageFromUrl(urlCart));
+                Image imgSearch = await System.Threading.Tasks.Task.Run(() => LoadImageFromUrl(urlSearch));
+
+                if (btnAccount != null && imgAccount != null) btnAccount.Image = imgAccount;
+                if (btnCart != null && imgCart != null) btnCart.Image = imgCart;
+                if (btnSearch != null && imgSearch != null) btnSearch.Image = imgSearch;
+            }
+            catch { }
+        }
+
+        private Image LoadImageFromUrl(string url)
+        {
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    byte[] imageBytes = client.DownloadData(url);
+                    using (MemoryStream stream = new MemoryStream(imageBytes))
+                    {
+                        return new Bitmap(Image.FromStream(stream));
+                    }
+                }
+            }
+            catch { return null; }
+        }
+
         private void SetupMenuEvents()
         {
             lblHome.Click += (sender, e) => LoadPage("Home");
             lblOrders.Click += (sender, e) => LoadPage("Orders");
-            btnCart.Click += (sender, e) => LoadPage("Cart"); // Thêm sự kiện cho nút Giỏ hàng
+            btnCart.Click += (sender, e) => LoadPage("Cart");
+
+            // [CẬP NHẬT] Sự kiện bấm vào icon Account hoặc chữ Tài khoản -> Vào trang Profile
+            btnAccount.Click += (sender, e) => LoadPage("Profile");
+            lblLogin.Click += (sender, e) => LoadPage("Profile");
+
+            btnSearch.Click += (sender, e) => PerformSearch();
+            txtSearch.KeyDown += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    PerformSearch();
+                    e.SuppressKeyPress = true;
+                }
+            };
         }
 
-        /// <summary>
-        /// Tải UserControl tương ứng vào pnlContent.
-        /// </summary>
-        /// <param name="pageName">Tên trang cần tải (Home, Orders, Cart, ShopDetail, ProductDetail...)</param>
-        /// <param name="data">Dữ liệu đi kèm (ProductDTO hoặc ShopID)</param>
+        private void PerformSearch()
+        {
+            string keyword = txtSearch.Text.Trim();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                string cacheKey = $"Search_{keyword}";
+                if (pageCache.ContainsKey(cacheKey)) pageCache.Remove(cacheKey);
+                LoadPage("Search", keyword);
+            }
+        }
+
+        // HÀM LOADPAGE ĐÃ CẬP NHẬT CASE "Profile"
         public void LoadPage(string pageName, object data = null)
         {
-            UserControl targetPage = null;
+            try
+            {
+                if (pnlContent == null) return;
+                if (pageCache == null) pageCache = new Dictionary<string, UserControl>();
 
-            // Tên trang chi tiết sẽ là PageName_ID để phân biệt (Dùng cho caching)
-            string cacheKey = pageName;
-            int entityId = 0; // Dùng để xác định ProductID hoặc ShopID
+                UserControl targetPage = null;
+                string cacheKey = pageName;
+                int entityId = 0;
 
-            // Xử lý key cache và ID từ dữ liệu đầu vào
-            if (pageName == "ProductDetail" && data is ProductDTO productData)
-            {
-                entityId = productData.ProductId;
-                cacheKey = $"ProductDetail_{entityId}";
-            }
-            else if (pageName == "ShopDetail" && data is int shopId)
-            {
-                entityId = shopId;
-                cacheKey = $"ShopDetail_{entityId}";
-            }
-            else if (pageName == "ShopDetail" && data is ProductDTO shopProduct)
-            {
-                // Giả định ProductDTO có thuộc tính ShopId
-                // entityId = shopProduct.ShopId; 
-                entityId = 1; // Dùng ShopID giả lập
-                cacheKey = $"ShopDetail_{entityId}";
-            }
-
-
-            // 1. Kiểm tra trong Cache
-            if (pageCache.ContainsKey(cacheKey))
-            {
-                targetPage = pageCache[cacheKey];
-            }
-            else
-            {
-                // 2. Khởi tạo trang mới
-                switch (pageName)
+                // Xử lý Key Cache
+                if (pageName == "ProductDetail" && data is ProductDTO productData)
                 {
-                    case "Home":
-                        targetPage = new UcHomePage();
-                        break;
-                    case "Cart":
-                        targetPage = new UcCartPage();
-                        break;
-                    case "ProductDetail":
-                        if (data is ProductDTO pd)
-                        {
-                            targetPage = new UcProductDetail(pd); // Sử dụng constructor nhận DTO
-                        }
-                        break;
-                    case "ShopDetail":
-                        // Cần có Shop ID để tải dữ liệu
-                        if (entityId != 0)
-                        {
-                            UcShopDetail shopPage = new UcShopDetail();
-                            shopPage.LoadShopData(entityId); // Gọi hàm tải dữ liệu shop
-                            targetPage = shopPage;
-                        }
-                        break;
-                    case "Orders":
-                        // Giả định bạn có UcOrderPage
-                        // targetPage = new UcOrderPage();
-                        targetPage = new UcHomePage(); // Dùng tạm
-                        break;
-                    default:
-                        return;
+                    entityId = productData.ProductId;
+                    cacheKey = $"ProductDetail_{entityId}";
+                }
+                else if (pageName == "ShopDetail" && data is int shopId)
+                {
+                    entityId = shopId;
+                    cacheKey = $"ShopDetail_{entityId}";
+                }
+                else if (pageName == "Search" && data is string keyword)
+                {
+                    cacheKey = $"Search_{keyword}";
                 }
 
-                // Cài đặt thuộc tính cơ bản và lưu vào cache
+                // Tìm hoặc tạo mới
+                if (pageCache.ContainsKey(cacheKey))
+                {
+                    targetPage = pageCache[cacheKey];
+                }
+                else
+                {
+                    switch (pageName)
+                    {
+                        case "Home":
+                            targetPage = new UcHomePage();
+                            break;
+                        case "Cart":
+                            targetPage = new UcCartPage();
+                            break;
+
+                        // [MỚI] Case cho trang Profile
+                        case "Profile":
+                            targetPage = new UcProfile();
+                            break;
+
+                        case "Search":
+                            string kw = data as string ?? "";
+                            targetPage = new UcSearchResult(kw);
+                            break;
+                        case "ProductDetail":
+                            if (data is ProductDTO pd) targetPage = new UcProductDetail(pd);
+                            break;
+                        case "ShopDetail":
+                            if (entityId != 0)
+                            {
+                                UcShopDetail shopPage = new UcShopDetail();
+                                shopPage.LoadShopData(entityId);
+                                targetPage = shopPage;
+                            }
+                            break;
+                        case "Orders":
+                            targetPage = new UcHomePage();
+                            break;
+                        default:
+                            return;
+                    }
+
+                    if (targetPage != null)
+                    {
+                        targetPage.Dock = DockStyle.Fill;
+                        pageCache.Add(cacheKey, targetPage);
+                    }
+                }
+
                 if (targetPage != null)
                 {
-                    targetPage.Dock = DockStyle.Fill;
-                    pageCache.Add(cacheKey, targetPage);
+                    if (!pnlContent.Controls.Contains(targetPage))
+                    {
+                        pnlContent.Controls.Add(targetPage);
+                    }
+                    targetPage.Visible = true;
+                    targetPage.BringToFront();
 
-                    // Thêm vào Controls lần đầu
-                    // *Chú ý: Nếu pnlContent là FlowLayoutPanel hoặc TableLayoutPanel, 
-                    // cách quản lý Controls sẽ khác một chút.*
-                    pnlContent.Controls.Add(targetPage);
+                    string title = pageName;
+                    if (pageName == "Search") title = $"Tìm kiếm: {data}";
+                    else if (pageName == "ProductDetail" && data is ProductDTO pd) title = pd.Name;
+                    else if (pageName == "Profile") title = "Hồ sơ của tôi";
+
+                    this.Text = $"ShopViet - {title}";
                 }
-            }
 
-            // 3. Hiển thị trang
-            if (targetPage != null)
+                UpdateMenuState(pageName);
+            }
+            catch (Exception ex)
             {
-                // Ẩn tất cả các controls cũ
-                foreach (Control uc in pnlContent.Controls)
-                {
-                    uc.Visible = false;
-                }
-
-                // Hiển thị targetPage
-                targetPage.Visible = true;
-                targetPage.BringToFront();
-
-                // 4. Cập nhật tiêu đề Form
-                string title = pageName;
-                if (pageName == "ProductDetail" && data is ProductDTO pdTitle)
-                    title = pdTitle.Name;
-                else if (pageName == "ShopDetail")
-                    title = $"Shop ID {entityId}"; // Cần cập nhật Title sau khi UcShopDetail.LoadShopData chạy
-
-                this.Text = $"ShopViet - {title}";
+                MessageBox.Show($"Lỗi khi tải trang '{pageName}':\n{ex.Message}");
             }
-
-            // 5. Cập nhật trạng thái Active của Menu (Chỉ Home/Orders)
-            UpdateMenuState(pageName);
         }
 
-        // ... Hàm UpdateMenuState giữ nguyên ...
         private void UpdateMenuState(string activePage)
         {
-            // Đặt lại font style và màu sắc cho tất cả các Label menu
+            if (lblHome == null || lblOrders == null) return;
+
             lblHome.Font = new Font(lblHome.Font, FontStyle.Regular);
             lblOrders.Font = new Font(lblOrders.Font, FontStyle.Regular);
             lblHome.ForeColor = InactiveColor;
             lblOrders.ForeColor = InactiveColor;
 
-            Label activeLabel = null;
-            if (activePage == "Home")
-            {
-                activeLabel = lblHome;
-            }
-            else if (activePage == "Orders")
-            {
-                activeLabel = lblOrders;
-            }
+            // Highlight Label Tài Khoản nếu đang ở trang Profile
+            lblLogin.Font = new Font(lblLogin.Font, FontStyle.Regular);
+            lblLogin.ForeColor = InactiveColor;
 
-            // Highlight Label đang active
-            if (activeLabel != null)
-            {
-                activeLabel.Font = new Font(activeLabel.Font, FontStyle.Bold);
-                activeLabel.ForeColor = ActiveColor;
-            }
+            if (activePage == "Home") { lblHome.Font = new Font(lblHome.Font, FontStyle.Bold); lblHome.ForeColor = ActiveColor; }
+            else if (activePage == "Orders") { lblOrders.Font = new Font(lblOrders.Font, FontStyle.Bold); lblOrders.ForeColor = ActiveColor; }
+            else if (activePage == "Profile") { lblLogin.Font = new Font(lblLogin.Font, FontStyle.Bold); lblLogin.ForeColor = ActiveColor; }
         }
     }
 }

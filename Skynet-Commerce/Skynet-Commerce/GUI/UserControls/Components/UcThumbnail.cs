@@ -1,60 +1,74 @@
-﻿// Trong UcThumbnail.cs
-
-using Guna.UI2.WinForms;
+﻿using System;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Skynet_Commerce.GUI.UserControls.Components
 {
-    // Kế thừa từ Guna2Panel (Đảm bảo lớp này khớp với Designer)
-    public partial class UcThumbnail : Guna2Panel
+    public partial class UcThumbnail : UserControl
     {
-        public string ImagePath { get; set; }
-        public event System.EventHandler ThumbnailClicked;
+        public event EventHandler ThumbnailClicked;
+        public string ImagePath { get; private set; }
+        private PictureBox pbThumb;
+        private Panel pnlBorder;
 
-        // Constructor mặc định (cần thiết cho Designer)
-        public UcThumbnail()
+        public UcThumbnail(string imagePath)
         {
-            InitializeComponent();
-            SetupClickEvent();
-        }
+            // Không cần gọi InitializeComponent() nếu bạn tạo giao diện bằng code bên dưới
+            // InitializeComponent(); 
 
-        // <<< KHẮC PHỤC LỖI CONSTRUCTOR VÀ LOGIC TẢI ẢNH >>>
-        public UcThumbnail(string imagePath) : this()
-        {
             this.ImagePath = imagePath;
+            this.Size = new Size(70, 70); // Kích thước ô ảnh nhỏ
+            this.Cursor = Cursors.Hand;
+            this.Margin = new Padding(5);
+
+            SetupUI();
             LoadImage();
         }
 
-        private void SetupClickEvent()
+        private void SetupUI()
         {
-            // Gán sự kiện click cho Panel chứa ảnh
-            this.Click += UcThumbnail_Click;
+            // 1. Tạo viền
+            pnlBorder = new Panel();
+            pnlBorder.Dock = DockStyle.Fill;
+            pnlBorder.Padding = new Padding(2);
+            pnlBorder.BackColor = Color.Transparent;
 
-            // Gán sự kiện click cho PictureBox con (nếu đã khởi tạo)
-            if (this.Controls.OfType<Guna2PictureBox>().Any())
-            {
-                this.Controls.OfType<Guna2PictureBox>().First().Click += UcThumbnail_Click;
-            }
+            // 2. Tạo PictureBox
+            pbThumb = new PictureBox();
+            pbThumb.Dock = DockStyle.Fill;
+            pbThumb.SizeMode = PictureBoxSizeMode.Zoom; // Co giãn ảnh
+            pbThumb.BackColor = Color.WhiteSmoke;
+
+            // Sự kiện click
+            pbThumb.Click += (s, e) => ThumbnailClicked?.Invoke(this, e);
+
+            pnlBorder.Controls.Add(pbThumb);
+            this.Controls.Add(pnlBorder);
         }
-        // ... (LoadImage và UcThumbnail_Click)
 
         private void LoadImage()
         {
-            // Lấy Guna2PictureBox con đã được khởi tạo trong Designer
-            Guna2PictureBox thumbnailBox = this.Controls.OfType<Guna2PictureBox>().FirstOrDefault();
-
-            if (thumbnailBox != null && System.IO.File.Exists(this.ImagePath))
+            // Case 1: Link Online
+            if (!string.IsNullOrEmpty(this.ImagePath) && this.ImagePath.StartsWith("http"))
             {
-                thumbnailBox.ImageLocation = this.ImagePath;
+                pbThumb.ImageLocation = this.ImagePath;
+            }
+            // Case 2: File Offline
+            else if (File.Exists(this.ImagePath))
+            {
+                pbThumb.ImageLocation = this.ImagePath;
+            }
+            // Case 3: Lỗi
+            else
+            {
+                pbThumb.BackColor = Color.LightGray; // Hiện màu xám nếu lỗi
             }
         }
 
-        private void UcThumbnail_Click(object sender, System.EventArgs e)
+        public void SetActive(bool isActive)
         {
-            ThumbnailClicked?.Invoke(this, e);
+            pnlBorder.BackColor = isActive ? Color.OrangeRed : Color.Transparent;
         }
     }
 }

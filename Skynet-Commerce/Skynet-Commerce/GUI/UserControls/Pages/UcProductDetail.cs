@@ -55,20 +55,19 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         }
 
         // --- HÀM TẠO DỮ LIỆU MẪU NỘI BỘ (Đảm bảo luôn có dữ liệu để hiện) ---
+        // Trong UcProductDetail.cs
+
         private ProductDTO GetInternalSampleData()
         {
-            string basePath = Application.StartupPath;
-            // Đường dẫn ảnh mẫu (đảm bảo file tồn tại trong bin/Debug/img)
-            string imgPath = Path.Combine(basePath, @"img\product1.jpg");
+            // Dùng link ảnh online (lấy cái áo khoác Jean cho hợp bài)
+            string onlineImg = "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lznbzh46830k73";
 
             var variants = new List<ProductVariantDTO>
-            {
-                new ProductVariantDTO { VariantID = 1, Size = "S", Color = "Xanh đen", Price = 450000, StockQuantity = 50 },
-                new ProductVariantDTO { VariantID = 2, Size = "M", Color = "Xanh đen", Price = 450000, StockQuantity = 100 },
-                new ProductVariantDTO { VariantID = 3, Size = "L", Color = "Xanh đen", Price = 450000, StockQuantity = 20 },
-                new ProductVariantDTO { VariantID = 5, Size = "S", Color = "Xanh nhạt", Price = 450000, StockQuantity = 10 },
-                new ProductVariantDTO { VariantID = 7, Size = "S", Color = "Đen", Price = 500000, StockQuantity = 150 },
-            };
+    {
+        new ProductVariantDTO { VariantID = 1, Size = "S", Color = "Xanh đen", Price = 450000, StockQuantity = 50 },
+        new ProductVariantDTO { VariantID = 2, Size = "M", Color = "Xanh đen", Price = 450000, StockQuantity = 100 },
+        new ProductVariantDTO { VariantID = 7, Size = "S", Color = "Đen", Price = 500000, StockQuantity = 150 },
+    };
 
             return new ProductDTO
             {
@@ -78,10 +77,32 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 OldPrice = 550000,
                 Rating = 4.8,
                 SoldQuantity = 1234,
-                ImagePath = imgPath,
+
+                // Gán link online vào đây
+                ImagePath = onlineImg,
+
                 Variants = variants,
-                ThumbnailPaths = new List<string> { imgPath, imgPath, imgPath } // Giả lập 3 ảnh
+
+                // Gán link online vào list ảnh nhỏ luôn
+                ThumbnailPaths = new List<string> { onlineImg, onlineImg, onlineImg }
             };
+        }
+
+        private void LoadThumbnails(List<string> paths)
+        {
+            flpThumbnails.Controls.Clear();
+            if (paths == null) return;
+
+            foreach (string path in paths)
+            {
+                // Cho phép tạo nếu là File tồn tại HOẶC là Link Online
+                if (File.Exists(path) || path.StartsWith("http"))
+                {
+                    UcThumbnail thumb = new UcThumbnail(path);
+                    thumb.ThumbnailClicked += Thumbnail_Clicked;
+                    flpThumbnails.Controls.Add(thumb);
+                }
+            }
         }
 
         private void CenterDetailContainer()
@@ -178,18 +199,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
         }
 
-        // --- TẢI ẢNH PHỤ ---
-        private void LoadThumbnails(List<string> paths)
-        {
-            flpThumbnails.Controls.Clear();
-            foreach (string path in paths)
-            {
-                // Đảm bảo UcThumbnail hoạt động
-                UcThumbnail thumb = new UcThumbnail(path);
-                thumb.ThumbnailClicked += Thumbnail_Clicked;
-                flpThumbnails.Controls.Add(thumb);
-            }
-        }
+        
 
         private void Thumbnail_Clicked(object sender, EventArgs e)
         {
@@ -199,9 +209,20 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         public void SwitchMainImage(string imagePath)
         {
-            if (System.IO.File.Exists(imagePath))
+            // Kiểm tra nếu là Link Online (bắt đầu bằng http hoặc https)
+            if (!string.IsNullOrEmpty(imagePath) && imagePath.StartsWith("http"))
             {
                 pbMainImage.ImageLocation = imagePath;
+            }
+            // Kiểm tra nếu là File trong máy (đề phòng sau này bạn dùng lại)
+            else if (File.Exists(imagePath))
+            {
+                pbMainImage.ImageLocation = imagePath;
+            }
+            else
+            {
+                // Nếu không có ảnh thì xóa trắng
+                pbMainImage.Image = null;
             }
         }
 

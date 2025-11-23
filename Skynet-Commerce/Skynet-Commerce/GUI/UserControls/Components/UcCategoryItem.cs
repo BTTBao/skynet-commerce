@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using Guna.UI2.WinForms; // Cần thiết để truy cập Guna2Panel và Guna2PictureBox
+using Guna.UI2.WinForms;
 
 namespace Skynet_Commerce.GUI.UserControls.Components
 {
     public partial class UcCategoryItem : UserControl
     {
-        // -------------------------------------------------------------
-        // I. PROPERTIES CÔNG KHAI (Public Properties)
-        // Dùng để thiết lập dữ liệu từ bên ngoài (ví dụ: UcHomePage)
-        // -------------------------------------------------------------
+        // Biến lưu vị trí ban đầu để hover không bị trôi
+        private int _defaultY;
+        private bool _isLoaded = false;
 
+        // --- PROPERTIES ---
         public string CategoryName
         {
             get => lblCategoryName.Text;
@@ -28,27 +27,31 @@ namespace Skynet_Commerce.GUI.UserControls.Components
         public Image IconImage
         {
             get => pbIcon.Image;
-            set => pbIcon.Image = value;
+            set
+            {
+                pbIcon.Image = value;
+                // Nếu không có ảnh thì ẩn PictureBox đi để không hiện ô trắng
+                pbIcon.Visible = (value != null);
+            }
         }
 
-
-        // -------------------------------------------------------------
-        // II. CONSTRUCTOR
-        // -------------------------------------------------------------
-
-        // Constructor mặc định (dùng cho Designer)
+        // --- CONSTRUCTOR ---
         public UcCategoryItem()
         {
             InitializeComponent();
+
+            // [QUAN TRỌNG] Sửa lỗi ô vuông trắng
+            // Đặt nền PictureBox thành trong suốt
+            if (pbIcon != null)
+            {
+                pbIcon.BackColor = Color.Transparent;
+                pbIcon.UseTransparentBackground = true;
+                pbIcon.FillColor = Color.Transparent;
+            }
+
             SetupHoverEffect();
         }
 
-        /// <summary>
-        /// Constructor để khởi tạo UcCategoryItem với dữ liệu
-        /// </summary>
-        /// <param name="name">Tên danh mục</param>
-        /// <param name="bgColor">Màu nền của icon (Color)</param>
-        /// <param name="icon">Hình ảnh icon (Image)</param>
         public UcCategoryItem(string name, Color bgColor, Image icon) : this()
         {
             this.CategoryName = name;
@@ -56,38 +59,48 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             this.IconImage = icon;
         }
 
+        // --- XỬ LÝ LOGIC HOVER CHUẨN (KHÔNG BỊ TRÔI) ---
 
-        // -------------------------------------------------------------
-        // III. HÀM XỬ LÝ SỰ KIỆN VÀ HIỆU ỨNG
-        // -------------------------------------------------------------
+        // 1. Lấy vị trí gốc khi UserControl vừa hiện lên
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            _defaultY = pnlIconContainer.Top;
+            _isLoaded = true;
+        }
 
-        /// <summary>
-        /// Thiết lập hiệu ứng khi di chuột vào (hover)
-        /// </summary>
         private void SetupHoverEffect()
         {
             this.Cursor = Cursors.Hand;
 
-            // Xử lý hiệu ứng khi di chuột vào toàn bộ UserControl
+            // Gán sự kiện Hover cho tất cả thành phần con để mượt mà
             this.MouseEnter += (s, e) => ApplyHover(true);
             this.MouseLeave += (s, e) => ApplyHover(false);
 
-            // Đảm bảo hiệu ứng cũng áp dụng cho các controls con
             lblCategoryName.MouseEnter += (s, e) => ApplyHover(true);
             pnlIconContainer.MouseEnter += (s, e) => ApplyHover(true);
+            pbIcon.MouseEnter += (s, e) => ApplyHover(true); // Thêm cái này
         }
 
         private void ApplyHover(bool isHovering)
         {
+            if (!_isLoaded) return;
+
             if (isHovering)
             {
-                // Khi di chuột vào: Nâng nhẹ container icon
-                pnlIconContainer.Location = new Point(pnlIconContainer.Left, pnlIconContainer.Top - 3);
+                // Bay lên: Set vị trí cố định so với gốc (Gốc - 5px)
+                pnlIconContainer.Top = _defaultY - 8;
+
+                // Thêm hiệu ứng đổ bóng đậm hơn khi hover (nếu muốn)
+                pnlIconContainer.ShadowDecoration.Depth = 15;
             }
             else
             {
-                // Khi di chuột ra: Đặt lại vị trí ban đầu
-                pnlIconContainer.Location = new Point(pnlIconContainer.Left, pnlIconContainer.Top + 3);
+                // Hạ cánh: Về đúng vị trí gốc
+                pnlIconContainer.Top = _defaultY;
+
+                // Trả lại bóng bình thường
+                pnlIconContainer.ShadowDecoration.Depth = 5;
             }
         }
     }

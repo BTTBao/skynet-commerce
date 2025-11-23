@@ -350,7 +350,7 @@
       <DependentUpon>UcProductItem.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcThumbnail.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcThumbnail.Designer.cs">
       <DependentUpon>UcThumbnail.cs</DependentUpon>

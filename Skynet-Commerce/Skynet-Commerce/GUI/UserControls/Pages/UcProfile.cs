@@ -14,9 +14,9 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
     public partial class UcProfile : UserControl
     {
         private FrmMain main;
-        public UcProfile(FrmMain main)
+        public UcProfile( )
         {
-            this.main = main;
+            
             InitializeComponent();
         }
     }
