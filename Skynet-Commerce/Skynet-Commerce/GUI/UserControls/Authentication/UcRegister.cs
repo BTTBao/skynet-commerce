@@ -1,7 +1,8 @@
 ﻿using Skynet_Commerce.DAL.Entities; // Namespace chứa Account và DbContext
 using System;
-using System.Data.Entity; // Cần thiết cho các thao tác Async của Entity Framework
+using System.Data.Entity;
 using System.Linq;
+using System.Text.RegularExpressions; // Thêm cái này để kiểm tra định dạng SĐT
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,7 +17,7 @@ namespace Skynet_Commerce.GUI.Forms.User
             this.main = main;
             InitializeComponent();
 
-            // Gán sự kiện Click cho nút đăng ký (nếu chưa gán trong Designer)
+            // Gán sự kiện Click
             this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
         }
 
@@ -37,27 +38,39 @@ namespace Skynet_Commerce.GUI.Forms.User
         // Logic xử lý đăng ký
         private async void btnRegister_Click(object sender, EventArgs e)
         {
-            // 1. Lấy dữ liệu từ các TextBox (dựa theo tên trong Designer)
+            // 1. Lấy dữ liệu từ các TextBox
             string email = guna2TextBox1.Text.Trim();
             string password = guna2TextBox2.Text;
             string confirmPass = guna2TextBox3.Text;
+            string phone = phoneLb.Text.Trim(); // <--- Lấy SĐT từ phoneLb
 
             // 2. Validate dữ liệu cơ bản
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPass))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password)
+                || string.IsNullOrEmpty(confirmPass) || string.IsNullOrEmpty(phone)) // <--- Check rỗng phone
             {
-                MessageBox.Show("Vui lòng điền đầy đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng điền đầy đủ thông tin (Email, SĐT, Mật khẩu)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            // Validate Mật khẩu khớp
             if (password != confirmPass)
             {
                 MessageBox.Show("Mật khẩu nhập lại không khớp!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            // Validate độ dài mật khẩu
             if (password.Length < 6)
             {
                 MessageBox.Show("Mật khẩu phải có ít nhất 6 ký tự!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Validate định dạng SĐT (Quan trọng: Database bạn giới hạn 10 ký tự)
+            // Regex: Bắt đầu bằng số 0, theo sau là 9 chữ số nữa (Tổng 10 số)
+            if (!Regex.IsMatch(phone, @"^0\d{9}$"))
+            {
+                MessageBox.Show("Số điện thoại không hợp lệ! (Phải là 10 số và bắt đầu bằng số 0)", "Lỗi định dạng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -69,26 +82,33 @@ namespace Skynet_Commerce.GUI.Forms.User
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    // 3. Kiểm tra Email đã tồn tại chưa
-                    // Lưu ý: Dùng Task.Run để tránh đơ UI nếu EF phiên bản cũ không hỗ trợ đầy đủ Async
-                    bool isEmailExist = await Task.Run(() => db.Accounts.Any(a => a.Email == email));
+                    // 3. Kiểm tra Email hoặc SĐT đã tồn tại chưa
+                    // Chúng ta lấy ra account đầu tiên trùng Email hoặc trùng Phone
+                    var existingAccount = await Task.Run(() =>
+                        db.Accounts.FirstOrDefault(a => a.Email == email || a.Phone == phone)
+                    );
 
-                    if (isEmailExist)
+                    if (existingAccount != null)
                     {
-                        MessageBox.Show("Email này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        if (existingAccount.Email == email)
+                        {
+                            MessageBox.Show("Email này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Số điện thoại này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        return; // Dừng lại không lưu
                     }
 
                     // 4. Tạo tài khoản mới
-                    // Lưu ý: Hiện tại đang lưu Password dạng Text thường để khớp với Login của bạn.
-                    // Trong thực tế nên mã hóa (MD5/Bcrypt) trước khi lưu.
                     var newAccount = new Account
                     {
                         Email = email,
-                        PasswordHash = password, // Bạn có thể thêm hàm mã hóa tại đây
+                        Phone = phone, // <--- Lưu SĐT vào
+                        PasswordHash = password, // (Nên mã hóa nếu có thể)
                         CreatedAt = DateTime.Now,
                         IsActive = true,
-                        // Các trường khác có thể để null hoặc default
                     };
 
                     db.Accounts.Add(newAccount);
@@ -106,9 +126,12 @@ namespace Skynet_Commerce.GUI.Forms.User
             }
             finally
             {
-                // Mở lại nút sau khi xử lý xong (nếu chưa chuyển trang)
-                btnRegister.Enabled = true;
-                btnRegister.Text = "REGISTER";
+                // Mở lại nút sau khi xử lý xong
+                if (this.Visible) // Kiểm tra nếu form chưa chuyển đi
+                {
+                    btnRegister.Enabled = true;
+                    btnRegister.Text = "REGISTER";
+                }
             }
         }
     }

@@ -77,7 +77,7 @@
             // 
             // sepLine2
             // 
-            this.sepLine2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.sepLine2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sepLine2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.sepLine2.Location = new System.Drawing.Point(15, 145);
@@ -137,13 +137,13 @@
             this.lblTotalTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.lblTotalTitle.Location = new System.Drawing.Point(640, 116);
             this.lblTotalTitle.Name = "lblTotalTitle";
-            this.lblTotalTitle.Size = new System.Drawing.Size(97, 23);
+            this.lblTotalTitle.Size = new System.Drawing.Size(96, 23);
             this.lblTotalTitle.TabIndex = 11;
             this.lblTotalTitle.Text = "Thành tiền:";
             // 
             // sepLine1
             // 
-            this.sepLine1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.sepLine1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sepLine1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.sepLine1.Location = new System.Drawing.Point(15, 40);
@@ -170,7 +170,7 @@
             this.lblQuantity.ForeColor = System.Drawing.Color.Gray;
             this.lblQuantity.Location = new System.Drawing.Point(125, 105);
             this.lblQuantity.Name = "lblQuantity";
-            this.lblQuantity.Size = new System.Drawing.Size(25, 20);
+            this.lblQuantity.Size = new System.Drawing.Size(24, 20);
             this.lblQuantity.TabIndex = 8;
             this.lblQuantity.Text = "x1";
             // 
@@ -181,7 +181,7 @@
             this.lblVariant.ForeColor = System.Drawing.Color.Gray;
             this.lblVariant.Location = new System.Drawing.Point(125, 85);
             this.lblVariant.Name = "lblVariant";
-            this.lblVariant.Size = new System.Drawing.Size(151, 20);
+            this.lblVariant.Size = new System.Drawing.Size(153, 20);
             this.lblVariant.TabIndex = 7;
             this.lblVariant.Text = "Phân loại: L, Xanh đen";
             // 
@@ -191,7 +191,7 @@
             this.lblProductName.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.lblProductName.Location = new System.Drawing.Point(125, 55);
             this.lblProductName.Name = "lblProductName";
-            this.lblProductName.Size = new System.Drawing.Size(145, 25);
+            this.lblProductName.Size = new System.Drawing.Size(148, 25);
             this.lblProductName.TabIndex = 6;
             this.lblProductName.Text = "Áo khoác denim";
             // 
@@ -214,7 +214,7 @@
             this.lblShopName.ForeColor = System.Drawing.Color.Black;
             this.lblShopName.Location = new System.Drawing.Point(15, 13);
             this.lblShopName.Name = "lblShopName";
-            this.lblShopName.Size = new System.Drawing.Size(114, 23);
+            this.lblShopName.Size = new System.Drawing.Size(113, 23);
             this.lblShopName.TabIndex = 4;
             this.lblShopName.Text = "Fashion Store";
             // 
@@ -236,9 +236,9 @@
             this.lblDate.AutoSize = true;
             this.lblDate.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblDate.ForeColor = System.Drawing.Color.Gray;
-            this.lblDate.Location = new System.Drawing.Point(310, 15);
+            this.lblDate.Location = new System.Drawing.Point(472, 15);
             this.lblDate.Name = "lblDate";
-            this.lblDate.Size = new System.Drawing.Size(99, 20);
+            this.lblDate.Size = new System.Drawing.Size(101, 20);
             this.lblDate.TabIndex = 1;
             this.lblDate.Text = "|   2025-11-15";
             // 
@@ -247,9 +247,9 @@
             this.lblOrderId.AutoSize = true;
             this.lblOrderId.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblOrderId.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lblOrderId.Location = new System.Drawing.Point(160, 15);
+            this.lblOrderId.Location = new System.Drawing.Point(322, 15);
             this.lblOrderId.Name = "lblOrderId";
-            this.lblOrderId.Size = new System.Drawing.Size(138, 20);
+            this.lblOrderId.Size = new System.Drawing.Size(137, 20);
             this.lblOrderId.TabIndex = 0;
             this.lblOrderId.Text = "Mã đơn: DH001234";
             // 

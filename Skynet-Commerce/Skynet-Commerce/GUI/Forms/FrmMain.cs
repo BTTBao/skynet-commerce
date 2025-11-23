@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.DAL.Entities; // Sử dụng ProductDTO
+using Skynet_Commerce.GUI.Forms.User;
+using Skynet_Commerce.GUI.UserControls.General;
+using Skynet_Commerce.GUI.UserControls.Pages;
+using Skynet_Commerce.GUI.UserControls.Pages.User;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Skynet_Commerce.GUI.UserControls.General;
-using Skynet_Commerce.GUI.UserControls.Pages;
-using Skynet_Commerce.BLL.Models;
-using Skynet_Commerce.GUI.Forms.User; // Sử dụng ProductDTO
 
 namespace Skynet_Commerce.GUI.Forms
 {
@@ -67,9 +69,26 @@ namespace Skynet_Commerce.GUI.Forms
             }
             else
             {
-                // 2. Khởi tạo trang mới
                 switch (pageName)
                 {
+                    case "Address":
+                        targetPage = new UcUserAddress(this);
+                        break;
+                    case "ShopRegister":
+                        targetPage = new UcShopRegister(this);
+                        break;
+                    case "EditProfile":
+                        targetPage = new UcEditProfile(this);
+                        break;
+                    case "ChangePassword":
+                        targetPage = new UcChangePassword(this);
+                        break;
+                    case "Profile":
+                        targetPage = new UcProfile(this);
+                        break;
+                    case "Order":
+                        targetPage = new UcOrderHistory();
+                        break;
                     case "Home":
                         targetPage = new UcHomePage();
                         break;
@@ -115,6 +134,7 @@ namespace Skynet_Commerce.GUI.Forms
 
                 // Hiển thị targetPage
                 targetPage.Visible = true;
+                targetPage.Dock = DockStyle.Fill;
                 targetPage.BringToFront();
 
                 // Cập nhật tiêu đề Form
@@ -153,8 +173,15 @@ namespace Skynet_Commerce.GUI.Forms
 
         private void btnAccount_Click(object sender, EventArgs e)
         {
-            Authentication a = new Authentication();
-            a.ShowLogin();
+            if (AppSession.Instance.IsLoggedIn)
+            {
+                LoadPage("Profile");
+            }
+            else
+            {
+                Authentication a = new Authentication();
+                a.ShowLogin();
+            }
         }
     }
 }

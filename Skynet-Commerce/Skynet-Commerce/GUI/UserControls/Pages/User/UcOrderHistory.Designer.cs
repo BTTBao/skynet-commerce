@@ -49,7 +49,7 @@
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(1000, 60);
+            this.pnlHeader.Size = new System.Drawing.Size(1545, 60);
             this.pnlHeader.TabIndex = 0;
             // 
             // pnlTabs
@@ -62,7 +62,7 @@
             this.pnlTabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlTabs.Location = new System.Drawing.Point(0, 0);
             this.pnlTabs.Name = "pnlTabs";
-            this.pnlTabs.Size = new System.Drawing.Size(1000, 59);
+            this.pnlTabs.Size = new System.Drawing.Size(1545, 59);
             this.pnlTabs.TabIndex = 1;
             // 
             // btnTabCancelled
@@ -182,7 +182,7 @@
             this.separatorHeader.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.separatorHeader.Location = new System.Drawing.Point(0, 59);
             this.separatorHeader.Name = "separatorHeader";
-            this.separatorHeader.Size = new System.Drawing.Size(1000, 1);
+            this.separatorHeader.Size = new System.Drawing.Size(1545, 1);
             this.separatorHeader.TabIndex = 0;
             // 
             // flowPanelOrders
@@ -193,7 +193,7 @@
             this.flowPanelOrders.Location = new System.Drawing.Point(0, 60);
             this.flowPanelOrders.Name = "flowPanelOrders";
             this.flowPanelOrders.Padding = new System.Windows.Forms.Padding(10);
-            this.flowPanelOrders.Size = new System.Drawing.Size(1000, 640);
+            this.flowPanelOrders.Size = new System.Drawing.Size(1545, 640);
             this.flowPanelOrders.TabIndex = 1;
             // 
             // UcOrderHistory
@@ -203,7 +203,7 @@
             this.Controls.Add(this.flowPanelOrders);
             this.Controls.Add(this.pnlHeader);
             this.Name = "UcOrderHistory";
-            this.Size = new System.Drawing.Size(1000, 700);
+            this.Size = new System.Drawing.Size(1545, 700);
             this.pnlHeader.ResumeLayout(false);
             this.pnlTabs.ResumeLayout(false);
             this.ResumeLayout(false);

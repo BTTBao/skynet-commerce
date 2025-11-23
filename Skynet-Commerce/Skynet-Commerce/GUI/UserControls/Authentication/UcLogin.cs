@@ -44,8 +44,6 @@ namespace Skynet_Commerce.GUI.Forms.User
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    int count = db.Accounts.Count();
-                    MessageBox.Show("Tổng số tài khoản tìm thấy trong DB: " + count);
                     // Tìm tài khoản
                     var account = await Task.Run(() =>
                         db.Accounts.FirstOrDefault(a => a.Email == email && a.IsActive == true)
@@ -69,10 +67,7 @@ namespace Skynet_Commerce.GUI.Forms.User
                     // AppSession.Instance.Role = ... (Nếu bạn có bảng Role, hãy query và gán vào đây)
 
                     MessageBox.Show("Đăng nhập thành công!", "Chúc mừng", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Xử lý sau khi login thành công (Ví dụ: Mở Form chính và ẩn Form Login)
-                    // this.main.Hide(); // Hoặc chuyển trang tùy vào logic Main Form của bạn
-                    // new MainForm().Show(); 
+                    this.main.Hide();
                     this.Visible = false;
                 }
             }

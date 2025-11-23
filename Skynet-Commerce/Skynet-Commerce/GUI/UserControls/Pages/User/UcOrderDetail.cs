@@ -6,82 +6,122 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
 {
     public partial class UcOrderDetail : UserControl
     {
+        public event EventHandler<int> ButtonCancelClicked;   // Sự kiện Hủy đơn
+        public event EventHandler<int> ButtonReceiveClicked;  // Sự kiện Đã nhận hàng
+        public event EventHandler<int> ButtonBuyAgainClicked; // Sự kiện Mua lại
+
+        private int _currentOrderId; // Lưu ID đơn hàng hiện tại
+
         public UcOrderDetail()
         {
             InitializeComponent();
+            btnActionPrimary.Click += BtnActionPrimary_Click;
+            btnActionSecondary.Click += BtnActionSecondary_Click;
         }
-
-        /// <summary>
-        /// Hàm nhận dữ liệu và hiển thị lên thẻ đơn hàng
-        /// </summary>
-        public void SetData(string orderId, string date, string shopName, string productName,
-                            string variant, int quantity, string price, string totalMoney,
-                            Image productImage, string status)
+        public void SetData(int orderId, DateTime? date, string shopName, string status,
+                            decimal totalAmount, string prodName, int prodCount,
+                            string imgUrl, decimal price, int qty)
         {
-            lblOrderId.Text = "Mã đơn: " + orderId;
-            lblDate.Text = "|   " + date;
+            _currentOrderId = orderId; // Lưu lại ID
+
+            lblOrderId.Text = $"Mã đơn: {orderId}";
+            lblDate.Text = date.HasValue ? $"| {date.Value:dd/MM/yyyy HH:mm}" : "";
             lblShopName.Text = shopName;
-            lblProductName.Text = productName;
-            lblVariant.Text = "Phân loại: " + variant;
-            lblQuantity.Text = "x" + quantity;
-            lblPrice.Text = price;
-            lblTotalMoney.Text = totalMoney;
+            lblProductName.Text = prodName;
+            lblPrice.Text = string.Format("{0:N0}đ", price);
+            lblQuantity.Text = $"x{qty}";
+            lblTotalMoney.Text = string.Format("{0:N0}đ", totalAmount);
 
-            if (productImage != null)
-                pbProductImage.Image = productImage;
+            if (prodCount > 1) lblVariant.Text = $"Xem thêm {prodCount - 1} sản phẩm khác";
+            else lblVariant.Text = "Phân loại: Mặc định";
 
-            SetStatusStyle(status);
+            SetStatusUI(status);
+
+            if (!string.IsNullOrEmpty(imgUrl))
+            {
+                try { pbProductImage.LoadAsync(imgUrl); } catch { }
+            }
         }
 
-        /// <summary>
-        /// Xử lý giao diện theo trạng thái đơn hàng
-        /// </summary>
-        private void SetStatusStyle(string status)
+        private void SetStatusUI(string status)
         {
             lblStatus.Text = status.ToUpper();
-
-            // Reset về mặc định
             btnActionSecondary.Visible = true;
-            btnActionPrimary.FillColor = Color.FromArgb(238, 77, 45); // Cam Shopee
-            btnActionPrimary.ForeColor = Color.White;
-            btnActionPrimary.BorderColor = Color.FromArgb(238, 77, 45);
-            btnActionPrimary.BorderThickness = 1;
+            btnActionPrimary.Visible = true;
+            btnActionPrimary.Enabled = true;
+
+            // Lưu trạng thái hiện tại vào Tag để xử lý sự kiện Click
+            btnActionPrimary.Tag = status;
+            btnActionSecondary.Tag = status;
 
             switch (status)
             {
-                case "Hoàn thành":
-                    lblStatus.ForeColor = Color.FromArgb(46, 204, 113); // Xanh lá
-                    btnActionPrimary.Text = "Mua lại";
-                    btnActionSecondary.Text = "Đánh giá";
-                    break;
-
-                case "Đang giao":
-                    lblStatus.ForeColor = Color.FromArgb(52, 152, 219); // Xanh dương
-                    btnActionPrimary.Text = "Đã nhận hàng";
-                    btnActionSecondary.Visible = false;
-                    break;
-
+                case "Pending":
                 case "Chờ xác nhận":
-                    lblStatus.ForeColor = Color.FromArgb(243, 156, 18); // Vàng cam
-
-                    // Đổi nút chính sang màu trắng, viền xám
-                    btnActionPrimary.Text = "Chi tiết";
+                    lblStatus.ForeColor = Color.Orange;
+                    btnActionPrimary.Text = "Đang xử lý";
+                    btnActionPrimary.Enabled = false;
                     btnActionPrimary.FillColor = Color.White;
                     btnActionPrimary.ForeColor = Color.Black;
                     btnActionPrimary.BorderColor = Color.Silver;
+                    btnActionPrimary.BorderThickness = 1;
 
-                    btnActionSecondary.Text = "Hủy đơn";
+                    btnActionSecondary.Text = "Hủy Đơn"; // Nút phụ là Hủy
                     break;
 
-                case "Đã hủy":
-                    lblStatus.ForeColor = Color.Gray; // Xám
-                    btnActionPrimary.Text = "Mua lại";
+                case "Shipping":
+                case "Đang giao":
+                    lblStatus.ForeColor = Color.DodgerBlue;
+                    btnActionPrimary.Text = "Đã Nhận Hàng"; // Nút chính là Nhận hàng
+                    btnActionPrimary.FillColor = Color.Black;
+                    btnActionPrimary.ForeColor = Color.White;
+
                     btnActionSecondary.Visible = false;
                     break;
 
-                default:
-                    lblStatus.ForeColor = Color.Black;
+                case "Completed":
+                case "Hoàn thành":
+                    lblStatus.ForeColor = Color.Green;
+                    btnActionPrimary.Text = "Mua Lại";
+                    btnActionPrimary.FillColor = Color.Black;
+                    btnActionPrimary.ForeColor = Color.White;
+
+                    btnActionSecondary.Text = "Đánh giá";
                     break;
+
+                case "Cancelled":
+                case "Đã hủy":
+                    lblStatus.ForeColor = Color.Gray;
+                    btnActionPrimary.Text = "Mua Lại";
+                    btnActionPrimary.FillColor = Color.Black;
+                    btnActionPrimary.ForeColor = Color.White;
+
+                    btnActionSecondary.Visible = false;
+                    break;
+            }
+        }
+
+        private void BtnActionPrimary_Click(object sender, EventArgs e)
+        {
+            string status = btnActionPrimary.Tag?.ToString();
+            if (status == "Shipping" || status == "Đang giao")
+            {
+                ButtonReceiveClicked?.Invoke(this, _currentOrderId);
+            }
+            else if (status == "Completed" || status == "Cancelled" || status == "Hoàn thành" || status == "Đã hủy")
+            {
+                ButtonBuyAgainClicked?.Invoke(this, _currentOrderId);
+            }
+        }
+
+        // Xử lý nút phụ (Secondary)
+        private void BtnActionSecondary_Click(object sender, EventArgs e)
+        {
+            string status = btnActionSecondary.Tag?.ToString();
+            if (status == "Pending" || status == "Chờ xác nhận")
+            {
+                // Gọi sự kiện Hủy đơn
+                ButtonCancelClicked?.Invoke(this, _currentOrderId);
             }
         }
     }
