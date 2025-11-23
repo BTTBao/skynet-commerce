@@ -1,181 +1,163 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Skynet_Commerce.BLL.Models; // Đảm bảo đã có lớp này
-using Skynet_Commerce.GUI.UserControls.Components;
 using Guna.UI2.WinForms;
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
-    // Lớp giả lập cho dữ liệu Shop
-    public class ShopDTO
-    {
-        public string Name { get; set; } = "FashionStore";
-        public string Address { get; set; } = "TP. Hồ Chí Minh";
-        public int Followers { get; set; } = 12500;
-        public int ProductsCount { get; set; } = 156;
-    }
-
     public partial class UcShopDetail : UserControl
     {
-        private List<ProductDTO> allProducts;
-        private ShopDTO shopData;
-        private int currentShopId;
+        private Color PrimaryColor = Color.FromArgb(238, 77, 45);
+        private Color TextGray = Color.FromArgb(100, 100, 100);
 
         public UcShopDetail()
         {
-            InitializeComponent();
-            this.Load += UcShopDetail_Load;
-            SetupEventHandlers();
+            InitializeComponent(); // Gọi Designer
+            SetupDynamicUI();      // Gọi Code vẽ thêm
         }
 
-        private void UcShopDetail_Load(object sender, EventArgs e)
+        private void SetupDynamicUI()
         {
-            // Thiết lập mặc định cho trang khi tải
-            currentShopId = 1;
-            LoadShopData(currentShopId);
+            // Sử dụng link online cho đẹp (hoặc bạn có thể dùng GetSmartImagePath nếu muốn)
+            picBanner.ImageLocation = "https://cf.shopee.vn/file/c0b0c96077867d8110459700d432c921_tn";
+            picAvatar.ImageLocation = "https://i.imgur.com/HalqU6S.png";
+            picAvatar.BringToFront();
 
-            // Tự động kích hoạt nút "Tất cả sản phẩm"
-            if (btnFilterTatCa != null)
+            InitFilterButtons();
+            InitStatItems();
+        }
+
+        private void InitFilterButtons()
+        {
+            string[] filters = { "Tất cả sản phẩm", "Mới nhất", "Bán chạy", "Giá thấp", "Giá cao" };
+            int x = 15;
+            for (int i = 0; i < filters.Length; i++)
             {
-                ApplyFilterStyle(btnFilterTatCa);
+                Guna2Button btn = new Guna2Button();
+                btn.Text = filters[i];
+                btn.Size = new Size(120, 34);
+                btn.Location = new Point(x, 3);
+                btn.BorderRadius = 2;
+                btn.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                btn.Cursor = Cursors.Hand;
+
+                if (i == 0) { btn.FillColor = PrimaryColor; btn.ForeColor = Color.White; }
+                else { btn.FillColor = Color.White; btn.ForeColor = Color.Black; btn.BorderThickness = 1; btn.BorderColor = Color.WhiteSmoke; }
+
+                // pnlFilterInner (đã có trong Designer)
+                // Lưu ý: Nếu báo lỗi pnlFilterInner, hãy kiểm tra lại file Designer xem đã đặt tên đúng chưa
+                // Nếu bạn dùng code cũ thì có thể đổi thành pnlFilters.Controls[0]
+                if (this.Controls.Find("pnlFilterInner", true).Length > 0)
+                    ((Panel)this.Controls.Find("pnlFilterInner", true)[0]).Controls.Add(btn);
+
+                x += 130;
             }
         }
 
-        // ----------------------------------------------------------------------
-        // II. LOGIC TẢI DỮ LIỆU CHÍNH
-        // ----------------------------------------------------------------------
+        private void InitStatItems()
+        {
+            int startX = 650;
+            CreateStatLabel("Sản phẩm", "156", startX, 180);
+            CreateStatLabel("Tỷ lệ phản hồi", "98%", startX + 150, 180);
+            CreateStatLabel("Thời gian phản hồi", "2 giờ", startX + 300, 180);
+            CreateStatLabel("Tham gia", "01/2023", startX + 450, 180);
+        }
+
+        private void CreateStatLabel(string title, string value, int x, int y)
+        {
+            Label lblVal = new Label();
+            lblVal.Text = value;
+            lblVal.ForeColor = PrimaryColor;
+            lblVal.Font = new Font("Segoe UI", 11, FontStyle.Regular);
+            lblVal.Location = new Point(x, y);
+            lblVal.AutoSize = true;
+            // pnlHeaderContainer đã có trong Designer
+            if (this.Controls.Find("pnlHeaderContainer", true).Length > 0)
+            {
+                var pnlHeader = this.Controls.Find("pnlHeaderContainer", true)[0];
+                pnlHeader.Controls.Add(lblVal);
+                lblVal.BringToFront();
+
+                Label lblTitle = new Label();
+                lblTitle.Text = title;
+                lblTitle.ForeColor = TextGray;
+                lblTitle.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                lblTitle.Location = new Point(x, y + 25);
+                lblTitle.AutoSize = true;
+                pnlHeader.Controls.Add(lblTitle);
+                lblTitle.BringToFront();
+            }
+        }
 
         public void LoadShopData(int shopId)
         {
-            // 1. Lấy dữ liệu Shop và Sản phẩm mẫu
-            shopData = new ShopDTO();
-            allProducts = GetSampleProducts();
-
-            // 2. Cập nhật thông tin Shop Header
-            lblShopName.Text = shopData.Name;
-            lblFollowers.Text = $"{shopData.Followers:N0} người theo dõi";
-            lblShopAddress.Text = $"TP. {shopData.Address}";
-            statProducts.Text = shopData.ProductsCount.ToString();
-
-            // 3. Tải danh sách sản phẩm ban đầu
-            LoadProductsToFlowLayout(allProducts);
-        }
-
-        // Tạo sản phẩm mẫu (ĐÃ CẬP NHẬT sử dụng SoldQuantity)
-        private List<ProductDTO> GetSampleProducts()
-        {
-            return new List<ProductDTO>
+            // flowProducts đã có trong Designer
+            if (this.Controls.Find("flowProducts", true).Length > 0)
             {
-                new ProductDTO { ProductId = 1, Name = "Áo khoác denim thời trang", Price = 450000, InitialQuantity = 1, ImagePath = @"img\product1.jpg", Rating = 4.8, SoldQuantity = 1234 },
-                new ProductDTO { ProductId = 2, Name = "Áo thun nam basic", Price = 149000, InitialQuantity = 2, ImagePath = @"img\product2.jpg", Rating = 4.5, SoldQuantity = 2456 },
-                new ProductDTO { ProductId = 3, Name = "Quần jean nữ skinny", Price = 390000, InitialQuantity = 1, ImagePath = @"img\product3.jpg", Rating = 4.8, SoldQuantity = 890 },
-                new ProductDTO { ProductId = 4, Name = "Giày thể thao nam", Price = 1200000, InitialQuantity = 1, ImagePath = @"img\product4.jpg", Rating = 4.8, SoldQuantity = 456 }
-            };
-        }
+                var flow = (FlowLayoutPanel)this.Controls.Find("flowProducts", true)[0];
+                flow.Controls.Clear();
 
-        // ----------------------------------------------------------------------
-        // III. LOGIC SẢN PHẨM & LAYOUT
-        // ----------------------------------------------------------------------
+                AddProductCard(flow, "Áo khoác denim thời trang", "450.000đ", "https://cf.shopee.vn/file/5c48983458307d95651950f3b8a27d6c", "1.2k");
+                AddProductCard(flow, "Áo thun nam basic", "149.000đ", "https://cf.shopee.vn/file/90200d5c57375f99767f156e0d913994", "2.4k");
+                AddProductCard(flow, "Quần jean nữ skinny", "390.000đ", "https://cf.shopee.vn/file/sg-11134201-22100-0j1g4k3h3liv64", "890");
+                AddProductCard(flow, "Giày thể thao Nike", "1.200.000đ", "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e6da41fa-1be4-4ce5-b89c-22be4f1f02d6/air-force-1-07-shoes-WrLlWX.png", "456");
 
-        private void LoadProductsToFlowLayout(List<ProductDTO> products)
-        {
-            flpProducts.Controls.Clear();
-
-            foreach (var product in products)
-            {
-                // <<< CẬP NHẬT QUAN TRỌNG TẠI ĐÂY >>>
-                // Sử dụng Constructor MỚI (public UcProductItem(ProductDTO productData))
-                // Thay vì gọi constructor mặc định và sau đó gọi SetData
-
-                UcProductItem item = new UcProductItem(product);
-
-                // Thiết lập kích thước cho item (Giữ nguyên)
-                item.Width = 200;
-                item.Margin = new Padding(5);
-
-                flpProducts.Controls.Add(item);
+                for (int i = 0; i < 6; i++) AddProductCard(flow, $"Sản phẩm mẫu {i + 1}", "99.000đ", "", "100");
             }
         }
 
-        // ----------------------------------------------------------------------
-        // IV. XỬ LÝ SỰ KIỆN & LỌC
-        // ----------------------------------------------------------------------
-
-        private void SetupEventHandlers()
+        private void AddProductCard(FlowLayoutPanel flow, string name, string price, string imgUrl, string sold)
         {
-            // Gán sự kiện cho các nút lọc
-            btnFilterTatCa.Click += FilterButton_Click;
-            btnFilterMoiNhat.Click += FilterButton_Click;
-            btnFilterBanChay.Click += FilterButton_Click;
-            btnFilterGiaThap.Click += FilterButton_Click;
-            btnFilterGiaCao.Click += FilterButton_Click;
-        }
+            // Kích thước chuẩn để xếp 5 hình/hàng (210px)
+            int cardWidth = 210;
 
-        private void FilterButton_Click(object sender, EventArgs e)
-        {
-            Guna2Button clickedButton = sender as Guna2Button;
-            if (clickedButton == null) return;
+            Guna2Panel card = new Guna2Panel();
+            card.Size = new Size(cardWidth, 310);
+            card.BackColor = Color.White;
+            card.Margin = new Padding(10, 0, 10, 20);
+            card.BorderRadius = 4;
+            card.ShadowDecoration.Enabled = true;
+            card.ShadowDecoration.Shadow = new Padding(2);
+            card.ShadowDecoration.Depth = 5;
+            card.ShadowDecoration.Color = Color.LightGray;
+            card.Cursor = Cursors.Hand;
 
-            // 1. Reset Style của tất cả các nút
-            ResetFilterStyles();
+            Guna2PictureBox pic = new Guna2PictureBox();
+            pic.Dock = DockStyle.Top;
+            pic.Height = 190;
+            pic.SizeMode = PictureBoxSizeMode.Zoom;
+            pic.BorderRadius = 4;
+            pic.CustomizableEdges.BottomLeft = false;
+            pic.CustomizableEdges.BottomRight = false;
+            if (!string.IsNullOrEmpty(imgUrl)) pic.ImageLocation = imgUrl;
+            else pic.FillColor = Color.WhiteSmoke;
 
-            // 2. Áp dụng Style cho nút được chọn
-            ApplyFilterStyle(clickedButton);
+            Label lblName = new Label();
+            lblName.Text = name;
+            lblName.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+            lblName.Location = new Point(8, 200);
+            lblName.Size = new Size(cardWidth - 16, 40);
+            lblName.AutoEllipsis = true;
 
-            // 3. Thực hiện lọc dữ liệu
-            string filterType = clickedButton.Text;
-            List<ProductDTO> filteredList = new List<ProductDTO>();
+            Label lblPrice = new Label();
+            lblPrice.Text = price;
+            lblPrice.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblPrice.ForeColor = PrimaryColor;
+            lblPrice.Location = new Point(8, 245);
+            lblPrice.AutoSize = true;
 
-            switch (filterType)
-            {
-                case "Mới nhất":
-                    // Sắp xếp theo ID giảm dần
-                    filteredList = allProducts.OrderByDescending(p => p.ProductId).ToList();
-                    break;
-                case "Bán chạy":
-                    // Sắp xếp theo SoldQuantity giảm dần (?? 0 để xử lý trường hợp SoldQuantity là null)
-                    filteredList = allProducts.OrderByDescending(p => p.SoldQuantity ?? 0).ToList();
-                    break;
-                case "Giá thấp":
-                    filteredList = allProducts.OrderBy(p => p.Price).ToList();
-                    break;
-                case "Giá cao":
-                    filteredList = allProducts.OrderByDescending(p => p.Price).ToList();
-                    break;
-                case "Tất cả sản phẩm":
-                default:
-                    filteredList = allProducts;
-                    break;
-            }
+            Label lblSold = new Label();
+            lblSold.Text = "⭐ 4.8 | Đã bán " + sold;
+            lblSold.Font = new Font("Segoe UI", 8, FontStyle.Regular);
+            lblSold.ForeColor = Color.Gray;
+            lblSold.Location = new Point(10, 275);
+            lblSold.AutoSize = true;
 
-            LoadProductsToFlowLayout(filteredList);
-        }
-
-        private void ResetFilterStyles()
-        {
-            // Đặt lại tất cả nút về FillColor.Transparent và ForeColor.Black
-            Guna2Button[] buttons = { btnFilterTatCa, btnFilterMoiNhat, btnFilterBanChay, btnFilterGiaThap, btnFilterGiaCao };
-            foreach (var btn in buttons)
-            {
-                btn.FillColor = Color.Transparent;
-                btn.ForeColor = Color.Black;
-                btn.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            }
-        }
-
-        private void ApplyFilterStyle(Guna2Button btn)
-        {
-            // Style cho nút đang được chọn (Màu cam)
-            btn.FillColor = Color.FromArgb(255, 87, 34);
-            btn.ForeColor = Color.White;
-            btn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            card.Controls.Add(lblSold);
+            card.Controls.Add(lblPrice);
+            card.Controls.Add(lblName);
+            card.Controls.Add(pic);
+            flow.Controls.Add(card);
         }
     }
 }

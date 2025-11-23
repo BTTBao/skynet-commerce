@@ -97,7 +97,6 @@
             this.btnAccount.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnAccount.ForeColor = System.Drawing.Color.White;
             this.btnAccount.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            
             this.btnAccount.ImageSize = new System.Drawing.Size(24, 24);
             this.btnAccount.Location = new System.Drawing.Point(1158, 17);
             this.btnAccount.Name = "btnAccount";
@@ -112,7 +111,6 @@
             this.btnCart.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnCart.ForeColor = System.Drawing.Color.White;
             this.btnCart.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            
             this.btnCart.ImageSize = new System.Drawing.Size(24, 24);
             this.btnCart.Location = new System.Drawing.Point(1121, 17);
             this.btnCart.Name = "btnCart";
@@ -126,7 +124,6 @@
             this.btnSearch.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(87)))), ((int)(((byte)(34)))));
             this.btnSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnSearch.ForeColor = System.Drawing.Color.White;
-            
             this.btnSearch.Location = new System.Drawing.Point(790, 19);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(40, 30);
