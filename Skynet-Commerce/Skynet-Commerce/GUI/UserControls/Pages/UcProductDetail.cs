@@ -16,8 +16,9 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         private List<ProductVariantDTO> _variants;
         private ProductVariantDTO _selectedVariant;
 
-        // Thông tin Shop tạm thời vẫn giữ cứng hoặc lấy từ DTO nếu có
-        private string _shopName = "Skynet Official Store";
+        // Biến lưu thông tin Shop thật
+        private int _shopId = 0;
+        private string _shopName = "Đang tải...";
         private string _shopStats = "98% Phản hồi | 5.0 Đánh giá";
 
         public UcProductDetail()
@@ -37,12 +38,9 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         {
             CenterDetailContainer();
 
-            // Nếu không có dữ liệu sản phẩm thì báo lỗi (Chặn trường hợp mở form mà ko có data)
             if (_currentProduct == null)
             {
                 MessageBox.Show("Không thể tải thông tin sản phẩm!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // Có thể gọi hàm quay lại trang chủ nếu cần
-                // (this.ParentForm as FrmMain)?.LoadPage("Home");
             }
         }
 
@@ -51,29 +49,35 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             if (product == null) return;
             _currentProduct = product;
 
-            // Nếu Variants null thì khởi tạo list rỗng để tránh lỗi
+            // [CẬP NHẬT] Lấy thông tin Shop từ DTO
+            _shopId = product.ShopId;
+            if (!string.IsNullOrEmpty(product.ShopName))
+            {
+                _shopName = product.ShopName;
+            }
+            else
+            {
+                _shopName = "Skynet Store"; // Fallback nếu tên shop rỗng
+            }
+
+            // Nếu Variants null thì khởi tạo list rỗng
             _variants = product.Variants ?? new List<ProductVariantDTO>();
 
             // 1. Load Thông tin cơ bản
             lblProductName.Text = product.Name;
 
-            // Xử lý Rating (nếu null thì mặc định 5.0 hoặc ẩn)
             if (product.Rating.HasValue)
                 lblRating.Text = $"{product.Rating.Value:N1}";
             else
                 lblRating.Text = "New";
 
-            lblReviewCount.Text = "(Chưa có đánh giá)"; // Database chưa có bảng review count
+            lblReviewCount.Text = "(Chưa có đánh giá)";
             lblSoldCount.Text = $"{product.SoldQuantity.GetValueOrDefault(0):N0} Đã bán";
-
-            // Mô tả (Nếu DTO có trường Description thì gán vào, tạm thời để trống hoặc text mặc định)
-            // lblDescriptionText.Text = product.Description ?? "Đang cập nhật mô tả..."; 
             lblDescriptionText.Text = "Sản phẩm chính hãng, chất lượng cao từ Skynet Commerce.";
 
             // 2. Load Giá
             lblPrice.Text = $"{product.Price:N0}₫";
 
-            // Xử lý giá cũ / giảm giá
             if (product.OldPrice.HasValue && product.Price < product.OldPrice.Value)
             {
                 lblOldPrice.Text = $"{product.OldPrice.Value:N0}₫";
@@ -90,22 +94,19 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
 
             // 3. Load Ảnh
-            // Ưu tiên ảnh phụ từ List ThumbnailPaths (nếu có)
             if (_currentProduct.ThumbnailPaths != null && _currentProduct.ThumbnailPaths.Count > 0)
             {
                 LoadThumbnails(_currentProduct.ThumbnailPaths);
                 SwitchMainImage(_currentProduct.ThumbnailPaths.First());
             }
-            // Nếu không có list ảnh phụ, dùng ảnh chính (ImagePath)
             else if (!string.IsNullOrEmpty(product.ImagePath))
             {
-                // Tạo list thumbnail giả từ ảnh chính để giao diện đẹp hơn
                 var singleImgList = new List<string> { product.ImagePath };
                 LoadThumbnails(singleImgList);
                 SwitchMainImage(product.ImagePath);
             }
 
-            // 4. Load Shop Info
+            // 4. Load Shop Info (Dữ liệu thật)
             lblShopName.Text = _shopName;
             lblShopStats.Text = _shopStats;
 
@@ -124,14 +125,11 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
             else
             {
-                // Trường hợp sản phẩm không có biến thể (Sản phẩm đơn)
+                // Sản phẩm không có biến thể
                 pnlSizeOptions.Controls.Clear();
                 pnlColorOptions.Controls.Clear();
                 lblSizeLabel.Visible = false;
                 lblColorLabel.Visible = false;
-
-                // Cập nhật thông tin kho của sản phẩm cha (nếu có trường Stock trong ProductDTO)
-                // lblQuantityAvailable.Text = $"{product.StockQuantity} sản phẩm có sẵn"; 
                 lblQuantityAvailable.Text = "Sẵn hàng";
             }
         }
@@ -179,7 +177,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
             else
             {
-                pbMainImage.Image = null; // Xóa ảnh nếu lỗi
+                pbMainImage.Image = null;
             }
         }
 
@@ -194,7 +192,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             pnlSizeOptions.Controls.Clear();
             pnlColorOptions.Controls.Clear();
 
-            // Ẩn hiện label nếu không có size/màu
             lblSizeLabel.Visible = availableSizes.Count > 0;
             lblColorLabel.Visible = availableColors.Count > 0;
 
@@ -202,7 +199,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             {
                 UcOptionButton btn = new UcOptionButton(size);
                 btn.Click += SizeOption_Click;
-                // Check stock
                 if (!_variants.Any(v => v.Size == size && v.StockQuantity > 0)) btn.SetDisabledStyle();
                 else btn.SetInactiveStyle();
                 pnlSizeOptions.Controls.Add(btn);
@@ -223,8 +219,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             ResetButtons(pnlSizeOptions);
             selectedBtn.SetActiveStyle();
 
-            // Logic tìm màu khả dụng theo size đã chọn... (giữ nguyên logic cũ)
-            // Ở đây tôi rút gọn, bạn có thể paste lại logic filter màu từ code cũ nếu cần chính xác tuyệt đối
             TrySelectNewVariant(selectedBtn.Text, null);
         }
 
@@ -234,9 +228,20 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             ResetButtons(pnlColorOptions);
             selectedBtn.SetActiveStyle();
 
-            // Tìm size đang active
-            string currentSize = pnlSizeOptions.Controls.OfType<UcOptionButton>()
-                                .FirstOrDefault(b => b.IsActive)?.Text; // Giả sử UcOptionButton có prop IsActive
+            // [SỬA LỖI ISACTIVE] Sử dụng màu sắc để xác định nút Size đang chọn
+            string currentSize = null;
+            foreach (Control c in pnlSizeOptions.Controls)
+            {
+                if (c is UcOptionButton btn)
+                {
+                    // Kiểm tra nếu nút có màu cam (R=255, G=87, B=34) -> Đang Active
+                    if (btn.FillColor.R == 255 && btn.FillColor.G == 87)
+                    {
+                        currentSize = btn.Text;
+                        break;
+                    }
+                }
+            }
 
             TrySelectNewVariant(currentSize, selectedBtn.Text);
         }
@@ -250,7 +255,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         {
             ProductVariantDTO newVariant = null;
 
-            // Tìm biến thể khớp nhất
             if (!string.IsNullOrEmpty(size) && !string.IsNullOrEmpty(color))
                 newVariant = _variants.FirstOrDefault(v => v.Size == size && v.Color == color);
             else if (!string.IsNullOrEmpty(size))
@@ -293,14 +297,12 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             btnBuyNow.Click += BtnBuyNow_Click;
         }
 
-        // --- CÁC HÀM LOGIC CART/BUY (GIỮ NGUYÊN HOẶC CẬP NHẬT SAU) ---
         private void UpdateQuantity(int step)
         {
             int q = 1;
             int.TryParse(txtQuantity.Text, out q);
             q += step;
             if (q < 1) q = 1;
-            // Check max stock nếu cần
             txtQuantity.Text = q.ToString();
         }
         private void ValidateQuantity()
@@ -310,7 +312,13 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         private void BtnAddCart_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"Đã thêm '{_currentProduct.Name}' vào giỏ hàng!", "Thông báo");
+            int qty = 1;
+            int.TryParse(txtQuantity.Text, out qty);
+
+            // Thêm vào giỏ hàng tạm thời
+            Skynet_Commerce.BLL.Helpers.SessionManager.AddToCart(_currentProduct, qty);
+
+            MessageBox.Show($"Đã thêm {qty} sản phẩm '{_currentProduct.Name}' vào giỏ hàng!", "Thành công");
         }
 
         private void BtnBuyNow_Click(object sender, EventArgs e)
@@ -318,10 +326,20 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             MessageBox.Show("Chuyển đến trang thanh toán...", "Mua ngay");
         }
 
+        // [CẬP NHẬT] Bấm nút Xem Shop -> Mở ShopDetail với ShopID thật
         private void BtnViewShop_Click(object sender, EventArgs e)
         {
+            if (_shopId <= 0)
+            {
+                MessageBox.Show("Sản phẩm này không thuộc Shop nào (ShopID = 0).", "Lỗi dữ liệu");
+                return;
+            }
+
             FrmMain mainForm = this.FindForm() as FrmMain;
-            if (mainForm != null) mainForm.LoadPage("ShopDetail", 1); // ShopID tạm là 1
+            if (mainForm != null)
+            {
+                mainForm.LoadPage("ShopDetail", _shopId);
+            }
         }
     }
 }

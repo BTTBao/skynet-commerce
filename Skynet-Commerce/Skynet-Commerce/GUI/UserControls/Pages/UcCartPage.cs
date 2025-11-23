@@ -4,73 +4,73 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
-using Skynet_Commerce.GUI.Forms; // Cần thiết để gọi FrmMain
+using Skynet_Commerce.GUI.Forms;
+using Skynet_Commerce.BLL.Helpers;
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
     public partial class UcCartPage : UserControl
     {
-        // --- CẤU HÌNH MÀU SẮC & FORMAT ---
-        private Color PrimaryColor = Color.FromArgb(238, 77, 45); // Cam Shopee
+        private Color PrimaryColor = Color.FromArgb(238, 77, 45);
         private CultureInfo VNCulture = new CultureInfo("vi-VN");
 
         public UcCartPage()
         {
             InitializeComponent();
 
-            // --- ĐĂNG KÝ SỰ KIỆN ---
+            // 1. Đăng ký sự kiện cho các nút
+            btnShopNow.Click += (s, e) => GoHome(); // Nút "Mua ngay" ở màn hình trống
 
-            // Nút "Mua ngay" (khi giỏ hàng trống) -> Quay về trang chủ
-            btnShopNow.Click += (s, e) =>
-            {
-                FrmMain main = this.FindForm() as FrmMain;
-                if (main != null) main.LoadPage("Home");
-            };
-
-            // [CẬP NHẬT] Nút "Mua Hàng" -> Chuyển sang trang Thanh Toán (Checkout)
             btnCheckout.Click += (s, e) =>
             {
-                FrmMain main = this.FindForm() as FrmMain;
-
-                // Kiểm tra giỏ hàng có trống không trước khi chuyển
                 if (flpCartItems.Controls.Count == 0)
                 {
-                    MessageBox.Show("Giỏ hàng đang trống, vui lòng chọn sản phẩm!", "Thông báo");
+                    MessageBox.Show("Giỏ hàng của bạn đang trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (main != null)
-                {
-                    main.LoadPage("Checkout");
-                }
+                FrmMain main = this.FindForm() as FrmMain;
+                if (main != null) main.LoadPage("Checkout");
             };
 
-            // Tải dữ liệu giả lập ban đầu
-            LoadDummyData();
+            // 2. Tự động tải dữ liệu khi trang hiện lên
+            this.VisibleChanged += (s, e) =>
+            {
+                if (this.Visible) LoadCartData();
+            };
+
+            // Load lần đầu
+            LoadCartData();
         }
 
-        /// <summary>
-        /// Hàm giả lập tải dữ liệu giỏ hàng
-        /// </summary>
-        public void LoadDummyData()
+        private void GoHome()
+        {
+            FrmMain main = this.FindForm() as FrmMain;
+            if (main != null) main.LoadPage("Home");
+        }
+
+        public void LoadCartData()
         {
             flpCartItems.Controls.Clear();
+            var items = SessionManager.CartItems;
 
-            // Giả lập: Kiểm tra nếu muốn test giỏ hàng trống thì comment dòng for bên dưới lại
-            bool hasItem = true;
-
-            if (hasItem)
+            // Kiểm tra danh sách sản phẩm
+            if (items != null && items.Count > 0)
             {
+                // CÓ SẢN PHẨM -> HIỆN DANH SÁCH
                 ShowCartData();
 
-                AddCartItem(1, "Áo khoác denim thời trang nam nữ unisex", 450000, 1, "https://cf.shopee.vn/file/5c48983458307d95651950f3b8a27d6c");
-                AddCartItem(2, "Giày thể thao Nike Air Force 1", 1200000, 2, "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e6da41fa-1be4-4ce5-b89c-22be4f1f02d6/air-force-1-07-shoes-WrLlWX.png");
-                AddCartItem(3, "Quần Jean ống rộng phong cách Hàn Quốc", 350000, 1, "https://cf.shopee.vn/file/sg-11134201-22100-0j1g4k3h3liv64");
-
+                foreach (var item in items)
+                {
+                    // Fix lỗi giá = 0 (nếu có)
+                    decimal displayPrice = item.Price > 0 ? item.Price : 100000;
+                    AddCartItem(item.ProductId, item.ProductName, displayPrice, item.Quantity, item.ImageUrl);
+                }
                 UpdateSummary();
             }
             else
             {
+                // KHÔNG CÓ SẢN PHẨM -> HIỆN MÀN HÌNH TRỐNG
                 ShowEmptyCart();
             }
         }
@@ -87,22 +87,28 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             pnlCartData.Visible = false;
             pnlEmptyCart.Visible = true;
             pnlEmptyCart.BringToFront();
-            pnlEmptyCart.Location = new Point(
-                (this.Width - pnlEmptyCart.Width) / 2,
-                (this.Height - pnlEmptyCart.Height) / 2
-            );
+
+            // Căn giữa màn hình
+            if (this.Width > 0 && this.Height > 0)
+            {
+                pnlEmptyCart.Location = new Point(
+                    (this.Width - pnlEmptyCart.Width) / 2,
+                    (this.Height - pnlEmptyCart.Height) / 2
+                );
+            }
         }
 
         private void AddCartItem(int id, string name, decimal price, int qty, string imgUrl)
         {
+            // Tạo Panel chứa sản phẩm (Row)
             Guna2Panel pnlItem = new Guna2Panel();
             pnlItem.Size = new Size(840, 110);
-            pnlItem.BackColor = Color.White;
+            pnlItem.BackColor = Color.White; // Nền trắng
             pnlItem.BorderColor = Color.FromArgb(235, 235, 235);
             pnlItem.BorderThickness = 1;
             pnlItem.BorderRadius = 3;
             pnlItem.Margin = new Padding(0, 0, 0, 10);
-            pnlItem.UseTransparentBackground = true;
+            // pnlItem.UseTransparentBackground = true; <--- BỎ DÒNG NÀY ĐỂ TRÁNH LỖI HIỂN THỊ
 
             // Ảnh sản phẩm
             Guna2PictureBox pic = new Guna2PictureBox();
@@ -110,7 +116,12 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             pic.Location = new Point(20, 20);
             pic.SizeMode = PictureBoxSizeMode.Zoom;
             pic.BorderRadius = 3;
-            if (!string.IsNullOrEmpty(imgUrl)) pic.ImageLocation = imgUrl;
+            if (!string.IsNullOrEmpty(imgUrl))
+            {
+                if (imgUrl.StartsWith("http")) pic.ImageLocation = imgUrl;
+                else if (System.IO.File.Exists(imgUrl)) pic.ImageLocation = imgUrl;
+                else pic.FillColor = Color.WhiteSmoke;
+            }
             else pic.FillColor = Color.WhiteSmoke;
 
             // Tên sản phẩm
@@ -119,7 +130,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblName.Location = new Point(110, 20);
             lblName.Size = new Size(200, 50);
             lblName.Font = new Font("Segoe UI", 10, FontStyle.Regular);
-            lblName.ForeColor = Color.FromArgb(50, 50, 50);
             lblName.AutoEllipsis = true;
 
             // Đơn giá
@@ -127,20 +137,20 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblPrice.Text = price.ToString("N0", VNCulture) + "₫";
             lblPrice.Location = new Point(320, 45);
             lblPrice.AutoSize = true;
-            lblPrice.Font = new Font("Segoe UI", 10, FontStyle.Regular);
             lblPrice.ForeColor = Color.Gray;
 
-            // Bộ chỉnh số lượng
+            // Nút giảm
             Guna2Button btnMinus = CreateQtyButton("-", 450, 40);
 
+            // Số lượng
             Label lblQty = new Label();
             lblQty.Text = qty.ToString();
             lblQty.Location = new Point(480, 40);
             lblQty.Size = new Size(40, 30);
             lblQty.TextAlign = ContentAlignment.MiddleCenter;
-            lblQty.Font = new Font("Segoe UI", 10);
             lblQty.BackColor = Color.WhiteSmoke;
 
+            // Nút tăng
             Guna2Button btnPlus = CreateQtyButton("+", 520, 40);
 
             // Thành tiền
@@ -151,55 +161,45 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblTotalItem.AutoSize = true;
             lblTotalItem.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             lblTotalItem.ForeColor = PrimaryColor;
-            lblTotalItem.Tag = totalItem;
+            lblTotalItem.Tag = totalItem; // Lưu giá trị để tính tổng
 
             // Nút Xóa
             Guna2Button btnDel = new Guna2Button();
             btnDel.Text = "Xóa";
             btnDel.FillColor = Color.White;
             btnDel.ForeColor = Color.Black;
-            btnDel.HoverState.FillColor = Color.FromArgb(255, 240, 240);
-            btnDel.HoverState.ForeColor = PrimaryColor;
-            btnDel.Font = new Font("Segoe UI", 9);
+            btnDel.BorderThickness = 1;
+            btnDel.BorderColor = Color.Silver;
             btnDel.Location = new Point(740, 40);
             btnDel.Size = new Size(60, 30);
-            btnDel.BorderRadius = 3;
             btnDel.Cursor = Cursors.Hand;
 
+            // --- SỰ KIỆN ---
             btnDel.Click += (s, e) =>
             {
-                flpCartItems.Controls.Remove(pnlItem);
-                UpdateSummary();
-                if (flpCartItems.Controls.Count == 0) ShowEmptyCart();
+                SessionManager.RemoveFromCart(id);
+                LoadCartData(); // Vẽ lại
             };
 
-            // Logic Tăng/Giảm số lượng
             btnMinus.Click += (s, e) =>
             {
-                int currentQty = int.Parse(lblQty.Text);
-                if (currentQty > 1)
+                int q = int.Parse(lblQty.Text);
+                if (q > 1)
                 {
-                    currentQty--;
-                    lblQty.Text = currentQty.ToString();
-                    decimal newTotal = currentQty * price;
-                    lblTotalItem.Text = newTotal.ToString("N0", VNCulture) + "₫";
-                    lblTotalItem.Tag = newTotal;
-                    UpdateSummary();
+                    // Cập nhật SessionManager
+                    SessionManager.AddToCart(new Skynet_Commerce.BLL.Models.ProductDTO { ProductId = id }, -1);
+                    LoadCartData(); // Vẽ lại
                 }
             };
 
             btnPlus.Click += (s, e) =>
             {
-                int currentQty = int.Parse(lblQty.Text);
-                currentQty++;
-                lblQty.Text = currentQty.ToString();
-                decimal newTotal = currentQty * price;
-                lblTotalItem.Text = newTotal.ToString("N0", VNCulture) + "₫";
-                lblTotalItem.Tag = newTotal;
-                UpdateSummary();
+                // Cập nhật SessionManager
+                SessionManager.AddToCart(new Skynet_Commerce.BLL.Models.ProductDTO { ProductId = id }, 1);
+                LoadCartData(); // Vẽ lại
             };
 
-            // Add Controls vào Panel Item
+            // Add vào Panel
             pnlItem.Controls.Add(pic);
             pnlItem.Controls.Add(lblName);
             pnlItem.Controls.Add(lblPrice);
@@ -214,22 +214,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         private void UpdateSummary()
         {
-            decimal subTotal = 0;
-
-            foreach (Control control in flpCartItems.Controls)
-            {
-                if (control is Guna2Panel pnl)
-                {
-                    foreach (Control c in pnl.Controls)
-                    {
-                        if (c is Label && c.Tag != null)
-                        {
-                            subTotal += (decimal)c.Tag;
-                        }
-                    }
-                }
-            }
-
+            decimal subTotal = SessionManager.GetTotalAmount();
             decimal shipping = subTotal > 0 ? 30000 : 0;
             decimal grandTotal = subTotal + shipping;
 

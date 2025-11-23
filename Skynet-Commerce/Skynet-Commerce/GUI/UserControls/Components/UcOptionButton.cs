@@ -6,43 +6,43 @@ namespace Skynet_Commerce.GUI.UserControls.Components
 {
     public partial class UcOptionButton : UserControl
     {
-        // [QUAN TRỌNG] Thuộc tính IsActive để code bên ngoài kiểm tra trạng thái
+        // 1. Thuộc tính IsActive
         public bool IsActive { get; private set; } = false;
 
-        // Property để lấy màu nền (Hỗ trợ code cũ nếu cần kiểm tra màu)
-        public Color ButtonFillColor
+        // 2. [QUAN TRỌNG] Thêm thuộc tính FillColor để bên ngoài gọi được
+        public Color FillColor
         {
             get { return btnOption.FillColor; }
+            set { btnOption.FillColor = value; }
         }
 
-        // Override Text để khi gán Text cho UserControl, nó gán vào cái nút bên trong
+        // 3. Override Text để gán chữ vào nút bên trong
         public override string Text
         {
             get { return btnOption.Text; }
             set { btnOption.Text = value; }
         }
 
-        // Constructor mặc định cho Designer
+        // Constructor mặc định
         public UcOptionButton()
         {
             InitializeComponent();
             SetupEventForwarding();
         }
 
-        // Constructor có tham số để tạo nhanh
+        // Constructor tiện lợi
         public UcOptionButton(string text) : this()
         {
             this.Text = text;
         }
 
         // Hàm chuyển tiếp sự kiện Click
-        // Khi người dùng bấm vào btnOption, ta kích hoạt sự kiện Click của chính UserControl này
         private void SetupEventForwarding()
         {
             btnOption.Click += (s, e) => this.InvokeOnClick(this, EventArgs.Empty);
         }
 
-        // --- CÁC HÀM STYLE MÀ BẠN ĐANG THIẾU ---
+        // --- CÁC HÀM STYLE ---
 
         public void SetActiveStyle()
         {
@@ -51,7 +51,7 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             btnOption.ForeColor = Color.White;
             btnOption.BorderThickness = 0;
 
-            this.IsActive = true; // Đánh dấu là Active
+            this.IsActive = true;
         }
 
         public void SetInactiveStyle()

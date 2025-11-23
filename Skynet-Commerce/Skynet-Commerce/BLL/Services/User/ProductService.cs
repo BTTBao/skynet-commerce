@@ -1,7 +1,6 @@
 ﻿using Skynet_Commerce.BLL.Models;
 using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.DAL.Repositories;
-using Skynet_Commerce.DAL.Repositories.User;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,31 +15,57 @@ namespace Skynet_Commerce.BLL.Services
             _repo = new ProductRepository();
         }
 
-        // Lấy danh sách sản phẩm gợi ý (đã chuyển sang DTO)
         public List<ProductDTO> GetSuggestedProducts(int limit)
         {
-            // 1. Lấy dữ liệu thô từ DAL
             List<Product> entities = _repo.GetHomeProducts(limit);
-
-            // 2. Chuyển đổi sang DTO
             List<ProductDTO> dtos = new List<ProductDTO>();
 
             foreach (var item in entities)
             {
-                // Logic lấy ảnh: Ưu tiên ảnh chính (IsPrimary=true), nếu không có thì lấy ảnh đầu tiên
+                // 1. Lấy ảnh chính
                 var mainImage = item.ProductImages.FirstOrDefault(x => x.IsPrimary == true)
                                 ?? item.ProductImages.FirstOrDefault();
 
+                // 2. [MỚI] Lấy danh sách tất cả đường dẫn ảnh (Thumbnails)
+                var imgList = item.ProductImages.Select(x => x.ImageURL).ToList();
+
+                // 3. [MỚI] Lấy danh sách biến thể (Variants)
+                var variantList = new List<ProductVariantDTO>();
+                if (item.ProductVariants != null)
+                {
+                    foreach (var v in item.ProductVariants)
+                    {
+                        variantList.Add(new ProductVariantDTO
+                        {
+                            VariantID = v.VariantID,
+                            Size = v.Size,
+                            Color = v.Color,
+                            // Xử lý null cho giá và kho
+                            Price = v.Price.GetValueOrDefault(item.Price.GetValueOrDefault(0)),
+                            StockQuantity = v.StockQuantity.GetValueOrDefault(0)
+                        });
+                    }
+                }
+
+                // 4. Tạo DTO
                 dtos.Add(new ProductDTO
                 {
                     ProductId = item.ProductID,
                     Name = item.Name,
-                    // Xử lý giá trị null của Price và SoldCount
                     Price = item.Price.GetValueOrDefault(0),
-                    Rating = 5.0, // Database chưa có bảng rating trung bình, tạm để 5.0
+                    Rating = 5.0,
                     SoldQuantity = item.SoldCount.GetValueOrDefault(0),
-                    // Lấy URL ảnh, nếu không có ảnh nào thì để chuỗi rỗng
-                    ImagePath = mainImage != null ? mainImage.ImageURL : ""
+
+                    // Shop Info
+                    ShopId = item.ShopID.GetValueOrDefault(0),
+                    ShopName = item.Shop != null ? item.Shop.ShopName : "Unknown Shop",
+
+                    // Image Info
+                    ImagePath = mainImage != null ? mainImage.ImageURL : "",
+                    ThumbnailPaths = imgList, // Gán list ảnh
+
+                    // Variant Info
+                    Variants = variantList // Gán list biến thể
                 });
             }
 
