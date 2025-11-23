@@ -1,4 +1,6 @@
 ﻿
+using Skynet_Commerce.DAL.Entities;
+using Skynet_Commerce.GUI.Forms;
 using System;
 using System.Windows.Forms;
 using Skynet_Commerce.GUI.Forms;
@@ -18,5 +20,6 @@ namespace Skynet_Commerce
             // Application.Run(new DashboardForm());
             //Application.Run(new SellerLayout());
         }
+
     }
 }
