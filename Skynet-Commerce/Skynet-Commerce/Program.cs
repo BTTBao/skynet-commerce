@@ -1,5 +1,5 @@
 ﻿
-using Skynet_Commerce.GUI.Forms.User;
+using Skynet_Commerce.GUI.Forms;
 using System;
 using System.Windows.Forms;
 
@@ -17,7 +17,7 @@ namespace Skynet_Commerce
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new FrmMain()); // của bảo ở đây nhé
             // Application.Run(new DashboardForm());
-            Application.Run(new Form1());
+            Application.Run(new FrmMain());
         }
     }
 }

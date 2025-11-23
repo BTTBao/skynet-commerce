@@ -4,7 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using Skynet_Commerce.GUI.UserControls.General;
 using Skynet_Commerce.GUI.UserControls.Pages;
-using Skynet_Commerce.BLL.Models; // Sử dụng ProductDTO
+using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.GUI.Forms.User; // Sử dụng ProductDTO
 
 namespace Skynet_Commerce.GUI.Forms
 {
@@ -148,6 +149,12 @@ namespace Skynet_Commerce.GUI.Forms
                 activeLabel.Font = new Font(activeLabel.Font, FontStyle.Bold);
                 activeLabel.ForeColor = ActiveColor;
             }
+        }
+
+        private void btnAccount_Click(object sender, EventArgs e)
+        {
+            Authentication a = new Authentication();
+            a.ShowLogin();
         }
     }
 }
