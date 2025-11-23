@@ -28,6 +28,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             SetupEventHandlers();
         }
 
+        // Constructor chính nhận dữ liệu thật
         public UcProductDetail(ProductDTO product) : this()
         {
             _currentProduct = product;
@@ -51,18 +52,33 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
             // Lấy thông tin Shop
             _shopId = product.ShopId;
-            _shopName = !string.IsNullOrEmpty(product.ShopName) ? product.ShopName : "Skynet Store";
+            if (!string.IsNullOrEmpty(product.ShopName))
+            {
+                _shopName = product.ShopName;
+            }
+            else
+            {
+                _shopName = "Skynet Store"; // Fallback nếu tên shop rỗng
+            }
 
+            // Nếu Variants null thì khởi tạo list rỗng
             _variants = product.Variants ?? new List<ProductVariantDTO>();
 
-            // Load Info
+            // 1. Load Thông tin cơ bản
             lblProductName.Text = product.Name;
-            lblRating.Text = product.Rating.HasValue ? $"{product.Rating.Value:N1}" : "New";
+
+            if (product.Rating.HasValue)
+                lblRating.Text = $"{product.Rating.Value:N1}";
+            else
+                lblRating.Text = "New";
+
+            lblReviewCount.Text = "(Chưa có đánh giá)";
             lblSoldCount.Text = $"{product.SoldQuantity.GetValueOrDefault(0):N0} Đã bán";
             lblDescriptionText.Text = "Sản phẩm chính hãng, chất lượng cao từ Skynet Commerce.";
 
-            // Load Price
+            // 2. Load Giá
             lblPrice.Text = $"{product.Price:N0}₫";
+
             if (product.OldPrice.HasValue && product.Price < product.OldPrice.Value)
             {
                 lblOldPrice.Text = $"{product.OldPrice.Value:N0}₫";
@@ -78,7 +94,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 lblDiscount.Visible = false;
             }
 
-            // Load Image
+            // 3. Load Ảnh
             if (_currentProduct.ThumbnailPaths != null && _currentProduct.ThumbnailPaths.Count > 0)
             {
                 LoadThumbnails(_currentProduct.ThumbnailPaths);
@@ -91,14 +107,16 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 SwitchMainImage(product.ImagePath);
             }
 
-            // Load Shop Info
+            // 4. Load Shop Info
             lblShopName.Text = _shopName;
             lblShopStats.Text = _shopStats;
 
-            // Load Options
+            // 5. Load Options (Variants)
             if (_variants.Count > 0)
             {
                 LoadProductOptions();
+
+                // Tự động chọn biến thể đầu tiên còn hàng
                 _selectedVariant = _variants.FirstOrDefault(v => v.StockQuantity > 0);
                 if (_selectedVariant != null)
                 {
@@ -108,6 +126,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
             else
             {
+                // Sản phẩm không có biến thể
                 pnlSizeOptions.Controls.Clear();
                 pnlColorOptions.Controls.Clear();
                 lblSizeLabel.Visible = false;
@@ -116,7 +135,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
         }
 
-        // [QUAN TRỌNG] Hàm thêm vào giỏ hàng
+        // [CẬP NHẬT QUAN TRỌNG] Logic thêm vào giỏ hàng (Có xử lý Variant)
         private void BtnAddCart_Click(object sender, EventArgs e)
         {
             if (_currentProduct == null) return;
@@ -124,25 +143,59 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             int qty = 1;
             int.TryParse(txtQuantity.Text, out qty);
 
-            // Nếu có biến thể, cần đảm bảo người dùng đã chọn biến thể
-            // (Hiện tại logic tự chọn biến thể đầu tiên đã có nên ok)
+            // Nếu sản phẩm có biến thể mà chưa chọn -> Báo lỗi
+            if (_variants != null && _variants.Count > 0)
+            {
+                if (_selectedVariant == null)
+                {
+                    MessageBox.Show("Vui lòng chọn Phân loại hàng (Màu sắc, Kích thước)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            // Chuẩn bị thông tin để thêm vào giỏ
+            int? variantId = _selectedVariant?.VariantID;
+            string variantName = _selectedVariant != null ? $"{_selectedVariant.Color}, {_selectedVariant.Size}" : "";
+            decimal finalPrice = _selectedVariant != null ? _selectedVariant.Price : _currentProduct.Price;
+
+            // Tạo bản sao ProductDTO với giá đúng của biến thể
+            ProductDTO productToAdd = new ProductDTO
+            {
+                ProductId = _currentProduct.ProductId,
+                Name = _currentProduct.Name,
+                Price = finalPrice,
+                ImagePath = _currentProduct.ImagePath,
+                ShopId = _currentProduct.ShopId,
+                ShopName = _currentProduct.ShopName
+            };
 
             // Gọi SessionManager để thêm vào giỏ
-            SessionManager.AddToCart(_currentProduct, qty);
+            SessionManager.AddToCart(productToAdd, qty, variantId, variantName);
 
-            MessageBox.Show($"Đã thêm {qty} sản phẩm '{_currentProduct.Name}' vào giỏ hàng!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Đã thêm {qty} sản phẩm vào giỏ hàng!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void BtnBuyNow_Click(object sender, EventArgs e)
         {
-            // Thêm vào giỏ rồi chuyển đến trang thanh toán
-            BtnAddCart_Click(sender, e);
+            // Thêm vào giỏ rồi chuyển đến trang giỏ hàng
+            if (_currentProduct == null) return;
+
+            int qty = 1;
+            int.TryParse(txtQuantity.Text, out qty);
+
+            if (_variants != null && _variants.Count > 0 && _selectedVariant == null)
+            {
+                MessageBox.Show("Vui lòng chọn Phân loại hàng (Màu sắc, Kích thước)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            BtnAddCart_Click(sender, e); // Tái sử dụng hàm thêm giỏ hàng
 
             FrmMain mainForm = this.FindForm() as FrmMain;
             if (mainForm != null) mainForm.LoadPage("Cart");
         }
 
-        // --- CÁC HÀM HỖ TRỢ KHÁC (GIỮ NGUYÊN) ---
+        // --- CÁC HÀM HỖ TRỢ KHÁC ---
 
         private void HighlightSelectedVariant(ProductVariantDTO variant)
         {
@@ -175,9 +228,18 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         public void SwitchMainImage(string imagePath)
         {
-            if (!string.IsNullOrEmpty(imagePath) && imagePath.StartsWith("http")) pbMainImage.ImageLocation = imagePath;
-            else if (File.Exists(imagePath)) pbMainImage.ImageLocation = imagePath;
-            else pbMainImage.Image = null;
+            if (!string.IsNullOrEmpty(imagePath) && imagePath.StartsWith("http"))
+            {
+                pbMainImage.ImageLocation = imagePath;
+            }
+            else if (File.Exists(imagePath))
+            {
+                pbMainImage.ImageLocation = imagePath;
+            }
+            else
+            {
+                pbMainImage.Image = null;
+            }
         }
 
         private void LoadProductOptions()
@@ -220,6 +282,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             UcOptionButton selectedBtn = (UcOptionButton)sender;
             ResetButtons(pnlColorOptions);
             selectedBtn.SetActiveStyle();
+
+            // Sửa lỗi IsActive bằng cách check màu
             string currentSize = null;
             foreach (Control c in pnlSizeOptions.Controls)
             {
@@ -289,6 +353,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             if (q < 1) q = 1;
             txtQuantity.Text = q.ToString();
         }
+
         private void ValidateQuantity()
         {
             if (!int.TryParse(txtQuantity.Text, out int q) || q < 1) txtQuantity.Text = "1";

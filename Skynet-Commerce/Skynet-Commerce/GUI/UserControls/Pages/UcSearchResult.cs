@@ -1,11 +1,12 @@
 ﻿using Guna.UI2.WinForms;
-using Skynet_Commerce.BLL.Models; // Đảm bảo có DTO
+using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.BLL.Services; // [QUAN TRỌNG] Nhớ thêm cái này
 using Skynet_Commerce.GUI.Forms;
 using Skynet_Commerce.GUI.UserControls.Components;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq; // [QUAN TRỌNG] Cần để lọc dữ liệu
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
@@ -16,8 +17,11 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         private FlowLayoutPanel flpProducts;
         private string _keyword;
 
-        // [MỚI] Các biến lưu trạng thái bộ lọc
-        private List<ProductDTO> _allProducts; // Danh sách gốc (giả lập database)
+        // Service để gọi Database
+        private readonly ProductService _productService;
+
+        // Các biến lưu trạng thái bộ lọc
+        private List<ProductDTO> _allProducts; // Danh sách gốc lấy từ DB
         private string _selectedCategory = "Tất cả";
         private string _selectedPriceRange = "Tất cả";
         private string _selectedRating = "Tất cả";
@@ -27,14 +31,36 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         {
             InitializeComponent();
             _keyword = keyword;
+            _productService = new ProductService(); // Khởi tạo Service
 
-            // [SỬA] Đưa dòng này lên ĐẦU TIÊN
-            InitDummyDatabase();
-
-            // Sau đó mới vẽ giao diện
+            // 1. Setup giao diện trước
             SetupLayout();
+
+            // 2. Lấy dữ liệu thật từ DB
+            LoadDataFromDatabase();
         }
-        // ... (Phần SetupLayout giữ nguyên như cũ, chỉ sửa các hàm con bên dưới) ...
+
+        // --- HÀM LẤY DỮ LIỆU TỪ DB ---
+        private void LoadDataFromDatabase()
+        {
+            try
+            {
+                // Gọi Service tìm kiếm theo từ khóa
+                // Hàm này bạn cần viết trong ProductService (xem Phần 2 bên dưới)
+                _allProducts = _productService.SearchProducts(_keyword);
+
+                if (_allProducts == null) _allProducts = new List<ProductDTO>();
+
+                // Sau khi lấy về, áp dụng các bộ lọc mặc định
+                ApplyFiltersAndSort();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+            }
+        }
+
+        // ... (Giữ nguyên SetupLayout, SetupSidebarFilters, SetupSortBar không đổi) ...
         private void SetupLayout()
         {
             this.BackColor = Color.FromArgb(248, 248, 248);
@@ -70,37 +96,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.Controls.Add(flpProducts);
         }
 
-        // [MỚI] Hàm tạo dữ liệu giả lập Database
-        private void InitDummyDatabase()
-        {
-            _allProducts = new List<ProductDTO>();
-            string imgUrl = "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lznbzh46830k73";
-
-            // Tạo 30 sản phẩm mẫu với thông số đa dạng để test lọc
-            var rand = new Random();
-            string[] cats = { "Thời trang", "Điện tử", "Nhà cửa", "Làm đẹp" };
-
-            for (int i = 1; i <= 30; i++)
-            {
-                string cat = cats[rand.Next(cats.Length)];
-                decimal price = rand.Next(50, 2000) * 1000; // Giá từ 50k đến 2tr
-                double rate = 3 + (rand.NextDouble() * 2); // Rate từ 3.0 đến 5.0
-
-                _allProducts.Add(new ProductDTO
-                {
-                    ProductId = i,
-                    Name = $"{cat} - Sản phẩm mẫu {i}",
-                    Price = price,
-                    Rating = Math.Round(rate, 1),
-                    SoldQuantity = rand.Next(1, 5000),
-                    ImagePath = imgUrl,
-                    // Lưu ý: Bạn cần thêm thuộc tính Category vào DTO hoặc dùng logic tạm
-                    // Ở đây tôi giả định ta lọc theo Name chứa Category vì DTO chưa có field Category
-                });
-            }
-        }
-
-        // [CẬP NHẬT] Setup Sidebar có gán sự kiện
         private void SetupSidebarFilters(Panel pnl)
         {
             Label lblTitle = new Label { Text = "Bộ lọc tìm kiếm", Font = new Font("Segoe UI", 11, FontStyle.Bold), Location = new Point(0, 0), AutoSize = true };
@@ -115,10 +110,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             foreach (var cat in categories)
             {
                 var rb = CreateFilterRadioButton(cat, 0, y);
-                // [MỚI] Gán sự kiện khi chọn
                 rb.CheckedChanged += (s, e) => { if (rb.Checked) { _selectedCategory = cat; ApplyFiltersAndSort(); } };
-                if (cat == "Tất cả") rb.Checked = true; // Mặc định
-
+                if (cat == "Tất cả") rb.Checked = true;
                 pnl.Controls.Add(rb);
                 pnl.Controls.Add(new Label { Text = cat, Location = new Point(25, y - 2), AutoSize = true, Font = new Font("Segoe UI", 9) });
                 y += 30;
@@ -132,10 +125,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             foreach (var price in prices)
             {
                 var rb = CreateFilterRadioButton(price, 0, y);
-                // [MỚI] Gán sự kiện
                 rb.CheckedChanged += (s, e) => { if (rb.Checked) { _selectedPriceRange = price; ApplyFiltersAndSort(); } };
                 if (price == "Tất cả") rb.Checked = true;
-
                 pnl.Controls.Add(rb);
                 pnl.Controls.Add(new Label { Text = price, Location = new Point(25, y - 2), AutoSize = true, Font = new Font("Segoe UI", 9) });
                 y += 30;
@@ -149,10 +140,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             foreach (var rate in ratings)
             {
                 var rb = CreateFilterRadioButton(rate, 0, y);
-                // [MỚI] Gán sự kiện
                 rb.CheckedChanged += (s, e) => { if (rb.Checked) { _selectedRating = rate; ApplyFiltersAndSort(); } };
                 if (rate == "Tất cả") rb.Checked = true;
-
                 pnl.Controls.Add(rb);
                 string displayMap = rate == "5 sao" ? "⭐⭐⭐⭐⭐" : rate;
                 Label lblRate = new Label { Text = displayMap, Location = new Point(25, y - 2), AutoSize = true, Font = new Font("Segoe UI", 9) };
@@ -161,7 +150,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 y += 30;
             }
 
-            // Nút Xóa Filter
             Guna2Button btnClear = new Guna2Button
             {
                 Text = "Xóa tất cả",
@@ -174,14 +162,9 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 Size = new Size(150, 35),
                 Cursor = Cursors.Hand
             };
-            // [MỚI] Reset toàn bộ filter
             btnClear.Click += (s, e) =>
             {
-                // Reset biến (cần reset cả UI radio button về "Tất cả" nếu muốn hoàn hảo, ở đây làm nhanh reset logic)
-                _selectedCategory = "Tất cả";
-                _selectedPriceRange = "Tất cả";
-                _selectedRating = "Tất cả";
-                _selectedSort = "Liên quan";
+                _selectedCategory = "Tất cả"; _selectedPriceRange = "Tất cả"; _selectedRating = "Tất cả"; _selectedSort = "Liên quan";
                 ApplyFiltersAndSort();
                 MessageBox.Show("Đã xóa bộ lọc!");
             };
@@ -201,7 +184,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             };
         }
 
-        // [CẬP NHẬT] Setup Sort Bar có gán sự kiện
         private void SetupSortBar(Panel pnl)
         {
             Label lblLabel = new Label { Text = "Sắp xếp theo:", Location = new Point(20, 20), AutoSize = true, Font = new Font("Segoe UI", 9, FontStyle.Regular) };
@@ -209,7 +191,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
             string[] sorts = { "Liên quan", "Mới nhất", "Bán chạy", "Giá thấp đến cao", "Giá cao đến thấp" };
             int x = 120;
-
             foreach (var sort in sorts)
             {
                 Guna2Button btn = new Guna2Button
@@ -223,101 +204,58 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                     FillColor = (sort == "Liên quan") ? Color.OrangeRed : Color.White,
                     ForeColor = (sort == "Liên quan") ? Color.White : Color.Black
                 };
-
-                // [MỚI] Logic Click đổi màu + Sort
                 btn.Click += (s, e) =>
                 {
-                    // Update UI
-                    foreach (Control c in pnl.Controls)
-                        if (c is Guna2Button b) { b.FillColor = Color.White; b.ForeColor = Color.Black; }
-
-                    ((Guna2Button)s).FillColor = Color.OrangeRed;
-                    ((Guna2Button)s).ForeColor = Color.White;
-
-                    // Update Logic
+                    foreach (Control c in pnl.Controls) if (c is Guna2Button b) { b.FillColor = Color.White; b.ForeColor = Color.Black; }
+                    ((Guna2Button)s).FillColor = Color.OrangeRed; ((Guna2Button)s).ForeColor = Color.White;
                     _selectedSort = sort;
                     ApplyFiltersAndSort();
                 };
-
-                pnl.Controls.Add(btn);
-                x += 130;
+                pnl.Controls.Add(btn); x += 130;
             }
         }
 
-        // ----------------------------------------------------------------
-        // [QUAN TRỌNG NHẤT] LOGIC LỌC VÀ SẮP XẾP DỮ LIỆU
-        // ----------------------------------------------------------------
         private void ApplyFiltersAndSort()
         {
+            if (_allProducts == null || _allProducts.Count == 0) return;
 
-            if (_allProducts == null)
-            {
-                _allProducts = new List<ProductDTO>();
-                // Hoặc return; tùy logic của bạn
-            }
-
-
-            // 1. Bắt đầu từ danh sách gốc
+            // 1. Lọc trên RAM (Từ danh sách đã tải về)
             var filteredList = _allProducts.AsEnumerable();
 
-            // 2. Lọc theo Danh mục (Giả lập check tên vì DTO chưa có Category)
+            // Danh mục (Tạm thời lọc theo tên vì DB chưa chắc có CategoryID khớp UI)
             if (_selectedCategory != "Tất cả")
             {
-                filteredList = filteredList.Where(p => p.Name.Contains(_selectedCategory));
+                filteredList = filteredList.Where(p => p.Name.IndexOf(_selectedCategory, StringComparison.OrdinalIgnoreCase) >= 0);
             }
 
-            // 3. Lọc theo Giá
+            // Giá
             switch (_selectedPriceRange)
             {
-                case "Dưới 100K":
-                    filteredList = filteredList.Where(p => p.Price < 100000);
-                    break;
-                case "100K - 500K":
-                    filteredList = filteredList.Where(p => p.Price >= 100000 && p.Price <= 500000);
-                    break;
-                case "500K - 1M":
-                    filteredList = filteredList.Where(p => p.Price >= 500000 && p.Price <= 1000000);
-                    break;
-                case "Trên 1M":
-                    filteredList = filteredList.Where(p => p.Price > 1000000);
-                    break;
+                case "Dưới 100K": filteredList = filteredList.Where(p => p.Price < 100000); break;
+                case "100K - 500K": filteredList = filteredList.Where(p => p.Price >= 100000 && p.Price <= 500000); break;
+                case "500K - 1M": filteredList = filteredList.Where(p => p.Price >= 500000 && p.Price <= 1000000); break;
+                case "Trên 1M": filteredList = filteredList.Where(p => p.Price > 1000000); break;
             }
 
-            // 4. Lọc theo Đánh giá
+            // Đánh giá
             if (_selectedRating != "Tất cả")
             {
-                double minRate = 0;
-                if (_selectedRating == "5 sao") minRate = 4.9;
-                else if (_selectedRating == "4 sao trở lên") minRate = 4.0;
-                else if (_selectedRating == "3 sao trở lên") minRate = 3.0;
-
-                filteredList = filteredList.Where(p => p.Rating >= minRate);
+                double minRate = _selectedRating == "5 sao" ? 4.9 : (_selectedRating == "4 sao trở lên" ? 4.0 : 3.0);
+                filteredList = filteredList.Where(p => (p.Rating ?? 0) >= minRate);
             }
 
-            // 5. Sắp xếp
+            // Sắp xếp
             switch (_selectedSort)
             {
-                case "Giá thấp đến cao":
-                    filteredList = filteredList.OrderBy(p => p.Price);
-                    break;
-                case "Giá cao đến thấp":
-                    filteredList = filteredList.OrderByDescending(p => p.Price);
-                    break;
-                case "Bán chạy":
-                    filteredList = filteredList.OrderByDescending(p => p.SoldQuantity);
-                    break;
-                case "Mới nhất":
-                    filteredList = filteredList.OrderByDescending(p => p.ProductId);
-                    break;
-                default: // Liên quan (Mặc định)
-                    break;
+                case "Giá thấp đến cao": filteredList = filteredList.OrderBy(p => p.Price); break;
+                case "Giá cao đến thấp": filteredList = filteredList.OrderByDescending(p => p.Price); break;
+                case "Bán chạy": filteredList = filteredList.OrderByDescending(p => p.SoldQuantity); break;
+                case "Mới nhất": filteredList = filteredList.OrderByDescending(p => p.ProductId); break;
             }
 
-            // 6. Render lại giao diện
             RenderProductList(filteredList.ToList());
         }
 
-        // Hàm vẽ danh sách sản phẩm lên UI
         private void RenderProductList(List<ProductDTO> products)
         {
             if (flpProducts == null) return;
@@ -341,28 +279,15 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 foreach (var p in products)
                 {
                     UcProductCard card = new UcProductCard();
-
-                    // --- SỬA LẠI ĐOẠN NÀY ---
-                    card.LoadData(
-                        p.ProductId,
-                        p.Name,
-                        p.Price,
-                        p.Rating ?? 0,        // [FIX LỖI] Nếu Rating là null -> lấy 0
-                        p.SoldQuantity ?? 0,  // [FIX LỖI] Nếu SoldQuantity là null -> lấy 0
-                        p.ImagePath
-                    );
-                    // ------------------------
-
+                    card.LoadData(p.ProductId, p.Name, p.Price, p.Rating ?? 0, p.SoldQuantity ?? 0, p.ImagePath);
                     card.CardClicked += (s, e) =>
                     {
                         FrmMain main = this.FindForm() as FrmMain;
                         if (main != null) main.LoadPage("ProductDetail", p);
                     };
-
                     flpProducts.Controls.Add(card);
                 }
             }
-
             flpProducts.ResumeLayout();
         }
     }

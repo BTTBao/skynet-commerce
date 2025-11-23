@@ -1,8 +1,9 @@
-﻿using Skynet_Commerce.DAL.Entities; // Namespace chứa Account và DbContext
+﻿using Skynet_Commerce.DAL.Entities;
+using Skynet_Commerce.GUI.Forms;
 using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Text.RegularExpressions; // Thêm cái này để kiểm tra định dạng SĐT
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,71 +11,63 @@ namespace Skynet_Commerce.GUI.Forms.User
 {
     public partial class UcRegister : UserControl
     {
-        private Authentication main;
+        private Form _parentForm;
+        private string _nextPage;
 
         public UcRegister(Authentication main)
         {
-            this.main = main;
             InitializeComponent();
-
-            // Gán sự kiện Click
-            this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
+            _parentForm = main;
+            SetupEvents();
         }
 
-        private void ShowLogin()
+        public UcRegister(FrmMain main, string nextPage = null)
         {
-            if (main != null)
-            {
-                UcLogin login = new UcLogin(main);
-                main.ShowControl(login);
-            }
+            InitializeComponent();
+            _parentForm = main;
+            _nextPage = nextPage;
+            SetupEvents();
+        }
+
+        private void SetupEvents()
+        {
+            if (btnRegister != null) btnRegister.Click += btnRegister_Click;
+            if (lblBackToLogin != null) lblBackToLogin.Click += btnBack_Click;
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            ShowLogin();
+            if (_parentForm is FrmMain mainForm) mainForm.LoadPage("Login", _nextPage);
+            else if (_parentForm is Authentication authForm) { UcLogin login = new UcLogin(authForm); authForm.ShowControl(login); }
         }
 
-        // Logic xử lý đăng ký
         private async void btnRegister_Click(object sender, EventArgs e)
         {
-            // 1. Lấy dữ liệu từ các TextBox
-            string email = guna2TextBox1.Text.Trim();
-            string password = guna2TextBox2.Text;
-            string confirmPass = guna2TextBox3.Text;
-            string phone = phoneLb.Text.Trim(); // <--- Lấy SĐT từ phoneLb
+            string email = txtEmail.Text.Trim();
+            string phone = txtPhone.Text.Trim();
+            string password = txtPassword.Text;
+            string confirmPass = txtConfirmPass.Text;
 
-            // 2. Validate dữ liệu cơ bản
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password)
-                || string.IsNullOrEmpty(confirmPass) || string.IsNullOrEmpty(phone)) // <--- Check rỗng phone
+            // 1. Validate
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPass) || string.IsNullOrEmpty(phone))
             {
-                MessageBox.Show("Vui lòng điền đầy đủ thông tin (Email, SĐT, Mật khẩu)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng điền đầy đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Validate Mật khẩu khớp
             if (password != confirmPass)
             {
                 MessageBox.Show("Mật khẩu nhập lại không khớp!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // Validate độ dài mật khẩu
-            if (password.Length < 6)
-            {
-                MessageBox.Show("Mật khẩu phải có ít nhất 6 ký tự!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Validate định dạng SĐT (Quan trọng: Database bạn giới hạn 10 ký tự)
-            // Regex: Bắt đầu bằng số 0, theo sau là 9 chữ số nữa (Tổng 10 số)
             if (!Regex.IsMatch(phone, @"^0\d{9}$"))
             {
-                MessageBox.Show("Số điện thoại không hợp lệ! (Phải là 10 số và bắt đầu bằng số 0)", "Lỗi định dạng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0)!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Khóa nút để tránh click nhiều lần
+            // [QUAN TRỌNG] Khóa nút ngay lập tức để tránh Click đúp
             btnRegister.Enabled = false;
             btnRegister.Text = "Đang xử lý...";
 
@@ -82,55 +75,63 @@ namespace Skynet_Commerce.GUI.Forms.User
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    // 3. Kiểm tra Email hoặc SĐT đã tồn tại chưa
-                    // Chúng ta lấy ra account đầu tiên trùng Email hoặc trùng Phone
-                    var existingAccount = await Task.Run(() =>
-                        db.Accounts.FirstOrDefault(a => a.Email == email || a.Phone == phone)
-                    );
-
-                    if (existingAccount != null)
+                    // 2. Check trùng trong C# trước
+                    var exist = await Task.Run(() => db.Accounts.FirstOrDefault(a => a.Email == email || a.Phone == phone));
+                    if (exist != null)
                     {
-                        if (existingAccount.Email == email)
-                        {
-                            MessageBox.Show("Email này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Số điện thoại này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        return; // Dừng lại không lưu
+                        // Mở lại nút nếu lỗi logic
+                        btnRegister.Enabled = true;
+                        btnRegister.Text = "ĐĂNG KÝ";
+
+                        if (exist.Email == email) MessageBox.Show("Email này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        else MessageBox.Show("Số điện thoại này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
 
-                    // 4. Tạo tài khoản mới
+                    // 3. Tạo Account
                     var newAccount = new Account
                     {
                         Email = email,
-                        Phone = phone, // <--- Lưu SĐT vào
-                        PasswordHash = password, // (Nên mã hóa nếu có thể)
+                        Phone = phone,
+                        PasswordHash = password,
                         CreatedAt = DateTime.Now,
-                        IsActive = true,
+                        IsActive = true
                     };
-
                     db.Accounts.Add(newAccount);
+                    await db.SaveChangesAsync();
+
+                    // 4. Tạo User Profile
+                    var newUser = new Skynet_Commerce.DAL.Entities.User
+                    {
+                        AccountID = newAccount.AccountID,
+                        FullName = email.Split('@')[0],
+                        Gender = "Other",
+                        DateOfBirth = DateTime.Now
+                    };
+                    db.Users.Add(newUser);
                     await db.SaveChangesAsync();
 
                     MessageBox.Show("Đăng ký thành công! Vui lòng đăng nhập.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Chuyển về màn hình đăng nhập
-                    ShowLogin();
+                    // Chuyển trang
+                    if (_parentForm is FrmMain mainForm) mainForm.LoadPage("Login", _nextPage);
+                    else if (_parentForm is Authentication authForm) { UcLogin login = new UcLogin(authForm); authForm.ShowControl(login); }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                // Mở lại nút sau khi xử lý xong
-                if (this.Visible) // Kiểm tra nếu form chưa chuyển đi
+                // Mở lại nút nếu có lỗi hệ thống để người dùng thử lại
+                btnRegister.Enabled = true;
+                btnRegister.Text = "ĐĂNG KÝ";
+
+                // Kiểm tra nếu lỗi do trùng lặp (Duplicate)
+                if (ex.InnerException != null && ex.InnerException.InnerException != null && ex.InnerException.InnerException.Message.Contains("UNIQUE KEY"))
                 {
-                    btnRegister.Enabled = true;
-                    btnRegister.Text = "REGISTER";
+                    MessageBox.Show("Email hoặc Số điện thoại này đã tồn tại trong hệ thống!", "Lỗi đăng ký", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
