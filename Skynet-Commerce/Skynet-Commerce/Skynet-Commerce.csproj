@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -39,11 +40,15 @@
       <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
+      <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
@@ -82,6 +87,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Helpers\SessionManager.cs" />
     <Compile Include="BLL\Helpers\UserValidator.cs" />
     <Compile Include="BLL\Models\Admin\CategoryViewModel.cs" />
     <Compile Include="BLL\Models\Admin\DashboardDTO.cs" />
@@ -93,11 +99,13 @@
     <Compile Include="BLL\Models\CartItemDTO.cs" />
     <Compile Include="BLL\Models\ProductDTO.cs" />
     <Compile Include="BLL\Models\SampleDataGenerator.cs" />
+    <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
+    <Compile Include="BLL\Models\ShopDTO.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
     <Compile Include="BLL\Models\Seller\OrderSellerDTO.cs" />
     <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
     <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
-    <Compile Include="BLL\Models\Seller\SellerDashboardDto.cs" />
     <Compile Include="BLL\Services\Admin\CategoryService.cs" />
     <Compile Include="BLL\Services\Admin\DashboardService.cs" />
     <Compile Include="BLL\Services\Admin\OrderService.cs" />
@@ -106,7 +114,8 @@
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="BLL\Services\Seller\OrderServiceForSeller.cs" />
     <Compile Include="BLL\Services\Seller\ProductServiceForSeller.cs" />
-    <Compile Include="BLL\Services\Seller\SellerDashBoardService.cs" />
+    <Compile Include="BLL\Services\User\ProductService.cs" />
+    <Compile Include="BLL\Services\User\UserShopService.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
     <Compile Include="DAL\Entities\AppSession.cs" />
@@ -141,6 +150,8 @@
     <Compile Include="DAL\Repositories\Admin\AccountRepository.cs" />
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
     <Compile Include="DAL\Entities\UserRoles.cs" />
+    <Compile Include="DAL\Repositories\User\ProductRepository.cs" />
+    <Compile Include="DAL\Repositories\User\ShopRepository.cs" />
     <Compile Include="GUI\Forms\Admin\CategoryDetailForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -363,6 +374,12 @@
     <Compile Include="GUI\UserControls\Pages\UcCartPage.Designer.cs">
       <DependentUpon>UcCartPage.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcCheckoutPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcCheckoutPage.Designer.cs">
+      <DependentUpon>UcCheckoutPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\UserControls\Pages\UcHomePage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -375,34 +392,10 @@
     <Compile Include="GUI\UserControls\Pages\UcProductDetail.Designer.cs">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcChangePassword.cs">
+    <Compile Include="GUI\UserControls\Pages\UcProfile.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcChangePassword.Designer.cs">
-      <DependentUpon>UcChangePassword.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcEditProfile.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcEditProfile.Designer.cs">
-      <DependentUpon>UcEditProfile.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcOrderDetail.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcOrderDetail.Designer.cs">
-      <DependentUpon>UcOrderDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcOrderHistory.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcOrderHistory.Designer.cs">
-      <DependentUpon>UcOrderHistory.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcProfile.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcProfile.Designer.cs">
+    <Compile Include="GUI\UserControls\Pages\UcProfile.Designer.cs">
       <DependentUpon>UcProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcSearchResult.cs">
@@ -416,18 +409,6 @@
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcShopDetail.Designer.cs">
       <DependentUpon>UcShopDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcShopRegister.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcShopRegister.Designer.cs">
-      <DependentUpon>UcShopRegister.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcUserAddress.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\Pages\User\UcUserAddress.Designer.cs">
-      <DependentUpon>UcUserAddress.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -506,38 +487,8 @@
     <EmbeddedResource Include="GUI\UserControls\Pages\UcProductDetail.resx">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\UcSearchResult.resx">
-      <DependentUpon>UcSearchResult.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\UcShopDetail.resx">
-      <DependentUpon>UcShopDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcChangePassword.resx">
-      <DependentUpon>UcChangePassword.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcEditProfile.resx">
-      <DependentUpon>UcEditProfile.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcOrderDetail.resx">
-      <DependentUpon>UcOrderDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcOrderHistory.resx">
-      <DependentUpon>UcOrderHistory.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcProfile.resx">
+    <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
       <DependentUpon>UcProfile.cs</DependentUpon>
-    </EmbeddedResource>
-    <!-- <EmbeddedResource Include="GUI\UserControls\Pages\UcSearchResult.resx">
-      <DependentUpon>UcSearchResult.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\UcShopDetail.resx">
-      <DependentUpon>UcShopDetail.cs</DependentUpon>
-    </EmbeddedResource> -->
-    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcShopRegister.resx">
-      <DependentUpon>UcShopRegister.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcUserAddress.resx">
-      <DependentUpon>UcUserAddress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -606,5 +557,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
   </Target>
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
 </Project>

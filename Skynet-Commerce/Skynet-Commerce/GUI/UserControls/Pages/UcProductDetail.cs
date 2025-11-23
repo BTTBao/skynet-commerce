@@ -1,6 +1,7 @@
 ﻿using Skynet_Commerce.BLL.Models;
 using Skynet_Commerce.GUI.Forms;
 using Skynet_Commerce.GUI.UserControls.Components;
+using Skynet_Commerce.BLL.Helpers; // [QUAN TRỌNG] Để gọi SessionManager
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,94 +16,250 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         private ProductDTO _currentProduct;
         private List<ProductVariantDTO> _variants;
         private ProductVariantDTO _selectedVariant;
-        private string _shopName = "Fashion Store";
-        private string _shopStats = "12.500 người theo dõi | 156 sản phẩm";
 
-        // ----------------------------------------------------------------------
-        // I. CONSTRUCTOR & KHỞI TẠO
-        // ----------------------------------------------------------------------
+        // Biến lưu thông tin Shop thật
+        private int _shopId = 0;
+        private string _shopName = "Đang tải...";
+        private string _shopStats = "98% Phản hồi | 5.0 Đánh giá";
 
         public UcProductDetail()
         {
             InitializeComponent();
             SetupEventHandlers();
-            this.Load += UcProductDetail_Load;
         }
 
         public UcProductDetail(ProductDTO product) : this()
         {
-            // Nếu product truyền vào null hoặc không có Variants, tự tạo dữ liệu mẫu
-            if (product == null || product.Variants == null || product.Variants.Count == 0)
-            {
-                _currentProduct = GetInternalSampleData();
-            }
-            else
-            {
-                _currentProduct = product;
-            }
-
+            _currentProduct = product;
             LoadProduct(_currentProduct);
         }
 
         private void UcProductDetail_Load(object sender, EventArgs e)
         {
+            CenterDetailContainer();
+
             if (_currentProduct == null)
             {
-                _currentProduct = GetInternalSampleData();
-                LoadProduct(_currentProduct);
+                MessageBox.Show("Không thể tải thông tin sản phẩm!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            CenterDetailContainer();
         }
 
-        // --- HÀM TẠO DỮ LIỆU MẪU NỘI BỘ (Đảm bảo luôn có dữ liệu để hiện) ---
-        // Trong UcProductDetail.cs
-
-        private ProductDTO GetInternalSampleData()
+        public void LoadProduct(ProductDTO product)
         {
-            // Dùng link ảnh online (lấy cái áo khoác Jean cho hợp bài)
-            string onlineImg = "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lznbzh46830k73";
+            if (product == null) return;
+            _currentProduct = product;
 
-            var variants = new List<ProductVariantDTO>
-    {
-        new ProductVariantDTO { VariantID = 1, Size = "S", Color = "Xanh đen", Price = 450000, StockQuantity = 50 },
-        new ProductVariantDTO { VariantID = 2, Size = "M", Color = "Xanh đen", Price = 450000, StockQuantity = 100 },
-        new ProductVariantDTO { VariantID = 7, Size = "S", Color = "Đen", Price = 500000, StockQuantity = 150 },
-    };
+            // Lấy thông tin Shop
+            _shopId = product.ShopId;
+            _shopName = !string.IsNullOrEmpty(product.ShopName) ? product.ShopName : "Skynet Store";
 
-            return new ProductDTO
+            _variants = product.Variants ?? new List<ProductVariantDTO>();
+
+            // Load Info
+            lblProductName.Text = product.Name;
+            lblRating.Text = product.Rating.HasValue ? $"{product.Rating.Value:N1}" : "New";
+            lblSoldCount.Text = $"{product.SoldQuantity.GetValueOrDefault(0):N0} Đã bán";
+            lblDescriptionText.Text = "Sản phẩm chính hãng, chất lượng cao từ Skynet Commerce.";
+
+            // Load Price
+            lblPrice.Text = $"{product.Price:N0}₫";
+            if (product.OldPrice.HasValue && product.Price < product.OldPrice.Value)
             {
-                ProductId = 101,
-                Name = "Áo khoác denim thời trang cao cấp",
-                Price = 450000,
-                OldPrice = 550000,
-                Rating = 4.8,
-                SoldQuantity = 1234,
+                lblOldPrice.Text = $"{product.OldPrice.Value:N0}₫";
+                int discount = product.DiscountPercent > 0 ? product.DiscountPercent :
+                               (int)((1 - product.Price / product.OldPrice.Value) * 100);
+                lblDiscount.Text = $"-{discount}%";
+                lblOldPrice.Visible = true;
+                lblDiscount.Visible = true;
+            }
+            else
+            {
+                lblOldPrice.Visible = false;
+                lblDiscount.Visible = false;
+            }
 
-                // Gán link online vào đây
-                ImagePath = onlineImg,
+            // Load Image
+            if (_currentProduct.ThumbnailPaths != null && _currentProduct.ThumbnailPaths.Count > 0)
+            {
+                LoadThumbnails(_currentProduct.ThumbnailPaths);
+                SwitchMainImage(_currentProduct.ThumbnailPaths.First());
+            }
+            else if (!string.IsNullOrEmpty(product.ImagePath))
+            {
+                var singleImgList = new List<string> { product.ImagePath };
+                LoadThumbnails(singleImgList);
+                SwitchMainImage(product.ImagePath);
+            }
 
-                Variants = variants,
+            // Load Shop Info
+            lblShopName.Text = _shopName;
+            lblShopStats.Text = _shopStats;
 
-                // Gán link online vào list ảnh nhỏ luôn
-                ThumbnailPaths = new List<string> { onlineImg, onlineImg, onlineImg }
-            };
+            // Load Options
+            if (_variants.Count > 0)
+            {
+                LoadProductOptions();
+                _selectedVariant = _variants.FirstOrDefault(v => v.StockQuantity > 0);
+                if (_selectedVariant != null)
+                {
+                    UpdateVariantUI(_selectedVariant);
+                    HighlightSelectedVariant(_selectedVariant);
+                }
+            }
+            else
+            {
+                pnlSizeOptions.Controls.Clear();
+                pnlColorOptions.Controls.Clear();
+                lblSizeLabel.Visible = false;
+                lblColorLabel.Visible = false;
+                lblQuantityAvailable.Text = "Sẵn hàng";
+            }
+        }
+
+        // [QUAN TRỌNG] Hàm thêm vào giỏ hàng
+        private void BtnAddCart_Click(object sender, EventArgs e)
+        {
+            if (_currentProduct == null) return;
+
+            int qty = 1;
+            int.TryParse(txtQuantity.Text, out qty);
+
+            // Nếu có biến thể, cần đảm bảo người dùng đã chọn biến thể
+            // (Hiện tại logic tự chọn biến thể đầu tiên đã có nên ok)
+
+            // Gọi SessionManager để thêm vào giỏ
+            SessionManager.AddToCart(_currentProduct, qty);
+
+            MessageBox.Show($"Đã thêm {qty} sản phẩm '{_currentProduct.Name}' vào giỏ hàng!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void BtnBuyNow_Click(object sender, EventArgs e)
+        {
+            // Thêm vào giỏ rồi chuyển đến trang thanh toán
+            BtnAddCart_Click(sender, e);
+
+            FrmMain mainForm = this.FindForm() as FrmMain;
+            if (mainForm != null) mainForm.LoadPage("Cart");
+        }
+
+        // --- CÁC HÀM HỖ TRỢ KHÁC (GIỮ NGUYÊN) ---
+
+        private void HighlightSelectedVariant(ProductVariantDTO variant)
+        {
+            foreach (var ctrl in pnlSizeOptions.Controls)
+                if (ctrl is UcOptionButton btn && btn.Text == variant.Size) btn.SetActiveStyle();
+            foreach (var ctrl in pnlColorOptions.Controls)
+                if (ctrl is UcOptionButton btn && btn.Text == variant.Color) btn.SetActiveStyle();
         }
 
         private void LoadThumbnails(List<string> paths)
         {
             flpThumbnails.Controls.Clear();
             if (paths == null) return;
-
             foreach (string path in paths)
             {
-                // Cho phép tạo nếu là File tồn tại HOẶC là Link Online
-                if (File.Exists(path) || path.StartsWith("http"))
+                if (!string.IsNullOrEmpty(path))
                 {
                     UcThumbnail thumb = new UcThumbnail(path);
                     thumb.ThumbnailClicked += Thumbnail_Clicked;
                     flpThumbnails.Controls.Add(thumb);
                 }
             }
+        }
+
+        private void Thumbnail_Clicked(object sender, EventArgs e)
+        {
+            UcThumbnail selectedThumb = (UcThumbnail)sender;
+            SwitchMainImage(selectedThumb.ImagePath);
+        }
+
+        public void SwitchMainImage(string imagePath)
+        {
+            if (!string.IsNullOrEmpty(imagePath) && imagePath.StartsWith("http")) pbMainImage.ImageLocation = imagePath;
+            else if (File.Exists(imagePath)) pbMainImage.ImageLocation = imagePath;
+            else pbMainImage.Image = null;
+        }
+
+        private void LoadProductOptions()
+        {
+            var availableSizes = _variants.Where(v => !string.IsNullOrEmpty(v.Size)).Select(v => v.Size).Distinct().ToList();
+            var availableColors = _variants.Where(v => !string.IsNullOrEmpty(v.Color)).Select(v => v.Color).Distinct().ToList();
+
+            pnlSizeOptions.Controls.Clear();
+            pnlColorOptions.Controls.Clear();
+            lblSizeLabel.Visible = availableSizes.Count > 0;
+            lblColorLabel.Visible = availableColors.Count > 0;
+
+            foreach (var size in availableSizes)
+            {
+                UcOptionButton btn = new UcOptionButton(size);
+                btn.Click += SizeOption_Click;
+                if (!_variants.Any(v => v.Size == size && v.StockQuantity > 0)) btn.SetDisabledStyle();
+                else btn.SetInactiveStyle();
+                pnlSizeOptions.Controls.Add(btn);
+            }
+            foreach (var color in availableColors)
+            {
+                UcOptionButton btn = new UcOptionButton(color);
+                btn.Click += ColorOption_Click;
+                btn.SetInactiveStyle();
+                pnlColorOptions.Controls.Add(btn);
+            }
+        }
+
+        private void SizeOption_Click(object sender, EventArgs e)
+        {
+            UcOptionButton selectedBtn = (UcOptionButton)sender;
+            ResetButtons(pnlSizeOptions);
+            selectedBtn.SetActiveStyle();
+            TrySelectNewVariant(selectedBtn.Text, null);
+        }
+
+        private void ColorOption_Click(object sender, EventArgs e)
+        {
+            UcOptionButton selectedBtn = (UcOptionButton)sender;
+            ResetButtons(pnlColorOptions);
+            selectedBtn.SetActiveStyle();
+            string currentSize = null;
+            foreach (Control c in pnlSizeOptions.Controls)
+            {
+                if (c is UcOptionButton btn && btn.FillColor.R == 255 && btn.FillColor.G == 87)
+                {
+                    currentSize = btn.Text; break;
+                }
+            }
+            TrySelectNewVariant(currentSize, selectedBtn.Text);
+        }
+
+        private void ResetButtons(Panel pnl)
+        {
+            foreach (UcOptionButton btn in pnl.Controls.OfType<UcOptionButton>()) btn.SetInactiveStyle();
+        }
+
+        private void TrySelectNewVariant(string size, string color)
+        {
+            ProductVariantDTO newVariant = null;
+            if (!string.IsNullOrEmpty(size) && !string.IsNullOrEmpty(color))
+                newVariant = _variants.FirstOrDefault(v => v.Size == size && v.Color == color);
+            else if (!string.IsNullOrEmpty(size))
+                newVariant = _variants.FirstOrDefault(v => v.Size == size && v.StockQuantity > 0);
+            else if (!string.IsNullOrEmpty(color))
+                newVariant = _variants.FirstOrDefault(v => v.Color == color && v.StockQuantity > 0);
+
+            if (newVariant != null)
+            {
+                _selectedVariant = newVariant;
+                UpdateVariantUI(newVariant);
+            }
+        }
+
+        private void UpdateVariantUI(ProductVariantDTO variant)
+        {
+            lblPrice.Text = $"{variant.Price:N0}₫";
+            lblQuantityAvailable.Text = $"Kho: {variant.StockQuantity}";
+            btnAddCart.Enabled = variant.StockQuantity > 0;
+            btnBuyNow.Enabled = variant.StockQuantity > 0;
+            txtQuantity.Text = "1";
         }
 
         private void CenterDetailContainer()
@@ -120,257 +277,32 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             btnQuantityIncrease.Click += (s, e) => UpdateQuantity(1);
             btnQuantityDecrease.Click += (s, e) => UpdateQuantity(-1);
             txtQuantity.Leave += (s, e) => ValidateQuantity();
-
             btnAddCart.Click += BtnAddCart_Click;
             btnBuyNow.Click += BtnBuyNow_Click;
         }
 
-        // ----------------------------------------------------------------------
-        // II. TẢI DỮ LIỆU SẢN PHẨM & BIẾN THỂ
-        // ----------------------------------------------------------------------
-
-        public void LoadProduct(ProductDTO product)
+        private void UpdateQuantity(int step)
         {
-            _currentProduct = product;
-            if (product == null) return;
-
-            _variants = product.Variants ?? new List<ProductVariantDTO>();
-
-            // 1. Load Thông tin cơ bản
-            lblProductName.Text = product.Name;
-            lblRating.Text = $"{product.Rating:N1}";
-            lblReviewCount.Text = "234 Đánh giá";
-            lblSoldCount.Text = $"{product.SoldQuantity:N0} Đã bán";
-            lblDescriptionText.Text = "Áo khoác denim chất lượng cao, thiết kế trẻ trung, năng động.";
-
-            // 2. Load Giá
-            lblPrice.Text = $"{product.Price:N0}₫";
-            if (product.OldPrice.HasValue && product.DiscountPercent > 0)
-            {
-                lblOldPrice.Text = $"{product.OldPrice.Value:N0}₫";
-                lblDiscount.Text = $"-{product.DiscountPercent}%";
-                lblOldPrice.Visible = true;
-                lblDiscount.Visible = true;
-            }
-            else
-            {
-                lblOldPrice.Visible = false;
-                lblDiscount.Visible = false;
-            }
-
-            // 3. Load Ảnh
-            // Ưu tiên ảnh phụ
-            if (_currentProduct.ThumbnailPaths != null && _currentProduct.ThumbnailPaths.Any())
-            {
-                LoadThumbnails(_currentProduct.ThumbnailPaths);
-                SwitchMainImage(_currentProduct.ThumbnailPaths.First());
-            }
-            else if (!string.IsNullOrEmpty(product.ImagePath) && System.IO.File.Exists(product.ImagePath))
-            {
-                SwitchMainImage(product.ImagePath);
-            }
-
-            // 4. Load Shop Info
-            lblShopName.Text = _shopName;
-            lblShopStats.Text = _shopStats;
-
-            // 5. Load Options (QUAN TRỌNG: Đây là chỗ tạo nút biến thể)
-            LoadProductOptions();
-
-            // 6. Chọn biến thể mặc định
-            if (_variants.Any())
-            {
-                _selectedVariant = _variants.FirstOrDefault(v => v.StockQuantity > 0);
-                if (_selectedVariant != null)
-                {
-                    UpdateVariantUI(_selectedVariant);
-
-                    // Active nút Size và Color mặc định
-                    // Lưu ý: Tìm nút dựa trên Text
-                    foreach (var ctrl in pnlSizeOptions.Controls)
-                    {
-                        if (ctrl is UcOptionButton btn && btn.Text == _selectedVariant.Size) btn.SetActiveStyle();
-                    }
-                    foreach (var ctrl in pnlColorOptions.Controls)
-                    {
-                        if (ctrl is UcOptionButton btn && btn.Text == _selectedVariant.Color) btn.SetActiveStyle();
-                    }
-                }
-            }
+            int q = 1;
+            int.TryParse(txtQuantity.Text, out q);
+            q += step;
+            if (q < 1) q = 1;
+            txtQuantity.Text = q.ToString();
         }
-
-        
-
-        private void Thumbnail_Clicked(object sender, EventArgs e)
+        private void ValidateQuantity()
         {
-            UcThumbnail selectedThumb = (UcThumbnail)sender;
-            SwitchMainImage(selectedThumb.ImagePath);
+            if (!int.TryParse(txtQuantity.Text, out int q) || q < 1) txtQuantity.Text = "1";
         }
-
-        public void SwitchMainImage(string imagePath)
-        {
-            // Kiểm tra nếu là Link Online (bắt đầu bằng http hoặc https)
-            if (!string.IsNullOrEmpty(imagePath) && imagePath.StartsWith("http"))
-            {
-                pbMainImage.ImageLocation = imagePath;
-            }
-            // Kiểm tra nếu là File trong máy (đề phòng sau này bạn dùng lại)
-            else if (File.Exists(imagePath))
-            {
-                pbMainImage.ImageLocation = imagePath;
-            }
-            else
-            {
-                // Nếu không có ảnh thì xóa trắng
-                pbMainImage.Image = null;
-            }
-        }
-
-        // --- TẢI CÁC LỰA CHỌN BIẾN THỂ (ĐÃ SỬA ĐỂ HIỂN THỊ) ---
-        private void LoadProductOptions()
-        {
-            var availableSizes = _variants.Select(v => v.Size).Distinct().ToList();
-            var availableColors = _variants.Select(v => v.Color).Distinct().ToList();
-
-            pnlSizeOptions.Controls.Clear();
-            pnlColorOptions.Controls.Clear();
-
-            // Load Sizes
-            foreach (var size in availableSizes)
-            {
-                UcOptionButton btn = new UcOptionButton(size);
-                btn.Click += SizeOption_Click; // Gán sự kiện
-
-                // Kiểm tra tồn kho
-                bool hasStock = _variants.Any(v => v.Size == size && v.StockQuantity > 0);
-                if (!hasStock) btn.SetDisabledStyle();
-                else btn.SetInactiveStyle();
-
-                pnlSizeOptions.Controls.Add(btn); // Thêm vào Panel
-            }
-
-            // Load Colors
-            foreach (var color in availableColors)
-            {
-                UcOptionButton btn = new UcOptionButton(color);
-                btn.Click += ColorOption_Click; // Gán sự kiện
-                btn.SetInactiveStyle();
-                pnlColorOptions.Controls.Add(btn); // Thêm vào Panel
-            }
-        }
-
-        // --- XỬ LÝ SỰ KIỆN CHỌN BIẾN THỂ ---
-
-        private void SizeOption_Click(object sender, EventArgs e)
-        {
-            UcOptionButton selectedBtn = (UcOptionButton)sender;
-            string selectedSize = selectedBtn.Text;
-
-            // Reset trạng thái nút Size
-            foreach (UcOptionButton btn in pnlSizeOptions.Controls.OfType<UcOptionButton>())
-            {
-                btn.SetInactiveStyle();
-            }
-            selectedBtn.SetActiveStyle();
-
-            UpdateColorOptions(selectedSize);
-            TrySelectNewVariant(selectedSize, null);
-        }
-
-        private void ColorOption_Click(object sender, EventArgs e)
-        {
-            UcOptionButton selectedBtn = (UcOptionButton)sender;
-            string selectedColor = selectedBtn.Text;
-
-            // Tìm Size đang chọn (dựa vào màu Active - Cam)
-            string currentSize = null;
-            foreach (UcOptionButton btn in pnlSizeOptions.Controls.OfType<UcOptionButton>())
-            {
-                // Kiểm tra màu Border hoặc FillColor để biết nút nào đang Active
-                // Giả định nút Active có màu khác nút Inactive
-                if (btn.ButtonFillColor.R == 255 && btn.ButtonFillColor.G == 87) // Màu cam
-                {
-                    currentSize = btn.Text;
-                    break;
-                }
-            }
-
-            if (string.IsNullOrEmpty(currentSize)) return;
-
-            // Reset trạng thái nút Color
-            foreach (UcOptionButton btn in pnlColorOptions.Controls.OfType<UcOptionButton>())
-            {
-                btn.SetInactiveStyle();
-            }
-            selectedBtn.SetActiveStyle();
-
-            TrySelectNewVariant(currentSize, selectedColor);
-        }
-
-        private void UpdateColorOptions(string currentSize)
-        {
-            foreach (UcOptionButton colorBtn in pnlColorOptions.Controls.OfType<UcOptionButton>())
-            {
-                colorBtn.SetInactiveStyle();
-                string color = colorBtn.Text;
-                bool isAvailable = _variants.Any(v => v.Size == currentSize && v.Color == color && v.StockQuantity > 0);
-                if (!isAvailable) colorBtn.SetDisabledStyle();
-            }
-        }
-
-        private void TrySelectNewVariant(string size, string color)
-        {
-            ProductVariantDTO newVariant = null;
-
-            if (color == null)
-                newVariant = _variants.FirstOrDefault(v => v.Size == size && v.StockQuantity > 0);
-            else
-                newVariant = _variants.FirstOrDefault(v => v.Size == size && v.Color == color);
-
-            if (newVariant != null && newVariant.StockQuantity > 0)
-            {
-                _selectedVariant = newVariant;
-                UpdateVariantUI(newVariant);
-            }
-            else
-            {
-                // Xử lý khi không tìm thấy biến thể hợp lệ
-                lblQuantityAvailable.Text = "Hết hàng";
-                btnAddCart.Enabled = false;
-                btnBuyNow.Enabled = false;
-            }
-        }
-
-        private void UpdateVariantUI(ProductVariantDTO variant)
-        {
-            lblPrice.Text = $"{variant.Price:N0}₫";
-            lblQuantityAvailable.Text = $" {variant.StockQuantity} sản phẩm có sẵn";
-            btnAddCart.Enabled = true;
-            btnBuyNow.Enabled = true;
-            txtQuantity.Text = "1";
-        }
-
-        // ... (Các hàm UpdateQuantity, ValidateQuantity, BtnAddCart_Click, BtnBuyNow_Click giữ nguyên như cũ)
-        // Bạn có thể copy lại từ các phiên bản trước nếu cần
-        private void UpdateQuantity(int step) { /* Logic cũ */ }
-        private void ValidateQuantity() { /* Logic cũ */ }
-        private void BtnAddCart_Click(object sender, EventArgs e) { /* Logic cũ */ }
-        private void BtnBuyNow_Click(object sender, EventArgs e) { /* Logic cũ */ }
-
 
         private void BtnViewShop_Click(object sender, EventArgs e)
         {
-            FrmMain mainForm = this.FindForm() as FrmMain;
-
-            // Giả định ShopId luôn là 1 trong DTO mẫu, hoặc bạn cần thêm ShopId vào ProductDTO
-            int shopId = 1;
-            // Nếu bạn đã có ShopId trong ProductDTO: int shopId = _currentProduct.ShopId;
-
-            if (mainForm != null)
+            if (_shopId <= 0)
             {
-                // Gọi hàm chuyển trang trong FrmMain (đã được cập nhật)
-                mainForm.LoadPage("ShopDetail", shopId);
+                MessageBox.Show("Sản phẩm này không thuộc Shop nào (ShopID = 0).", "Lỗi dữ liệu");
+                return;
             }
+            FrmMain mainForm = this.FindForm() as FrmMain;
+            if (mainForm != null) mainForm.LoadPage("ShopDetail", _shopId);
         }
     }
 }

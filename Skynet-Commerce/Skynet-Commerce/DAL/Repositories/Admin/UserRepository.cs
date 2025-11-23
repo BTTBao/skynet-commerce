@@ -15,10 +15,5 @@ namespace Skynet_Commerce.DAL.Repositories.Admin
         {
             _context = new ApplicationDbContext();
         }
-
-        public List<User> GetAll()
-        {
-            return _context.Users.ToList();
-        }
     }
 }

@@ -1,70 +1,81 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Guna.UI2.WinForms;
 
 namespace Skynet_Commerce.GUI.UserControls.Components
 {
-    // Kế thừa từ UserControl vì Designer.cs đang nhúng Guna2Button bên trong
     public partial class UcOptionButton : UserControl
     {
-        // -------------------------------------------------------------
-        // CONSTRUCTORS (Chỉ định nghĩa MỘT lần)
-        // -------------------------------------------------------------
+        // 1. Thuộc tính IsActive
+        public bool IsActive { get; private set; } = false;
 
+        // 2. [QUAN TRỌNG] Thêm thuộc tính FillColor để bên ngoài gọi được
+        public Color FillColor
+        {
+            get { return btnOption.FillColor; }
+            set { btnOption.FillColor = value; }
+        }
+
+        // 3. Override Text để gán chữ vào nút bên trong
+        public override string Text
+        {
+            get { return btnOption.Text; }
+            set { btnOption.Text = value; }
+        }
+
+        // Constructor mặc định
         public UcOptionButton()
         {
             InitializeComponent();
-            // Đảm bảo nút bên trong kích hoạt sự kiện cho control cha
-            this.btnOption.Click += (s, e) => this.OnClick(e);
-            SetInactiveStyle();
+            SetupEventForwarding();
         }
 
-        public UcOptionButton(string optionText) : this()
+        // Constructor tiện lợi
+        public UcOptionButton(string text) : this()
         {
-            this.btnOption.Text = optionText;
+            this.Text = text;
         }
 
-        // -------------------------------------------------------------
-        // CÁC HÀM STYLE
-        // -------------------------------------------------------------
+        // Hàm chuyển tiếp sự kiện Click
+        private void SetupEventForwarding()
+        {
+            btnOption.Click += (s, e) => this.InvokeOnClick(this, EventArgs.Empty);
+        }
+
+        // --- CÁC HÀM STYLE ---
 
         public void SetActiveStyle()
         {
-            // Tác động lên nút Guna2Button bên trong (btnOption)
-            this.btnOption.BorderColor = Color.FromArgb(255, 87, 34);
-            this.btnOption.FillColor = Color.FromArgb(255, 87, 34);
-            this.btnOption.ForeColor = Color.White;
+            // Trạng thái ĐANG CHỌN: Màu Cam
+            btnOption.FillColor = Color.FromArgb(255, 87, 34);
+            btnOption.ForeColor = Color.White;
+            btnOption.BorderThickness = 0;
+
+            this.IsActive = true;
         }
 
         public void SetInactiveStyle()
         {
-            // Tác động lên nút Guna2Button bên trong (btnOption)
-            this.btnOption.BorderColor = Color.Gray;
-            this.btnOption.FillColor = Color.White;
-            this.btnOption.ForeColor = Color.Black;
-            this.btnOption.Enabled = true;
+            // Trạng thái BÌNH THƯỜNG: Màu Trắng, Viền Xám
+            btnOption.FillColor = Color.White;
+            btnOption.ForeColor = Color.Black;
+            btnOption.BorderThickness = 1;
+            btnOption.BorderColor = Color.Silver;
+            btnOption.Enabled = true;
+
+            this.IsActive = false;
         }
 
         public void SetDisabledStyle()
         {
-            // Tác động lên nút Guna2Button bên trong (btnOption)
-            this.btnOption.Enabled = false;
-            this.btnOption.BorderColor = Color.LightGray;
-            this.btnOption.FillColor = Color.WhiteSmoke;
-            this.btnOption.ForeColor = Color.DarkGray;
-            // Xóa hết hàng ra khỏi tên để dễ dàng lọc biến thể
-            this.btnOption.Text = this.btnOption.Text.Replace(" (Hết)", "");
-        }
-        public Color ButtonFillColor
-        {
-            get => btnOption.FillColor;
-        }
+            // Trạng thái VÔ HIỆU (Hết hàng): Màu Xám nhạt, Không bấm được
+            btnOption.FillColor = Color.WhiteSmoke;
+            btnOption.ForeColor = Color.LightGray;
+            btnOption.BorderThickness = 1;
+            btnOption.BorderColor = Color.Gainsboro;
+            btnOption.Enabled = false;
 
-        public override string Text
-        {
-            get => btnOption.Text;
-            set => btnOption.Text = value;
+            this.IsActive = false;
         }
     }
 }
