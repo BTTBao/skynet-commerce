@@ -111,6 +111,7 @@
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="BLL\Services\Seller\OrderServiceForSeller.cs" />
     <Compile Include="BLL\Services\Seller\ProductServiceForSeller.cs" />
+    <Compile Include="BLL\Services\User\ProductService.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
     <Compile Include="DAL\Entities\AppSession.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="DAL\Repositories\Admin\AccountRepository.cs" />
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
     <Compile Include="DAL\Entities\UserRoles.cs" />
+    <Compile Include="DAL\Repositories\User\ProductRepository.cs" />
     <Compile Include="GUI\Forms\Admin\CategoryDetailForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -366,6 +368,12 @@
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcCartPage.Designer.cs">
       <DependentUpon>UcCartPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcCheckoutPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcCheckoutPage.Designer.cs">
+      <DependentUpon>UcCheckoutPage.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcHomePage.cs">
       <SubType>UserControl</SubType>

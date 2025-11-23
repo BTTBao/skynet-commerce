@@ -72,7 +72,7 @@ namespace Skynet_Commerce.GUI.Forms
             lblOrders.Click += (sender, e) => LoadPage("Orders");
             btnCart.Click += (sender, e) => LoadPage("Cart");
 
-            // [CẬP NHẬT] Sự kiện bấm vào icon Account hoặc chữ Tài khoản -> Vào trang Profile
+            // Sự kiện bấm vào icon Account hoặc chữ Tài khoản -> Vào trang Profile
             btnAccount.Click += (sender, e) => LoadPage("Profile");
             lblLogin.Click += (sender, e) => LoadPage("Profile");
 
@@ -98,7 +98,6 @@ namespace Skynet_Commerce.GUI.Forms
             }
         }
 
-        // HÀM LOADPAGE ĐÃ CẬP NHẬT CASE "Profile"
         public void LoadPage(string pageName, object data = null)
         {
             try
@@ -142,7 +141,11 @@ namespace Skynet_Commerce.GUI.Forms
                             targetPage = new UcCartPage();
                             break;
 
-                        // [MỚI] Case cho trang Profile
+                        // [MỚI] Case xử lý trang Thanh Toán (Checkout)
+                        case "Checkout":
+                            targetPage = new UcCheckoutPage();
+                            break;
+
                         case "Profile":
                             targetPage = new UcProfile();
                             break;
@@ -189,6 +192,7 @@ namespace Skynet_Commerce.GUI.Forms
                     if (pageName == "Search") title = $"Tìm kiếm: {data}";
                     else if (pageName == "ProductDetail" && data is ProductDTO pd) title = pd.Name;
                     else if (pageName == "Profile") title = "Hồ sơ của tôi";
+                    else if (pageName == "Checkout") title = "Thanh toán";
 
                     this.Text = $"ShopViet - {title}";
                 }

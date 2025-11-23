@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
+using Skynet_Commerce.GUI.Forms;      // [CẦN THÊM] Để gọi FrmMain
+using Skynet_Commerce.BLL.Models;     // [CẦN THÊM] Để tạo ProductDTO
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
@@ -12,13 +14,12 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         public UcShopDetail()
         {
-            InitializeComponent(); // Gọi Designer
-            SetupDynamicUI();      // Gọi Code vẽ thêm
+            InitializeComponent();
+            SetupDynamicUI();
         }
 
         private void SetupDynamicUI()
         {
-            // Sử dụng link online cho đẹp (hoặc bạn có thể dùng GetSmartImagePath nếu muốn)
             picBanner.ImageLocation = "https://cf.shopee.vn/file/c0b0c96077867d8110459700d432c921_tn";
             picAvatar.ImageLocation = "https://i.imgur.com/HalqU6S.png";
             picAvatar.BringToFront();
@@ -44,9 +45,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 if (i == 0) { btn.FillColor = PrimaryColor; btn.ForeColor = Color.White; }
                 else { btn.FillColor = Color.White; btn.ForeColor = Color.Black; btn.BorderThickness = 1; btn.BorderColor = Color.WhiteSmoke; }
 
-                // pnlFilterInner (đã có trong Designer)
-                // Lưu ý: Nếu báo lỗi pnlFilterInner, hãy kiểm tra lại file Designer xem đã đặt tên đúng chưa
-                // Nếu bạn dùng code cũ thì có thể đổi thành pnlFilters.Controls[0]
                 if (this.Controls.Find("pnlFilterInner", true).Length > 0)
                     ((Panel)this.Controls.Find("pnlFilterInner", true)[0]).Controls.Add(btn);
 
@@ -71,7 +69,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblVal.Font = new Font("Segoe UI", 11, FontStyle.Regular);
             lblVal.Location = new Point(x, y);
             lblVal.AutoSize = true;
-            // pnlHeaderContainer đã có trong Designer
+
             if (this.Controls.Find("pnlHeaderContainer", true).Length > 0)
             {
                 var pnlHeader = this.Controls.Find("pnlHeaderContainer", true)[0];
@@ -91,24 +89,25 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         public void LoadShopData(int shopId)
         {
-            // flowProducts đã có trong Designer
             if (this.Controls.Find("flowProducts", true).Length > 0)
             {
                 var flow = (FlowLayoutPanel)this.Controls.Find("flowProducts", true)[0];
                 flow.Controls.Clear();
 
-                AddProductCard(flow, "Áo khoác denim thời trang", "450.000đ", "https://cf.shopee.vn/file/5c48983458307d95651950f3b8a27d6c", "1.2k");
-                AddProductCard(flow, "Áo thun nam basic", "149.000đ", "https://cf.shopee.vn/file/90200d5c57375f99767f156e0d913994", "2.4k");
-                AddProductCard(flow, "Quần jean nữ skinny", "390.000đ", "https://cf.shopee.vn/file/sg-11134201-22100-0j1g4k3h3liv64", "890");
-                AddProductCard(flow, "Giày thể thao Nike", "1.200.000đ", "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e6da41fa-1be4-4ce5-b89c-22be4f1f02d6/air-force-1-07-shoes-WrLlWX.png", "456");
+                // [CẬP NHẬT] Thêm ID giả lập (1, 2, 3...) vào tham số đầu tiên
+                AddProductCard(flow, 101, "Áo khoác denim thời trang", "450.000đ", "https://cf.shopee.vn/file/5c48983458307d95651950f3b8a27d6c", "1.2k");
+                AddProductCard(flow, 102, "Áo thun nam basic", "149.000đ", "https://cf.shopee.vn/file/90200d5c57375f99767f156e0d913994", "2.4k");
+                AddProductCard(flow, 103, "Quần jean nữ skinny", "390.000đ", "https://cf.shopee.vn/file/sg-11134201-22100-0j1g4k3h3liv64", "890");
+                AddProductCard(flow, 104, "Giày thể thao Nike", "1.200.000đ", "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e6da41fa-1be4-4ce5-b89c-22be4f1f02d6/air-force-1-07-shoes-WrLlWX.png", "456");
 
-                for (int i = 0; i < 6; i++) AddProductCard(flow, $"Sản phẩm mẫu {i + 1}", "99.000đ", "", "100");
+                for (int i = 0; i < 6; i++)
+                    AddProductCard(flow, 200 + i, $"Sản phẩm mẫu {i + 1}", "99.000đ", "", "100");
             }
         }
 
-        private void AddProductCard(FlowLayoutPanel flow, string name, string price, string imgUrl, string sold)
+        // [QUAN TRỌNG] Hàm này đã được cập nhật logic Click
+        private void AddProductCard(FlowLayoutPanel flow, int productId, string name, string priceStr, string imgUrl, string sold)
         {
-            // Kích thước chuẩn để xếp 5 hình/hàng (210px)
             int cardWidth = 210;
 
             Guna2Panel card = new Guna2Panel();
@@ -122,13 +121,12 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             card.ShadowDecoration.Color = Color.LightGray;
             card.Cursor = Cursors.Hand;
 
+            // --- 1. Tạo các Controls ---
             Guna2PictureBox pic = new Guna2PictureBox();
             pic.Dock = DockStyle.Top;
             pic.Height = 190;
             pic.SizeMode = PictureBoxSizeMode.Zoom;
             pic.BorderRadius = 4;
-            pic.CustomizableEdges.BottomLeft = false;
-            pic.CustomizableEdges.BottomRight = false;
             if (!string.IsNullOrEmpty(imgUrl)) pic.ImageLocation = imgUrl;
             else pic.FillColor = Color.WhiteSmoke;
 
@@ -140,7 +138,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblName.AutoEllipsis = true;
 
             Label lblPrice = new Label();
-            lblPrice.Text = price;
+            lblPrice.Text = priceStr;
             lblPrice.Font = new Font("Segoe UI", 11, FontStyle.Bold);
             lblPrice.ForeColor = PrimaryColor;
             lblPrice.Location = new Point(8, 245);
@@ -153,6 +151,43 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             lblSold.Location = new Point(10, 275);
             lblSold.AutoSize = true;
 
+            // --- 2. Xử lý Sự kiện Click ---
+            // Định nghĩa hành động khi click
+            EventHandler onCardClick = (sender, e) =>
+            {
+                // Parse giá tiền từ chuỗi (ví dụ "450.000đ" -> 450000)
+                decimal priceVal = 0;
+                string cleanPrice = priceStr.Replace(".", "").Replace("đ", "").Replace(",", "").Trim();
+                decimal.TryParse(cleanPrice, out priceVal);
+
+                // Tạo DTO để truyền sang trang chi tiết
+                ProductDTO productDTO = new ProductDTO
+                {
+                    ProductId = productId,
+                    Name = name,
+                    Price = priceVal,
+                    Rating = 4.8,
+                    SoldQuantity = 100, // Demo
+                    ImagePath = imgUrl,
+                    // Nếu muốn test ảnh thumbnail thì gán luôn vào đây
+                    ThumbnailPaths = new System.Collections.Generic.List<string> { imgUrl, imgUrl }
+                };
+
+                // Tìm Form Main và chuyển trang
+                FrmMain mainForm = this.FindForm() as FrmMain;
+                if (mainForm != null)
+                {
+                    mainForm.LoadPage("ProductDetail", productDTO);
+                }
+            };
+
+            // Gán sự kiện click cho TẤT CẢ các thành phần (để click vào đâu cũng ăn)
+            card.Click += onCardClick;
+            pic.Click += onCardClick;
+            lblName.Click += onCardClick;
+            lblPrice.Click += onCardClick;
+
+            // --- 3. Add vào Panel ---
             card.Controls.Add(lblSold);
             card.Controls.Add(lblPrice);
             card.Controls.Add(lblName);
