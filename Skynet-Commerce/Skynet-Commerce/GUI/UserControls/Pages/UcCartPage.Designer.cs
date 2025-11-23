@@ -1,13 +1,16 @@
-﻿using Guna.UI2.WinForms;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace Skynet_Commerce.GUI.UserControls.Pages
+﻿namespace Skynet_Commerce.GUI.UserControls.Pages
 {
     partial class UcCartPage
     {
+        /// <summary> 
+        /// Required designer variable.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -19,45 +22,46 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         #region Component Designer generated code
 
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
-            // Resource Manager cần thiết để tải hình ảnh/icon
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UcCartPage));
-
             this.pnlContent = new Guna.UI2.WinForms.Guna2Panel();
-            this.pnlLeftContainer = new System.Windows.Forms.Panel();
-            this.flpCartItems = new System.Windows.Forms.FlowLayoutPanel();
-            this.pnlListHeader = new Guna.UI2.WinForms.Guna2Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.pnlCartData = new System.Windows.Forms.Panel();
             this.pnlSummary = new Guna.UI2.WinForms.Guna2Panel();
             this.lblSummaryTitle = new System.Windows.Forms.Label();
             this.lblSubtotal = new System.Windows.Forms.Label();
             this.lblShippingFee = new System.Windows.Forms.Label();
             this.lblTotalAmount = new System.Windows.Forms.Label();
             this.btnCheckout = new Guna.UI2.WinForms.Guna2Button();
-            this.btnContinueShoppingSummary = new Guna.UI2.WinForms.Guna2Button();
+            this.pnlLeftContainer = new System.Windows.Forms.Panel();
+            this.flpCartItems = new System.Windows.Forms.FlowLayoutPanel();
+            this.pnlListHeader = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblHdrAction = new System.Windows.Forms.Label();
+            this.lblHdrTotal = new System.Windows.Forms.Label();
+            this.lblHdrQty = new System.Windows.Forms.Label();
+            this.lblHdrPrice = new System.Windows.Forms.Label();
+            this.lblHdrProduct = new System.Windows.Forms.Label();
             this.pnlEmptyCart = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnContinueShopping = new Guna.UI2.WinForms.Guna2Button();
-            this.lblEmptyCartMessage = new System.Windows.Forms.Label();
-            this.lblEmptyCartTitle = new System.Windows.Forms.Label();
-            this.pbCartIcon = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.btnShopNow = new Guna.UI2.WinForms.Guna2Button();
+            this.lblEmptyMessage = new System.Windows.Forms.Label();
+            this.pbEmptyCart = new Guna.UI2.WinForms.Guna2PictureBox();
             this.pnlContent.SuspendLayout();
+            this.pnlCartData.SuspendLayout();
+            this.pnlSummary.SuspendLayout();
             this.pnlLeftContainer.SuspendLayout();
             this.pnlListHeader.SuspendLayout();
-            this.pnlSummary.SuspendLayout();
             this.pnlEmptyCart.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCartIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbEmptyCart)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlContent
             // 
             this.pnlContent.AutoScroll = true;
             this.pnlContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
-            this.pnlContent.Controls.Add(this.pnlLeftContainer);
-            this.pnlContent.Controls.Add(this.pnlSummary);
+            this.pnlContent.Controls.Add(this.pnlCartData);
             this.pnlContent.Controls.Add(this.pnlEmptyCart);
             this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContent.Location = new System.Drawing.Point(0, 0);
@@ -65,16 +69,105 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.pnlContent.Size = new System.Drawing.Size(1200, 800);
             this.pnlContent.TabIndex = 0;
             // 
+            // pnlCartData
+            // 
+            this.pnlCartData.Controls.Add(this.pnlSummary);
+            this.pnlCartData.Controls.Add(this.pnlLeftContainer);
+            this.pnlCartData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlCartData.Location = new System.Drawing.Point(0, 0);
+            this.pnlCartData.Name = "pnlCartData";
+            this.pnlCartData.Size = new System.Drawing.Size(1200, 800);
+            this.pnlCartData.TabIndex = 4;
+            // 
+            // pnlSummary
+            // 
+            this.pnlSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlSummary.BackColor = System.Drawing.Color.White;
+            this.pnlSummary.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
+            this.pnlSummary.BorderRadius = 4;
+            this.pnlSummary.BorderThickness = 1;
+            this.pnlSummary.Controls.Add(this.lblSummaryTitle);
+            this.pnlSummary.Controls.Add(this.lblSubtotal);
+            this.pnlSummary.Controls.Add(this.lblShippingFee);
+            this.pnlSummary.Controls.Add(this.lblTotalAmount);
+            this.pnlSummary.Controls.Add(this.btnCheckout);
+            this.pnlSummary.Location = new System.Drawing.Point(880, 20);
+            this.pnlSummary.Name = "pnlSummary";
+            this.pnlSummary.ShadowDecoration.Depth = 5;
+            this.pnlSummary.ShadowDecoration.Enabled = true;
+            this.pnlSummary.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(2);
+            this.pnlSummary.Size = new System.Drawing.Size(300, 300);
+            this.pnlSummary.TabIndex = 2;
+            // 
+            // lblSummaryTitle
+            // 
+            this.lblSummaryTitle.AutoSize = true;
+            this.lblSummaryTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblSummaryTitle.ForeColor = System.Drawing.Color.Black;
+            this.lblSummaryTitle.Location = new System.Drawing.Point(20, 20);
+            this.lblSummaryTitle.Name = "lblSummaryTitle";
+            this.lblSummaryTitle.Size = new System.Drawing.Size(103, 21);
+            this.lblSummaryTitle.TabIndex = 0;
+            this.lblSummaryTitle.Text = "Thanh Toán";
+            // 
+            // lblSubtotal
+            // 
+            this.lblSubtotal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSubtotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.lblSubtotal.Location = new System.Drawing.Point(20, 60);
+            this.lblSubtotal.Name = "lblSubtotal";
+            this.lblSubtotal.Size = new System.Drawing.Size(260, 20);
+            this.lblSubtotal.TabIndex = 1;
+            this.lblSubtotal.Text = "Tổng tiền hàng: 0₫";
+            this.lblSubtotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblShippingFee
+            // 
+            this.lblShippingFee.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblShippingFee.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.lblShippingFee.Location = new System.Drawing.Point(20, 90);
+            this.lblShippingFee.Name = "lblShippingFee";
+            this.lblShippingFee.Size = new System.Drawing.Size(260, 20);
+            this.lblShippingFee.TabIndex = 2;
+            this.lblShippingFee.Text = "Phí vận chuyển: 0₫";
+            this.lblShippingFee.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblTotalAmount
+            // 
+            this.lblTotalAmount.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalAmount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.lblTotalAmount.Location = new System.Drawing.Point(20, 140);
+            this.lblTotalAmount.Name = "lblTotalAmount";
+            this.lblTotalAmount.Size = new System.Drawing.Size(260, 35);
+            this.lblTotalAmount.TabIndex = 3;
+            this.lblTotalAmount.Text = "0₫";
+            this.lblTotalAmount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // btnCheckout
+            // 
+            this.btnCheckout.BorderRadius = 2;
+            this.btnCheckout.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCheckout.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnCheckout.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnCheckout.ForeColor = System.Drawing.Color.White;
+            this.btnCheckout.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(50)))));
+            this.btnCheckout.Location = new System.Drawing.Point(20, 220);
+            this.btnCheckout.Name = "btnCheckout";
+            this.btnCheckout.Size = new System.Drawing.Size(260, 45);
+            this.btnCheckout.TabIndex = 4;
+            this.btnCheckout.Text = "Mua Hàng";
+            // 
             // pnlLeftContainer
             // 
-            this.pnlLeftContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlLeftContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlLeftContainer.BackColor = System.Drawing.Color.Transparent;
             this.pnlLeftContainer.Controls.Add(this.flpCartItems);
             this.pnlLeftContainer.Controls.Add(this.pnlListHeader);
-            this.pnlLeftContainer.Location = new System.Drawing.Point(50, 30);
+            this.pnlLeftContainer.Location = new System.Drawing.Point(20, 20);
             this.pnlLeftContainer.Name = "pnlLeftContainer";
-            this.pnlLeftContainer.Size = new System.Drawing.Size(800, 700);
+            this.pnlLeftContainer.Size = new System.Drawing.Size(840, 760);
             this.pnlLeftContainer.TabIndex = 1;
             // 
             // flpCartItems
@@ -83,188 +176,142 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.flpCartItems.BackColor = System.Drawing.Color.Transparent;
             this.flpCartItems.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpCartItems.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpCartItems.Location = new System.Drawing.Point(0, 50);
+            this.flpCartItems.Location = new System.Drawing.Point(0, 55);
             this.flpCartItems.Name = "flpCartItems";
             this.flpCartItems.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
-            this.flpCartItems.Size = new System.Drawing.Size(800, 650);
+            this.flpCartItems.Size = new System.Drawing.Size(840, 705);
             this.flpCartItems.TabIndex = 1;
             this.flpCartItems.WrapContents = false;
             // 
             // pnlListHeader
             // 
             this.pnlListHeader.BackColor = System.Drawing.Color.White;
-            this.pnlListHeader.BorderRadius = 5;
-            this.pnlListHeader.Controls.Add(this.label1);
-            this.pnlListHeader.Controls.Add(this.label2);
-            this.pnlListHeader.Controls.Add(this.label3);
-            this.pnlListHeader.Controls.Add(this.label4);
+            this.pnlListHeader.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
+            this.pnlListHeader.BorderRadius = 2;
+            this.pnlListHeader.BorderThickness = 1;
+            this.pnlListHeader.Controls.Add(this.lblHdrAction);
+            this.pnlListHeader.Controls.Add(this.lblHdrTotal);
+            this.pnlListHeader.Controls.Add(this.lblHdrQty);
+            this.pnlListHeader.Controls.Add(this.lblHdrPrice);
+            this.pnlListHeader.Controls.Add(this.lblHdrProduct);
             this.pnlListHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlListHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlListHeader.Name = "pnlListHeader";
             this.pnlListHeader.ShadowDecoration.Depth = 2;
             this.pnlListHeader.ShadowDecoration.Enabled = true;
-            this.pnlListHeader.Size = new System.Drawing.Size(800, 50);
+            this.pnlListHeader.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(2);
+            this.pnlListHeader.Size = new System.Drawing.Size(840, 55);
             this.pnlListHeader.TabIndex = 0;
             // 
-            // label1
+            // lblHdrAction
             // 
-            CreateHeaderLabel(this.label1, "Sản phẩm", 20, 15);
+            this.lblHdrAction.AutoSize = true;
+            this.lblHdrAction.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHdrAction.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.lblHdrAction.Location = new System.Drawing.Point(740, 18);
+            this.lblHdrAction.Name = "lblHdrAction";
+            this.lblHdrAction.Size = new System.Drawing.Size(66, 17);
+            this.lblHdrAction.TabIndex = 4;
+            this.lblHdrAction.Text = "Thao Thác";
             // 
-            // label2
+            // lblHdrTotal
             // 
-            CreateHeaderLabel(this.label2, "Đơn giá", 380, 15);
+            this.lblHdrTotal.AutoSize = true;
+            this.lblHdrTotal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHdrTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.lblHdrTotal.Location = new System.Drawing.Point(600, 18);
+            this.lblHdrTotal.Name = "lblHdrTotal";
+            this.lblHdrTotal.Size = new System.Drawing.Size(53, 17);
+            this.lblHdrTotal.TabIndex = 3;
+            this.lblHdrTotal.Text = "Số Tiền";
             // 
-            // label3
+            // lblHdrQty
             // 
-            CreateHeaderLabel(this.label3, "Số lượng", 510, 15);
+            this.lblHdrQty.AutoSize = true;
+            this.lblHdrQty.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHdrQty.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.lblHdrQty.Location = new System.Drawing.Point(450, 18);
+            this.lblHdrQty.Name = "lblHdrQty";
+            this.lblHdrQty.Size = new System.Drawing.Size(61, 17);
+            this.lblHdrQty.TabIndex = 2;
+            this.lblHdrQty.Text = "Số Lượng";
             // 
-            // label4
+            // lblHdrPrice
             // 
-            CreateHeaderLabel(this.label4, "Thành tiền", 650, 15);
+            this.lblHdrPrice.AutoSize = true;
+            this.lblHdrPrice.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHdrPrice.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.lblHdrPrice.Location = new System.Drawing.Point(320, 18);
+            this.lblHdrPrice.Name = "lblHdrPrice";
+            this.lblHdrPrice.Size = new System.Drawing.Size(54, 17);
+            this.lblHdrPrice.TabIndex = 1;
+            this.lblHdrPrice.Text = "Đơn Giá";
             // 
-            // pnlSummary
+            // lblHdrProduct
             // 
-            this.pnlSummary.BackColor = System.Drawing.Color.White;
-            this.pnlSummary.BorderRadius = 8;
-            this.pnlSummary.Controls.Add(this.lblSummaryTitle);
-            this.pnlSummary.Controls.Add(this.lblSubtotal);
-            this.pnlSummary.Controls.Add(this.lblShippingFee);
-            this.pnlSummary.Controls.Add(this.lblTotalAmount);
-            this.pnlSummary.Controls.Add(this.btnCheckout);
-            this.pnlSummary.Controls.Add(this.btnContinueShoppingSummary);
-            this.pnlSummary.Location = new System.Drawing.Point(870, 30);
-            this.pnlSummary.Name = "pnlSummary";
-            this.pnlSummary.ShadowDecoration.Depth = 5;
-            this.pnlSummary.ShadowDecoration.Enabled = true;
-            this.pnlSummary.Size = new System.Drawing.Size(300, 280);
-            this.pnlSummary.TabIndex = 2;
-            // 
-            // lblSummaryTitle
-            // 
-            this.lblSummaryTitle.AutoSize = true;
-            this.lblSummaryTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblSummaryTitle.Location = new System.Drawing.Point(20, 20);
-            this.lblSummaryTitle.Name = "lblSummaryTitle";
-            this.lblSummaryTitle.Size = new System.Drawing.Size(145, 21);
-            this.lblSummaryTitle.TabIndex = 0;
-            this.lblSummaryTitle.Text = "Tóm tắt đơn hàng";
-            // 
-            // lblSubtotal
-            // 
-            this.lblSubtotal.Location = new System.Drawing.Point(20, 60);
-            this.lblSubtotal.Name = "lblSubtotal";
-            this.lblSubtotal.Size = new System.Drawing.Size(260, 20);
-            this.lblSubtotal.TabIndex = 1;
-            this.lblSubtotal.Text = "Tạm tính: 0₫";
-            this.lblSubtotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblShippingFee
-            // 
-            this.lblShippingFee.Location = new System.Drawing.Point(20, 90);
-            this.lblShippingFee.Name = "lblShippingFee";
-            this.lblShippingFee.Size = new System.Drawing.Size(260, 20);
-            this.lblShippingFee.TabIndex = 2;
-            this.lblShippingFee.Text = "Phí vận chuyển: 30.000₫";
-            this.lblShippingFee.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblTotalAmount
-            // 
-            this.lblTotalAmount.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblTotalAmount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(87)))), ((int)(((byte)(34)))));
-            this.lblTotalAmount.Location = new System.Drawing.Point(20, 130);
-            this.lblTotalAmount.Name = "lblTotalAmount";
-            this.lblTotalAmount.Size = new System.Drawing.Size(260, 30);
-            this.lblTotalAmount.TabIndex = 3;
-            this.lblTotalAmount.Text = "0₫";
-            this.lblTotalAmount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // btnCheckout
-            // 
-            this.btnCheckout.BorderRadius = 5;
-            this.btnCheckout.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(87)))), ((int)(((byte)(34)))));
-            this.btnCheckout.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnCheckout.ForeColor = System.Drawing.Color.White;
-            this.btnCheckout.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(50)))));
-            this.btnCheckout.Location = new System.Drawing.Point(20, 180);
-            this.btnCheckout.Name = "btnCheckout";
-            this.btnCheckout.Size = new System.Drawing.Size(260, 40);
-            this.btnCheckout.TabIndex = 4;
-            this.btnCheckout.Text = "Tiến hành thanh toán";
-            // 
-            // btnContinueShoppingSummary
-            // 
-            this.btnContinueShoppingSummary.BackColor = System.Drawing.Color.Transparent;
-            this.btnContinueShoppingSummary.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnContinueShoppingSummary.FillColor = System.Drawing.Color.Transparent;
-            this.btnContinueShoppingSummary.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnContinueShoppingSummary.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(87)))), ((int)(((byte)(34)))));
-            this.btnContinueShoppingSummary.Location = new System.Drawing.Point(20, 230);
-            this.btnContinueShoppingSummary.Name = "btnContinueShoppingSummary";
-            this.btnContinueShoppingSummary.Size = new System.Drawing.Size(260, 30);
-            this.btnContinueShoppingSummary.TabIndex = 5;
-            this.btnContinueShoppingSummary.Text = "Tiếp tục mua sắm";
+            this.lblHdrProduct.AutoSize = true;
+            this.lblHdrProduct.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHdrProduct.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.lblHdrProduct.Location = new System.Drawing.Point(20, 18);
+            this.lblHdrProduct.Name = "lblHdrProduct";
+            this.lblHdrProduct.Size = new System.Drawing.Size(65, 17);
+            this.lblHdrProduct.TabIndex = 0;
+            this.lblHdrProduct.Text = "Sản Phẩm";
             // 
             // pnlEmptyCart
             // 
             this.pnlEmptyCart.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pnlEmptyCart.BackColor = System.Drawing.Color.White; // Đổi từ Transparent sang White để thấy nội dung
+            this.pnlEmptyCart.BackColor = System.Drawing.Color.Transparent;
+            this.pnlEmptyCart.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.pnlEmptyCart.BorderRadius = 10;
-            this.pnlEmptyCart.Controls.Add(this.btnContinueShopping);
-            this.pnlEmptyCart.Controls.Add(this.lblEmptyCartMessage);
-            this.pnlEmptyCart.Controls.Add(this.lblEmptyCartTitle);
-            this.pnlEmptyCart.Controls.Add(this.pbCartIcon);
+            this.pnlEmptyCart.BorderThickness = 1;
+            this.pnlEmptyCart.Controls.Add(this.btnShopNow);
+            this.pnlEmptyCart.Controls.Add(this.lblEmptyMessage);
+            this.pnlEmptyCart.Controls.Add(this.pbEmptyCart);
+            this.pnlEmptyCart.FillColor = System.Drawing.Color.White;
             this.pnlEmptyCart.Location = new System.Drawing.Point(350, 200);
             this.pnlEmptyCart.Name = "pnlEmptyCart";
-            this.pnlEmptyCart.ShadowDecoration.BorderRadius = 10;
-            this.pnlEmptyCart.ShadowDecoration.Depth = 10;
-            this.pnlEmptyCart.ShadowDecoration.Enabled = true;
-            this.pnlEmptyCart.Size = new System.Drawing.Size(500, 300);
+            this.pnlEmptyCart.Size = new System.Drawing.Size(500, 350);
             this.pnlEmptyCart.TabIndex = 3;
             this.pnlEmptyCart.Visible = false;
             // 
-            // btnContinueShopping
+            // btnShopNow
             // 
-            this.btnContinueShopping.BorderRadius = 5;
-            this.btnContinueShopping.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(87)))), ((int)(((byte)(34)))));
-            this.btnContinueShopping.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnContinueShopping.ForeColor = System.Drawing.Color.White;
-            this.btnContinueShopping.Location = new System.Drawing.Point(170, 220); // Vị trí mới
-            this.btnContinueShopping.Name = "btnContinueShopping";
-            this.btnContinueShopping.Size = new System.Drawing.Size(160, 40);
-            this.btnContinueShopping.TabIndex = 0;
-            this.btnContinueShopping.Text = "Tiếp tục mua sắm";
+            this.btnShopNow.BorderRadius = 2;
+            this.btnShopNow.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnShopNow.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnShopNow.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnShopNow.ForeColor = System.Drawing.Color.White;
+            this.btnShopNow.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(50)))));
+            this.btnShopNow.Location = new System.Drawing.Point(150, 240);
+            this.btnShopNow.Name = "btnShopNow";
+            this.btnShopNow.Size = new System.Drawing.Size(200, 45);
+            this.btnShopNow.TabIndex = 2;
+            this.btnShopNow.Text = "MUA NGAY";
             // 
-            // lblEmptyCartMessage
+            // lblEmptyMessage
             // 
-            this.lblEmptyCartMessage.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblEmptyCartMessage.ForeColor = System.Drawing.Color.Gray;
-            this.lblEmptyCartMessage.Location = new System.Drawing.Point(100, 185); // Vị trí mới
-            this.lblEmptyCartMessage.Name = "lblEmptyCartMessage";
-            this.lblEmptyCartMessage.Size = new System.Drawing.Size(300, 20);
-            this.lblEmptyCartMessage.TabIndex = 1;
-            this.lblEmptyCartMessage.Text = "Bạn chưa thêm sản phẩm nào vào giỏ hàng";
-            this.lblEmptyCartMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblEmptyMessage.BackColor = System.Drawing.Color.White;
+            this.lblEmptyMessage.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblEmptyMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.lblEmptyMessage.Location = new System.Drawing.Point(50, 190);
+            this.lblEmptyMessage.Name = "lblEmptyMessage";
+            this.lblEmptyMessage.Size = new System.Drawing.Size(400, 30);
+            this.lblEmptyMessage.TabIndex = 1;
+            this.lblEmptyMessage.Text = "Giỏ hàng của bạn còn trống";
+            this.lblEmptyMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblEmptyCartTitle
+            // pbEmptyCart
             // 
-            this.lblEmptyCartTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblEmptyCartTitle.Location = new System.Drawing.Point(150, 150); // Vị trí mới
-            this.lblEmptyCartTitle.Name = "lblEmptyCartTitle";
-            this.lblEmptyCartTitle.Size = new System.Drawing.Size(200, 25);
-            this.lblEmptyCartTitle.TabIndex = 2;
-            this.lblEmptyCartTitle.Text = "Giỏ hàng trống";
-            this.lblEmptyCartTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // pbCartIcon
-            // 
-            this.pbCartIcon.ImageRotate = 0F;
-            this.pbCartIcon.Image = ((System.Drawing.Image)(resources.GetObject("pbCartIcon.Image"))); // Bạn cần đảm bảo đã load resource icon giỏ hàng
-            this.pbCartIcon.Location = new System.Drawing.Point(210, 50); // Vị trí Icon (500/2 - 40)
-            this.pbCartIcon.Name = "pbCartIcon";
-            this.pbCartIcon.Size = new System.Drawing.Size(80, 80);
-            this.pbCartIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbCartIcon.TabIndex = 3;
-            this.pbCartIcon.TabStop = false;
+            this.pbEmptyCart.BackColor = System.Drawing.Color.White;
+            this.pbEmptyCart.ImageLocation = "https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/cart/9bdd8040b334d31946f49e36beaf32db.png";
+            this.pbEmptyCart.ImageRotate = 0F;
+            this.pbEmptyCart.Location = new System.Drawing.Point(175, 30);
+            this.pbEmptyCart.Name = "pbEmptyCart";
+            this.pbEmptyCart.Size = new System.Drawing.Size(150, 150);
+            this.pbEmptyCart.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbEmptyCart.TabIndex = 0;
+            this.pbEmptyCart.TabStop = false;
             // 
             // UcCartPage
             // 
@@ -274,45 +321,48 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.Name = "UcCartPage";
             this.Size = new System.Drawing.Size(1200, 800);
             this.pnlContent.ResumeLayout(false);
-            this.pnlLeftContainer.ResumeLayout(false);
-            this.pnlListHeader.ResumeLayout(false);
+            this.pnlCartData.ResumeLayout(false);
             this.pnlSummary.ResumeLayout(false);
             this.pnlSummary.PerformLayout();
+            this.pnlLeftContainer.ResumeLayout(false);
+            this.pnlListHeader.ResumeLayout(false);
+            this.pnlListHeader.PerformLayout();
             this.pnlEmptyCart.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbCartIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbEmptyCart)).EndInit();
             this.ResumeLayout(false);
-        }
 
-        // HÀM TRỢ GIÚP ĐÃ ĐƯỢC DI CHUYỂN
-        private void CreateHeaderLabel(System.Windows.Forms.Label lbl, string text, int x, int y)
-        {
-            lbl.Text = text;
-            lbl.Location = new System.Drawing.Point(x, y);
-            lbl.AutoSize = true;
-            lbl.ForeColor = System.Drawing.Color.Gray;
-            lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
         }
 
         #endregion
 
-        // CÁC BIẾN MỚI CẦN KHAI BÁO
+        // --- KHAI BÁO CÁC CONTROL ---
         private Guna.UI2.WinForms.Guna2Panel pnlContent;
+
+        // 1. Phần Giỏ hàng có dữ liệu
+        private System.Windows.Forms.Panel pnlCartData;
+
+        // Bên Trái: List sản phẩm
         private System.Windows.Forms.Panel pnlLeftContainer;
         private Guna.UI2.WinForms.Guna2Panel pnlListHeader;
-        private System.Windows.Forms.Label label1, label2, label3, label4;
+        private System.Windows.Forms.Label lblHdrProduct;
+        private System.Windows.Forms.Label lblHdrPrice;
+        private System.Windows.Forms.Label lblHdrQty;
+        private System.Windows.Forms.Label lblHdrTotal;
+        private System.Windows.Forms.Label lblHdrAction;
         private System.Windows.Forms.FlowLayoutPanel flpCartItems;
+
+        // Bên Phải: Tổng tiền
         private Guna.UI2.WinForms.Guna2Panel pnlSummary;
         private System.Windows.Forms.Label lblSummaryTitle;
         private System.Windows.Forms.Label lblSubtotal;
         private System.Windows.Forms.Label lblShippingFee;
         private System.Windows.Forms.Label lblTotalAmount;
         private Guna.UI2.WinForms.Guna2Button btnCheckout;
-        private Guna.UI2.WinForms.Guna2Button btnContinueShoppingSummary;
-        // Biến cũ giữ lại
+
+        // 2. Phần Giỏ hàng Trống
         private Guna.UI2.WinForms.Guna2Panel pnlEmptyCart;
-        private Guna.UI2.WinForms.Guna2PictureBox pbCartIcon;
-        private System.Windows.Forms.Label lblEmptyCartTitle;
-        private System.Windows.Forms.Label lblEmptyCartMessage;
-        private Guna.UI2.WinForms.Guna2Button btnContinueShopping;
+        private Guna.UI2.WinForms.Guna2PictureBox pbEmptyCart;
+        private System.Windows.Forms.Label lblEmptyMessage;
+        private Guna.UI2.WinForms.Guna2Button btnShopNow;
     }
 }
