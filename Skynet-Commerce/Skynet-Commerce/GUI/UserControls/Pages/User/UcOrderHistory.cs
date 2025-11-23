@@ -2,7 +2,7 @@
 using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.GUI.Forms;
 using System;
-using System.Collections.Generic; // Thêm cái này để dùng List
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
@@ -15,8 +15,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
     {
         private FrmMain main;
         private string _currentFilter = "All";
-
-        // --- BIẾN QUAN TRỌNG ĐỂ CHỐNG DOUBLE ---
         private bool _isLoading = false;
 
         public UcOrderHistory(FrmMain main)
@@ -41,7 +39,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
         private void OnTabClick(object sender, EventArgs e)
         {
             if (_isLoading) return;
-
             Guna2Button btn = sender as Guna2Button;
             if (btn == null) return;
 
@@ -85,6 +82,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
                     var query = db.Orders
                         .AsNoTracking()
                         .Include(o => o.Shop)
+                        .Include(o => o.UserAddress) // <--- THÊM DÒNG NÀY ĐỂ LẤY ĐỊA CHỈ
                         .Include(o => o.OrderDetails.Select(od => od.Product.ProductImages))
                         .Where(o => o.AccountID == accId);
 
@@ -97,13 +95,11 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
                         query.OrderByDescending(o => o.CreatedAt).ToList()
                     );
 
-                    // Xử lý lọc trùng (Group By)
                     var uniqueOrders = rawList
                         .GroupBy(o => o.OrderID)
                         .Select(g => g.First())
                         .ToList();
 
-                    // Xóa loading label (nếu có)
                     flowPanelOrders.Controls.Clear();
 
                     if (uniqueOrders.Count == 0)
@@ -128,17 +124,24 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
                             if (firstDetail != null && firstDetail.Product != null)
                             {
                                 productName = firstDetail.Product.Name;
-                                price = firstDetail.UnitPrice ?? 0; // Lấy giá lúc mua (trong OrderDetail)
+                                price = firstDetail.UnitPrice ?? 0;
                                 qty = firstDetail.Quantity ?? 1;
-
                                 var firstImg = firstDetail.Product.ProductImages.FirstOrDefault();
                                 if (firstImg != null) imgUrl = firstImg.ImageURL;
+                            }
+
+                            // Lấy chuỗi địa chỉ từ UserAddress
+                            string addressStr = "Địa chỉ không xác định";
+                            if (item.UserAddress != null)
+                            {
+                                addressStr = $"{item.UserAddress.AddressLine}, {item.UserAddress.Ward}, {item.UserAddress.District}, {item.UserAddress.Province}";
                             }
 
                             card.SetData(
                                 item.OrderID, item.CreatedAt, item.Shop?.ShopName ?? "Shop ẩn danh",
                                 item.Status, item.TotalAmount ?? 0, productName,
-                                item.OrderDetails.Count, imgUrl, price, qty
+                                item.OrderDetails.Count, imgUrl, price, qty,
+                                addressStr // <--- Truyền địa chỉ xuống đây
                             );
 
                             card.Width = flowPanelOrders.Width - 25;
@@ -149,6 +152,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
 
                             controlList.Add(card);
                         }
+
                         flowPanelOrders.Controls.AddRange(controlList.ToArray());
                     }
                 }
@@ -163,6 +167,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
             }
         }
 
+        // --- LOGIC NÚT BẤM (Giữ nguyên) ---
         private async void HandleCancelOrder(object sender, int orderId)
         {
             if (MessageBox.Show("Bạn có chắc muốn hủy đơn?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.No) return;

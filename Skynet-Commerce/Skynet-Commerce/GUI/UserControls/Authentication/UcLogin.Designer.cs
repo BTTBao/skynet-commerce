@@ -152,6 +152,7 @@
             this.passLb.Location = new System.Drawing.Point(99, 284);
             this.passLb.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.passLb.Name = "passLb";
+            this.passLb.PasswordChar = '-';
             this.passLb.PlaceholderForeColor = System.Drawing.Color.Gray;
             this.passLb.PlaceholderText = "Password";
             this.passLb.SelectedText = "";

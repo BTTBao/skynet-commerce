@@ -106,9 +106,9 @@
             this.btnBack.BackColor = System.Drawing.Color.Transparent;
             this.btnBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(103)))), ((int)(((byte)(55)))));
-            this.btnBack.Location = new System.Drawing.Point(72, 509);
+            this.btnBack.Location = new System.Drawing.Point(60, 513);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(330, 31);
+            this.btnBack.Size = new System.Drawing.Size(354, 31);
             this.btnBack.TabIndex = 8;
             this.btnBack.Text = "Đã có tài khoản!";
             this.btnBack.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
@@ -141,6 +141,7 @@
             this.guna2TextBox3.Location = new System.Drawing.Point(96, 311);
             this.guna2TextBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.guna2TextBox3.Name = "guna2TextBox3";
+            this.guna2TextBox3.PasswordChar = '-';
             this.guna2TextBox3.PlaceholderForeColor = System.Drawing.Color.Gray;
             this.guna2TextBox3.PlaceholderText = "Password";
             this.guna2TextBox3.SelectedText = "";
@@ -187,7 +188,7 @@
             this.btnRegister.Name = "btnRegister";
             this.btnRegister.Size = new System.Drawing.Size(286, 48);
             this.btnRegister.TabIndex = 3;
-            this.btnRegister.Text = "LOGIN";
+            this.btnRegister.Text = "REGISTER";
             // 
             // guna2HtmlLabel1
             // 
@@ -215,6 +216,7 @@
             this.guna2TextBox2.Location = new System.Drawing.Point(96, 218);
             this.guna2TextBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.guna2TextBox2.Name = "guna2TextBox2";
+            this.guna2TextBox2.PasswordChar = '-';
             this.guna2TextBox2.PlaceholderForeColor = System.Drawing.Color.Gray;
             this.guna2TextBox2.PlaceholderText = "Password";
             this.guna2TextBox2.SelectedText = "";

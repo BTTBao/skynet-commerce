@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.pnlContainer = new Guna.UI2.WinForms.Guna2Panel();
+            this.addressLb = new System.Windows.Forms.Label();
             this.sepLine2 = new Guna.UI2.WinForms.Guna2Separator();
             this.btnActionSecondary = new Guna.UI2.WinForms.Guna2Button();
             this.btnActionPrimary = new Guna.UI2.WinForms.Guna2Button();
@@ -54,6 +55,7 @@
             this.pnlContainer.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.pnlContainer.BorderRadius = 5;
             this.pnlContainer.BorderThickness = 1;
+            this.pnlContainer.Controls.Add(this.addressLb);
             this.pnlContainer.Controls.Add(this.sepLine2);
             this.pnlContainer.Controls.Add(this.btnActionSecondary);
             this.pnlContainer.Controls.Add(this.btnActionPrimary);
@@ -74,6 +76,16 @@
             this.pnlContainer.Name = "pnlContainer";
             this.pnlContainer.Size = new System.Drawing.Size(950, 210);
             this.pnlContainer.TabIndex = 0;
+            // 
+            // addressLb
+            // 
+            this.addressLb.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.addressLb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.addressLb.Location = new System.Drawing.Point(350, 59);
+            this.addressLb.Name = "addressLb";
+            this.addressLb.Size = new System.Drawing.Size(402, 46);
+            this.addressLb.TabIndex = 16;
+            this.addressLb.Text = "Địa chỉ :";
             // 
             // sepLine2
             // 
@@ -286,5 +298,6 @@
         private Guna.UI2.WinForms.Guna2Button btnActionPrimary;
         private Guna.UI2.WinForms.Guna2Button btnActionSecondary;
         private Guna.UI2.WinForms.Guna2Separator sepLine2;
+        private System.Windows.Forms.Label addressLb;
     }
 }

@@ -36,7 +36,6 @@ namespace Skynet_Commerce.GUI.Forms.User
                 return;
             }
 
-            // Disable nút để tránh click đúp
             guna2Button1.Enabled = false;
             guna2Button1.Text = "Đang đăng nhập...";
 
@@ -44,29 +43,45 @@ namespace Skynet_Commerce.GUI.Forms.User
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    // Tìm tài khoản
                     var account = await Task.Run(() =>
                         db.Accounts.FirstOrDefault(a => a.Email == email && a.IsActive == true)
                     );
+
                     if (account == null)
                     {
                         MessageBox.Show("Email không tồn tại hoặc tài khoản bị khóa!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    // Kiểm tra mật khẩu (Khớp logic với phần Register)
                     if (!VerifyPassword(password, account.PasswordHash))
                     {
                         MessageBox.Show("Sai mật khẩu!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    // Login thành công -> Lưu Session
+                    var userRolesList = await Task.Run(() =>
+                        db.UserRoles
+                            .Where(r => r.AccountID == account.AccountID)
+                            .Select(r => r.RoleName)
+                            .ToList()
+                    );
+
+                    string finalRole = "Customer";
+
+                    if (userRolesList.Contains("Admin"))
+                    {
+                        finalRole = "Admin";
+                    }
+                    else if (userRolesList.Contains("Seller"))
+                    {
+                        finalRole = "Seller";
+                    }
+
                     AppSession.Instance.AccountID = account.AccountID;
                     AppSession.Instance.Email = account.Email;
-                    // AppSession.Instance.Role = ... (Nếu bạn có bảng Role, hãy query và gán vào đây)
+                    AppSession.Instance.Role = finalRole;
 
-                    MessageBox.Show("Đăng nhập thành công!", "Chúc mừng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Đăng nhập thành công với quyền: {finalRole}!", "Chúc mừng", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.main.Hide();
                     this.Visible = false;
                 }
@@ -77,8 +92,7 @@ namespace Skynet_Commerce.GUI.Forms.User
             }
             finally
             {
-                // Khôi phục trạng thái nút nếu login thất bại
-                if (this.Visible) // Chỉ enable lại nếu form chưa bị ẩn đi
+                if (this.Visible)
                 {
                     guna2Button1.Enabled = true;
                     guna2Button1.Text = "LOGIN";
