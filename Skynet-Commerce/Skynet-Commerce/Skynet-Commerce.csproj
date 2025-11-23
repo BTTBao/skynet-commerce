@@ -97,12 +97,11 @@
     <Compile Include="BLL\Models\CartItemDTO.cs" />
     <Compile Include="BLL\Models\ProductDTO.cs" />
     <Compile Include="BLL\Models\SampleDataGenerator.cs" />
-    <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
-    <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
     <Compile Include="BLL\Models\Seller\OrderSellerDTO.cs" />
     <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
     <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\SellerDashboardDto.cs" />
     <Compile Include="BLL\Services\Admin\CategoryService.cs" />
     <Compile Include="BLL\Services\Admin\DashboardService.cs" />
     <Compile Include="BLL\Services\Admin\OrderService.cs" />
@@ -111,7 +110,7 @@
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="BLL\Services\Seller\OrderServiceForSeller.cs" />
     <Compile Include="BLL\Services\Seller\ProductServiceForSeller.cs" />
-    <Compile Include="DAL\Config\DBConnection.cs" />
+    <Compile Include="BLL\Services\Seller\SellerDashBoardService.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
     <Compile Include="DAL\Entities\AppSession.cs" />
@@ -169,6 +168,12 @@
     </Compile>
     <Compile Include="GUI\Forms\Admin\ShopDetailForm.Designer.cs">
       <DependentUpon>ShopDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcProductCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Components\UcProductCard.Designer.cs">
+      <DependentUpon>UcProductCard.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Components\UCSeller\ucOrder.cs">
       <SubType>UserControl</SubType>
@@ -356,18 +361,6 @@
     <Compile Include="GUI\UserControls\Components\Admin\UcUserRow.Designer.cs">
       <DependentUpon>UcUserRow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\General\UcFooter.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\General\UcFooter.Designer.cs">
-      <DependentUpon>UcFooter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\UserControls\General\UcHeader.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\UserControls\General\UcHeader.Designer.cs">
-      <DependentUpon>UcHeader.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\UserControls\Pages\UcCartPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -391,6 +384,18 @@
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcProfile.Designer.cs">
       <DependentUpon>UcProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcSearchResult.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcSearchResult.Designer.cs">
+      <DependentUpon>UcSearchResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcShopDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\UcShopDetail.Designer.cs">
+      <DependentUpon>UcShopDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -463,18 +468,13 @@
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcUserRow.resx">
       <DependentUpon>UcUserRow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\General\UcFooter.resx">
-      <DependentUpon>UcFooter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\General\UcHeader.resx">
-      <DependentUpon>UcHeader.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Pages\UcHomePage.resx">
       <DependentUpon>UcHomePage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Pages\UcProductDetail.resx">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
-    </EmbeddedResource>  <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
       <DependentUpon>UcProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

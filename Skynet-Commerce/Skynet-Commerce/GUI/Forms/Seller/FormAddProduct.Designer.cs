@@ -128,7 +128,6 @@ namespace Skynet_Commerce
             this.numericPrice.Top = currentY; this.numericPrice.Left = padding + 220; this.numericPrice.Width = 140;
             this.numericPrice.Height = inputHeight;
             this.numericPrice.BorderRadius = 8;
-            this.numericPrice.KeyPress += new KeyPressEventHandler(this.numericPrice_KeyPress); // Chỉ cho phép nhập số
             currentY += this.cmbCategory.Height + spacing;
 
             // --- 3. Tồn Kho ---

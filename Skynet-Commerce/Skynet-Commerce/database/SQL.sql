@@ -67,6 +67,7 @@ CREATE TABLE UserRoles (
 );
 
 -- Trigger auto gán Buyer cho account mới
+/*
 CREATE TRIGGER trg_AutoAssignBuyerRole
 ON Accounts
 AFTER INSERT
@@ -76,6 +77,7 @@ BEGIN
     SELECT AccountID, 'Buyer' 
     FROM inserted;
 END;
+*/
 
 
 /* =====================================================

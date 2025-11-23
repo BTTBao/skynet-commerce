@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Skynet_Commerce.GUI.UserControls.General;
 using Skynet_Commerce.GUI.UserControls.Pages;
 using Skynet_Commerce.BLL.Models; // Sử dụng ProductDTO
 using Skynet_Commerce.GUI.UserControls.Components; // Cần cho các controls khác

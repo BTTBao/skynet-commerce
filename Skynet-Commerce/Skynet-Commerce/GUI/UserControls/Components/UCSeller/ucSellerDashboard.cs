@@ -1,4 +1,9 @@
-﻿using System;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using Skynet_Commerce.BLL.Services;
+using Skynet_Commerce.BUS.DTOs;
+using Skynet_Commerce.BUS.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,31 +12,64 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LiveCharts;
-using LiveCharts.Wpf;
 
 namespace Skynet_Commerce.GUI.UserControls.Components.UCSeller
 {
     public partial class ucSellerDashboard : UserControl
     {
+        private SellerDashboardService dashboardService;
+        private int currentAccountId; // Lấy từ Session/Login
+
         public ucSellerDashboard()
         {
             InitializeComponent();
+            dashboardService = new SellerDashboardService();
+            currentAccountId = 1;
+            this.Load += UcSellerDashboard_Load;
+        }
+
+        public ucSellerDashboard(int accountId) : this()
+        {
+            currentAccountId = accountId;
         }
 
         private void UcSellerDashboard_Load(object sender, EventArgs e)
         {
-            // Thiết lập giá trị mẫu cho các card thống kê
-            LoadKpiData();
+            // Giả sử lấy AccountID từ Session hoặc biến global
+            // currentAccountId = SessionManager.CurrentAccountId;
 
-            // Khởi tạo và load biểu đồ
-            LoadRevenueChart();
-
-            // Load dữ liệu mẫu cho bảng đơn hàng
-            LoadRecentOrdersData();
+            LoadDashboardData();
         }
 
-        private void LoadKpiData()
+        private async void LoadDashboardData()
+        {
+            try
+            {
+                // Hiển thị loading nếu cần
+                // ShowLoading();
+
+                // Lấy dữ liệu từ service (có thể dùng async)
+                await Task.Run(() =>
+                {
+                    var dashboardData = dashboardService.GetSellerDashboardData(currentAccountId);
+
+                    // Update UI trên main thread
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        LoadKpiData(dashboardData.KpiData);
+                        LoadRevenueChart(dashboardData.MonthlyRevenues);
+                        LoadRecentOrdersData(dashboardData.RecentOrders);
+                    });
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadKpiData(SellerKpiDto kpi)
         {
             // Giá trị màu sắc từ thiết kế
             Color colorProducts = Color.FromArgb(64, 64, 64);
@@ -45,64 +83,126 @@ namespace Skynet_Commerce.GUI.UserControls.Components.UCSeller
             lblRevenueValue.ForeColor = colorRevenue;
             lblFollowersValue.ForeColor = colorFollowers;
 
-            // Dữ liệu mẫu
-            lblProductsValue.Text = "45";
-            lblOrdersValue.Text = "12";
-            lblRevenueValue.Text = "12.5M";
-            lblFollowersValue.Text = "1,234";
+            // Dữ liệu thực từ database
+            lblProductsValue.Text = kpi.TotalProducts.ToString();
+            Console.WriteLine(kpi.TotalProducts);
+            lblOrdersValue.Text = kpi.TotalOrders.ToString();
+
+            // Format doanh thu
+            if (kpi.TotalRevenue >= 1000000)
+            {
+                lblRevenueValue.Text = $"{(kpi.TotalRevenue / 1000000):0.#}M";
+            }
+            else if (kpi.TotalRevenue >= 1000)
+            {
+                lblRevenueValue.Text = $"{(kpi.TotalRevenue / 1000):0.#}K";
+            }
+            else
+            {
+                lblRevenueValue.Text = $"{kpi.TotalRevenue:N0}";
+            }
+
+            lblFollowersValue.Text = kpi.TotalFollowers.ToString("N0");
         }
 
-        private void LoadRevenueChart()
+        private void LoadRevenueChart(List<MonthlyRevenueDto> monthlyRevenues)
         {
+            // Chuyển đổi dữ liệu sang ChartValues
+            var revenueValues = new ChartValues<double>();
+            var monthLabels = new List<string>();
+
+            foreach (var revenue in monthlyRevenues)
+            {
+                revenueValues.Add((double)revenue.Revenue);
+                monthLabels.Add($"T{revenue.Month}");
+            }
+
             // Thiết lập biểu đồ cột LiveCharts
             cartesianChart1.Series = new SeriesCollection
             {
                 new ColumnSeries
                 {
                     Title = "Doanh thu",
-                    Values = new ChartValues<double> { 15.0, 20.5, 18.0, 22.0, 19.5, 25.0, 16.0, 21.0, 23.5, 27.0, 20.0, 24.5 },
-                    // Màu xanh dương nhạt cho LiveChart
-                    Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(140, 172, 238)),
+                    Values = revenueValues,
+                    Fill = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(140, 172, 238)),
                     MaxColumnWidth = 35
                 }
             };
 
             // Thiết lập nhãn trục X (Tháng)
+            cartesianChart1.AxisX.Clear();
             cartesianChart1.AxisX.Add(new Axis
             {
                 Title = "Tháng",
-                Labels = new[] { "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12" }
+                Labels = monthLabels.ToArray()
             });
 
             // Thiết lập nhãn trục Y (Giá trị)
+            cartesianChart1.AxisY.Clear();
             cartesianChart1.AxisY.Add(new Axis
             {
                 Title = "Triệu VNĐ",
-                LabelFormatter = value => value.ToString("N0")
+                LabelFormatter = value => value.ToString("N1")
             });
 
             cartesianChart1.LegendLocation = LegendLocation.Top;
-            cartesianChart1.DataTooltip.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(245, 245, 245)); // Màu trắng ngà
-            cartesianChart1.DataTooltip.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(45, 45, 45)); // Màu xám đậm
+            cartesianChart1.DataTooltip.Background = new System.Windows.Media.SolidColorBrush(
+                System.Windows.Media.Color.FromRgb(245, 245, 245));
+            cartesianChart1.DataTooltip.Foreground = new System.Windows.Media.SolidColorBrush(
+                System.Windows.Media.Color.FromRgb(45, 45, 45));
         }
 
-        private void LoadRecentOrdersData()
+        private void LoadRecentOrdersData(List<RecentOrderDto> orders)
         {
-            // Đổ dữ liệu mẫu vào DataGridView
-            // Để đơn giản, giả sử bạn có 2 icon trong Resources: user_icon (cho Column2) và view_icon (cho Column8)
-            Image userIcon = global::Skynet_Commerce.Properties.Resources.profile; // Thay bằng Resource thực tế của bạn
-            Image viewIcon = global::Skynet_Commerce.Properties.Resources.trash; // Thay bằng Resource View/Details thực tế của bạn
+            // Icon mặc định
+            Image userIcon = global::Skynet_Commerce.Properties.Resources.profile;
+            Image viewIcon = global::Skynet_Commerce.Properties.Resources.trash;
 
             dgvRecentOrders.Rows.Clear();
 
-            // Dữ liệu mẫu
-            dgvRecentOrders.Rows.Add("DH12345", userIcon, "Nguyễn Văn A", "20/11/2025", "500.000", "Đang xử lý", "10 phút trước", viewIcon);
-            dgvRecentOrders.Rows.Add("DH12346", userIcon, "Trần Thị B", "19/11/2025", "1.250.000", "Đã giao hàng", "3 giờ trước", viewIcon);
-            dgvRecentOrders.Rows.Add("DH12347", userIcon, "Lê Văn C", "19/11/2025", "80.000", "Đã hủy", "1 ngày trước", viewIcon);
-            dgvRecentOrders.Rows.Add("DH12348", userIcon, "Phạm Thu D", "18/11/2025", "3.100.000", "Đang vận chuyển", "2 ngày trước", viewIcon);
+            foreach (var order in orders)
+            {
+                // Format giá tiền
+                string formattedAmount = $"{order.TotalAmount:N0}";
 
-            // Cập nhật số lượng đơn hàng mới nhất
-            label8.Text = $"Đơn hàng mới nhất ({dgvRecentOrders.RowCount})";
+                dgvRecentOrders.Rows.Add(
+                    order.OrderID,
+                    userIcon, // Có thể load avatar thực từ URL nếu cần
+                    order.CustomerName,
+                    order.OrderDate.ToString("dd/MM/yyyy"),
+                    formattedAmount,
+                    order.Status,
+                    order.TimeAgo,
+                    viewIcon
+                );
+            }
+
+            // Cập nhật số lượng đơn hàng
+            label8.Text = $"Đơn hàng mới nhất ({orders.Count})";
+        }
+
+        // Optional: Load avatar từ URL (nếu cần)
+        private Image LoadImageFromUrl(string url)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(url))
+                    return global::Skynet_Commerce.Properties.Resources.profile;
+
+                using (var webClient = new System.Net.WebClient())
+                {
+                    byte[] data = webClient.DownloadData(url);
+                    using (var ms = new System.IO.MemoryStream(data))
+                    {
+                        return Image.FromStream(ms);
+                    }
+                }
+            }
+            catch
+            {
+                return global::Skynet_Commerce.Properties.Resources.profile;
+            }
         }
     }
 }
