@@ -52,7 +52,7 @@
             this.userLb.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.userLb.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.userLb.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.userLb.Location = new System.Drawing.Point(99, 158);
+            this.userLb.Location = new System.Drawing.Point(99, 228);
             this.userLb.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userLb.Name = "userLb";
             this.userLb.PlaceholderForeColor = System.Drawing.Color.Gray;
@@ -68,13 +68,13 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(337, 450);
+            this.panel1.Size = new System.Drawing.Size(337, 547);
             this.panel1.TabIndex = 1;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::Skynet_Commerce.Properties.Resources.trash;
-            this.pictureBox1.Location = new System.Drawing.Point(90, 135);
+            this.pictureBox1.Location = new System.Drawing.Point(88, 203);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(160, 141);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -92,7 +92,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(337, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(463, 450);
+            this.panel2.Size = new System.Drawing.Size(463, 547);
             this.panel2.TabIndex = 2;
             // 
             // btnRegis
@@ -101,7 +101,7 @@
             this.btnRegis.BackColor = System.Drawing.Color.Transparent;
             this.btnRegis.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRegis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(103)))), ((int)(((byte)(55)))));
-            this.btnRegis.Location = new System.Drawing.Point(58, 323);
+            this.btnRegis.Location = new System.Drawing.Point(58, 393);
             this.btnRegis.Name = "btnRegis";
             this.btnRegis.Size = new System.Drawing.Size(383, 31);
             this.btnRegis.TabIndex = 9;
@@ -119,7 +119,7 @@
             this.guna2Button1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(103)))), ((int)(((byte)(55)))));
             this.guna2Button1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.guna2Button1.ForeColor = System.Drawing.Color.White;
-            this.guna2Button1.Location = new System.Drawing.Point(99, 269);
+            this.guna2Button1.Location = new System.Drawing.Point(99, 339);
             this.guna2Button1.Name = "guna2Button1";
             this.guna2Button1.Size = new System.Drawing.Size(286, 48);
             this.guna2Button1.TabIndex = 3;
@@ -132,7 +132,7 @@
             this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
             this.guna2HtmlLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.guna2HtmlLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(103)))), ((int)(((byte)(55)))));
-            this.guna2HtmlLabel1.Location = new System.Drawing.Point(178, 101);
+            this.guna2HtmlLabel1.Location = new System.Drawing.Point(178, 171);
             this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
             this.guna2HtmlLabel1.Size = new System.Drawing.Size(186, 50);
             this.guna2HtmlLabel1.TabIndex = 2;
@@ -149,7 +149,7 @@
             this.passLb.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.passLb.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.passLb.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.passLb.Location = new System.Drawing.Point(99, 214);
+            this.passLb.Location = new System.Drawing.Point(99, 284);
             this.passLb.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.passLb.Name = "passLb";
             this.passLb.PlaceholderForeColor = System.Drawing.Color.Gray;
@@ -165,7 +165,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "UcLogin";
-            this.Size = new System.Drawing.Size(800, 450);
+            this.Size = new System.Drawing.Size(800, 547);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel2.ResumeLayout(false);

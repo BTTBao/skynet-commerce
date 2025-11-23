@@ -20,6 +20,7 @@ namespace Skynet_Commerce.GUI.Forms.User
 
         public void ShowLogin()
         {
+            this.Show();
             ShowControl(new UcLogin(this));
         }
     }

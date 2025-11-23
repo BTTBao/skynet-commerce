@@ -32,35 +32,57 @@ namespace Skynet_Commerce.GUI.Forms.User
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!");
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (var db = new ApplicationDbContext())
+            // Disable nút để tránh click đúp
+            guna2Button1.Enabled = false;
+            guna2Button1.Text = "Đang đăng nhập...";
+
+            try
             {
-                // EF6 không có FirstOrDefaultAsync mặc định với .NET Framework < 4.5, nếu dùng EF Core thì ok
-                var account = await Task.Run(() =>
-                    db.Accounts.FirstOrDefault(a => a.Email == email && a.IsActive == true)
-                );
-
-                if (account == null)
+                using (var db = new ApplicationDbContext())
                 {
-                    MessageBox.Show("Email không tồn tại hoặc tài khoản bị khóa!");
-                    return;
-                }
+                    // Tìm tài khoản
+                    var account = await Task.Run(() =>
+                        db.Accounts.FirstOrDefault(a => a.Email == email && a.IsActive == true)
+                    );
+                    if (account == null)
+                    {
+                        MessageBox.Show("Email không tồn tại hoặc tài khoản bị khóa!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
-                if (!VerifyPassword(password, account.PasswordHash))
+                    // Kiểm tra mật khẩu (Khớp logic với phần Register)
+                    if (!VerifyPassword(password, account.PasswordHash))
+                    {
+                        MessageBox.Show("Sai mật khẩu!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // Login thành công -> Lưu Session
+                    AppSession.Instance.AccountID = account.AccountID;
+                    AppSession.Instance.Email = account.Email;
+                    // AppSession.Instance.Role = ... (Nếu bạn có bảng Role, hãy query và gán vào đây)
+
+                    MessageBox.Show("Đăng nhập thành công!", "Chúc mừng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.main.Hide();
+                    this.Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi kết nối cơ sở dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Khôi phục trạng thái nút nếu login thất bại
+                if (this.Visible) // Chỉ enable lại nếu form chưa bị ẩn đi
                 {
-                    MessageBox.Show("Sai mật khẩu!");
-                    return;
+                    guna2Button1.Enabled = true;
+                    guna2Button1.Text = "LOGIN";
                 }
-
-                // Login thành công
-                AppSession.Instance.AccountID = account.AccountID;
-                AppSession.Instance.Email = account.Email;
-
-                MessageBox.Show("Đăng nhập thành công!");
-                this.Visible = false; // ẩn login
             }
         }
 

@@ -46,10 +46,6 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
-      <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
       <Private>True</Private>
@@ -379,10 +375,34 @@
     <Compile Include="GUI\UserControls\Pages\UcProductDetail.Designer.cs">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\Pages\UcProfile.cs">
+    <Compile Include="GUI\UserControls\Pages\User\UcChangePassword.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\UserControls\Pages\UcProfile.Designer.cs">
+    <Compile Include="GUI\UserControls\Pages\User\UcChangePassword.Designer.cs">
+      <DependentUpon>UcChangePassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcEditProfile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcEditProfile.Designer.cs">
+      <DependentUpon>UcEditProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderDetail.Designer.cs">
+      <DependentUpon>UcOrderDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderHistory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcOrderHistory.Designer.cs">
+      <DependentUpon>UcOrderHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcProfile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcProfile.Designer.cs">
       <DependentUpon>UcProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcSearchResult.cs">
@@ -396,6 +416,18 @@
     </Compile>
     <Compile Include="GUI\UserControls\Pages\UcShopDetail.Designer.cs">
       <DependentUpon>UcShopDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcShopRegister.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcShopRegister.Designer.cs">
+      <DependentUpon>UcShopRegister.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcUserAddress.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\UserControls\Pages\User\UcUserAddress.Designer.cs">
+      <DependentUpon>UcUserAddress.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -474,8 +506,38 @@
     <EmbeddedResource Include="GUI\UserControls\Pages\UcProductDetail.resx">
       <DependentUpon>UcProductDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\UserControls\Pages\UcProfile.resx">
+    <EmbeddedResource Include="GUI\UserControls\Pages\UcSearchResult.resx">
+      <DependentUpon>UcSearchResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\UcShopDetail.resx">
+      <DependentUpon>UcShopDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcChangePassword.resx">
+      <DependentUpon>UcChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcEditProfile.resx">
+      <DependentUpon>UcEditProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcOrderDetail.resx">
+      <DependentUpon>UcOrderDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcOrderHistory.resx">
+      <DependentUpon>UcOrderHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcProfile.resx">
       <DependentUpon>UcProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <!-- <EmbeddedResource Include="GUI\UserControls\Pages\UcSearchResult.resx">
+      <DependentUpon>UcSearchResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\UcShopDetail.resx">
+      <DependentUpon>UcShopDetail.cs</DependentUpon>
+    </EmbeddedResource> -->
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcShopRegister.resx">
+      <DependentUpon>UcShopRegister.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\UserControls\Pages\User\UcUserAddress.resx">
+      <DependentUpon>UcUserAddress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
