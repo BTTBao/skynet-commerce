@@ -15,16 +15,8 @@ namespace Skynet_Commerce.GUI.UserControls.Components.UCSeller
         private SellerDashboardService dashboardService;
         private int currentAccountId; 
 
-        public ucSellerDashboard()
-        {
-            InitializeComponent();
-            dashboardService = new SellerDashboardService();
-            currentAccountId = 1;
-            this.Load += UcSellerDashboard_Load;
-            this.cartesianChart1.BackColor = System.Drawing.Color.White;
-        }
 
-        public ucSellerDashboard(int accountId) : this()
+        public ucSellerDashboard(int accountId)
         {
             InitializeComponent();
             dashboardService = new SellerDashboardService();

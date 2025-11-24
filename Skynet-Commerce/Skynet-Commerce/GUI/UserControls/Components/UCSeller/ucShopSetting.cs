@@ -25,14 +25,6 @@ namespace Skynet_Commerce
             LoadShopSettings(_shopID);
         }
 
-        public ucShopSetting()
-        {
-            InitializeComponent();
-            _sellerDetailService = new SellerDetailService();
-            this.Dock = DockStyle.Fill;
-            LoadShopSettings(1);
-            _shopID = 1;
-        }
 
         private void LoadShopSettings(int accountId)
         {
