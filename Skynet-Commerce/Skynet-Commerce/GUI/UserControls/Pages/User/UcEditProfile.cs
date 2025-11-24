@@ -64,12 +64,27 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         private async void BtnSave_Click(object sender, EventArgs e)
         {
-            // ... (Logic lưu giữ nguyên như cũ) ...
+            // Lấy Ngày sinh từ UI
+            DateTime dob = dtpDob.Value.Date;
+
+            // [MỚI] 1. LOGIC KIỂM TRA TUỔI (Ít nhất 10 tuổi)
+            int age = DateTime.Today.Year - dob.Year;
+            if (dob.Date > DateTime.Today.AddYears(-age)) age--;
+
+            if (age < 10)
+            {
+                MessageBox.Show("Người dùng phải từ 10 tuổi trở lên để đặt hàng!", "Lỗi xác thực", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // HẾT LOGIC KIỂM TRA TUỔI
+
             try
             {
                 int accId = AppSession.Instance.AccountID;
                 using (var db = new ApplicationDbContext())
                 {
+                    // ... (Logic cập nhật Phone và tìm User giữ nguyên) ...
+
                     var acc = db.Accounts.Find(accId);
                     if (acc != null) acc.Phone = txtPhone.Text.Trim();
 
@@ -81,8 +96,16 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                     }
 
                     user.FullName = txtFullName.Text.Trim();
-                    user.Gender = cbGender.SelectedItem?.ToString();
-                    user.DateOfBirth = dtpDob.Value;
+
+                    // Chuyển đổi giới tính từ Tiếng Việt sang Tiếng Anh chuẩn SQL
+                    string selectedGender = cbGender.SelectedItem?.ToString();
+                    string dbGender = selectedGender;
+                    if (selectedGender == "Nam") dbGender = "Male";
+                    else if (selectedGender == "Nữ") dbGender = "Female";
+                    else if (selectedGender == "Khác") dbGender = "Other";
+
+                    user.Gender = dbGender; // Gán giá trị chuẩn SQL
+                    user.DateOfBirth = dob; // Gán ngày sinh đã kiểm tra
                     user.AvatarURL = txtAvatarUrl.Text.Trim();
 
                     await db.SaveChangesAsync();
@@ -92,7 +115,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorMsg = ex.InnerException?.InnerException?.Message ?? ex.Message;
+                MessageBox.Show($"Lỗi: {errorMsg}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -35,24 +35,74 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         {
             this.Load += UcProfile_Load;
 
-            // Gán sự kiện click (Đã cập nhật tên biến theo file Designer mới)
-            if (btnOrderHistory != null) btnOrderHistory.Click += BtnOrderHistory_Click; // Đơn mua
-            if (btnChangePassword != null) btnChangePassword.Click += BtnChangePassword_Click; // Đổi mật khẩu
-            if (btnAddress != null) btnAddress.Click += BtnAddress_Click; // Địa chỉ
-            if (btnLogout != null) btnLogout.Click += BtnLogout_Click; // Đăng xuất
+            // Gán sự kiện click an toàn (Gỡ trước rồi mới gán)
+            if (btnOrderHistory != null)
+            {
+                btnOrderHistory.Click -= BtnOrderHistory_Click; // Gỡ bỏ cũ
+                btnOrderHistory.Click += BtnOrderHistory_Click; // Gán mới
+            }
 
-            if (btnEditProfile != null) btnEditProfile.Click += BtnEditProfile_Click; // Nút menu Edit Profile
-            if (btnEditInfo != null) btnEditInfo.Click += BtnEditProfile_Click; // Nút Edit Info ở trên
+            if (btnChangePassword != null)
+            {
+                btnChangePassword.Click -= BtnChangePassword_Click;
+                btnChangePassword.Click += BtnChangePassword_Click;
+            }
 
-            if (btnRegisterShop != null) btnRegisterShop.Click += btnRegisterShop_Click;
+            if (btnAddress != null)
+            {
+                btnAddress.Click -= BtnAddress_Click;
+                btnAddress.Click += BtnAddress_Click;
+            }
+
+            // --- ĐÂY LÀ CHỖ SỬA LỖI ĐĂNG XUẤT 2 LẦN ---
+            if (btnLogout != null)
+            {
+                btnLogout.Click -= BtnLogout_Click; // Gỡ bỏ sự kiện nếu Designer đã gán
+                btnLogout.Click += BtnLogout_Click; // Gán lại duy nhất 1 lần
+            }
+
+            if (btnEditProfile != null)
+            {
+                btnEditProfile.Click -= BtnEditProfile_Click;
+                btnEditProfile.Click += BtnEditProfile_Click;
+            }
+
+            if (btnEditInfo != null)
+            {
+                btnEditInfo.Click -= BtnEditProfile_Click;
+                btnEditInfo.Click += BtnEditProfile_Click;
+            }
+
+            if (btnRegisterShop != null)
+            {
+                btnRegisterShop.Click -= btnRegisterShop_Click;
+                btnRegisterShop.Click += btnRegisterShop_Click;
+            }
         }
 
         private async void UcProfile_Load(object sender, EventArgs e)
         {
-            // Kiểm tra đăng nhập
-            if (AppSession.Instance.AccountID <= 0) return;
+            // LOGIC MỚI: Kiểm tra đăng nhập
+            // Nếu không có AccountID (đã đăng xuất), xóa trắng UI và thoát
+            if (AppSession.Instance.AccountID <= 0)
+            {
+                ClearProfileUI(); // Xóa dữ liệu cũ trên form
+                // Tùy chọn: Nếu muốn bắt buộc đăng nhập mới xem được thì chuyển trang tại đây
+                // MessageBox.Show("Vui lòng đăng nhập để xem thông tin.");
+                // if (main != null) main.LoadPage("Login");
+                return;
+            }
 
+            // Nếu đã đăng nhập, luôn luôn fetch lại dữ liệu từ DB
             await LoadUserProfile();
+        }
+
+        // Hàm mới: Xóa trắng thông tin trên giao diện
+        private void ClearProfileUI()
+        {
+            if (lblName != null) lblName.Text = "Khách";
+            if (lblEmail != null) lblEmail.Text = "---";
+            if (picAvatar != null) picAvatar.Image = null; // Hoặc set ảnh default
         }
 
         public async Task LoadUserProfile()
@@ -103,11 +153,12 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
             catch (Exception ex)
             {
+                // Xử lý lỗi âm thầm hoặc log
                 // MessageBox.Show("Lỗi tải hồ sơ: " + ex.Message);
             }
         }
 
-        // --- CÁC SỰ KIỆN CLICK (Đã đổi tên hàm cho khớp) ---
+        // --- CÁC SỰ KIỆN CLICK ---
 
         private void BtnOrderHistory_Click(object sender, EventArgs e)
         {
@@ -133,29 +184,36 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         {
             if (MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                // 1. Xóa Session
+                // 1. Xóa Session & Giỏ hàng
                 AppSession.Instance.Clear();
                 SessionManager.ClearCart();
-                // 2. Đóng Form chính
+
                 MessageBox.Show("Đăng xuất thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // 4. Chuyển về trang chủ (Thay vì Restart App)
+                // 2. Xử lý logic UI Main Form
                 if (main != null)
                 {
+                    main.UpdateLoginState();
+
+                    // Chuyển về trang chủ
                     main.LoadPage("Home");
                 }
                 else
                 {
-                    // Dự phòng nếu biến main bị null
+                    // Dự phòng nếu biến main bị null (tìm form cha)
                     FrmMain parentForm = this.FindForm() as FrmMain;
-                    if (parentForm != null) parentForm.LoadPage("Home");
+                    if (parentForm != null)
+                    {
+                        parentForm.UpdateLoginState();
+                        parentForm.LoadPage("Home");
+                    }
                 }
             }
         }
 
         private void btnRegisterShop_Click(object sender, EventArgs e)
         {
-            main.LoadPage("ShopRegister");
+            if (main != null) main.LoadPage("ShopRegister");
         }
     }
 }

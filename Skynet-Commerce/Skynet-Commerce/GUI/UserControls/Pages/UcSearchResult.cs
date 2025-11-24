@@ -1,6 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Skynet_Commerce.BLL.Models;
-using Skynet_Commerce.BLL.Services; // [QUAN TRỌNG] Nhớ thêm cái này
+using Skynet_Commerce.BLL.Services;
 using Skynet_Commerce.GUI.Forms;
 using Skynet_Commerce.GUI.UserControls.Components;
 using System;
@@ -17,26 +17,25 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         private FlowLayoutPanel flpProducts;
         private string _keyword;
 
-        // Service để gọi Database
         private readonly ProductService _productService;
 
         // Các biến lưu trạng thái bộ lọc
-        private List<ProductDTO> _allProducts; // Danh sách gốc lấy từ DB
+        private List<ProductDTO> _allProducts;
         private string _selectedCategory = "Tất cả";
         private string _selectedPriceRange = "Tất cả";
         private string _selectedRating = "Tất cả";
         private string _selectedSort = "Liên quan";
 
+        // [QUAN TRỌNG] Dùng để khóa sự kiện CheckedChanged trong quá trình reset UI
+        private bool _isSettingFilter = false;
+
         public UcSearchResult(string keyword)
         {
             InitializeComponent();
             _keyword = keyword;
-            _productService = new ProductService(); // Khởi tạo Service
+            _productService = new ProductService();
 
-            // 1. Setup giao diện trước
             SetupLayout();
-
-            // 2. Lấy dữ liệu thật từ DB
             LoadDataFromDatabase();
         }
 
@@ -45,13 +44,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         {
             try
             {
-                // Gọi Service tìm kiếm theo từ khóa
-                // Hàm này bạn cần viết trong ProductService (xem Phần 2 bên dưới)
                 _allProducts = _productService.SearchProducts(_keyword);
-
                 if (_allProducts == null) _allProducts = new List<ProductDTO>();
-
-                // Sau khi lấy về, áp dụng các bộ lọc mặc định
                 ApplyFiltersAndSort();
             }
             catch (Exception ex)
@@ -60,7 +54,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
         }
 
-        // ... (Giữ nguyên SetupLayout, SetupSidebarFilters, SetupSortBar không đổi) ...
+        // --- HÀM CẤU HÌNH UI (SetupLayout, SetupSortBar, RenderProductList giữ nguyên) ---
         private void SetupLayout()
         {
             this.BackColor = Color.FromArgb(248, 248, 248);
@@ -77,6 +71,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             };
             this.Controls.Add(lblHeader);
 
+            // Cấu hình pnlSidebar để chứa các nhóm lọc
             Panel pnlSidebar = new Panel { Location = new Point(20, 100), Size = new Size(220, 600), BackColor = Color.Transparent };
             SetupSidebarFilters(pnlSidebar);
             this.Controls.Add(pnlSidebar);
@@ -96,60 +91,40 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.Controls.Add(flpProducts);
         }
 
-        private void SetupSidebarFilters(Panel pnl)
+        // --- [SỬA LỖI] HÀM CẤU HÌNH SIDEBAR (Tạo nhóm Radio Button) ---
+        private void SetupSidebarFilters(Panel pnlSidebar)
         {
-            Label lblTitle = new Label { Text = "Bộ lọc tìm kiếm", Font = new Font("Segoe UI", 11, FontStyle.Bold), Location = new Point(0, 0), AutoSize = true };
-            pnl.Controls.Add(lblTitle);
+            pnlSidebar.Controls.Clear();
+            _isSettingFilter = true; // [MỚI] Bật cờ khóa sự kiện
 
-            int y = 40;
+            Label lblTitle = new Label { Text = "Bộ lọc tìm kiếm", Font = new Font("Segoe UI", 11, FontStyle.Bold), Location = new Point(0, 0), AutoSize = true };
+            pnlSidebar.Controls.Add(lblTitle);
+
+            // Dùng FlowLayoutPanel để quản lý vị trí các nhóm lọc (dễ hơn tính Y thủ công)
+            FlowLayoutPanel flpGroups = new FlowLayoutPanel
+            {
+                Location = new Point(0, 40),
+                Size = new Size(220, 560),
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                AutoSize = true,
+                BackColor = Color.Transparent
+            };
+            pnlSidebar.Controls.Add(flpGroups);
 
             // --- 1. Danh mục ---
-            pnl.Controls.Add(new Label { Text = "Danh mục", Font = new Font("Segoe UI", 10, FontStyle.Bold), Location = new Point(0, y), AutoSize = true });
-            y += 30;
             string[] categories = { "Tất cả", "Thời trang", "Điện tử", "Nhà cửa", "Làm đẹp" };
-            foreach (var cat in categories)
-            {
-                var rb = CreateFilterRadioButton(cat, 0, y);
-                rb.CheckedChanged += (s, e) => { if (rb.Checked) { _selectedCategory = cat; ApplyFiltersAndSort(); } };
-                if (cat == "Tất cả") rb.Checked = true;
-                pnl.Controls.Add(rb);
-                pnl.Controls.Add(new Label { Text = cat, Location = new Point(25, y - 2), AutoSize = true, Font = new Font("Segoe UI", 9) });
-                y += 30;
-            }
+            flpGroups.Controls.Add(CreateFilterGroupPanel("Danh mục", categories, _selectedCategory, (val) => { _selectedCategory = val; ApplyFiltersAndSort(); }));
 
             // --- 2. Khoảng giá ---
-            y += 20;
-            pnl.Controls.Add(new Label { Text = "Khoảng giá", Font = new Font("Segoe UI", 10, FontStyle.Bold), Location = new Point(0, y), AutoSize = true });
-            y += 30;
             string[] prices = { "Tất cả", "Dưới 100K", "100K - 500K", "500K - 1M", "Trên 1M" };
-            foreach (var price in prices)
-            {
-                var rb = CreateFilterRadioButton(price, 0, y);
-                rb.CheckedChanged += (s, e) => { if (rb.Checked) { _selectedPriceRange = price; ApplyFiltersAndSort(); } };
-                if (price == "Tất cả") rb.Checked = true;
-                pnl.Controls.Add(rb);
-                pnl.Controls.Add(new Label { Text = price, Location = new Point(25, y - 2), AutoSize = true, Font = new Font("Segoe UI", 9) });
-                y += 30;
-            }
+            flpGroups.Controls.Add(CreateFilterGroupPanel("Khoảng giá", prices, _selectedPriceRange, (val) => { _selectedPriceRange = val; ApplyFiltersAndSort(); }));
 
             // --- 3. Đánh giá ---
-            y += 20;
-            pnl.Controls.Add(new Label { Text = "Đánh giá", Font = new Font("Segoe UI", 10, FontStyle.Bold), Location = new Point(0, y), AutoSize = true });
-            y += 30;
             string[] ratings = { "Tất cả", "5 sao", "4 sao trở lên", "3 sao trở lên" };
-            foreach (var rate in ratings)
-            {
-                var rb = CreateFilterRadioButton(rate, 0, y);
-                rb.CheckedChanged += (s, e) => { if (rb.Checked) { _selectedRating = rate; ApplyFiltersAndSort(); } };
-                if (rate == "Tất cả") rb.Checked = true;
-                pnl.Controls.Add(rb);
-                string displayMap = rate == "5 sao" ? "⭐⭐⭐⭐⭐" : rate;
-                Label lblRate = new Label { Text = displayMap, Location = new Point(25, y - 2), AutoSize = true, Font = new Font("Segoe UI", 9) };
-                if (rate.Contains("sao")) lblRate.ForeColor = Color.Orange;
-                pnl.Controls.Add(lblRate);
-                y += 30;
-            }
+            flpGroups.Controls.Add(CreateFilterGroupPanel("Đánh giá", ratings, _selectedRating, (val) => { _selectedRating = val; ApplyFiltersAndSort(); }, isRating: true));
 
+            // --- Nút Xóa bộ lọc ---
             Guna2Button btnClear = new Guna2Button
             {
                 Text = "Xóa tất cả",
@@ -158,21 +133,69 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 BorderColor = Color.LightGray,
                 BorderThickness = 1,
                 BorderRadius = 4,
-                Location = new Point(0, y + 20),
                 Size = new Size(150, 35),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new Padding(0, 10, 0, 0)
             };
             btnClear.Click += (s, e) =>
             {
                 _selectedCategory = "Tất cả"; _selectedPriceRange = "Tất cả"; _selectedRating = "Tất cả"; _selectedSort = "Liên quan";
+                SetupSidebarFilters(pnlSidebar);
                 ApplyFiltersAndSort();
                 MessageBox.Show("Đã xóa bộ lọc!");
             };
-            pnl.Controls.Add(btnClear);
+            flpGroups.Controls.Add(btnClear);
+
+            _isSettingFilter = false; // [MỚI] Tắt cờ khóa sự kiện
         }
+
+        // [MỚI] Hàm Helper để tạo Container cho nhóm lọc (Radio Button Grouping Fix)
+        private Panel CreateFilterGroupPanel(string title, string[] items, string selectedValue, Action<string> onChange, bool isRating = false)
+        {
+            // Panel này là CHÍNH LÀ CONTAINER cha của các Radio Button trong nhóm này
+            int groupHeight = items.Length * 25 + 50;
+            Panel pnlGroup = new Panel
+            {
+                Size = new Size(220, groupHeight),
+                BackColor = Color.Transparent,
+                Margin = new Padding(0, 10, 0, 10)
+            };
+
+            pnlGroup.Controls.Add(new Label { Text = title, Font = new Font("Segoe UI", 10, FontStyle.Bold), Location = new Point(0, 0), AutoSize = true });
+
+            int y = 30; // Vị trí Y bắt đầu cho Radio Button đầu tiên
+
+            foreach (var item in items)
+            {
+                var rb = CreateFilterRadioButton(item, 0, y);
+
+                // [FIX LỖI] Kiểm tra cờ khóa trước khi chạy ApplyFiltersAndSort
+                rb.CheckedChanged += (s, e) => { if (rb.Checked && !_isSettingFilter) onChange(item); };
+
+                if (item == selectedValue) rb.Checked = true;
+
+                // Label handling
+                Label lbl = new Label { Text = item, Location = new Point(25, y), AutoSize = true, Font = new Font("Segoe UI", 9) };
+                if (isRating)
+                {
+                    lbl.Text = item == "5 sao" ? "⭐⭐⭐⭐⭐" : item;
+                    lbl.ForeColor = Color.Orange;
+                }
+
+                // [CRUCIAL FIX] Thêm Radio Button và Label TRỰC TIẾP vào Group Panel
+                pnlGroup.Controls.Add(rb);
+                pnlGroup.Controls.Add(lbl);
+
+                y += 30; // Tăng vị trí Y cho dòng tiếp theo
+            }
+
+            return pnlGroup;
+        }
+
 
         private Guna2CustomRadioButton CreateFilterRadioButton(string tag, int x, int y)
         {
+            // Hàm này giữ nguyên
             return new Guna2CustomRadioButton
             {
                 Location = new Point(x, y),
@@ -183,6 +206,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 Cursor = Cursors.Hand
             };
         }
+
+        // --- CÁC HÀM SẮP XẾP VÀ LỌC KHÁC (Giữ nguyên) ---
 
         private void SetupSortBar(Panel pnl)
         {
@@ -217,12 +242,15 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         private void ApplyFiltersAndSort()
         {
-            if (_allProducts == null || _allProducts.Count == 0) return;
+            if (_allProducts == null || _allProducts.Count == 0)
+            {
+                RenderProductList(new List<ProductDTO>());
+                return;
+            }
 
-            // 1. Lọc trên RAM (Từ danh sách đã tải về)
             var filteredList = _allProducts.AsEnumerable();
 
-            // Danh mục (Tạm thời lọc theo tên vì DB chưa chắc có CategoryID khớp UI)
+            // Danh mục
             if (_selectedCategory != "Tất cả")
             {
                 filteredList = filteredList.Where(p => p.Name.IndexOf(_selectedCategory, StringComparison.OrdinalIgnoreCase) >= 0);

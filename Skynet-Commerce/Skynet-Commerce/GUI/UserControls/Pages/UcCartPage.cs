@@ -30,27 +30,27 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             // 2. Nút "Mua Hàng" (Thanh toán)
             btnCheckout.Click += (s, e) =>
             {
-                // Refresh (F5) lại dữ liệu ngay lập tức khi ấn nút
+                // Refresh (F5) lại dữ liệu ngay lập tức
                 LoadCartData();
 
-                // Kiểm tra giỏ hàng trống sau khi refresh
+                // Kiểm tra giỏ hàng trống
                 if (flpCartItems.Controls.Count == 0)
                 {
                     MessageBox.Show("Giỏ hàng của bạn đang trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // [CẬP NHẬT MỚI]: Dùng AppSession để kiểm tra đăng nhập
+                // Kiểm tra đăng nhập
                 if (AppSession.Instance.IsLoggedIn)
                 {
-                    // TRƯỜNG HỢP ĐÃ ĐĂNG NHẬP:
-                    // Chuyển thẳng sang trang thanh toán
+                    // Chuyển sang Checkout
+                    // [LƯU Ý]: Vì bên UcCheckoutPage đã có sự kiện "VisibleChanged" -> LoadRealData()
+                    // Nên khi chuyển sang, nó sẽ TỰ ĐỘNG fetch lại dữ liệu và kiểm tra địa chỉ.
                     GoToPage("Checkout");
                 }
                 else
                 {
-                    // TRƯỜNG HỢP CHƯA ĐĂNG NHẬP:
-                    // Hiện thông báo yêu cầu đăng nhập
+                    // Yêu cầu đăng nhập
                     DialogResult result = MessageBox.Show("Bạn cần đăng nhập để tiếp tục thanh toán.\nChuyển đến trang đăng nhập ngay?",
                                                           "Yêu cầu đăng nhập",
                                                           MessageBoxButtons.YesNo,
@@ -58,7 +58,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
                     if (result == DialogResult.Yes)
                     {
-                        // Chuyển sang Login, tham số "Checkout" để login xong tự quay lại đây
                         GoToPage("Login", "Checkout");
                     }
                 }
