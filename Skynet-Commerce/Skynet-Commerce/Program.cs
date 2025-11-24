@@ -16,8 +16,8 @@ namespace Skynet_Commerce
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new FrmMain()); // của bảo ở đây nhé
-            Application.Run(new SellerLayout(1));
+            Application.Run(new FrmMain()); // của bảo ở đây nhé
+            //Application.Run(new SellerLayout(1));
 
             //Application.Run(new FrmMain());
         }

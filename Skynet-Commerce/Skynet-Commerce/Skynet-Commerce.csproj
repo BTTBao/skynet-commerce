@@ -200,7 +200,9 @@
     <Compile Include="GUI\UserControls\Components\UCSeller\ucProduct.Designer.cs">
       <DependentUpon>ucProduct.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\UserControls\Components\UCSeller\ucSellerDashboard.cs" />
+    <Compile Include="GUI\UserControls\Components\UCSeller\ucSellerDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="GUI\UserControls\Components\UCSeller\ucSellerDashboard.Designer.cs">
       <DependentUpon>ucSellerDashboard.cs</DependentUpon>
     </Compile>
@@ -276,11 +278,15 @@
     <Compile Include="GUI\Forms\Seller\FormAddProduct.Designer.cs">
       <DependentUpon>FormAddProduct.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\Seller\SellerLayout.cs" />
+    <Compile Include="GUI\Forms\Seller\SellerLayout.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\Forms\Seller\SellerLayout.Designer.cs">
       <DependentUpon>SellerLayout.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\Seller\OrderDetailForm.cs" />
+    <Compile Include="GUI\Forms\Seller\OrderDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\Forms\Seller\OrderDetailForm.Designer.cs">
       <DependentUpon>OrderDetailForm.cs</DependentUpon>
     </Compile>

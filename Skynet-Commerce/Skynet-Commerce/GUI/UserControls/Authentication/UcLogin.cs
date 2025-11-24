@@ -1,15 +1,15 @@
-﻿using Skynet_Commerce.BLL.Helpers;
-using Skynet_Commerce.DAL.Entities;
-using Skynet_Commerce.GUI.Forms;
+﻿using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.GUI.UserControls.Pages;
+using Skynet_Commerce.GUI.Forms;
+using Skynet_Commerce.BLL.Helpers;
 using System;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.Entity;
+using System.Security.Cryptography; // [MỚI] Cho Hashing
+using System.Text; // Cho Encoding
 
 namespace Skynet_Commerce.GUI.Forms.User
 {
@@ -32,31 +32,23 @@ namespace Skynet_Commerce.GUI.Forms.User
             _parentForm = main;
             _nextPage = nextPage;
 
-            // --- SỬA LỖI 2 LẦN THÔNG BÁO TẠI ĐÂY ---
-            // Gỡ bỏ sự kiện cũ (nếu có) trước khi gán mới
+            // --- ỔN ĐỊNH SỰ KIỆN CLICK (FIX LỖI 2 LẦN THÔNG BÁO) ---
             if (btnLogin != null)
             {
-                btnLogin.Click -= btnLogin_Click; // Gỡ
-                btnLogin.Click += btnLogin_Click; // Gán
+                btnLogin.Click -= btnLogin_Click;
+                btnLogin.Click += btnLogin_Click;
             }
 
             if (btnRegis != null)
             {
-                btnRegis.Click -= btnRegis_Click; // Gỡ
-                btnRegis.Click += btnRegis_Click; // Gán
+                btnRegis.Click -= btnRegis_Click;
+                btnRegis.Click += btnRegis_Click;
             }
         }
 
-        private bool VerifyPassword(string inputPassword, string storedHash)
-        {
-            // Mã hóa mật khẩu người dùng vừa nhập
-            string inputHash = HashPassword(inputPassword);
+        // --- HÀM HASHING VÀ VERIFY (BẮT BUỘC ĐỂ ĐĂNG NHẬP SAU KHI ĐĂNG KÝ MÃ HÓA) ---
 
-            // So sánh với mật khẩu đã lưu trong DB
-            return inputHash == storedHash;
-        }
-
-        // Copy lại hàm HashPassword giống bên Register để dùng
+        // Hàm Hash mật khẩu (Copy từ UcRegister)
         private string HashPassword(string password)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -65,6 +57,13 @@ namespace Skynet_Commerce.GUI.Forms.User
                 byte[] hash = sha256.ComputeHash(bytes);
                 return Convert.ToBase64String(hash);
             }
+        }
+
+        // Hàm kiểm tra mật khẩu
+        private bool VerifyPassword(string inputPassword, string storedHash)
+        {
+            string inputHash = HashPassword(inputPassword);
+            return inputHash == storedHash;
         }
 
         private async Task LoginAsync()
@@ -97,7 +96,7 @@ namespace Skynet_Commerce.GUI.Forms.User
                         return;
                     }
 
-                    // 2. Check Password
+                    // 2. Check Password (Dùng hàm Hash Verification)
                     if (!VerifyPassword(password, account.PasswordHash))
                     {
                         MessageBox.Show("Mật khẩu không chính xác!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -105,14 +104,14 @@ namespace Skynet_Commerce.GUI.Forms.User
                         return;
                     }
 
-                    // 3. Lấy Quyền (Role) - Chuẩn theo DB (Buyer, Seller, Admin)
+                    // 3. Lấy Quyền (Role)
                     var userRolesList = await Task.Run(() =>
                         db.UserRoles.Where(r => r.AccountID == account.AccountID)
                                     .Select(r => r.RoleName)
                                     .ToList()
                     );
 
-                    string finalRole = "Buyer"; // Mặc định là Buyer
+                    string finalRole = "Buyer";
                     if (userRolesList.Contains("Admin")) finalRole = "Admin";
                     else if (userRolesList.Contains("Seller")) finalRole = "Seller";
 
@@ -135,41 +134,63 @@ namespace Skynet_Commerce.GUI.Forms.User
                         AppSession.Instance.FullName = "Thành viên mới";
                     }
 
-                    // [ĐÃ XÓA] Đoạn code lưu Properties.Settings ở đây
+                    // ============================================================
+                    // LOGIC ĐIỀU HƯỚNG THEO VAI TRÒ (ADMIN & SELLER)
+                    // ============================================================
 
-                    // ============================================================
-                    // LOGIC: NẾU LÀ ADMIN -> SANG DASHBOARD
-                    // ============================================================
+                    // Xử lý Admin
                     if (finalRole == "Admin")
                     {
                         MessageBox.Show("Đăng nhập thành công! Chào mừng Admin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                         DashboardForm dashboard = new DashboardForm();
                         dashboard.Show();
-
-                        // Ẩn form chính đi
                         if (_parentForm != null) _parentForm.Hide();
                         else this.FindForm()?.Hide();
-
-                        // Tắt toàn bộ App khi đóng Dashboard
                         dashboard.FormClosed += (s, args) => Application.Exit();
-
-                        return; // DỪNG LẠI, KHÔNG CHẠY CODE DƯỚI
+                        return;
                     }
 
-                    // ============================================================
-                    // LOGIC: USER THƯỜNG -> VỀ TRANG CHỦ / TRANG TRƯỚC
-                    // ============================================================
+                    // Xử lý Seller (Hỏi người dùng muốn vào đâu)
+                    if (finalRole == "Seller")
+                    {
+                        int sellerShopId = 0;
+                        var shop = db.Shops.FirstOrDefault(s => s.AccountID == account.AccountID);
+                        if (shop != null) sellerShopId = shop.ShopID;
+
+                        if (sellerShopId > 0)
+                        {
+                            DialogResult result = MessageBox.Show(
+                                "Bạn muốn vào Kênh người bán hay giao diện khách hàng?",
+                                "Xác nhận vai trò",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question,
+                                MessageBoxDefaultButton.Button1 // Yes button
+                            );
+
+                            if (result == DialogResult.Yes) // Yes: Vào SellerLayout
+                            {
+                                MessageBox.Show("Chuyển đến Kênh Người Bán...", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                SellerLayout sellerForm = new SellerLayout(sellerShopId);
+                                sellerForm.Show();
+
+                                if (_parentForm != null) _parentForm.Hide();
+                                else this.FindForm()?.Hide();
+
+                                sellerForm.FormClosed += (s, args) => Application.Exit();
+                                return;
+                            }
+                        }
+                    }
+
+                    // LOGIC: USER THƯỜNG (Buyer / Seller chọn NO) -> VỀ TRANG CHỦ
                     if (_parentForm is FrmMain mainForm)
                     {
-                        // Cập nhật Header (Hiện tên user)
-                        mainForm.UpdateLoginState();
+                        mainForm.UpdateLoginState(); // Cập nhật Header
 
-                        // Ẩn Popup Login
                         this.Visible = false;
                         if (this.Parent != null) this.Parent.Controls.Remove(this);
 
-                        // Điều hướng
                         if (!string.IsNullOrEmpty(_nextPage))
                         {
                             mainForm.LoadPage(_nextPage);
@@ -181,7 +202,6 @@ namespace Skynet_Commerce.GUI.Forms.User
                     }
                     else
                     {
-                        // Fallback cho form Authentication cũ
                         FrmMain newMain = new FrmMain();
                         newMain.Show();
                         _parentForm.Hide();
