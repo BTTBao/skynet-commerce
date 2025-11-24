@@ -118,11 +118,19 @@ namespace Skynet_Commerce
         {
             if (MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
+                // 1. Xóa Session
                 AppSession.Instance.Clear();
+
                 MessageBox.Show("Đăng xuất thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                FrmMain parentForm = this.FindForm() as FrmMain; 
-                parentForm.LoadPage("Home");
-                 
+
+                // 2. [QUAN TRỌNG] Mở lại Form Main
+                // Tạo một instance mới của FrmMain để đảm bảo UI/state được làm mới
+                FrmMain newMainForm = new FrmMain();
+                newMainForm.Show();
+
+                // 3. Đóng Form SellerLayout hiện tại
+                // Điều này sẽ ngắt Application.Exit() trigger từ UcLogin
+                this.Close();
             }
         }
     }
