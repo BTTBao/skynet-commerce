@@ -157,11 +157,9 @@ public class ShopService
         var reg = _context.ShopRegistrations.FirstOrDefault(r => r.RegistrationID == registrationId);
         if (reg == null) throw new Exception("Không tìm thấy đơn đăng ký.");
 
-        // Chú ý: Kiểm tra kỹ chữ hoa/thường trong DB ("Pending" hay "pending")
         if (!reg.Status.Equals("pending", StringComparison.OrdinalIgnoreCase))
             throw new Exception("Đơn này đã được xử lý trước đó.");
 
-        // KIỂM TRA LOGIC: 1 Account chỉ 1 Shop
         if (_context.Shops.Any(s => s.AccountID == reg.AccountID))
         {
             throw new Exception($"Tài khoản {reg.AccountID} đã sở hữu một cửa hàng rồi.");
@@ -169,28 +167,47 @@ public class ShopService
 
         try
         {
-            // 2. Tạo Shop mới
+            // 1. Tạo Shop mới
             var newShop = new Shop
             {
                 ShopName = reg.ShopName,
                 AccountID = reg.AccountID,
-                IsActive = true, // Shop hoạt động luôn
+                IsActive = true,
                 RatingAverage = 0,
                 CreatedAt = DateTime.Now,
                 Description = reg.Description
-                // Map thêm các field khác nếu có (Description, Address...)
             };
             _context.Shops.Add(newShop);
 
+            // ==========================================================
+            // [MỚI] 2. THÊM ROLE SELLER CHO ACCOUNT
+            // ==========================================================
+            // Kiểm tra xem user đã có role Seller chưa (để tránh lỗi UNIQUE KEY)
+            var existingSellerRole = _context.UserRoles.FirstOrDefault(r =>
+                r.AccountID == reg.AccountID && r.RoleName == "Seller"
+            );
+
+            if (existingSellerRole == null)
+            {
+                var newRole = new UserRole
+                {
+                    AccountID = reg.AccountID,
+                    RoleName = "Seller", // Gán vai trò Seller
+                    CreatedAt = DateTime.Now
+                };
+                _context.UserRoles.Add(newRole);
+            }
+
             // 3. Cập nhật trạng thái đơn đăng ký
             reg.Status = "Approved";
-            // reg.UpdatedAt = DateTime.Now; // Nếu có cột này
 
+            // 4. Lưu tất cả các thay đổi (Tạo Shop, Thêm Role, Cập nhật trạng thái)
             _context.SaveChanges();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw;
+            // Kiểm tra lỗi UNIQUE KEY (nếu việc thêm Role bị lỗi)
+            throw new Exception($"Lỗi trong quá trình duyệt: {ex.Message}");
         }
     }
 

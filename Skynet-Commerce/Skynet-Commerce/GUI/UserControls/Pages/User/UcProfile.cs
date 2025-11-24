@@ -38,8 +38,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             // Gán sự kiện click an toàn (Gỡ trước rồi mới gán)
             if (btnOrderHistory != null)
             {
-                btnOrderHistory.Click -= BtnOrderHistory_Click; // Gỡ bỏ cũ
-                btnOrderHistory.Click += BtnOrderHistory_Click; // Gán mới
+                btnOrderHistory.Click -= BtnOrderHistory_Click;
+                btnOrderHistory.Click += BtnOrderHistory_Click;
             }
 
             if (btnChangePassword != null)
@@ -54,11 +54,10 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 btnAddress.Click += BtnAddress_Click;
             }
 
-            // --- ĐÂY LÀ CHỖ SỬA LỖI ĐĂNG XUẤT 2 LẦN ---
             if (btnLogout != null)
             {
-                btnLogout.Click -= BtnLogout_Click; // Gỡ bỏ sự kiện nếu Designer đã gán
-                btnLogout.Click += BtnLogout_Click; // Gán lại duy nhất 1 lần
+                btnLogout.Click -= BtnLogout_Click;
+                btnLogout.Click += BtnLogout_Click;
             }
 
             if (btnEditProfile != null)
@@ -82,20 +81,40 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         private async void UcProfile_Load(object sender, EventArgs e)
         {
-            // LOGIC MỚI: Kiểm tra đăng nhập
-            // Nếu không có AccountID (đã đăng xuất), xóa trắng UI và thoát
             if (AppSession.Instance.AccountID <= 0)
             {
-                ClearProfileUI(); // Xóa dữ liệu cũ trên form
-                // Tùy chọn: Nếu muốn bắt buộc đăng nhập mới xem được thì chuyển trang tại đây
-                // MessageBox.Show("Vui lòng đăng nhập để xem thông tin.");
-                // if (main != null) main.LoadPage("Login");
+                ClearProfileUI();
                 return;
             }
 
-            // Nếu đã đăng nhập, luôn luôn fetch lại dữ liệu từ DB
             await LoadUserProfile();
+
+            // [MỚI] Kiểm tra và ẩn/hiện nút Đăng ký Shop ngay sau khi load
+            UpdateSellerStatus();
         }
+
+        // [MỚI] Hàm cập nhật trạng thái Người bán
+        private void UpdateSellerStatus()
+        {
+            if (pnlSeller != null)
+            {
+                string userRole = AppSession.Instance.Role;
+
+                // Nếu là Admin hoặc Seller thì ẩn panel đăng ký shop
+                if (userRole == "Seller" || userRole == "Admin")
+                {
+                    pnlSeller.Visible = false;
+                    // Tùy chọn: Thay đổi chức năng của nút btnRegisterShop thành "Quản lý Shop" (nếu có form quản lý)
+                    // if (btnRegisterShop != null) btnRegisterShop.Text = "Quản lý Shop";
+                }
+                else
+                {
+                    // Nếu là Buyer (Người mua), vẫn hiện nút đăng ký shop
+                    pnlSeller.Visible = true;
+                }
+            }
+        }
+
 
         // Hàm mới: Xóa trắng thông tin trên giao diện
         private void ClearProfileUI()
@@ -103,6 +122,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             if (lblName != null) lblName.Text = "Khách";
             if (lblEmail != null) lblEmail.Text = "---";
             if (picAvatar != null) picAvatar.Image = null; // Hoặc set ảnh default
+            if (pnlSeller != null) pnlSeller.Visible = false; // Ẩn luôn nếu chưa đăng nhập
         }
 
         public async Task LoadUserProfile()
@@ -113,26 +133,21 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
                 using (var db = new ApplicationDbContext())
                 {
-                    // Lấy thông tin User
                     var userInfo = await Task.Run(() =>
                         db.Users.Include(u => u.Account)
-                                .FirstOrDefault(u => u.AccountID == accId)
+                                 .FirstOrDefault(u => u.AccountID == accId)
                     );
 
-                    // Lấy thông tin Account
                     var account = await Task.Run(() => db.Accounts.Find(accId));
 
-                    // Hiển thị Email
                     if (lblEmail != null && account != null)
                         lblEmail.Text = account.Email;
 
                     if (userInfo != null)
                     {
-                        // Hiển thị Tên
                         if (lblName != null)
                             lblName.Text = string.IsNullOrEmpty(userInfo.FullName) ? "Chưa cập nhật tên" : userInfo.FullName;
 
-                        // Hiển thị Avatar
                         if (picAvatar != null && !string.IsNullOrEmpty(userInfo.AvatarURL))
                         {
                             try
@@ -153,12 +168,11 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             }
             catch (Exception ex)
             {
-                // Xử lý lỗi âm thầm hoặc log
-                // MessageBox.Show("Lỗi tải hồ sơ: " + ex.Message);
+                // Xử lý lỗi
             }
         }
 
-        // --- CÁC SỰ KIỆN CLICK ---
+        // --- CÁC SỰ KIỆN CLICK (Giữ nguyên) ---
 
         private void BtnOrderHistory_Click(object sender, EventArgs e)
         {
@@ -184,23 +198,18 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         {
             if (MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                // 1. Xóa Session & Giỏ hàng
                 AppSession.Instance.Clear();
                 SessionManager.ClearCart();
 
                 MessageBox.Show("Đăng xuất thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // 2. Xử lý logic UI Main Form
                 if (main != null)
                 {
                     main.UpdateLoginState();
-
-                    // Chuyển về trang chủ
                     main.LoadPage("Home");
                 }
                 else
                 {
-                    // Dự phòng nếu biến main bị null (tìm form cha)
                     FrmMain parentForm = this.FindForm() as FrmMain;
                     if (parentForm != null)
                     {
