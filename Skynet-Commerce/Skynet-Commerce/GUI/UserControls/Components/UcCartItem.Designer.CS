@@ -39,7 +39,7 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             this.chkSelect.CheckedState.BorderRadius = 2;
             this.chkSelect.CheckedState.BorderThickness = 0;
             this.chkSelect.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(87)))), ((int)(((byte)(34)))));
-            this.chkSelect.Location = new System.Drawing.Point(15, 45);
+            this.chkSelect.Location = new System.Drawing.Point(43, 45);
             this.chkSelect.Name = "chkSelect";
             this.chkSelect.Size = new System.Drawing.Size(20, 20);
             this.chkSelect.TabIndex = 10;
@@ -52,7 +52,7 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             // 
             this.lblProductName.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblProductName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lblProductName.Location = new System.Drawing.Point(150, 15);
+            this.lblProductName.Location = new System.Drawing.Point(181, 15);
             this.lblProductName.Name = "lblProductName";
             this.lblProductName.Size = new System.Drawing.Size(220, 45);
             this.lblProductName.TabIndex = 11;
@@ -62,7 +62,7 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             // 
             this.lblVariant.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblVariant.ForeColor = System.Drawing.Color.Gray;
-            this.lblVariant.Location = new System.Drawing.Point(150, 65);
+            this.lblVariant.Location = new System.Drawing.Point(182, 65);
             this.lblVariant.Name = "lblVariant";
             this.lblVariant.Size = new System.Drawing.Size(200, 20);
             this.lblVariant.TabIndex = 12;
@@ -153,7 +153,7 @@ namespace Skynet_Commerce.GUI.UserControls.Components
             // 
             this.pbProductImage.BorderRadius = 5;
             this.pbProductImage.ImageRotate = 0F;
-            this.pbProductImage.Location = new System.Drawing.Point(50, 15);
+            this.pbProductImage.Location = new System.Drawing.Point(81, 15);
             this.pbProductImage.Name = "pbProductImage";
             this.pbProductImage.Size = new System.Drawing.Size(80, 80);
             this.pbProductImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;

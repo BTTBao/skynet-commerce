@@ -25,20 +25,20 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.pnlScrollContainer = new System.Windows.Forms.Panel();
             this.flpSections = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlBanner = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnNextBanner = new System.Windows.Forms.Button();
             this.btnPrevBanner = new System.Windows.Forms.Button();
-            this.pbBanner = new Guna.UI2.WinForms.Guna2PictureBox();
             this.lblCategoryTitle = new System.Windows.Forms.Label();
             this.pnlCategoryGrid = new System.Windows.Forms.Panel();
             this.flpCategories = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRecommendedTitle = new System.Windows.Forms.Label();
             this.flpRecommendedProducts = new System.Windows.Forms.FlowLayoutPanel();
             this.tmrBannerSlide = new System.Windows.Forms.Timer(this.components);
+            this.btnNextBanner = new System.Windows.Forms.Button();
+            this.pbBanner = new Guna.UI2.WinForms.Guna2PictureBox();
             this.pnlScrollContainer.SuspendLayout();
             this.flpSections.SuspendLayout();
             this.pnlBanner.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbBanner)).BeginInit();
             this.pnlCategoryGrid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbBanner)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlScrollContainer
@@ -61,7 +61,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.flpSections.Controls.Add(this.lblRecommendedTitle);
             this.flpSections.Controls.Add(this.flpRecommendedProducts);
             this.flpSections.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpSections.Location = new System.Drawing.Point(-36, 0);
+            this.flpSections.Location = new System.Drawing.Point(-45, 0);
             this.flpSections.Name = "flpSections";
             this.flpSections.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
             this.flpSections.Size = new System.Drawing.Size(937, 880);
@@ -82,17 +82,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.pnlBanner.Size = new System.Drawing.Size(920, 250);
             this.pnlBanner.TabIndex = 1;
             // 
-            // btnNextBanner
-            // 
-            this.btnNextBanner.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNextBanner.BackColor = System.Drawing.Color.White;
-            this.btnNextBanner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNextBanner.Location = new System.Drawing.Point(880, 100);
-            this.btnNextBanner.Name = "btnNextBanner";
-            this.btnNextBanner.Size = new System.Drawing.Size(30, 40);
-            this.btnNextBanner.TabIndex = 2;
-            this.btnNextBanner.UseVisualStyleBackColor = false;
-            // 
             // btnPrevBanner
             // 
             this.btnPrevBanner.BackColor = System.Drawing.Color.White;
@@ -102,18 +91,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.btnPrevBanner.Size = new System.Drawing.Size(30, 40);
             this.btnPrevBanner.TabIndex = 1;
             this.btnPrevBanner.UseVisualStyleBackColor = false;
-            // 
-            // pbBanner
-            // 
-            this.pbBanner.BorderRadius = 15;
-            this.pbBanner.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbBanner.ImageRotate = 0F;
-            this.pbBanner.Location = new System.Drawing.Point(0, 0);
-            this.pbBanner.Name = "pbBanner";
-            this.pbBanner.Size = new System.Drawing.Size(920, 250);
-            this.pbBanner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pbBanner.TabIndex = 0;
-            this.pbBanner.TabStop = false;
             // 
             // lblCategoryTitle
             // 
@@ -167,6 +144,31 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             // 
             this.tmrBannerSlide.Interval = 5000;
             // 
+            // btnNextBanner
+            // 
+            this.btnNextBanner.BackColor = System.Drawing.Color.White;
+            this.btnNextBanner.BackgroundImage = global::Skynet_Commerce.Properties.Resources.right;
+            this.btnNextBanner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNextBanner.Image = global::Skynet_Commerce.Properties.Resources.right;
+            this.btnNextBanner.Location = new System.Drawing.Point(880, 100);
+            this.btnNextBanner.Name = "btnNextBanner";
+            this.btnNextBanner.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnNextBanner.Size = new System.Drawing.Size(30, 40);
+            this.btnNextBanner.TabIndex = 2;
+            this.btnNextBanner.UseVisualStyleBackColor = false;
+            // 
+            // pbBanner
+            // 
+            this.pbBanner.BorderRadius = 15;
+            this.pbBanner.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbBanner.ImageRotate = 0F;
+            this.pbBanner.Location = new System.Drawing.Point(0, 0);
+            this.pbBanner.Name = "pbBanner";
+            this.pbBanner.Size = new System.Drawing.Size(920, 250);
+            this.pbBanner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbBanner.TabIndex = 0;
+            this.pbBanner.TabStop = false;
+            // 
             // UcHomePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -178,8 +180,8 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.flpSections.ResumeLayout(false);
             this.flpSections.PerformLayout();
             this.pnlBanner.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbBanner)).EndInit();
             this.pnlCategoryGrid.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbBanner)).EndInit();
             this.ResumeLayout(false);
 
         }

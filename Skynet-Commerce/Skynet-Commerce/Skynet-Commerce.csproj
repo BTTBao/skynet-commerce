@@ -566,7 +566,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GUI\UserControls\Product\" />
     <Folder Include="GUI\UserControls\Seller\" />
   </ItemGroup>
   <ItemGroup>
@@ -599,6 +598,7 @@
     <Content Include="Resources\1413908.png" />
     <Content Include="Resources\download.png" />
     <Content Include="Resources\product1.jpg" />
+    <None Include="Resources\right.png" />
     <Content Include="Resources\slide1.jpg" />
     <Content Include="Resources\slide2.jpg" />
     <Content Include="Resources\slide3.jpg" />

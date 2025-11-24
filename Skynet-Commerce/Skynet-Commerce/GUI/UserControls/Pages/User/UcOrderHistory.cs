@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Skynet_Commerce.BLL.Models;
 using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.GUI.Forms;
 using System;
@@ -208,9 +209,59 @@ namespace Skynet_Commerce.GUI.UserControls.Pages.User
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
 
-        private void HandleBuyAgain(object sender, int orderId)
+        private async void HandleBuyAgain(object sender, int orderId)
         {
-            MessageBox.Show("Chức năng mua lại đang phát triển.");
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    // 1. Tìm sản phẩm, Include thêm Shop để lấy ShopName
+                    var orderDetail = await db.OrderDetails
+                        .Include(od => od.Product)
+                        .Include(od => od.Product.Shop) // [QUAN TRỌNG] Lấy thông tin Shop
+                        .Include(od => od.Product.ProductImages) // Lấy danh sách ảnh
+                        .FirstOrDefaultAsync(od => od.OrderID == orderId);
+
+                    if (orderDetail != null && orderDetail.Product != null)
+                    {
+                        // 2. Tạo ProductDTO (Map đúng theo DTO cũ của bạn)
+                        ProductDTO productDto = new ProductDTO
+                        {
+                            ProductId = orderDetail.ProductID,
+                            ShopId = orderDetail.Product.ShopID ?? 0,
+                            ShopName = orderDetail.Product.Shop?.ShopName ?? "Shop Unknown", // Map tên Shop
+
+                            Name = orderDetail.Product.Name,
+                            Price = orderDetail.Product.Price ?? 0,
+                            OldPrice = orderDetail.Product.Price, // Tạm lấy giá hiện tại làm giá cũ (hoặc null)
+
+                            // Rating & SoldQuantity (Lấy từ DB nếu có, hoặc để mặc định)
+                            Rating = 5,
+                            SoldQuantity = orderDetail.Product.SoldCount ?? 0,
+
+                            // [QUAN TRỌNG] DTO của bạn dùng 'ImagePath', không phải 'ImageUrl'
+                            ImagePath = orderDetail.Product.ProductImages.FirstOrDefault()?.ImageURL ?? "",
+
+                            // Lấy danh sách ảnh nhỏ (Thumbnails)
+                            ThumbnailPaths = orderDetail.Product.ProductImages.Select(p => p.ImageURL).ToList()
+                        };
+
+                        // 3. Chuyển trang sang ProductDetail
+                        if (main != null)
+                        {
+                            main.LoadPage("ProductDetail", productDto);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Sản phẩm này không còn tồn tại hoặc đã bị xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi chuyển trang: " + ex.Message);
+            }
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Skynet_Commerce.GUI.Forms.User
 {
@@ -31,7 +33,13 @@ namespace Skynet_Commerce.GUI.Forms.User
 
         private void SetupEvents()
         {
-            if (btnRegister != null) btnRegister.Click += btnRegister_Click;
+            // [FIX LỖI TRÙNG SỰ KIỆN]
+            if (btnRegister != null)
+            {
+                btnRegister.Click -= btnRegister_Click;
+                btnRegister.Click += btnRegister_Click;
+            }
+
             if (lblBackToLogin != null) lblBackToLogin.Click += btnBack_Click;
         }
 
@@ -39,6 +47,16 @@ namespace Skynet_Commerce.GUI.Forms.User
         {
             if (_parentForm is FrmMain mainForm) mainForm.LoadPage("Login", _nextPage);
             else if (_parentForm is Authentication authForm) { UcLogin login = new UcLogin(authForm); authForm.ShowControl(login); }
+        }
+
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(password);
+                byte[] hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
         }
 
         private async void btnRegister_Click(object sender, EventArgs e)
@@ -67,7 +85,6 @@ namespace Skynet_Commerce.GUI.Forms.User
                 return;
             }
 
-            // [QUAN TRỌNG] Khóa nút ngay lập tức để tránh Click đúp
             btnRegister.Enabled = false;
             btnRegister.Text = "Đang xử lý...";
 
@@ -75,64 +92,60 @@ namespace Skynet_Commerce.GUI.Forms.User
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    // 2. Check trùng trong C# trước
+                    // 2. Check trùng
                     var exist = await Task.Run(() => db.Accounts.FirstOrDefault(a => a.Email == email || a.Phone == phone));
                     if (exist != null)
                     {
-                        // Mở lại nút nếu lỗi logic
                         btnRegister.Enabled = true;
                         btnRegister.Text = "ĐĂNG KÝ";
-
                         if (exist.Email == email) MessageBox.Show("Email này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         else MessageBox.Show("Số điện thoại này đã được sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
+
+                    string passwordHash = HashPassword(password);
 
                     // 3. Tạo Account
                     var newAccount = new Account
                     {
                         Email = email,
                         Phone = phone,
-                        PasswordHash = password,
+                        PasswordHash = passwordHash,
                         CreatedAt = DateTime.Now,
                         IsActive = true
                     };
                     db.Accounts.Add(newAccount);
-                    await db.SaveChangesAsync();
+                    await db.SaveChangesAsync(); // SAVE 1: AccountID được sinh ra
+
+                    // [ĐÃ COMMENT/XÓA VÌ CÓ TRIGGER TRONG DB]
+                    // var defaultRole = new UserRole { AccountID = newAccount.AccountID, RoleName = "Buyer", CreatedAt = DateTime.Now };
+                    // db.UserRoles.Add(defaultRole); 
 
                     // 4. Tạo User Profile
                     var newUser = new Skynet_Commerce.DAL.Entities.User
                     {
-                        AccountID = newAccount.AccountID,
+                        AccountID = newAccount.AccountID, // Dùng AccountID vừa sinh ra
                         FullName = email.Split('@')[0],
                         Gender = "Other",
                         DateOfBirth = DateTime.Now
                     };
                     db.Users.Add(newUser);
-                    await db.SaveChangesAsync();
+
+                    // Lưu User Profile (Role đã được Trigger xử lý tự động)
+                    await db.SaveChangesAsync(); // SAVE 2: Chỉ lưu User Profile
 
                     MessageBox.Show("Đăng ký thành công! Vui lòng đăng nhập.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Chuyển trang
+                    // Chuyển sang Login
                     if (_parentForm is FrmMain mainForm) mainForm.LoadPage("Login", _nextPage);
                     else if (_parentForm is Authentication authForm) { UcLogin login = new UcLogin(authForm); authForm.ShowControl(login); }
                 }
             }
             catch (Exception ex)
             {
-                // Mở lại nút nếu có lỗi hệ thống để người dùng thử lại
                 btnRegister.Enabled = true;
                 btnRegister.Text = "ĐĂNG KÝ";
-
-                // Kiểm tra nếu lỗi do trùng lặp (Duplicate)
-                if (ex.InnerException != null && ex.InnerException.InnerException != null && ex.InnerException.InnerException.Message.Contains("UNIQUE KEY"))
-                {
-                    MessageBox.Show("Email hoặc Số điện thoại này đã tồn tại trong hệ thống!", "Lỗi đăng ký", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

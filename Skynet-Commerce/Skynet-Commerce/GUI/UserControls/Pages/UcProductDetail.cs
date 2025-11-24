@@ -1,13 +1,14 @@
-﻿using Skynet_Commerce.BLL.Models;
+﻿using Skynet_Commerce.BLL.Helpers; // [QUAN TRỌNG] Để gọi SessionManager
+using Skynet_Commerce.BLL.Models;
+using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.GUI.Forms;
 using Skynet_Commerce.GUI.UserControls.Components;
-using Skynet_Commerce.BLL.Helpers; // [QUAN TRỌNG] Để gọi SessionManager
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.IO;
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
@@ -177,22 +178,53 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
         private void BtnBuyNow_Click(object sender, EventArgs e)
         {
-            // Thêm vào giỏ rồi chuyển đến trang giỏ hàng
             if (_currentProduct == null) return;
 
+            // 1. Validate số lượng
             int qty = 1;
             int.TryParse(txtQuantity.Text, out qty);
 
+            // 2. Validate Biến thể (Size/Màu)
             if (_variants != null && _variants.Count > 0 && _selectedVariant == null)
             {
                 MessageBox.Show("Vui lòng chọn Phân loại hàng (Màu sắc, Kích thước)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            BtnAddCart_Click(sender, e); // Tái sử dụng hàm thêm giỏ hàng
+            // 3. THÊM VÀO GIỎ HÀNG (Vẫn cần bước này để SessionManager nắm dữ liệu)
+            // Gọi lại logic thêm giỏ hàng nhưng KHÔNG hiện MessageBox thông báo thành công để đỡ phiền
+            int? variantId = _selectedVariant?.VariantID;
+            string variantName = _selectedVariant != null ? $"{_selectedVariant.Color}, {_selectedVariant.Size}" : "";
+            decimal finalPrice = _selectedVariant != null ? _selectedVariant.Price : _currentProduct.Price;
 
+            ProductDTO productToAdd = new ProductDTO
+            {
+                ProductId = _currentProduct.ProductId,
+                Name = _currentProduct.Name,
+                Price = finalPrice,
+                ImagePath = _currentProduct.ImagePath,
+                ShopId = _currentProduct.ShopId,
+                ShopName = _currentProduct.ShopName
+            };
+
+            // Thêm vào Session
+            SessionManager.AddToCart(productToAdd, qty, variantId, variantName);
+
+            // 4. ĐIỀU HƯỚNG THÔNG MINH
             FrmMain mainForm = this.FindForm() as FrmMain;
-            if (mainForm != null) mainForm.LoadPage("Cart");
+            if (mainForm != null)
+            {
+                if (AppSession.Instance.IsLoggedIn)
+                {
+                    // Nếu đã đăng nhập -> Sang thẳng trang Thanh Toán
+                    mainForm.LoadPage("Checkout");
+                }
+                else
+                {
+                    // Nếu chưa đăng nhập -> Sang trang Login (Login xong tự sang Checkout)
+                    mainForm.LoadPage("Login", "Checkout");
+                }
+            }
         }
 
         // --- CÁC HÀM HỖ TRỢ KHÁC ---

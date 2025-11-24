@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Skynet_Commerce.DAL.Entities; // Cần dòng này để gọi AppSession
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,30 +9,21 @@ namespace Skynet_Commerce.GUI.Forms
 {
     public partial class DashboardForm : Form
     {
-        // LƯU Ý: Không khai báo _sidebar, _header, _mainPanel ở đây nữa vì đã có trong Designer
-
         public DashboardForm()
         {
-            InitializeComponent(); // Khởi tạo các control từ Designer
+            InitializeComponent();
             guna2PictureBox1.LoadAsync("https://cdn-icons-png.flaticon.com/128/1533/1533565.png");
             CreateSidebarItems();
 
-            // Mặc định load trang Overview
             LoadPage(new DashboardOverviewForm());
         }
 
-        // Hàm chuyển trang (Lồng Form con vào _mainPanel)
         private void LoadPage(Form childForm)
         {
-            // Xóa nội dung cũ
             _mainPanel.Controls.Clear();
-
-            // Cấu hình form con
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
-
-            // Thêm vào panel
             _mainPanel.Controls.Add(childForm);
             _mainPanel.Tag = childForm;
             childForm.BringToFront();
@@ -40,7 +32,7 @@ namespace Skynet_Commerce.GUI.Forms
 
         private void CreateSidebarItems()
         {
-            // Dictionary: <Key (Tiếng Anh - Tag), Value (Tiếng Việt - Text)>
+            // Thêm "Logout" vào cuối danh sách
             Dictionary<string, string> menuMap = new Dictionary<string, string>()
             {
                 { "Dashboard", "Tổng quan" },
@@ -48,17 +40,17 @@ namespace Skynet_Commerce.GUI.Forms
                 { "Shops", "Cửa hàng" },
                 { "Products", "Sản phẩm" },
                 { "Orders", "Đơn hàng" },
-                { "Categories", "Danh mục" }
+                { "Categories", "Danh mục" },
+                { "Logout", "Đăng xuất" } // [MỚI] Thêm nút này
             };
 
             int yPos = 80;
 
-            // Duyệt qua từng phần tử trong Dictionary
             foreach (var menu in menuMap)
             {
                 Guna2Button btn = new Guna2Button
                 {
-                    Text = menu.Value, // HIỂN THỊ: Tiếng Việt (ví dụ: "Tổng quan")
+                    Text = menu.Value,
                     FillColor = Color.White,
                     ForeColor = Color.DimGray,
                     Font = new Font("Segoe UI", 10, FontStyle.Regular),
@@ -70,52 +62,59 @@ namespace Skynet_Commerce.GUI.Forms
                     ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton,
                     CheckedState = { FillColor = Color.FromArgb(79, 70, 229), ForeColor = Color.White },
                     TextOffset = new Point(10, 0),
-
-                    Tag = menu.Key // LOGIC: Tiếng Anh (ví dụ: "Dashboard")
+                    Tag = menu.Key
                 };
 
-                // Gán sự kiện Click
+                // [MỚI] Tùy chỉnh riêng cho nút Đăng xuất (Màu đỏ, tách biệt chút)
+                if (menu.Key == "Logout")
+                {
+                    yPos += 20; // Cách ra một chút cho đẹp
+                    btn.Location = new Point(10, yPos);
+                    btn.ForeColor = Color.Red;
+                    btn.CheckedState.FillColor = Color.Red; // Khi chọn sẽ hiện màu đỏ
+                    btn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.DefaultButton; // Không giữ trạng thái "đang chọn"
+                }
+
                 btn.Click += Sidebar_Click;
 
-                // Kiểm tra theo Key tiếng Anh để set mặc định
                 if (menu.Key == "Dashboard") btn.Checked = true;
 
                 _sidebar.Controls.Add(btn);
                 yPos += 50;
             }
         }
+
         private void Sidebar_Click(object sender, EventArgs e)
         {
             Guna2Button btn = sender as Guna2Button;
             if (btn == null) return;
 
-            // Lấy Tag (là tiếng Anh) để xử lý switch case
             string menuName = btn.Tag?.ToString() ?? "";
 
             switch (menuName)
             {
-                case "Dashboard":
-                    LoadPage(new DashboardOverviewForm());
-                    break;
+                case "Dashboard": LoadPage(new DashboardOverviewForm()); break;
+                case "Users": LoadPage(new UsersForm()); break;
+                case "Shops": LoadPage(new ShopsForm()); break;
+                case "Products": LoadPage(new ProductsForm()); break;
+                case "Orders": LoadPage(new OrdersForm()); break;
+                case "Categories": LoadPage(new CategoriesForm()); break;
 
-                case "Users":
-                    LoadPage(new UsersForm());
-                    break;
+                // [MỚI] Xử lý Đăng xuất
+                case "Logout":
+                    if (MessageBox.Show("Bạn có chắc muốn đăng xuất khỏi trang Quản trị?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        // 1. Xóa Session
+                        AppSession.Instance.Clear();
 
-                case "Shops":
-                    LoadPage(new ShopsForm());
-                    break;
+                        // 2. Mở lại FrmMain (Giao diện khách hàng)
+                        FrmMain main = new FrmMain();
+                        main.Show();
 
-                case "Products":
-                    LoadPage(new ProductsForm());
-                    break;
-
-                case "Orders":
-                    LoadPage(new OrdersForm());
-                    break;
-
-                case "Categories":
-                    LoadPage(new CategoriesForm());
+                        // 3. Ẩn Form Dashboard hiện tại đi
+                        // Lưu ý: Dùng Hide() thay vì Close() để tránh kích hoạt sự kiện Application.Exit() nếu bạn đã cài đặt ở form Login trước đó.
+                        this.Hide();
+                    }
                     break;
 
                 default:

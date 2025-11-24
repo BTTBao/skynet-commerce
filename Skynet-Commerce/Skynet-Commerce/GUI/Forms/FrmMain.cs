@@ -3,7 +3,6 @@ using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.GUI.Forms.User;
 using Skynet_Commerce.GUI.UserControls.Components;
 using Skynet_Commerce.GUI.UserControls.Pages;
-// [QUAN TRỌNG] Thêm dòng này để nhận diện các file trong thư mục User
 using Skynet_Commerce.GUI.UserControls.Pages.User;
 using System;
 using System.Collections.Generic;
@@ -53,8 +52,23 @@ namespace Skynet_Commerce.GUI.Forms
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            UpdateLoginState();
             LoadPage("Home");
             LoadHeaderIconsAsync();
+        }
+
+        public void UpdateLoginState()
+        {
+            if (AppSession.Instance.IsLoggedIn)
+            {
+                string displayName = AppSession.Instance.FullName;
+                if (string.IsNullOrEmpty(displayName)) displayName = "Tài khoản";
+                if (lblLogin != null) lblLogin.Text = displayName;
+            }
+            else
+            {
+                if (lblLogin != null) lblLogin.Text = "Đăng nhập";
+            }
         }
 
         private async void LoadHeaderIconsAsync()
@@ -97,6 +111,8 @@ namespace Skynet_Commerce.GUI.Forms
             lblHome.Click += (sender, e) => LoadPage("Home");
             lblOrders.Click += (sender, e) => LoadPage("Orders");
             btnCart.Click += (sender, e) => LoadPage("Cart");
+
+            // Các nút liên quan đến Profile
             btnAccount.Click += (sender, e) => LoadPage("Profile");
             lblLogin.Click += (sender, e) => LoadPage("Profile");
 
@@ -122,6 +138,7 @@ namespace Skynet_Commerce.GUI.Forms
             }
         }
 
+        // --- HÀM NÀY ĐÃ ĐƯỢC CẬP NHẬT ---
         public void LoadPage(string pageName, object data = null)
         {
             try
@@ -133,7 +150,24 @@ namespace Skynet_Commerce.GUI.Forms
                 string cacheKey = pageName;
                 int entityId = 0;
 
-                // 1. Xử lý Key Cache đặc biệt
+                // [MỚI] 1. Xử lý logic RIÊNG cho Profile:
+                // Nếu gọi Profile -> Luôn xóa Cache để ép chương trình kiểm tra lại Session
+                if (pageName == "Profile")
+                {
+                    // Xóa cache cũ để fetch lại dữ liệu mới nhất
+                    if (pageCache.ContainsKey("Profile")) pageCache.Remove("Profile");
+
+                    // Kiểm tra đăng nhập ngay tại đây để điều hướng đúng
+                    if (!AppSession.Instance.IsLoggedIn)
+                    {
+                        // Chưa đăng nhập -> Chuyển hướng sang Login
+                        pageName = "Login";
+                        data = "Profile"; // Truyền tham số để login xong quay lại Profile
+                        cacheKey = "Login"; // Đổi key cache
+                    }
+                }
+
+                // 2. Xử lý Key Cache đặc biệt cho các trang chi tiết
                 if (pageName == "ProductDetail" && data is ProductDTO productData)
                 {
                     entityId = productData.ProductId;
@@ -149,14 +183,13 @@ namespace Skynet_Commerce.GUI.Forms
                     cacheKey = $"Search_{keyword}";
                 }
 
-                // 2. Tìm trong Cache hoặc Tạo mới
+                // 3. Tìm trong Cache hoặc Tạo mới
                 if (pageCache.ContainsKey(cacheKey))
                 {
                     targetPage = pageCache[cacheKey];
-                    // Nếu là Giỏ hàng -> Refresh dữ liệu
+
+                    // Refresh dữ liệu cho Giỏ hàng (vì giỏ hàng thay đổi liên tục)
                     if (targetPage is UcCartPage cartPage) cartPage.LoadCartData();
-                    // Nếu là Profile -> Refresh dữ liệu user (tùy chọn)
-                    // if (targetPage is UcProfile prof) prof.LoadUserProfile(); 
                 }
                 else
                 {
@@ -172,22 +205,12 @@ namespace Skynet_Commerce.GUI.Forms
                         case "Checkout":
                             targetPage = new UcCheckoutPage();
                             break;
-                        case "Profile":
-                            if (AppSession.Instance.IsLoggedIn) // Hoặc AppSession.Instance.AccountID > 0
-                            {
-                                // Đã đăng nhập -> Cho phép vào Profile
-                                targetPage = new UcProfile(this);
-                            }
-                            else
-                            {
-                                // Chưa đăng nhập -> Chặn lại, chuyển hướng sang Login
-                                // Truyền tham số "Profile" để đăng nhập xong nó tự quay lại Profile
-                                string nextPage = "Profile";
-                                targetPage = new UcLogin(this, nextPage);
 
-                                // Đổi tên pageName thành Login để hiển thị tiêu đề đúng
-                                pageName = "Login";
-                            }
+                        // --- TRANG PROFILE (Đã được xử lý logic ở bước 1) ---
+                        case "Profile":
+                            // Tại đây chắc chắn đã đăng nhập (vì nếu chưa thì pageName đã đổi thành Login)
+                            // Tạo mới UcProfile -> Nó sẽ chạy constructor -> chạy OnLoad -> Fetch DB
+                            targetPage = new UcProfile(this);
                             break;
 
                         // --- AUTHENTICATION ---
@@ -200,7 +223,7 @@ namespace Skynet_Commerce.GUI.Forms
                             targetPage = new UcRegister(this, nextLinkReg);
                             break;
 
-                        // --- CHI TIẾT SẢN PHẨM/SHOP ---
+                        // --- CHI TIẾT ---
                         case "Search":
                             string kw = data as string ?? "";
                             targetPage = new UcSearchResult(kw);
@@ -217,27 +240,21 @@ namespace Skynet_Commerce.GUI.Forms
                             }
                             break;
 
-                        // --- [FIX LỖI] CÁC TRANG CON CỦA USER (TRUYỀN 'this') ---
+                        // --- CÁC TRANG USER CON ---
                         case "Orders":
-                            // UcOrderHistory cũng cần FrmMain nếu bên trong nó có nút quay lại hoặc chuyển trang
-                            // Nếu UcOrderHistory() ko nhận tham số thì để trống, nếu lỗi tương tự thì thêm 'this'
                             targetPage = new UcOrderHistory(this);
                             break;
-
                         case "ChangePassword":
-                            targetPage = new UcChangePassword(this); // [SỬA] Thêm 'this'
+                            targetPage = new UcChangePassword(this);
                             break;
-
                         case "Address":
-                            targetPage = new UcUserAddress(this);    // [SỬA] Thêm 'this' và dùng đúng tên class UcUserAddress
+                            targetPage = new UcUserAddress(this);
                             break;
-
                         case "EditProfile":
-                            targetPage = new UcEditProfile(this);    // [SỬA] Thêm 'this'
+                            targetPage = new UcEditProfile(this);
                             break;
-
                         case "ShopRegister":
-                            targetPage = new UcShopRegister(this);   // [SỬA] Thêm 'this'
+                            targetPage = new UcShopRegister(this);
                             break;
 
                         default:
@@ -245,6 +262,8 @@ namespace Skynet_Commerce.GUI.Forms
                     }
 
                     // Lưu Cache (Trừ Login/Register để tránh lỗi trạng thái)
+                    // Lưu ý: Profile vẫn có thể lưu cache cho phiên làm việc đó, 
+                    // nhưng ở bước 1 ta đã chủ động remove nếu người dùng bấm lại vào menu Profile.
                     if (targetPage != null && pageName != "Login" && pageName != "Register")
                     {
                         targetPage.Dock = DockStyle.Fill;
@@ -252,7 +271,7 @@ namespace Skynet_Commerce.GUI.Forms
                     }
                 }
 
-                // 3. Hiển thị trang
+                // 4. Hiển thị trang
                 if (targetPage != null)
                 {
                     foreach (Control c in pnlContent.Controls) c.Visible = false;
@@ -265,7 +284,7 @@ namespace Skynet_Commerce.GUI.Forms
                     targetPage.Visible = true;
                     targetPage.BringToFront();
 
-                    // Căn giữa nếu là Login/Register
+                    // Căn giữa Login/Register
                     if (pageName == "Login" || pageName == "Register")
                     {
                         targetPage.Dock = DockStyle.None;
@@ -277,7 +296,7 @@ namespace Skynet_Commerce.GUI.Forms
                         targetPage.Dock = DockStyle.Fill;
                     }
 
-                    // Cập nhật tiêu đề
+                    // Cập nhật tiêu đề Form
                     string title = pageName;
                     if (pageName == "Search") title = $"Tìm kiếm: {data}";
                     else if (pageName == "ProductDetail" && data is ProductDTO pd) title = pd.Name;

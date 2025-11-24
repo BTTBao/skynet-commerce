@@ -9,6 +9,7 @@ using Skynet_Commerce.BLL.Helpers;
 using Skynet_Commerce.DAL.Entities;
 using Skynet_Commerce.BLL.Models;
 using Skynet_Commerce.BLL.Services;
+using System.Threading.Tasks; // Cần dùng Task
 
 namespace Skynet_Commerce.GUI.UserControls.Pages
 {
@@ -16,9 +17,12 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
     {
         private decimal _totalAmount = 0;
         private decimal _shippingFee = 30000;
-        private string _selectedPaymentMethod = "COD"; // Mặc định
+        private string _selectedPaymentMethod = "COD";
 
-        // Khai báo biến toàn cục cho các nút Radio để dễ điều khiển
+        // Biến kiểm tra địa chỉ hợp lệ
+        private bool _hasAddress = false;
+
+        // Khai báo biến UI toàn cục
         private Guna2CustomRadioButton rbCOD;
         private Guna2CustomRadioButton rbCard;
         private Guna2CustomRadioButton rbBank;
@@ -26,12 +30,21 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         private Label lblAddressInfo;
         private Label lblSubTotalVal;
         private Label lblTotalVal;
+        private FlowLayoutPanel flpItems; // Để refresh list sản phẩm
 
         public UcCheckoutPage()
         {
             InitializeComponent();
             SetupUI();
-            LoadRealData();
+
+            // [QUAN TRỌNG] Tự động tải lại dữ liệu mỗi khi trang này hiện ra (Fetch data)
+            this.VisibleChanged += (s, e) =>
+            {
+                if (this.Visible)
+                {
+                    LoadRealData();
+                }
+            };
         }
 
         private void SetupUI()
@@ -79,23 +92,19 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             this.Controls.Add(pnlSummary);
         }
 
-        // --- 1. PHẦN PAYMENT (ĐÃ SỬA LOGIC CHỌN 1) ---
+        // --- CÁC PHẦN UI (Giữ nguyên cấu trúc, chỉ sửa biến toàn cục nếu cần) ---
+
         private Panel CreatePaymentMethodSection()
         {
             Guna2Panel pnl = new Guna2Panel { Size = new Size(800, 200), FillColor = Color.White, BorderRadius = 4, Margin = new Padding(0, 0, 0, 50) };
             pnl.Controls.Add(new Label { Text = "Phương thức thanh toán", Font = new Font("Segoe UI", 12, FontStyle.Regular), Location = new Point(15, 15), AutoSize = true });
 
             int y = 50;
-
-            // Tạo các nút Radio và gán vào biến toàn cục
             rbCOD = CreateRadioButton("COD");
             rbCard = CreateRadioButton("CARD");
             rbBank = CreateRadioButton("BANK");
-
-            // Mặc định chọn COD
             rbCOD.Checked = true;
 
-            // Thêm vào giao diện
             pnl.Controls.Add(CreatePaymentRow(rbCOD, "Thanh toán khi nhận hàng (COD)", "Thanh toán bằng tiền mặt khi nhận hàng", y));
             y += 50;
             pnl.Controls.Add(CreatePaymentRow(rbCard, "Thẻ tín dụng / Thẻ ghi nợ", "Visa, Mastercard, JCB", y));
@@ -116,24 +125,18 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 Tag = tag,
                 Cursor = Cursors.Hand
             };
-            // Gán sự kiện Click chung
             rb.Click += OnPaymentMethodChanged;
             return rb;
         }
 
-        // [LOGIC QUAN TRỌNG] Xử lý chỉ chọn 1 cái
         private void OnPaymentMethodChanged(object sender, EventArgs e)
         {
             var selectedBtn = sender as Guna2CustomRadioButton;
-
             if (selectedBtn.Checked)
             {
-                // Bỏ chọn 2 cái kia
                 if (selectedBtn != rbCOD) rbCOD.Checked = false;
                 if (selectedBtn != rbCard) rbCard.Checked = false;
                 if (selectedBtn != rbBank) rbBank.Checked = false;
-
-                // Cập nhật biến lưu trữ
                 _selectedPaymentMethod = selectedBtn.Tag.ToString();
             }
         }
@@ -141,23 +144,14 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         private Panel CreatePaymentRow(Guna2CustomRadioButton rb, string title, string sub, int y)
         {
             Panel p = new Panel { Location = new Point(20, y), Size = new Size(750, 45) };
-
             Label lblT = new Label { Text = title, Font = new Font("Segoe UI", 10), Location = new Point(30, 2), AutoSize = true };
             Label lblS = new Label { Text = sub, Font = new Font("Segoe UI", 8), ForeColor = Color.Gray, Location = new Point(30, 22), AutoSize = true };
-
-            // Khi bấm vào chữ cũng chọn Radio
             EventHandler labelClick = (s, e) => { rb.Checked = true; OnPaymentMethodChanged(rb, EventArgs.Empty); };
-            lblT.Click += labelClick;
-            lblS.Click += labelClick;
-            p.Click += labelClick;
-
-            p.Controls.Add(rb);
-            p.Controls.Add(lblT);
-            p.Controls.Add(lblS);
+            lblT.Click += labelClick; lblS.Click += labelClick; p.Click += labelClick;
+            p.Controls.Add(rb); p.Controls.Add(lblT); p.Controls.Add(lblS);
             return p;
         }
 
-        // --- 2. PHẦN ĐỊA CHỈ ---
         private Panel CreateAddressSection()
         {
             Guna2Panel pnl = new Guna2Panel { Size = new Size(800, 120), FillColor = Color.White, BorderRadius = 4, Margin = new Padding(0, 0, 0, 20) };
@@ -175,24 +169,26 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
             Guna2Button btnChange = new Guna2Button { Text = "Thay đổi", FillColor = Color.White, ForeColor = Color.OrangeRed, BorderColor = Color.OrangeRed, BorderThickness = 1, Location = new Point(680, 50), Size = new Size(80, 30) };
 
+            // Sự kiện nút Thay đổi địa chỉ
+            btnChange.Click += (s, e) =>
+            {
+                FrmMain main = this.FindForm() as FrmMain;
+                if (main != null) main.LoadPage("Address");
+            };
+
             pnl.Controls.Add(lblTitle);
             pnl.Controls.Add(lblAddressInfo);
             pnl.Controls.Add(btnChange);
             return pnl;
         }
 
-        // --- 3. PHẦN SẢN PHẨM ---
         private Panel CreateProductSection()
         {
             Guna2Panel pnl = new Guna2Panel { Size = new Size(800, 10), FillColor = Color.White, BorderRadius = 4, Margin = new Padding(0, 0, 0, 20), AutoSize = true };
             pnl.Controls.Add(new Label { Text = "Sản phẩm đã chọn", Font = new Font("Segoe UI", 12, FontStyle.Regular), Location = new Point(15, 15), AutoSize = true });
 
-            FlowLayoutPanel flpItems = new FlowLayoutPanel { Location = new Point(15, 50), Size = new Size(770, 10), AutoSize = true, FlowDirection = FlowDirection.TopDown };
-
-            foreach (var item in SessionManager.CartItems)
-            {
-                flpItems.Controls.Add(CreateCheckoutItem(item.ProductName, "Mặc định", item.Price.ToString("N0") + "đ", item.Quantity, item.ImageUrl));
-            }
+            // Lưu biến toàn cục để clear và add lại khi reload
+            flpItems = new FlowLayoutPanel { Location = new Point(15, 50), Size = new Size(770, 10), AutoSize = true, FlowDirection = FlowDirection.TopDown };
 
             pnl.Controls.Add(flpItems);
             return pnl;
@@ -212,7 +208,6 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             return p;
         }
 
-        // --- 4. TỔNG KẾT ---
         private void SetupSummarySection(Guna2Panel pnl)
         {
             Label lblTitle = new Label { Text = "Đơn hàng", Font = new Font("Segoe UI", 11, FontStyle.Bold), Location = new Point(15, 15) };
@@ -248,45 +243,68 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
             pnl.Controls.Add(lblTotal); pnl.Controls.Add(lblTotalVal); pnl.Controls.Add(btnOrder); pnl.Controls.Add(lblNote);
         }
 
-        // --- LOAD DATA ---
-        private void LoadRealData()
+
+        // --- [QUAN TRỌNG] HÀM LOAD DỮ LIỆU TỰ ĐỘNG ---
+        private async void LoadRealData()
         {
-            LoadUserAddress();
+            // Fetch địa chỉ và kiểm tra xem có địa chỉ chưa
+            await LoadUserAddress();
+
+            // Fetch lại sản phẩm trong giỏ (nếu user thay đổi số lượng ở tab khác)
             LoadCartItems();
         }
 
-        private void LoadUserAddress()
+        private async Task LoadUserAddress()
         {
             try
             {
                 int accId = AppSession.Instance.AccountID;
+                if (accId <= 0) return;
+
                 using (var db = new ApplicationDbContext())
                 {
-                    var addr = db.UserAddresses.FirstOrDefault(a => a.AccountID == accId && a.IsDefault == true)
-                               ?? db.UserAddresses.FirstOrDefault(a => a.AccountID == accId);
+                    // Chạy task để không đơ giao diện
+                    var addr = await Task.Run(() =>
+                        db.UserAddresses.FirstOrDefault(a => a.AccountID == accId && a.IsDefault == true)
+                        ?? db.UserAddresses.FirstOrDefault(a => a.AccountID == accId)
+                    );
 
                     if (addr != null)
                     {
                         lblAddressInfo.Text = $"{addr.ReceiverFullName} | {addr.ReceiverPhone}\n{addr.AddressLine}, {addr.Ward}, {addr.District}, {addr.Province}";
+                        lblAddressInfo.ForeColor = Color.Black;
+                        _hasAddress = true; // Đã có địa chỉ
                     }
                     else
                     {
-                        lblAddressInfo.Text = "Chưa có địa chỉ nhận hàng. Vui lòng thêm địa chỉ!";
+                        // [CHECK ĐỊA CHỈ] Nếu chưa có, hiện cảnh báo ngay
+                        lblAddressInfo.Text = "⚠️ BẠN CHƯA CÓ ĐỊA CHỈ NHẬN HÀNG.\nVUI LÒNG BẤM 'THAY ĐỔI' ĐỂ THÊM ĐỊA CHỈ MỚI.";
                         lblAddressInfo.ForeColor = Color.Red;
+                        _hasAddress = false; // Chưa có địa chỉ
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi
+            }
         }
 
         private void LoadCartItems()
         {
+            // Xóa danh sách cũ trên UI để vẽ lại từ đầu
+            if (flpItems != null) flpItems.Controls.Clear();
+
             var cartItems = SessionManager.CartItems;
             decimal subTotal = 0;
 
             foreach (var item in cartItems)
             {
                 subTotal += item.Price * item.Quantity;
+                if (flpItems != null)
+                {
+                    flpItems.Controls.Add(CreateCheckoutItem(item.ProductName, "Tiêu chuẩn", item.Price.ToString("N0") + "đ", item.Quantity, item.ImageUrl));
+                }
             }
             _totalAmount = subTotal + _shippingFee;
 
@@ -297,6 +315,13 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
         // --- SỰ KIỆN ĐẶT HÀNG ---
         private async void BtnOrder_Click(object sender, EventArgs e)
         {
+            // 1. Kiểm tra địa chỉ NGAY LẬP TỨC
+            if (!_hasAddress)
+            {
+                MessageBox.Show("Bạn chưa thiết lập địa chỉ nhận hàng!\nVui lòng thêm địa chỉ để tiếp tục.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (_selectedPaymentMethod != "COD")
             {
                 MessageBox.Show("Hệ thống thanh toán Online đang bảo trì. Vui lòng chọn 'Thanh toán khi nhận hàng (COD)'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -305,7 +330,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
 
             if (SessionManager.CartItems.Count == 0)
             {
-                MessageBox.Show("Giỏ hàng trống!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Giỏ hàng trống! Vui lòng quay lại chọn sản phẩm.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -314,17 +339,17 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                 int accId = AppSession.Instance.AccountID;
                 using (var db = new ApplicationDbContext())
                 {
-                    // 1. Kiểm tra địa chỉ
+                    // Lấy lại thông tin địa chỉ lần cuối cho chắc chắn
                     var address = db.UserAddresses.FirstOrDefault(a => a.AccountID == accId && a.IsDefault == true)
                                   ?? db.UserAddresses.FirstOrDefault(a => a.AccountID == accId);
 
                     if (address == null)
                     {
-                        MessageBox.Show("Vui lòng thêm địa chỉ nhận hàng trước khi thanh toán!", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Địa chỉ không hợp lệ. Vui lòng kiểm tra lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    // 2. [QUAN TRỌNG] Kiểm tra tồn kho trước khi đặt
+                    // 2. Kiểm tra tồn kho
                     var productIds = SessionManager.CartItems.Select(c => c.ProductId).ToList();
                     var dbProducts = db.Products.Where(p => productIds.Contains(p.ProductID)).ToList();
 
@@ -338,7 +363,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                         }
                         if (productInDb.StockQuantity < item.Quantity)
                         {
-                            MessageBox.Show($"Sản phẩm '{item.ProductName}' chỉ còn {productInDb.StockQuantity} cái trong kho (Bạn đặt {item.Quantity}). Vui lòng giảm số lượng!", "Hết hàng");
+                            MessageBox.Show($"Sản phẩm '{item.ProductName}' chỉ còn {productInDb.StockQuantity} cái. Vui lòng giảm số lượng!", "Hết hàng");
                             return;
                         }
                     }
@@ -353,7 +378,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                     db.OrderGroups.Add(orderGroup);
                     await db.SaveChangesAsync();
 
-                    // 4. Tách đơn và Trừ kho
+                    // 4. Tách đơn theo Shop
                     var cartByShop = dbProducts.GroupBy(p => p.ShopID);
 
                     foreach (var shopGroup in cartByShop)
@@ -377,26 +402,24 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                                 UnitPrice = prod.Price ?? 0,
                             });
 
-                            // [TRỪ KHO TRỰC TIẾP]
+                            // Trừ kho
                             prod.StockQuantity -= cartItem.Quantity;
                             prod.SoldCount += cartItem.Quantity;
                         }
 
-                        // Tạo Order
                         var order = new Order
                         {
                             OrderGroupID = orderGroup.OrderGroupID,
                             ShopID = shopId.Value,
                             AccountID = accId,
                             AddressID = address.AddressID,
-                            TotalAmount = shopOrderTotal + _shippingFee,
+                            TotalAmount = shopOrderTotal + _shippingFee, // Mỗi shop chịu 1 phí ship (Logic đơn giản)
                             Status = "Pending",
                             CreatedAt = DateTime.Now
                         };
                         db.Orders.Add(order);
-                        await db.SaveChangesAsync(); // Lưu Order để có ID
+                        await db.SaveChangesAsync();
 
-                        // Lưu OrderDetails
                         foreach (var detail in details)
                         {
                             detail.OrderID = order.OrderID;
@@ -415,11 +438,12 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                     };
                     db.Payments.Add(payment);
 
-                    // [LƯU TẤT CẢ THAY ĐỔI] (Bao gồm cả việc trừ kho)
                     await db.SaveChangesAsync();
 
                     // 6. Xóa giỏ hàng
                     SessionManager.ClearCart();
+
+                    // Xóa giỏ hàng trong DB (nếu có lưu)
                     try
                     {
                         var dbCart = db.Carts.FirstOrDefault(c => c.AccountID == accId);
@@ -431,7 +455,7 @@ namespace Skynet_Commerce.GUI.UserControls.Pages
                     }
                     catch { }
 
-                    MessageBox.Show("Đặt hàng thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Đặt hàng thành công! Cảm ơn bạn đã mua sắm.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     // Quay về trang chủ
                     FrmMain main = this.FindForm() as FrmMain;
