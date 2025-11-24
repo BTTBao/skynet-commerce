@@ -29,6 +29,7 @@
             this.lblCanceled = new System.Windows.Forms.Label();
             this.lblCompleted = new System.Windows.Forms.Label();
             this.lblDelivering = new System.Windows.Forms.Label();
+            this.lblConfirmed = new System.Windows.Forms.Label();  // THÊM DÒNG NÀY
             this.lblPending = new System.Windows.Forms.Label();
             this.pnlContent = new Guna.UI2.WinForms.Guna2Panel();
             this.dgvOrders = new Guna.UI2.WinForms.Guna2DataGridView();
@@ -42,7 +43,6 @@
             this.pnlHeader.SuspendLayout();
             this.pnlSummary.SuspendLayout();
             this.pnlContent.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvOrders)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlHeader
@@ -58,6 +58,8 @@
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1000, 120);
             this.pnlHeader.TabIndex = 0;
+            this.pnlHeader.BorderColor = System.Drawing.Color.White; // Hoặc Color.Transparent
+            this.pnlHeader.BorderThickness = 0;
             // 
             // lblTitle
             // 
@@ -82,18 +84,16 @@
             this.txtSearch.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            // Note: You must add the search icon resource here
-            // this.txtSearch.IconLeft = global::Skynet_Commerce.Properties.Resources.search_icon; 
             this.txtSearch.IconLeftOffset = new System.Drawing.Point(5, 0);
             this.txtSearch.Location = new System.Drawing.Point(20, 70);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
             this.txtSearch.PasswordChar = '\0';
-            this.txtSearch.PlaceholderText = "Tìm kiếm theo mã đơn hoặc tên khách hàng...";
             this.txtSearch.SelectedText = "";
             this.txtSearch.Size = new System.Drawing.Size(450, 40);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextOffset = new System.Drawing.Point(10, 0);
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.Enter += new System.EventHandler(this.txtSearch_Enter);
             this.txtSearch.Leave += new System.EventHandler(this.txtSearch_Leave);
             // 
@@ -111,6 +111,7 @@
             this.cbStatusFilter.Items.AddRange(new object[] {
             "Tất cả trạng thái",
             "Chờ xử lý",
+            "Đã xác nhận",
             "Đang giao",
             "Hoàn thành",
             "Đã hủy"});
@@ -120,33 +121,18 @@
             this.cbStatusFilter.StartIndex = 0;
             this.cbStatusFilter.TabIndex = 2;
             this.cbStatusFilter.TextOffset = new System.Drawing.Point(5, 0);
-            // 
-            // btnAdvancedFilter
-            // 
-            this.btnAdvancedFilter.BorderRadius = 8;
-            this.btnAdvancedFilter.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnAdvancedFilter.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnAdvancedFilter.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnAdvancedFilter.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnAdvancedFilter.FillColor = System.Drawing.Color.LightGray;
-            this.btnAdvancedFilter.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnAdvancedFilter.ForeColor = System.Drawing.Color.Black;
-            this.btnAdvancedFilter.Location = new System.Drawing.Point(700, 70);
-            this.btnAdvancedFilter.Name = "btnAdvancedFilter";
-            this.btnAdvancedFilter.Size = new System.Drawing.Size(130, 40);
-            this.btnAdvancedFilter.TabIndex = 3;
-            this.btnAdvancedFilter.Text = "⚙️ Lọc nâng cao";
-            // 
+            
             // pnlSummary
             // 
             this.pnlSummary.BackColor = System.Drawing.Color.Transparent;
             this.pnlSummary.Controls.Add(this.lblCanceled);
             this.pnlSummary.Controls.Add(this.lblCompleted);
             this.pnlSummary.Controls.Add(this.lblDelivering);
+            this.pnlSummary.Controls.Add(this.lblConfirmed);  // THÊM DÒNG NÀY
             this.pnlSummary.Controls.Add(this.lblPending);
             this.pnlSummary.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlSummary.FillColor = System.Drawing.Color.White;
-            this.pnlSummary.Location = new System.Drawing.Point(0, 90);
+            this.pnlSummary.Location = new System.Drawing.Point(0, 120);
             this.pnlSummary.Name = "pnlSummary";
             this.pnlSummary.Size = new System.Drawing.Size(1000, 50);
             this.pnlSummary.TabIndex = 1;
@@ -156,11 +142,11 @@
             this.lblCanceled.AutoSize = true;
             this.lblCanceled.BackColor = System.Drawing.Color.White;
             this.lblCanceled.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblCanceled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(77)))), ((int)(((byte)(77))))); // Màu đỏ
-            this.lblCanceled.Location = new System.Drawing.Point(450, 15);
+            this.lblCanceled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.lblCanceled.Location = new System.Drawing.Point(580, 15);
             this.lblCanceled.Name = "lblCanceled";
             this.lblCanceled.Size = new System.Drawing.Size(89, 23);
-            this.lblCanceled.TabIndex = 3;
+            this.lblCanceled.TabIndex = 4;
             this.lblCanceled.Text = "Đã hủy: 0";
             // 
             // lblCompleted
@@ -168,11 +154,11 @@
             this.lblCompleted.AutoSize = true;
             this.lblCompleted.BackColor = System.Drawing.Color.White;
             this.lblCompleted.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblCompleted.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0))))); // Màu xanh lá
-            this.lblCompleted.Location = new System.Drawing.Point(290, 15);
+            this.lblCompleted.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.lblCompleted.Location = new System.Drawing.Point(430, 15);
             this.lblCompleted.Name = "lblCompleted";
             this.lblCompleted.Size = new System.Drawing.Size(135, 23);
-            this.lblCompleted.TabIndex = 2;
+            this.lblCompleted.TabIndex = 3;
             this.lblCompleted.Text = "Hoàn thành: 0";
             // 
             // lblDelivering
@@ -180,19 +166,31 @@
             this.lblDelivering.AutoSize = true;
             this.lblDelivering.BackColor = System.Drawing.Color.White;
             this.lblDelivering.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblDelivering.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210))))); // Màu xanh dương
-            this.lblDelivering.Location = new System.Drawing.Point(160, 15);
+            this.lblDelivering.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(39)))), ((int)(((byte)(176)))));
+            this.lblDelivering.Location = new System.Drawing.Point(300, 15);
             this.lblDelivering.Name = "lblDelivering";
             this.lblDelivering.Size = new System.Drawing.Size(107, 23);
-            this.lblDelivering.TabIndex = 1;
+            this.lblDelivering.TabIndex = 2;
             this.lblDelivering.Text = "Đang giao: 0";
+            // 
+            // lblConfirmed
+            // 
+            this.lblConfirmed.AutoSize = true;
+            this.lblConfirmed.BackColor = System.Drawing.Color.White;
+            this.lblConfirmed.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblConfirmed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(150)))), ((int)(((byte)(243)))));
+            this.lblConfirmed.Location = new System.Drawing.Point(150, 15);
+            this.lblConfirmed.Name = "lblConfirmed";
+            this.lblConfirmed.Size = new System.Drawing.Size(135, 23);
+            this.lblConfirmed.TabIndex = 1;
+            this.lblConfirmed.Text = "Đã xác nhận: 0";
             // 
             // lblPending
             // 
             this.lblPending.AutoSize = true;
             this.lblPending.BackColor = System.Drawing.Color.White;
             this.lblPending.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblPending.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0))))); // Màu cam
+            this.lblPending.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
             this.lblPending.Location = new System.Drawing.Point(20, 15);
             this.lblPending.Name = "lblPending";
             this.lblPending.Size = new System.Drawing.Size(117, 23);
@@ -205,10 +203,10 @@
             this.pnlContent.Controls.Add(this.dgvOrders);
             this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContent.FillColor = System.Drawing.Color.White;
-            this.pnlContent.Location = new System.Drawing.Point(0, 140);
+            this.pnlContent.Location = new System.Drawing.Point(0, 170);
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Padding = new System.Windows.Forms.Padding(20, 20, 20, 20);
-            this.pnlContent.Size = new System.Drawing.Size(1000, 460);
+            this.pnlContent.Size = new System.Drawing.Size(1000, 430);
             this.pnlContent.TabIndex = 2;
             // 
             // dgvOrders
@@ -224,7 +222,7 @@
             this.dgvOrders.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvOrders.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0))))); // Màu cam đậm
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
@@ -245,7 +243,7 @@
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10F);
             dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(230)))), ((int)(((byte)(200))))); // Cam nhạt
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(230)))), ((int)(((byte)(200)))));
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvOrders.DefaultCellStyle = dataGridViewCellStyle3;
@@ -258,7 +256,7 @@
             this.dgvOrders.RowHeadersWidth = 51;
             this.dgvOrders.RowTemplate.Height = 80;
             this.dgvOrders.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvOrders.Size = new System.Drawing.Size(960, 420);
+            this.dgvOrders.Size = new System.Drawing.Size(960, 390);
             this.dgvOrders.TabIndex = 0;
             this.dgvOrders.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(255)))), ((int)(((byte)(251)))));
             this.dgvOrders.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -287,69 +285,69 @@
             // colOrderID
             // 
             this.colOrderID.DataPropertyName = "OrderID";
-            this.colOrderID.FillWeight = 80F;
             this.colOrderID.HeaderText = "Mã đơn";
             this.colOrderID.MinimumWidth = 6;
             this.colOrderID.Name = "colOrderID";
             this.colOrderID.ReadOnly = true;
+            this.colOrderID.Width = 60;
             // 
             // colCustomer
             // 
             this.colCustomer.DataPropertyName = "Customer";
-            this.colCustomer.FillWeight = 120F;
             this.colCustomer.HeaderText = "Khách hàng";
             this.colCustomer.MinimumWidth = 6;
             this.colCustomer.Name = "colCustomer";
             this.colCustomer.ReadOnly = true;
+            this.colCustomer.Width = 150;
             // 
             // colProduct
             // 
             this.colProduct.DataPropertyName = "Product";
-            this.colProduct.FillWeight = 200F;
             this.colProduct.HeaderText = "Sản phẩm";
             this.colProduct.MinimumWidth = 6;
             this.colProduct.Name = "colProduct";
             this.colProduct.ReadOnly = true;
+            this.colProduct.Width = 320;
             // 
             // colOrderDate
             // 
             this.colOrderDate.DataPropertyName = "OrderDate";
-            this.colOrderDate.FillWeight = 100F;
             this.colOrderDate.HeaderText = "Ngày đặt";
             this.colOrderDate.MinimumWidth = 6;
             this.colOrderDate.Name = "colOrderDate";
             this.colOrderDate.ReadOnly = true;
+            this.colOrderDate.Width = 130;
             // 
             // colTotal
             // 
             this.colTotal.DataPropertyName = "Total";
-            this.colTotal.FillWeight = 100F;
             this.colTotal.HeaderText = "Tổng tiền";
             this.colTotal.MinimumWidth = 6;
             this.colTotal.Name = "colTotal";
             this.colTotal.ReadOnly = true;
+            this.colTotal.Width = 120;
             // 
             // colStatus
             // 
             this.colStatus.DataPropertyName = "Status";
-            this.colStatus.FillWeight = 100F;
             this.colStatus.HeaderText = "Trạng thái";
             this.colStatus.MinimumWidth = 6;
             this.colStatus.Name = "colStatus";
             this.colStatus.ReadOnly = true;
+            this.colStatus.Width = 120;
             // 
             // colAction
             // 
-            this.colAction.FillWeight = 100F;
             this.colAction.HeaderText = "Thao tác";
             this.colAction.MinimumWidth = 6;
             this.colAction.Name = "colAction";
             this.colAction.ReadOnly = true;
+            this.colAction.Width = 100;
             // 
             // ucOrder
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245))))); // Nền xám nhạt
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
             this.Controls.Add(this.pnlContent);
             this.Controls.Add(this.pnlSummary);
             this.Controls.Add(this.pnlHeader);
@@ -373,6 +371,7 @@
         private Guna.UI2.WinForms.Guna2Button btnAdvancedFilter;
         private Guna.UI2.WinForms.Guna2Panel pnlSummary;
         private System.Windows.Forms.Label lblPending;
+        private System.Windows.Forms.Label lblConfirmed;  // THÊM DÒNG NÀY
         private System.Windows.Forms.Label lblDelivering;
         private System.Windows.Forms.Label lblCompleted;
         private System.Windows.Forms.Label lblCanceled;

@@ -1,4 +1,7 @@
-﻿namespace Skynet_Commerce
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace Skynet_Commerce
 {
     partial class ucProduct
     {
@@ -26,6 +29,28 @@
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
+        /// 
+        private void SetupComboStatus()
+        {
+            cbStatusFilter.DrawMode = DrawMode.OwnerDrawFixed;          // quan trọng – không dùng OwnerDrawVariable
+            cbStatusFilter.ItemHeight = 30;                             // chiều cao item đồng đều
+
+            // Font cho ComboBox
+            cbStatusFilter.Font = new Font("Segoe UI", 10F);
+            cbStatusFilter.ForeColor = Color.Black;
+
+            // Font cho danh sách item
+            cbStatusFilter.ItemsAppearance.Font = new Font("Segoe UI", 10F);
+            cbStatusFilter.ItemsAppearance.ForeColor = Color.Black;
+
+            // Khi hover item
+            cbStatusFilter.ItemsAppearance.SelectedForeColor = Color.White;
+            cbStatusFilter.ItemsAppearance.SelectedBackColor = Color.FromArgb(94, 148, 255);
+
+            // Nền dropdown
+            cbStatusFilter.ItemsAppearance.BackColor = Color.White;
+        }
+
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -132,7 +157,6 @@
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
             this.txtSearch.PasswordChar = '\0';
-            this.txtSearch.PlaceholderText = "Tìm kiếm sản phẩm theo tên hoặc mã...";
             this.txtSearch.SelectedText = "";
             this.txtSearch.Size = new System.Drawing.Size(350, 36);
             this.txtSearch.TabIndex = 2;
@@ -427,7 +451,7 @@
             this.pnlFooter.ResumeLayout(false);
             this.pnlFooter.PerformLayout();
             this.ResumeLayout(false);
-
+            SetupComboStatus();
         }
 
         #endregion

@@ -15,117 +15,30 @@ namespace Skynet_Commerce
         private int _currentShopId;
         private List<OrderSellerDTO> _allOrders;
         private List<OrderSellerDTO> _filteredOrders;
-        private List<OrderDisplayModel> _displayOrders;
+        private string _currentStatusFilter = "Tất cả trạng thái";
 
         public ucOrder()
         {
             InitializeComponent();
             _orderService = new OrderServiceForSeller();
             _currentShopId = 1;
-
-            // QUAN TRỌNG: Setup DataGridView nếu chưa có columns
-            SetupDataGridView();
             this.Load += ucOrder_Load;
         }
 
         public ucOrder(int shopId) : this()
         {
+            InitializeComponent();
+            _orderService = new OrderServiceForSeller();
+            this.Load += ucOrder_Load;
             _currentShopId = shopId;
-        }
 
-        // BƯỚC 1: Setup columns cho DataGridView
-        private void SetupDataGridView()
-        {
-            // Xóa hết columns cũ (nếu có)
-            dgvOrders.Columns.Clear();
 
-            // Tắt auto generate columns
-            dgvOrders.AutoGenerateColumns = false;
-            dgvOrders.AllowUserToAddRows = false;
-            dgvOrders.RowHeadersVisible = false;
-            dgvOrders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvOrders.MultiSelect = false;
-            dgvOrders.RowTemplate.Height = 80;
-
-            // Tạo các columns
-            // Column 1: Mã đơn hàng
-            dgvOrders.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colOrderID",
-                HeaderText = "Mã đơn",
-                DataPropertyName = "OrderID",
-                Width = 60,
-                ReadOnly = true
-            });
-
-            // Column 2: Khách hàng
-            dgvOrders.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colCustomer",
-                HeaderText = "Khách hàng",
-                DataPropertyName = "Customer",
-                Width = 150,
-                ReadOnly = true
-            });
-
-            // Column 3: Sản phẩm (custom paint)
-            dgvOrders.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colProduct",
-                HeaderText = "Sản phẩm",
-                DataPropertyName = "ProductName",
-                Width = 250,
-                ReadOnly = true
-            });
-
-            // Column 4: Ngày đặt
-            dgvOrders.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colOrderDate",
-                HeaderText = "Ngày đặt",
-                DataPropertyName = "OrderDate",
-                Width = 130,
-                ReadOnly = true
-            });
-
-            // Column 5: Tổng tiền
-            dgvOrders.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colTotal",
-                HeaderText = "Tổng tiền",
-                DataPropertyName = "Total",
-                Width = 120,
-                ReadOnly = true,
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    ForeColor = Color.Green,
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold)
-                }
-            });
-
-            // Column 6: Trạng thái (custom paint)
-            dgvOrders.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colStatus",
-                HeaderText = "Trạng thái",
-                DataPropertyName = "Status",
-                Width = 120,
-                ReadOnly = true
-            });
-
-            // Column 7: Thao tác (custom paint)
-            dgvOrders.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colAction",
-                HeaderText = "Thao tác",
-                Width = 120,
-                ReadOnly = true
-            });
         }
 
         private void ucOrder_Load(object sender, EventArgs e)
         {
             LoadOrderData();
+            cbStatusFilter.SelectedIndexChanged += cbStatusFilter_SelectedIndexChanged;
         }
 
         private async void LoadOrderData()
@@ -156,6 +69,7 @@ namespace Skynet_Commerce
                         MessageBoxIcon.Warning);
 
                     lblPending.Text = "Chờ xử lý: 0";
+                    lblConfirmed.Text = "Đã xác nhận: 0";
                     lblDelivering.Text = "Đang giao: 0";
                     lblCompleted.Text = "Hoàn thành: 0";
                     lblCanceled.Text = "Đã hủy: 0";
@@ -276,6 +190,7 @@ namespace Skynet_Commerce
 
             // Cập nhật text cho các label với số lượng và tổng tiền
             lblPending.Text = $"Chờ xử lý: {pending}   ";
+            lblConfirmed.Text = $"Đã xác nhận: {confirmed}   ";
             lblDelivering.Text = $"Đang giao: {delivering}   ";
             lblCompleted.Text = $"Hoàn thành: {completed + delivered}   ";
             lblCanceled.Text = $"Đã hủy: {canceled}   ";
@@ -297,18 +212,6 @@ namespace Skynet_Commerce
             System.Diagnostics.Debug.WriteLine($"Summary: Pending={pending}, Delivering={delivering}, Completed={completed + delivered}, Canceled={canceled}");
         }
 
-        // Helper method để format tiền tệ
-        private string FormatCurrency(decimal amount)
-        {
-            if (amount >= 1000000000) // Tỷ
-                return $"{amount / 1000000000:0.##} tỷ";
-            else if (amount >= 1000000) // Triệu
-                return $"{amount / 1000000:0.##} tr";
-            else if (amount >= 1000) // Nghìn
-                return $"{amount / 1000:0.##}k";
-            else
-                return $"{amount:N0}₫";
-        }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
@@ -322,8 +225,7 @@ namespace Skynet_Commerce
 
             string searchText = txtSearch.Text.ToLower();
 
-            if (string.IsNullOrWhiteSpace(searchText) ||
-                searchText == "🔍 tìm kiếm theo mã đơn hoặc tên khách hàng...")
+            if (string.IsNullOrWhiteSpace(searchText) )
             {
                 _filteredOrders = _allOrders;
             }
@@ -343,18 +245,14 @@ namespace Skynet_Commerce
 
         private void txtSearch_Enter(object sender, EventArgs e)
         {
-            if (txtSearch.Text == "🔍 Tìm kiếm theo mã đơn hoặc tên khách hàng...")
-            {
-                txtSearch.Text = "";
-                txtSearch.ForeColor = Color.Black;
-            }
+            
         }
 
         private void txtSearch_Leave(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtSearch.Text))
             {
-                txtSearch.Text = "🔍 Tìm kiếm theo mã đơn hoặc tên khách hàng...";
+                txtSearch.Text = "";
                 txtSearch.ForeColor = Color.Gray;
             }
         }
@@ -372,7 +270,7 @@ namespace Skynet_Commerce
             {
                 e.PaintBackground(e.CellBounds, true);
 
-                int padding = 5;
+                int padding = 8;
                 int imageSize = e.CellBounds.Height - 2 * padding;
                 Rectangle imageRect = new Rectangle(
                     e.CellBounds.X + padding,
@@ -380,6 +278,7 @@ namespace Skynet_Commerce
                     imageSize,
                     imageSize);
 
+                // Vẽ ảnh sản phẩm
                 if (orderData.ProductImage != null)
                 {
                     e.Graphics.DrawImage(orderData.ProductImage, imageRect);
@@ -390,15 +289,66 @@ namespace Skynet_Commerce
                     e.Graphics.DrawRectangle(Pens.Gray, imageRect);
                 }
 
+                // Vẽ text (tên sản phẩm + variant)
                 var textRect = new Rectangle(
                     imageRect.Right + padding,
                     e.CellBounds.Y + padding,
                     e.CellBounds.Width - imageRect.Width - 3 * padding,
                     e.CellBounds.Height - 2 * padding);
 
+                // Tên sản phẩm (dòng 1)
+                Font productFont = new Font("Segoe UI", 10, FontStyle.Bold);
                 TextRenderer.DrawText(e.Graphics, orderData.ProductName,
-                    new Font(e.CellStyle.Font, FontStyle.Bold), textRect,
+                    productFont, textRect,
                     Color.Black, TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak);
+
+                // Variant (dòng 2 - dưới tên sản phẩm)
+                if (!string.IsNullOrEmpty(orderData.Variant) && orderData.Variant != "Không có")
+                {
+                    Font variantFont = new Font("Segoe UI", 9, FontStyle.Regular);
+                    var variantRect = new Rectangle(
+                        textRect.X,
+                        textRect.Y + 24, // Cách tên sản phẩm 24px
+                        textRect.Width,
+                        textRect.Height - 24);
+
+                    TextRenderer.DrawText(e.Graphics, orderData.Variant,
+                        variantFont, variantRect,
+                        Color.Gray, TextFormatFlags.Left | TextFormatFlags.Top);
+                }
+
+                e.Handled = true;
+            }
+            // Custom paint cho Customer column
+            else if (e.ColumnIndex == dgvOrders.Columns["colCustomer"].Index)
+            {
+                e.PaintBackground(e.CellBounds, true);
+
+                int padding = 8;
+                var textRect = new Rectangle(
+                    e.CellBounds.X + padding,
+                    e.CellBounds.Y + padding,
+                    e.CellBounds.Width - 2 * padding,
+                    e.CellBounds.Height - 2 * padding);
+
+                // Lấy tên và số điện thoại từ orderData
+                var orderItems = _allOrders.Where(o => o.OrderID == orderData.RawOrderID).FirstOrDefault();
+                if (orderItems != null)
+                {
+                    // Tên khách hàng (dòng 1)
+                    Font nameFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                    var nameRect = new Rectangle(textRect.X, textRect.Y, textRect.Width, 20);
+                    TextRenderer.DrawText(e.Graphics, orderItems.CustomerName ?? "",
+                        nameFont, nameRect,
+                        Color.Black, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+
+                    // Số điện thoại (dòng 2)
+                    Font phoneFont = new Font("Segoe UI", 9, FontStyle.Regular);
+                    var phoneRect = new Rectangle(textRect.X, textRect.Y + 24, textRect.Width, 20);
+                    TextRenderer.DrawText(e.Graphics, orderItems.CustomerPhone ?? "",
+                        phoneFont, phoneRect,
+                        Color.FromArgb(100, 100, 100), TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+                }
 
                 e.Handled = true;
             }
@@ -492,26 +442,8 @@ namespace Skynet_Commerce
 
             if (orderItems.Any())
             {
-                var first = orderItems.First();
-                string details = $"Mã đơn: DH{orderId.ToString().PadLeft(6, '0')}\n";
-                details += $"Khách hàng: {first.CustomerName}\n";
-                details += $"SĐT: {first.CustomerPhone}\n";
-                details += $"Địa chỉ: {first.AddressFull}\n";
-                details += $"Ngày đặt: {first.CreatedAt:dd/MM/yyyy HH:mm}\n";
-                details += $"Trạng thái: {TranslateStatus(first.Status)}\n\n";
-                details += "Sản phẩm:\n";
-
-                foreach (var item in orderItems)
-                {
-                    details += $"- {item.ProductName}";
-                    if (item.Variant != "Không có")
-                        details += $" ({item.Variant})";
-                    details += $"\n  SL: {item.Quantity} x {item.UnitPrice:N0}₫ = {item.SubTotal:N0}₫\n";
-                }
-
-                details += $"\nTổng tiền: {first.TotalOrderAmount:N0}₫";
-
-                MessageBox.Show(details, "Chi tiết đơn hàng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                OrderDetailForm detailForm = new OrderDetailForm(orderId, orderItems);
+                detailForm.ShowDialog();
             }
         }
 
@@ -561,25 +493,72 @@ namespace Skynet_Commerce
         {
             Form prompt = new Form()
             {
-                Width = 350,
-                Height = 200,
+                Width = 400,
+                Height = 220,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 Text = "Cập nhật trạng thái",
                 StartPosition = FormStartPosition.CenterScreen,
                 MaximizeBox = false,
-                MinimizeBox = false
+                MinimizeBox = false,
+                BackColor = Color.White
             };
 
-            Label textLabel = new Label() { Left = 20, Top = 20, Text = "Chọn trạng thái mới:", AutoSize = true };
-            ComboBox comboBox = new ComboBox() { Left = 20, Top = 50, Width = 300, DropDownStyle = ComboBoxStyle.DropDownList };
+            Label textLabel = new Label()
+            {
+                Left = 30,
+                Top = 30,
+                Text = "Chọn trạng thái mới:",
+                AutoSize = true,
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                ForeColor = Color.FromArgb(50, 50, 50)
+            };
+
+            ComboBox comboBox = new ComboBox()
+            {
+                Left = 30,
+                Top = 65,
+                Width = 330,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 11),
+                Height = 35
+            };
 
             foreach (var option in options)
                 comboBox.Items.Add(TranslateStatus(option));
 
             comboBox.SelectedIndex = 0;
 
-            Button confirmation = new Button() { Text = "OK", Left = 160, Width = 70, Top = 100, DialogResult = DialogResult.OK };
-            Button cancel = new Button() { Text = "Hủy", Left = 240, Width = 70, Top = 100, DialogResult = DialogResult.Cancel };
+            Button confirmation = new Button()
+            {
+                Text = "Xác nhận",
+                Left = 120,
+                Width = 130,
+                Height = 40,
+                Top = 120,
+                DialogResult = DialogResult.OK,
+                BackColor = Color.FromArgb(33, 150, 243),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            confirmation.FlatAppearance.BorderSize = 0;
+
+            Button cancel = new Button()
+            {
+                Text = "Hủy",
+                Left = 280,
+                Width = 80,
+                Height = 40,
+                Top = 120,
+                DialogResult = DialogResult.Cancel,
+                BackColor = Color.FromArgb(200, 200, 200),
+                ForeColor = Color.FromArgb(50, 50, 50),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            cancel.FlatAppearance.BorderSize = 0;
 
             prompt.Controls.Add(textLabel);
             prompt.Controls.Add(comboBox);
@@ -639,6 +618,60 @@ namespace Skynet_Commerce
                 default: return Color.Gray;
             }
         }
+
+        private void cbStatusFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FilterOrders2();
+        }
+
+        private void FilterOrders2()
+        {
+            if (_allOrders == null || !_allOrders.Any())
+                return;
+
+            string searchText = txtSearch.Text.ToLower();
+            string statusFilter = cbStatusFilter.SelectedItem.ToString(); 
+            if (statusFilter == "Tất cả trạng thái")
+                statusFilter = "Tất cả";
+            else if (statusFilter == "Chờ xử lý")
+                statusFilter = "Pending";
+            else if (statusFilter == "Đã xác nhận")
+                statusFilter = "Confirmed";
+            else if (statusFilter == "Đang giao")
+                statusFilter = "Shipping";
+            else if (statusFilter == "Hoàn thành")
+                statusFilter = "Delivered";
+            else if (statusFilter == "Đã hủy")
+                statusFilter = "Cancelled";
+
+            // 1. Lọc theo Text Search (OrderID, CustomerName, CustomerPhone)
+            var searchFiltered = string.IsNullOrWhiteSpace(searchText)
+                    ? _allOrders
+                    : _allOrders
+                        .Where(o =>
+                            ("DH" + o.OrderID.ToString().PadLeft(6, '0')).ToLower().Contains(searchText) ||
+                            (o.CustomerName ?? "").ToLower().Contains(searchText) ||
+                            (o.CustomerPhone ?? "").Contains(searchText))
+                        .ToList();
+
+            // 2. Lọc theo Status
+            if (statusFilter == "Tất cả")
+            {
+                _filteredOrders = searchFiltered;
+            }
+            else
+            {
+                // Lọc những đơn hàng có trạng thái (RawStatus) khớp với statusFilter
+                _filteredOrders = searchFiltered
+                    .Where(o => o.Status == statusFilter)
+                    .ToList();
+            }
+
+            BindOrdersToGrid(_filteredOrders);
+            UpdateSummary(_filteredOrders);
+        }
+
+
     }
 
     // Model để hiển thị

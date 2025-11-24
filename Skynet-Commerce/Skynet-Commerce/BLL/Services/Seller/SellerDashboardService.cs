@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Skynet_Commerce.BUS.DTOs;
-using Skynet_Commerce.DAL;
+using Skynet_Commerce.BLL.Models.Seller;
 using Skynet_Commerce.DAL.Entities;
 
-namespace Skynet_Commerce.BUS.Services
+namespace Skynet_Commerce.BLL.Services
 {
     public class SellerDashboardService : IDisposable
     {
@@ -155,7 +154,7 @@ namespace Skynet_Commerce.BUS.Services
                     .AsEnumerable() // Chuyển sang client-side để xử lý string operations
                     .Select(x => new RecentOrderDto
                     {
-                        OrderID = "DH" + x.Order.OrderID,
+                        OrderID = x.Order.OrderID.ToString(),
                         CustomerName = x.User != null && !string.IsNullOrEmpty(x.User.FullName)
                             ? x.User.FullName
                             : "Khách hàng",
