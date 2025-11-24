@@ -199,7 +199,7 @@ namespace Skynet_Commerce
             int imageCurrentY = padding;
 
             // Label Ảnh
-            this.lblImages.Text = "📸 Hình ảnh sản phẩm (Tối đa 5 ảnh):";
+            this.lblImages.Text = "📸 Hình ảnh sản phẩm (Tối đa 7 ảnh):";
             this.lblImages.Top = imageCurrentY; this.lblImages.Left = imageColumnX; this.lblImages.AutoSize = true;
             this.lblImages.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             imageCurrentY += this.lblImages.Height + 5;

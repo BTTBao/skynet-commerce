@@ -39,15 +39,9 @@ namespace Skynet_Commerce
         private Label lblOperatingHours;
         private Guna2TextBox txtOperatingHours;
 
-        // --- Thông tin Thuế & Ngân hàng
-        private Guna2Panel pnlBankInfo;
-        private Label lblBankTitle;
-        private Label lblTaxID;
-        private Guna2TextBox txtTaxID;
-        private Label lblBankName;
-        private Guna2TextBox txtBankName;
-        private Label lblBankAccount;
-        private Guna2TextBox txtBankAccount;
+        // --- Đã loại bỏ phần Thuế & Ngân hàng (Không cần khai báo nữa)
+        // private Guna2Panel pnlBankInfo;
+        // ... (các control liên quan)
 
         private Guna2Button btnSave; // Nút lưu chung
 
@@ -71,14 +65,14 @@ namespace Skynet_Commerce
             // Sections
             this.pnlImageSection = new Guna.UI2.WinForms.Guna2Panel();
             this.pnlBasicInfo = new Guna.UI2.WinForms.Guna2Panel();
-            this.pnlBankInfo = new Guna.UI2.WinForms.Guna2Panel();
+            // Đã loại bỏ this.pnlBankInfo
 
             this.btnSave = new Guna.UI2.WinForms.Guna2Button();
 
             // Khởi tạo các Control
             this.InitializeImageControls();
             this.InitializeBasicInfoControls();
-            this.InitializeBankInfoControls();
+            // Đã loại bỏ this.InitializeBankInfoControls();
 
             // --- Cấu hình chung cho UserControl
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -103,32 +97,27 @@ namespace Skynet_Commerce
             this.lblSubtitle.Location = new System.Drawing.Point(20, 60);
             this.lblSubtitle.AutoSize = true;
 
-            // Thêm các Panel vào Main Panel (Bố cục 2 cột cho các sections chính)
-            int panelWidth = 480; // Chiều rộng cho các panel 
-            int column1X = 20;
-            int column2X = 500;
+            // Thêm các Panel vào Main Panel (Bố cục chỉ còn 1 cột cho Image Section và Basic Info)
+            int panelWidth = 960; // Chiều rộng cho các panel (1000 - 2*20 padding)
+            int columnX = 20;
             int currentY = 100;
             int sectionSpacing = 20;
 
-            // Dùng cột 1 cho ImageSection và cột 2 cho BankInfo (Yêu cầu căn ngang hàng)
-            // Lần lượt đặt các Panel vào vị trí
+            // COLUMN 1: Image Section (Chiều rộng được điều chỉnh)
+            this.pnlImageSection.Location = new System.Drawing.Point(columnX, currentY);
+            this.pnlImageSection.Width = panelWidth; // Điều chỉnh chiều rộng để tràn hết
 
-            // COLUMN 1: Image Section
-            this.pnlImageSection.Location = new System.Drawing.Point(column1X, currentY);
-            this.pnlImageSection.Width = panelWidth;
+            // Tái cấu hình lại kích thước của các control con trong Image Section để phù hợp với chiều rộng mới (Nếu cần, nhưng tạm thời giữ nguyên)
+            // Cập nhật Y sau Image Section
+            currentY = currentY + this.pnlImageSection.Height + sectionSpacing;
 
-            // COLUMN 2: Bank Info Section
-            this.pnlBankInfo.Location = new System.Drawing.Point(column2X + 30, currentY);
-            this.pnlBankInfo.Width = panelWidth;
-
-            // Thêm pnlBasicInfo xuống dưới pnlImageSection (cột 1)
-            int basicInfoY = currentY + this.pnlImageSection.Height + sectionSpacing;
-            this.pnlBasicInfo.Location = new System.Drawing.Point(column1X, basicInfoY);
-            this.pnlBasicInfo.Width = panelWidth * 2 + 20; // Dùng chiều rộng lớn hơn cho Basic Info
+            // Basic Info Section (Thay thế cho pnlBasicInfo cũ)
+            this.pnlBasicInfo.Location = new System.Drawing.Point(columnX, currentY);
+            this.pnlBasicInfo.Width = panelWidth; // Điều chỉnh chiều rộng để tràn hết
 
             // Nút lưu
-            int saveButtonY = basicInfoY + this.pnlBasicInfo.Height + sectionSpacing;
-            this.btnSave.Location = new System.Drawing.Point(column1X, saveButtonY);
+            int saveButtonY = currentY + this.pnlBasicInfo.Height + sectionSpacing;
+            this.btnSave.Location = new System.Drawing.Point(columnX, saveButtonY);
             this.btnSave.Text = "LƯU CÀI ĐẶT";
             this.btnSave.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0))))); // Màu cam
             this.btnSave.ForeColor = System.Drawing.Color.White;
@@ -144,7 +133,7 @@ namespace Skynet_Commerce
             this.pnlMain.Controls.Add(this.lblSubtitle);
             this.pnlMain.Controls.Add(this.pnlImageSection);
             this.pnlMain.Controls.Add(this.pnlBasicInfo);
-            this.pnlMain.Controls.Add(this.pnlBankInfo);
+            // Đã loại bỏ this.pnlMain.Controls.Add(this.pnlBankInfo);
             this.pnlMain.Controls.Add(this.btnSave);
 
             this.pnlMain.ResumeLayout(false);
@@ -158,6 +147,7 @@ namespace Skynet_Commerce
             this.pnlImageSection.Padding = new System.Windows.Forms.Padding(15);
             int currentY = 15;
             int sectionPadding = 15;
+            int sectionWidth = 930; // 960 - 2 * 15 padding
 
             // Title
             this.lblImageShop = new System.Windows.Forms.Label();
@@ -203,7 +193,7 @@ namespace Skynet_Commerce
 
             this.pbCover = new Guna2PictureBox();
             this.pbCover.BorderRadius = 10;
-            this.pbCover.Size = new System.Drawing.Size(440, 110); // Tỉ lệ ~ 4:1
+            this.pbCover.Size = new System.Drawing.Size(sectionWidth - 30, (sectionWidth - 30) * 4 / 16); // Tỉ lệ ~ 4:1 (Điều chỉnh theo chiều rộng mới)
             this.pbCover.Location = new System.Drawing.Point(sectionPadding, currentY);
             this.pbCover.SizeMode = PictureBoxSizeMode.StretchImage;
 
@@ -213,10 +203,11 @@ namespace Skynet_Commerce
             this.btnChangeCover.ForeColor = System.Drawing.Color.Black;
             this.btnChangeCover.BorderRadius = 8;
             this.btnChangeCover.Height = 35;
-            this.btnChangeCover.Location = new System.Drawing.Point(280, currentY + 120); // Đặt nút bên phải ảnh bìa
+            // Cập nhật vị trí nút Upload Cover nằm dưới và bên phải ảnh bìa (hoặc căn giữa)
+            this.btnChangeCover.Location = new System.Drawing.Point(sectionWidth - 200, currentY + this.pbCover.Height + 10);
             this.btnChangeCover.Click += new System.EventHandler(this.btnChangeCover_Click);
 
-            currentY += 110 + 50; // Total height of this section
+            currentY += this.pbCover.Height + 50; // Total height of this section
 
             this.pnlImageSection.Controls.AddRange(new Control[] {
                 this.lblImageShop, this.lblAvatarTitle, this.pbAvatar, this.btnChangeAvatar,
@@ -233,10 +224,10 @@ namespace Skynet_Commerce
             int currentY = 15;
             int sectionPadding = 15;
 
-            int panelWidth = 480;
+            int sectionWidth = 930; // 960 - 2 * 15 padding
             int sectionMargin = 30;
-            int inputWidthOneColumn = panelWidth * 2 + sectionMargin;
-            int inputWidthTwoColumns = 465;
+            int inputWidthOneColumn = sectionWidth - 2 * sectionPadding;
+            int inputWidthTwoColumns = (sectionWidth - 3 * sectionPadding) / 2;
             int inputHeight = 40;
 
             Font inputFont = new System.Drawing.Font("Times New Roman", 11F);
@@ -306,7 +297,7 @@ namespace Skynet_Commerce
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblEmail.Text = "Email *";
             this.lblEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblEmail.Location = new System.Drawing.Point(inputWidthTwoColumns + sectionMargin, labelY);
+            this.lblEmail.Location = new System.Drawing.Point(sectionPadding + inputWidthTwoColumns + sectionMargin, labelY);
             this.lblEmail.AutoSize = true;
             this.lblEmail.BackColor = System.Drawing.Color.Transparent;
 
@@ -325,51 +316,12 @@ namespace Skynet_Commerce
             this.txtEmail.Text = "";
             this.txtEmail.ForeColor = System.Drawing.Color.Black;
             this.txtEmail.Font = inputFont;
-            this.txtEmail.Location = new System.Drawing.Point(inputWidthTwoColumns + sectionMargin, controlY);
+            this.txtEmail.Location = new System.Drawing.Point(sectionPadding + inputWidthTwoColumns + sectionMargin, controlY);
             this.txtEmail.Width = inputWidthTwoColumns;
             this.txtEmail.Height = inputHeight;
             this.txtEmail.BorderRadius = 8;
             currentY = controlY + inputHeight + 20;
-
-            // Address
-            this.lblAddress = new System.Windows.Forms.Label();
-            this.lblAddress.Text = "Địa chỉ *";
-            this.lblAddress.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblAddress.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.lblAddress.AutoSize = true;
-            this.lblAddress.BackColor = System.Drawing.Color.Transparent;
-            currentY += 25;
-
-            this.txtAddress = new Guna2TextBox();
-            this.txtAddress.PlaceholderText = "Nhập địa chỉ";
-            this.txtAddress.Text = "";
-            this.txtAddress.ForeColor = System.Drawing.Color.Black;
-            this.txtAddress.Font = inputFont;
-            this.txtAddress.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.txtAddress.Width = inputWidthOneColumn;
-            this.txtAddress.Height = inputHeight;
-            this.txtAddress.BorderRadius = 8;
-            currentY += inputHeight + 20;
-
-            // Operating Hours
-            this.lblOperatingHours = new System.Windows.Forms.Label();
-            this.lblOperatingHours.Text = "Giờ hoạt động";
-            this.lblOperatingHours.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblOperatingHours.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.lblOperatingHours.AutoSize = true;
-            this.lblOperatingHours.BackColor = System.Drawing.Color.Transparent;
-            currentY += 25;
-
-            this.txtOperatingHours = new Guna2TextBox();
-            this.txtOperatingHours.PlaceholderText = "Ví dụ: 8:00 - 22:00";
-            this.txtOperatingHours.Text = "";
-            this.txtOperatingHours.ForeColor = System.Drawing.Color.Black;
-            this.txtOperatingHours.Font = inputFont;
-            this.txtOperatingHours.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.txtOperatingHours.Width = inputWidthTwoColumns;
-            this.txtOperatingHours.Height = inputHeight;
-            this.txtOperatingHours.BorderRadius = 8;
-            currentY += inputHeight + 20;
+            
 
             this.pnlBasicInfo.Controls.AddRange(new Control[] {
                 this.lblBasicTitle, this.lblShopName, this.txtShopName,
@@ -381,94 +333,7 @@ namespace Skynet_Commerce
             this.pnlBasicInfo.Height = currentY + 10;
         }
 
-        private void InitializeBankInfoControls()
-        {
-            this.pnlBankInfo.FillColor = System.Drawing.Color.White;
-            this.pnlBankInfo.BorderRadius = 15;
-            this.pnlBankInfo.Padding = new System.Windows.Forms.Padding(15);
-            int currentY = 15;
-            int sectionPadding = 15;
-            int inputWidth = 450;
-            int inputHeight = 40;
-
-            Font inputFont = new System.Drawing.Font("Times New Roman", 11F);
-
-            // Title
-            this.lblBankTitle = new System.Windows.Forms.Label();
-            this.lblBankTitle.Text = "💳 Thông tin thuế & ngân hàng";
-            this.lblBankTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblBankTitle.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.lblBankTitle.AutoSize = true;
-            this.lblBankTitle.BackColor = System.Drawing.Color.Transparent;
-            currentY += 45;
-
-            // Tax ID
-            this.lblTaxID = new System.Windows.Forms.Label();
-            this.lblTaxID.Text = "Mã số thuế";
-            this.lblTaxID.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblTaxID.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.lblTaxID.AutoSize = true;
-            this.lblTaxID.BackColor = System.Drawing.Color.Transparent;
-            currentY += 25;
-
-            this.txtTaxID = new Guna2TextBox();
-            this.txtTaxID.PlaceholderText = "Nhập mã số thuế";
-            this.txtTaxID.Text = "";
-            this.txtTaxID.ForeColor = System.Drawing.Color.Black;
-            this.txtTaxID.Font = inputFont;
-            this.txtTaxID.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.txtTaxID.Width = inputWidth;
-            this.txtTaxID.Height = inputHeight;
-            this.txtTaxID.BorderRadius = 8;
-            currentY += inputHeight + 20;
-
-            // Bank Name
-            this.lblBankName = new System.Windows.Forms.Label();
-            this.lblBankName.Text = "Tên ngân hàng";
-            this.lblBankName.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblBankName.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.lblBankName.AutoSize = true;
-            this.lblBankName.BackColor = System.Drawing.Color.Transparent;
-            currentY += 25;
-
-            this.txtBankName = new Guna2TextBox();
-            this.txtBankName.PlaceholderText = "Nhập tên ngân hàng";
-            this.txtBankName.Text = "";
-            this.txtBankName.ForeColor = System.Drawing.Color.Black;
-            this.txtBankName.Font = inputFont;
-            this.txtBankName.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.txtBankName.Width = inputWidth;
-            this.txtBankName.Height = inputHeight;
-            this.txtBankName.BorderRadius = 8;
-            currentY += inputHeight + 20;
-
-            // Bank Account Number
-            this.lblBankAccount = new System.Windows.Forms.Label();
-            this.lblBankAccount.Text = "Số tài khoản";
-            this.lblBankAccount.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblBankAccount.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.lblBankAccount.AutoSize = true;
-            this.lblBankAccount.BackColor = System.Drawing.Color.Transparent;
-            currentY += 25;
-
-            this.txtBankAccount = new Guna2TextBox();
-            this.txtBankAccount.PlaceholderText = "Nhập số tài khoản";
-            this.txtBankAccount.Text = "";
-            this.txtBankAccount.ForeColor = System.Drawing.Color.Black;
-            this.txtBankAccount.Font = inputFont;
-            this.txtBankAccount.Location = new System.Drawing.Point(sectionPadding, currentY);
-            this.txtBankAccount.Width = inputWidth;
-            this.txtBankAccount.Height = inputHeight;
-            this.txtBankAccount.BorderRadius = 8;
-            currentY += inputHeight + 20;
-
-            this.pnlBankInfo.Controls.AddRange(new Control[] {
-                this.lblBankTitle, this.lblTaxID, this.txtTaxID,
-                this.lblBankName, this.txtBankName,
-                this.lblBankAccount, this.txtBankAccount
-            });
-            this.pnlBankInfo.Height = currentY + 10;
-        }
+        // Đã loại bỏ hoàn toàn phương thức InitializeBankInfoControls()
 
         #endregion
     }

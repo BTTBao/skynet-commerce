@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Skynet_Commerce.BUS.DTOs
+namespace Skynet_Commerce.BLL.Models.Seller
 {
     // DTO cho KPI Dashboard
     public class SellerKpiDto

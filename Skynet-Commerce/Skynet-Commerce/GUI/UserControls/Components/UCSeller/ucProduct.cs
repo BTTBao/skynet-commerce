@@ -31,6 +31,11 @@ namespace Skynet_Commerce
 
         public ucProduct(int shopId) : this()
         {
+            InitializeComponent();
+            InitializeCustomSettings();
+            SetupDataGridView();
+            _productService = new ProductServiceForSeller();
+            this.Load += ucProduct_Load;
             _currentShopId = shopId;
         }
 
@@ -44,6 +49,9 @@ namespace Skynet_Commerce
             dgvProducts.RowHeadersVisible = false;
             dgvProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvProducts.MultiSelect = false;
+
+            txtSearch.TextChanged += txtSearch_TextChanged;
+            cbStatusFilter.SelectedIndexChanged += cbStatusFilter_SelectedIndexChanged;
         }
 
         private void SetupDataGridView()
@@ -460,49 +468,20 @@ namespace Skynet_Commerce
             addForm.Show();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            FilterProducts();
-        }
+        
 
-        private void FilterProducts()
-        {
-            if (_allProducts == null || !_allProducts.Any())
-                return;
-
-            string searchText = txtSearch.Text.ToLower();
-
-            if (string.IsNullOrWhiteSpace(searchText) || searchText == "🔍 tìm kiếm sản phẩm...")
-            {
-                _filteredProducts = _allProducts;
-            }
-            else
-            {
-                _filteredProducts = _allProducts
-                    .Where(p =>
-                        (p.ProductName ?? "").ToLower().Contains(searchText) ||
-                        ("SP" + p.ProductID.ToString().PadLeft(6, '0')).ToLower().Contains(searchText))
-                    .ToList();
-            }
-
-            BindProductsToGrid(_filteredProducts);
-            UpdateSummary(_filteredProducts);
-        }
+        
 
         private void txtSearch_Enter(object sender, EventArgs e)
         {
-            if (txtSearch.Text == "🔍 Tìm kiếm sản phẩm...")
-            {
-                txtSearch.Text = "";
-                txtSearch.ForeColor = Color.Black;
-            }
+           
         }
 
         private void txtSearch_Leave(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtSearch.Text))
             {
-                txtSearch.Text = "🔍 Tìm kiếm sản phẩm...";
+                txtSearch.Text = "";
                 txtSearch.ForeColor = Color.Gray;
             }
         }
@@ -534,11 +513,75 @@ namespace Skynet_Commerce
         {
             switch (status)
             {
-                case "Active": return "Đang bán";
-                case "Hidden": return "Đã ẩn";
+                case "Active": return "Hiển thị";
+                case "Hidden": return "Ẩn";
                 case "OutOfStock": return "Hết hàng";
                 default: return status;
             }
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            FilterProducts();
+        }
+
+        // THÊM: Xử lý sự kiện khi ComboBox Trạng thái thay đổi
+        private void cbStatusFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FilterProducts();
+        }
+
+
+        private void FilterProducts()
+        {
+            if (_allProducts == null || !_allProducts.Any())
+                return;
+
+            string searchText = txtSearch.Text.ToLower();
+            string selectedStatus = cbStatusFilter.SelectedItem?.ToString(); // Lấy mục được chọn
+
+            // 1. Lọc theo Text Search
+            IEnumerable<ProductSellerDTO> query = _allProducts;
+
+            if (!string.IsNullOrWhiteSpace(searchText) && searchText != "🔍 tìm kiếm sản phẩm...")
+            {
+                query = query.Where(p =>
+                    (p.ProductName ?? "").ToLower().Contains(searchText) ||
+                    ("SP" + p.ProductID.ToString().PadLeft(6, '0')).ToLower().Contains(searchText));
+            }
+
+            // 2. Lọc theo Trạng thái (chỉ khi không phải "Tất cả trạng thái")
+            if (selectedStatus != null && selectedStatus != "Tất cả trạng thái")
+            {
+                // Chuyển ngôn ngữ hiển thị về ngôn ngữ DB để lọc
+                string statusToFilter;
+                switch (selectedStatus)
+                {
+                    case "Hiển thị":
+                        statusToFilter = "Active";
+                        break;
+                    case "Ẩn":
+                        statusToFilter = "Hidden";
+                        break;
+                    // Trường hợp "Hết hàng" (OutOfStock)
+                    case "Hết hàng":
+                        statusToFilter = "OutOfStock";
+                        break;
+                    default:
+                        statusToFilter = null; // Không lọc
+                        break;
+                }
+
+                if (statusToFilter != null)
+                {
+                    query = query.Where(p => p.Status == statusToFilter);
+                }
+            }
+
+            _filteredProducts = query.ToList();
+
+            BindProductsToGrid(_filteredProducts);
+            UpdateSummary(_filteredProducts);
         }
     }
 }

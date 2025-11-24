@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Skynet_Commerce.BLL.Models.Admin
+namespace Skynet_Commerce.BLL.Models.Seller
 {
     public class ProductFullSellerDTO
     {
@@ -9,6 +9,7 @@ namespace Skynet_Commerce.BLL.Models.Admin
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int CategoryID { get; set; }
+        public string CategoryName { get; set; }
         public int StockQuantity { get; set; }
         public int SoldCount { get; set; }
         public string Status { get; set; }

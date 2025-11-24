@@ -63,12 +63,27 @@ namespace Skynet_Commerce.BLL.Services.Seller
 
         public ProductFullSellerDTO GetProductFullSellerDTO(int productId)
         {
+            // 1. Tải Sản phẩm
             var product = _context.Products
                 .FirstOrDefault(p => p.ProductID == productId);
 
             if (product == null)
                 return null;
 
+            // 2. TRUY VẤN TÊN DANH MỤC
+            string categoryName = null;
+            if (product.CategoryID.HasValue && product.CategoryID.Value > 0)
+            {
+                var category = _context.Categories
+                    .FirstOrDefault(c => c.CategoryID == product.CategoryID.Value);
+
+                if (category != null)
+                {
+                    categoryName = category.CategoryName;
+                }
+            }
+
+            // 3. Tải Ảnh
             var images = _context.ProductImages
                 .Where(img => img.ProductID == productId)
                 .Select(img => new ProductImageDTO
@@ -80,6 +95,7 @@ namespace Skynet_Commerce.BLL.Services.Seller
                 })
                 .ToList();
 
+            // 4. Tải Biến thể
             var variants = _context.ProductVariants
                 .Where(v => v.ProductID == productId)
                 .Select(v => new ProductVariantDTO
@@ -93,6 +109,7 @@ namespace Skynet_Commerce.BLL.Services.Seller
                 })
                 .ToList();
 
+            // 5. Khởi tạo DTO
             var dto = new ProductFullSellerDTO
             {
                 ProductID = product.ProductID,
@@ -102,7 +119,9 @@ namespace Skynet_Commerce.BLL.Services.Seller
                 StockQuantity = product.StockQuantity ?? 0,
                 SoldCount = product.SoldCount ?? 0,
                 Status = product.Status,
-
+                CategoryID = product.CategoryID ?? 0,
+                // Gán TÊN DANH MỤC
+                CategoryName = categoryName,
                 Images = images,
                 Variants = variants
             };
@@ -134,14 +153,55 @@ namespace Skynet_Commerce.BLL.Services.Seller
         {
             try
             {
+                int finalCategoryId = 0;
+
+                // 1. KIỂM TRA CATEGORY ID: Nếu CategoryID đã có, sử dụng nó.
+                if (dto.CategoryID > 0)
+                {
+                    finalCategoryId = dto.CategoryID;
+                }
+                // 2. TÌM KIẾM CATEGORY ID BẰNG TÊN (Giả sử dto có CategoryName)
+                else if (!string.IsNullOrEmpty(dto.CategoryName))
+                {
+                    // Truy vấn cơ sở dữ liệu để tìm CategoryID dựa trên CategoryName
+                    var category = _context.Categories
+                        .FirstOrDefault(c => c.CategoryName == dto.CategoryName);
+
+                    if (category == null)
+                    {
+                        // Nếu không tìm thấy danh mục, log lỗi và trả về thất bại
+                        Console.WriteLine($"Error adding product: Category name '{dto.CategoryName}' not found.");
+                        return -1;
+                    }
+
+                    finalCategoryId = category.CategoryID;
+                }
+                else
+                {
+                    // Nếu không có cả ID và Name, báo lỗi
+                    Console.WriteLine("Error adding product: CategoryID or CategoryName is required.");
+                    return -1;
+                }
+
+
+                // Nếu không có CategoryID hợp lệ sau khi tìm kiếm, thoát.
+                if (finalCategoryId == 0)
+                {
+                    Console.WriteLine("Error adding product: Final CategoryID is invalid.");
+                    return -1;
+                }
+
+
+                // 3. TẠO ENTITY SẢN PHẨM VỚI FINAL CATEGORY ID
                 var product = new Product
                 {
                     ShopID = shopId,
-                    CategoryID = dto.CategoryID,      
+                    CategoryID = finalCategoryId, // SỬ DỤNG ID ĐÃ TÌM ĐƯỢC
                     Name = dto.ProductName,
                     Description = dto.Description,
                     Price = dto.Price,
                     StockQuantity = dto.StockQuantity,
+                    // Sử dụng toán tử null-coalescing để cung cấp giá trị mặc định an toàn
                     SoldCount = dto.SoldCount,
                     Status = dto.Status ?? "Active",
                     CreatedAt = DateTime.Now
@@ -152,6 +212,7 @@ namespace Skynet_Commerce.BLL.Services.Seller
 
                 int newProductId = product.ProductID;
 
+                // 4. THÊM ẢNH (Logic giữ nguyên)
                 if (dto.Images != null && dto.Images.Any())
                 {
                     foreach (var img in dto.Images)
@@ -160,6 +221,7 @@ namespace Skynet_Commerce.BLL.Services.Seller
                         {
                             ProductID = newProductId,
                             ImageURL = img.ImageURL,
+                            // Giả sử ImagePublicId và IsPrimary là nullable hoặc được xử lý trong DTO
                             ImagePublicId = img.ImagePublicId,
                             IsPrimary = img.IsPrimary
                         };
@@ -168,6 +230,7 @@ namespace Skynet_Commerce.BLL.Services.Seller
                     }
                 }
 
+                // 5. THÊM BIẾN THỂ (Logic giữ nguyên)
                 if (dto.Variants != null && dto.Variants.Any())
                 {
                     foreach (var v in dto.Variants)
@@ -186,8 +249,9 @@ namespace Skynet_Commerce.BLL.Services.Seller
                     }
                 }
 
+                // Lưu tất cả ảnh và biến thể
                 _context.SaveChanges();
-                return newProductId; 
+                return newProductId;
             }
             catch (Exception ex)
             {
@@ -201,6 +265,43 @@ namespace Skynet_Commerce.BLL.Services.Seller
         {
             try
             {
+                int finalCategoryId = 0;
+
+                // 1. KIỂM TRA CATEGORY ID: Nếu CategoryID đã có, sử dụng nó.
+                if (dto.CategoryID > 0)
+                {
+                    finalCategoryId = dto.CategoryID;
+                }
+                // 2. TÌM KIẾM CATEGORY ID BẰNG TÊN (Giả sử dto có CategoryName)
+                else if (!string.IsNullOrEmpty(dto.CategoryName))
+                {
+                    // Truy vấn cơ sở dữ liệu để tìm CategoryID dựa trên CategoryName
+                    var category = _context.Categories
+                        .FirstOrDefault(c => c.CategoryName == dto.CategoryName);
+
+                    if (category == null)
+                    {
+                        // Nếu không tìm thấy danh mục, log lỗi và trả về thất bại
+                        Console.WriteLine($"Error adding product: Category name '{dto.CategoryName}' not found.");
+                        return false;
+                    }
+
+                    finalCategoryId = category.CategoryID;
+                }
+                else
+                {
+                    // Nếu không có cả ID và Name, báo lỗi
+                    Console.WriteLine("Error adding product: CategoryID or CategoryName is required.");
+                    return false;
+                }
+
+
+                // Nếu không có CategoryID hợp lệ sau khi tìm kiếm, thoát.
+                if (finalCategoryId == 0)
+                {
+                    Console.WriteLine("Error adding product: Final CategoryID is invalid.");
+                    return false;
+                }
                 var product = _context.Products.FirstOrDefault(p => p.ProductID == dto.ProductID);
                 if (product == null)
                     return false;
@@ -210,8 +311,8 @@ namespace Skynet_Commerce.BLL.Services.Seller
                 product.Price = dto.Price;
                 product.StockQuantity = dto.StockQuantity;
                 product.SoldCount = dto.SoldCount;
-                product.Status = dto.Status;
-                product.CategoryID = dto.CategoryID;
+                product.Status = "Active";
+                product.CategoryID = finalCategoryId;
 
                 _context.SaveChanges();
 
@@ -266,6 +367,22 @@ namespace Skynet_Commerce.BLL.Services.Seller
                 Console.WriteLine("Update product error: " + ex.Message);
                 return false;
             }
-        } 
+        }
+
+        public List<string> GetAllCategories()
+        {
+            try
+            {
+                var categories = _context.Categories
+                    .Select(c => c.CategoryName.Trim()).ToList();
+
+                return categories;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching categories: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

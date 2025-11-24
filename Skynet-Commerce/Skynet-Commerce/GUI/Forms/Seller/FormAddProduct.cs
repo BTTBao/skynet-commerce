@@ -1,13 +1,12 @@
 ﻿using Guna.UI2.WinForms;
-using Skynet_Commerce.BLL.Models.Admin;
 using Skynet_Commerce.BLL.Models.Seller;
 using Skynet_Commerce.BLL.Services.Seller;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace Skynet_Commerce
 {
@@ -34,6 +33,7 @@ namespace Skynet_Commerce
 
             this.Text = "Thêm sản phẩm mới";
             btnSave.Text = "Thêm sản phẩm";
+            LoadCategories();
         }
 
         // Chỉnh sửa
@@ -47,8 +47,34 @@ namespace Skynet_Commerce
 
             this.Text = $"Chỉnh sửa sản phẩm: {product.ProductName}";
             btnSave.Text = "Cập nhật";
-
+            LoadCategories();
             LoadProductData();
+        }
+
+        // Trong FormAddProduct.cs
+        private void LoadCategories()
+        {
+            try
+            {
+                // 1. Gọi hàm service để lấy danh sách tên danh mục
+                List<string> categoryNames = _productService.GetAllCategories();
+
+                if (categoryNames != null)
+                {
+                    // 2. Gán danh sách tên vào ComboBox
+                    cmbCategory.DataSource = categoryNames;
+
+                    // 3. (Tùy chọn) Chọn mục đầu tiên
+                    if (cmbCategory.Items.Count > 0)
+                    {
+                        cmbCategory.SelectedIndex = 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải danh mục: {ex.Message}");
+            }
         }
 
         private void LoadProductData()
@@ -63,20 +89,33 @@ namespace Skynet_Commerce
                 numericStock.Value = _editingProduct.StockQuantity;
 
                 // Set danh mục
-                if (_editingProduct.CategoryID > 0)
-                    cmbCategory.SelectedValue = _editingProduct.CategoryID;
+                if (!string.IsNullOrEmpty(_editingProduct.CategoryName))
+                {
+                    // Set giá trị TÊN danh mục trực tiếp vào Text
+                    cmbCategory.Text = _editingProduct.CategoryName;
+                }
+                else
+                {
+                    // Thêm cảnh báo nếu CategoryName bị thiếu
+                    MessageBox.Show("Cảnh báo: Tên danh mục của sản phẩm này không xác định.", "Thông tin thiếu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
 
-                // Load ảnh
-                if (_editingProduct.Images != null)
+                // --- Load ảnh ---
+                if (_editingProduct.Images != null && _editingProduct.Images.Any())
                 {
                     foreach (var img in _editingProduct.Images)
                     {
                         AddImageThumbnail(img.ImageURL);
                     }
                 }
+                else
+                {
+                    // Cảnh báo nếu Images bị null hoặc rỗng
+                    MessageBox.Show("Cảnh báo: Sản phẩm không có ảnh nào để tải.", "Thông tin thiếu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
 
-                // Load Variants
-                if (_editingProduct.Variants != null)
+                // --- Load Variants ---
+                if (_editingProduct.Variants != null && _editingProduct.Variants.Any())
                 {
                     foreach (var v in _editingProduct.Variants)
                     {
@@ -91,10 +130,15 @@ namespace Skynet_Commerce
                         panelVariants.Controls.SetChildIndex(vc, 0);
                     }
                 }
+                else
+                {
+                    // Cảnh báo nếu Variants bị null hoặc rỗng
+                    MessageBox.Show("Cảnh báo: Sản phẩm không có biến thể nào để tải.", "Thông tin thiếu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi load sản phẩm: {ex.Message}");
+                MessageBox.Show($"Lỗi khi load sản phẩm: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -194,29 +238,118 @@ namespace Skynet_Commerce
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            ProductFullSellerDTO dto = null;
+            if (_editingProduct != null && !string.IsNullOrEmpty(_editingProduct.CategoryName))
+                cmbCategory.Text = _editingProduct.CategoryName;
+
             try
             {
                 string name = txtName.Text.Trim();
                 string desc = txtDescription.Text.Trim();
-                decimal price = decimal.Parse(numericPrice.Text);
-                int stock = (int)numericStock.Value;
 
+                // 1. Lấy và Validate Price
+                // Xử lý loại bỏ dấu phẩy (,) và dấu chấm (.) trước khi parse
+                string priceText = numericPrice.Text.Replace(",", "").Replace(".", "");
+                decimal price;
+
+                if (!decimal.TryParse(priceText, out price) || price < 50000 || price > 5000000)
+                {
+                    MessageBox.Show("Giá sản phẩm không hợp lệ. (Phải là số, từ 50,000 đến 5,000,000).");
+                    return;
+                }
+
+                // 2. Lấy và Validate Stock
+                int mainStock = (int)numericStock.Value;
+                if (mainStock < 0 || mainStock > 10000)
+                {
+                    MessageBox.Show("Số lượng tồn kho chính không hợp lệ. (Phải là số, từ 0 đến 10,000).");
+                    return;
+                }
+
+                // 3. Validate Text Fields
                 if (name == "")
                 {
                     MessageBox.Show("Tên sản phẩm không được để trống");
                     return;
                 }
+                if (cmbCategory.Text == "" || cmbCategory.Text == null)
+                {
+                    MessageBox.Show("Vui lòng chọn hoặc nhập Danh mục sản phẩm.");
+                    return;
+                }
 
-                var dto = new ProductFullSellerDTO
+                // 4. Validate Images Count
+                if (uploadedImages.Count == 0 || uploadedImages.Count > 7)
+                {
+                    MessageBox.Show("Sản phẩm phải có ít nhất 1 ảnh và không quá 7 ảnh.");
+                    return;
+                }
+
+                // 5. Lấy và Validate Variants
+                List<ProductVariantDTO> variants = new List<ProductVariantDTO>();
+                foreach (VariantControl vc in panelVariants.Controls.OfType<VariantControl>())
+                {
+                    if (!vc.ValidateData(out string variantError))
+                    {
+                        // Thông báo lỗi và dừng quá trình lưu
+                        MessageBox.Show($"Lỗi biến thể: {variantError}\n(Tại biến thể Size/Color: {vc.SizeValue}/{vc.ColorValue})", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    variants.Add(vc.GetVariantDTO());
+                }
+
+                // Kiểm tra rỗng và trùng SKU cục bộ tiếp tục như cũ
+                if (variants == null || !variants.Any())
+                {
+                    MessageBox.Show("Sản phẩm phải có ít nhất một Biến thể (Variant).");
+                    return;
+                }
+                // Kiểm tra trùng SKU cục bộ (trong cùng một lần nhập)
+                if (variants.GroupBy(v => v.SKU).Any(g => g.Count() > 1))
+                {
+                    MessageBox.Show("Có Biến thể bị trùng mã SKU. Vui lòng kiểm tra lại.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (variants == null || !variants.Any())
+                {
+                    MessageBox.Show("Sản phẩm phải có ít nhất một Biến thể (Variant).");
+                    return;
+                }
+
+                // Kiểm tra SKU trùng lặp cục bộ (trong cùng một lần nhập)
+                if (variants.GroupBy(v => v.SKU).Any(g => g.Count() > 1))
+                {
+                    MessageBox.Show("Có Biến thể bị trùng mã SKU. Vui lòng kiểm tra lại.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+
+                // a) Tính tổng Stock từ các Variant
+                int totalVariantStock = variants.Sum(v => v.StockQuantity);
+
+                // b) Tính Price nhỏ nhất từ các Variant
+                decimal minVariantPrice = (decimal)variants.Min(v => v.Price);
+
+                // c) Logic Stock: Lấy giá trị lớn hơn giữa Stock chính và Tổng Stock Variants
+                int finalStockQuantity = Math.Max(mainStock, totalVariantStock);
+
+                // d) Logic Price: Lấy giá trị nhỏ hơn giữa Price chính và Price nhỏ nhất của Variants
+                decimal finalPrice = Math.Min(price, minVariantPrice);
+
+                // Khởi tạo DTO
+                dto = new ProductFullSellerDTO
                 {
                     ProductID = _isEditMode ? _editingProduct.ProductID : 0,
                     ProductName = name,
                     Description = desc,
-                    CategoryID = cmbCategory.SelectedValue != null ? (int)cmbCategory.SelectedValue : 0,
-                    Price = price,
-                    StockQuantity = stock,
+                    CategoryName = cmbCategory.Text.Trim(), // Luôn lấy từ Text vì đã bỏ SelectedValue
+
+                    // SỬ DỤNG GIÁ TRỊ TÍNH TOÁN
+                    Price = finalPrice,
+                    StockQuantity = finalStockQuantity,
+
                     Images = uploadedImages.Select(p => new ProductImageDTO { ImageURL = p }).ToList(),
-                    Variants = GetVariantsFromControl()
+                    Variants = variants
                 };
 
                 bool success;
@@ -226,6 +359,7 @@ namespace Skynet_Commerce
                 }
                 else
                 {
+                    // Kiểm tra trùng SKU phải được thực hiện trong Service (Xem mục 2)
                     int newId = _productService.AddProductFullSeller(dto, _currentShopId);
                     success = newId > 0;
                 }
@@ -238,30 +372,48 @@ namespace Skynet_Commerce
                 }
                 else
                 {
-                    MessageBox.Show("Lưu thất bại!");
+                    string dtoContent = FormatProductDto(dto);
+                    MessageBox.Show($"Lưu thất bại!\n\nDữ liệu đã gửi:\n{dtoContent}",
+                                    "Lỗi Lưu Sản Phẩm",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message);
+                string dtoContent = dto != null ? FormatProductDto(dto) : "Không thể tạo DTO.";
+                MessageBox.Show($"Lỗi hệ thống khi lưu: {ex.Message}\n\nDữ liệu đã gửi:\n{dtoContent}",
+                                "Lỗi Hệ Thống",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
             }
+        }
+
+        // Hàm trợ giúp để định dạng DTO thành chuỗi dễ đọc
+        private string FormatProductDto(ProductFullSellerDTO dto)
+        {
+            if (dto == null) return "DTO rỗng (NULL).";
+
+            var variantsInfo = dto.Variants != null && dto.Variants.Any()
+                ? string.Join(", ", dto.Variants.Select(v => $"({v.Size}/{v.Color}, SL: {v.StockQuantity})"))
+                : "Không có biến thể";
+
+            var imagesCount = dto.Images?.Count ?? 0;
+
+            return
+                $"ID: {dto.ProductID}\n" +
+                $"Tên: {dto.ProductName}\n" +
+                $"Mô tả: {dto.Description.Substring(0, Math.Min(dto.Description.Length, 50))}...\n" +
+                $"Danh mục ID: {dto.CategoryID}\n" +
+                $"Giá: {dto.Price:N0} VNĐ\n" +
+                $"Tồn kho (Chính): {dto.StockQuantity}\n" +
+                $"Số ảnh: {imagesCount}\n" +
+                $"Biến thể: {variantsInfo}";
         }
 
         private List<ProductVariantDTO> GetVariantsFromControl()
         {
-            List<ProductVariantDTO> list = new List<ProductVariantDTO>();
-
-            foreach (VariantControl vc in panelVariants.Controls)
-            {
-                list.Add(new ProductVariantDTO
-                {
-                    Size = vc.SizeValue,
-                    Color = vc.ColorValue,
-                    SKU = vc.SKUValue,
-                    Price = vc.PriceValue,
-                    StockQuantity = vc.StockValue
-                });
-            }
+            List<ProductVariantDTO> list = panelVariants.Controls.OfType<VariantControl>().Select(vc => vc.GetVariantDTO()) .ToList();
 
             return list;
         }
