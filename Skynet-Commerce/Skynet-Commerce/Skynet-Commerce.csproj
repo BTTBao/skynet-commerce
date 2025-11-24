@@ -101,6 +101,9 @@
     <Compile Include="BLL\Models\SampleDataGenerator.cs" />
     <Compile Include="BLL\Models\Seller\ProductFullSellerDTO.cs" />
     <Compile Include="BLL\Models\Seller\ProductSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\OrderSellerDTO.cs" />
+    <Compile Include="BLL\Models\Seller\SellerDashboardDto.cs" />
+    <Compile Include="BLL\Models\Seller\SellerDetailDto.cs" />
     <Compile Include="BLL\Models\ShopDTO.cs" />
     <Compile Include="BLL\Models\UserSessionDTO.cs" />
     <Compile Include="BLL\Models\Seller\OrderSellerDTO.cs" />
@@ -114,6 +117,8 @@
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="BLL\Services\Seller\OrderServiceForSeller.cs" />
     <Compile Include="BLL\Services\Seller\ProductServiceForSeller.cs" />
+    <Compile Include="BLL\Services\Seller\SellerDashboardService.cs" />
+    <Compile Include="BLL\Services\Seller\SellerDetailService.cs" />
     <Compile Include="BLL\Services\User\CartService.cs" />
     <Compile Include="BLL\Services\User\ProductService.cs" />
     <Compile Include="BLL\Services\User\UserShopService.cs" />
@@ -274,6 +279,10 @@
     <Compile Include="GUI\Forms\Seller\SellerLayout.cs" />
     <Compile Include="GUI\Forms\Seller\SellerLayout.Designer.cs">
       <DependentUpon>SellerLayout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\OrderDetailForm.cs" />
+    <Compile Include="GUI\Forms\Seller\OrderDetailForm.Designer.cs">
+      <DependentUpon>OrderDetailForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Components\UcCartItem.CS">
       <SubType>UserControl</SubType>

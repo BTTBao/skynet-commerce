@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Skynet_Commerce.BLL.Models.Seller;
+using System;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce
@@ -34,24 +35,72 @@ namespace Skynet_Commerce
             DeleteRequested?.Invoke(this, EventArgs.Empty);
         }
 
-        public VariantUIData GetVariantData()
+        public bool ValidateData(out string errorMessage)
         {
-            // Xử lý giá
+            errorMessage = "";
+
+            // 1. Validate Text Fields
+            if (string.IsNullOrWhiteSpace(txtSize.Text))
+            {
+                errorMessage = "Kích cỡ (Size) không được để trống.";
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(txtColor.Text))
+            {
+                errorMessage = "Màu sắc (Color) không được để trống.";
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(txtSKU.Text))
+            {
+                errorMessage = "Mã SKU không được để trống.";
+                return false;
+            }
+
+            // 2. Validate Stock Quantity (Đã có kiểm tra giới hạn min/max trong NumericUpDown control)
+            int stock = (int)numericStock.Value;
+            if (stock < 0 || stock > 10000)
+            {
+                errorMessage = "Số lượng tồn kho phải từ 0 đến 10,000.";
+                return false;
+            }
+
+            // 3. Validate Price
+            string priceText = numericPrice.Text.Replace(",", "").Replace(".", "");
+            decimal price;
+
+            if (!decimal.TryParse(priceText, out price))
+            {
+                errorMessage = "Giá biến thể không phải là số hợp lệ.";
+                return false;
+            }
+
+            if (price < 50000 || price > 5000000)
+            {
+                errorMessage = "Giá biến thể phải từ 50,000 đến 5,000,000.";
+                return false;
+            }
+
+            return true;
+        }
+
+        public ProductVariantDTO GetVariantDTO()
+        {
             decimal? variantPrice = null;
             if (decimal.TryParse(numericPrice.Text.Replace(".", "").Replace(",", ""), out decimal parsedPrice))
             {
                 variantPrice = parsedPrice;
             }
-
-            return new VariantUIData
+            return new ProductVariantDTO
             {
                 Size = txtSize.Text.Trim(),
                 Color = txtColor.Text.Trim(),
                 SKU = txtSKU.Text.Trim(),
                 StockQuantity = (int)numericStock.Value,
-                Price = variantPrice
+                Price = (decimal)variantPrice
             };
+                
         }
+        
 
         public void SetData(string size, string color, string sku, int stockQuantity, string price)
         {
