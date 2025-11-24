@@ -18,18 +18,8 @@ namespace Skynet_Commerce
         private List<ProductSellerDTO> _allProducts;
         private List<ProductSellerDTO> _filteredProducts;
 
-        public ucProduct()
-        {
-            InitializeComponent();
-            _productService = new ProductServiceForSeller();
-            _currentShopId = 1; // Default, sẽ lấy từ session
 
-            InitializeCustomSettings();
-            SetupDataGridView();
-            this.Load += ucProduct_Load;
-        }
-
-        public ucProduct(int shopId) : this()
+        public ucProduct(int shopId)
         {
             InitializeComponent();
             InitializeCustomSettings();
