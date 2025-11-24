@@ -15,17 +15,8 @@ namespace Skynet_Commerce
         private int _currentShopId;
         private List<OrderSellerDTO> _allOrders;
         private List<OrderSellerDTO> _filteredOrders;
-        private string _currentStatusFilter = "Tất cả trạng thái";
 
-        public ucOrder()
-        {
-            InitializeComponent();
-            _orderService = new OrderServiceForSeller();
-            _currentShopId = 1;
-            this.Load += ucOrder_Load;
-        }
-
-        public ucOrder(int shopId) : this()
+        public ucOrder(int shopId)
         {
             InitializeComponent();
             _orderService = new OrderServiceForSeller();
