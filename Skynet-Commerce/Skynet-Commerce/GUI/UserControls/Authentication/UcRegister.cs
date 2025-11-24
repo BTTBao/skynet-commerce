@@ -114,6 +114,7 @@ namespace Skynet_Commerce.GUI.Forms.User
                         CreatedAt = DateTime.Now,
                         IsActive = true
                     };
+
                     db.Accounts.Add(newAccount);
                     await db.SaveChangesAsync(); // SAVE 1: AccountID được sinh ra
 
