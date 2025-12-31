@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Skynet_Commerce.GUI.Forms;
+using Skynet_Ecommerce.GUI.Forms.Admin;
+using System;
 using System.Windows.Forms;
 
 namespace Skynet_Ecommerce
@@ -16,7 +15,7 @@ namespace Skynet_Ecommerce
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
+            Application.Run(new DashboardForm());
         }
     }
 }
