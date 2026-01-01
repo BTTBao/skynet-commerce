@@ -94,6 +94,7 @@
     <Compile Include="BLL\Services\Admin\ProductService.cs" />
     <Compile Include="BLL\Services\Admin\ShopService.cs" />
     <Compile Include="BLL\Services\Admin\UserService.cs" />
+    <Compile Include="BLL\Services\Auth\AuthService.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
     <Compile Include="DAL\Entities\AppSession.cs" />
@@ -118,12 +119,6 @@
     </Compile>
     <Compile Include="GUI\Forms\Admin\CategoryDetailForm.Designer.cs">
       <DependentUpon>CategoryDetailForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Forms\Admin\Dashboard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Forms\Admin\Dashboard.Designer.cs">
-      <DependentUpon>Dashboard.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Forms\Admin\DashboardForm.cs">
       <SubType>Form</SubType>
@@ -201,6 +196,12 @@
     <Compile Include="DAL\Entities\Product.cs" />
     <Compile Include="DAL\Entities\ProductImage.cs" />
     <Compile Include="DAL\Entities\ProductVariant.cs" />
+    <Compile Include="GUI\Forms\Login\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Login\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -220,9 +221,6 @@
     <Compile Include="DAL\Entities\Wishlist.cs" />
     <EmbeddedResource Include="GUI\Forms\Admin\CategoriesForm.resx">
       <DependentUpon>CategoriesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Forms\Admin\Dashboard.resx">
-      <DependentUpon>Dashboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\DashboardForm.resx">
       <DependentUpon>DashboardForm.cs</DependentUpon>
@@ -250,6 +248,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Login\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcInfoCard.resx">
       <DependentUpon>UcInfoCard.cs</DependentUpon>

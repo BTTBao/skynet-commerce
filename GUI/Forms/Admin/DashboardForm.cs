@@ -1,6 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Skynet_Commerce.DAL.Entities;
-using Skynet_Ecommerce;
+using Skynet_Ecommerce.GUI.Forms.Login;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -136,13 +136,17 @@ namespace Skynet_Commerce.GUI.Forms
                         // 1. Xóa Session
                         AppSession.Instance.Clear();
 
-                        // 2. Mở lại FrmMain (Giao diện khách hàng)
-                        FrmMain main = new FrmMain();
-                        main.Show();
+                        // 2. Xóa Ghi nhớ trong Settings (QUAN TRỌNG)
+                        Skynet_Ecommerce.Properties.Settings.Default.IsRemembered = false;
+                        Skynet_Ecommerce.Properties.Settings.Default.RememberUser = "";
+                        Skynet_Ecommerce.Properties.Settings.Default.RememberPass = "";
+                        Skynet_Ecommerce.Properties.Settings.Default.Save();
 
-                        // 3. Ẩn Form Dashboard hiện tại đi
-                        // Lưu ý: Dùng Hide() thay vì Close() để tránh kích hoạt sự kiện Application.Exit() nếu bạn đã cài đặt ở form Login trước đó.
+                        // 3. Đóng form hiện tại và mở lại Login
                         this.Hide();
+                        LoginForm login = new LoginForm();
+                        login.ShowDialog();
+                        this.Close();
                     }
                     break;
 
