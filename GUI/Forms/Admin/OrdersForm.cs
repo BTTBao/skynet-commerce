@@ -1,8 +1,10 @@
 ﻿using Skynet_Commerce.BLL.Models.Admin; // Giả định namespace chứa ViewModel
 using Skynet_Commerce.BLL.Services.Admin;
+using Skynet_Ecommerce.BLL.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.Forms
@@ -11,6 +13,8 @@ namespace Skynet_Commerce.GUI.Forms
     {
         private readonly OrderService _orderService;
 
+        private PaginationHelper _paginationHelper;
+        private List<OrderViewModel> _allOrdersCache = new List<OrderViewModel>(); // Giả sử ViewModel là OrderViewModel
         public OrdersForm()
         {
             InitializeComponent();
@@ -18,6 +22,15 @@ namespace Skynet_Commerce.GUI.Forms
 
             SetupFilters();
             SetupGridEvents();
+
+            _paginationHelper = new PaginationHelper(
+                _pnlPagination,
+                _cboPageSelect,
+                _lblTotalPageText,
+                (page) => RenderOrderGrid(), // Callback
+                pageSize: 10
+            );
+
         }
 
         private void SetupGridEvents()
@@ -64,12 +77,17 @@ namespace Skynet_Commerce.GUI.Forms
                 string keyword = _txtSearch.Text.Trim();
                 string status = _cboStatus.SelectedValue != null ? _cboStatus.SelectedValue.ToString() : "All";
 
-                // Gọi Service
+                // 1. Lấy toàn bộ dữ liệu từ Service
                 var orderList = _orderService.GetAllOrders(keyword, status);
 
-                // Binding dữ liệu
-                _dgvOrders.AutoGenerateColumns = false;
-                _dgvOrders.DataSource = orderList;
+                // 2. Lưu vào Cache
+                _allOrdersCache = orderList;
+
+                // 3. Cập nhật PaginationHelper
+                _paginationHelper.SetTotalRecords(orderList.Count);
+
+                // 4. Reset về trang 1 (Helper sẽ tự gọi RenderOrderGrid)
+                _paginationHelper.SetPage(1);
             }
             catch (Exception ex)
             {
@@ -80,7 +98,20 @@ namespace Skynet_Commerce.GUI.Forms
                 Cursor.Current = Cursors.Default;
             }
         }
+        private void RenderOrderGrid()
+        {
+            int page = _paginationHelper.CurrentPage;
+            int size = _paginationHelper.PageSize;
 
+            // Cắt dữ liệu (Client-side pagination)
+            var pagedData = _allOrdersCache
+                            .Skip((page - 1) * size)
+                            .Take(size)
+                            .ToList();
+
+            _dgvOrders.AutoGenerateColumns = false;
+            _dgvOrders.DataSource = pagedData;
+        }
         // --- ĐỊNH DẠNG HIỂN THỊ (MÀU SẮC, TIỀN TỆ) ---
         private void _dgvOrders_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {

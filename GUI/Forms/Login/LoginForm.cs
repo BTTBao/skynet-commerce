@@ -122,7 +122,6 @@ namespace Skynet_Ecommerce.GUI.Forms.Login
 
         private void NavigateToMainForm(string role)
         {
-            this.Hide(); // Ẩn form Login đi
             Form mainForm = null;
 
             // Logic chuyển form dựa trên Role
@@ -130,30 +129,31 @@ namespace Skynet_Ecommerce.GUI.Forms.Login
             {
                 case "admin":
                 case "administrator":
-                     mainForm = new DashboardForm(); 
                     MessageBox.Show($"Xin chào Admin {AppSession.Instance.FullName}!");
+                    mainForm = new DashboardForm(); 
                     break;
 
                 case "staff":
                 case "seller":
-                     mainForm = new FrmMain();
                     MessageBox.Show($"Xin chào Staff {AppSession.Instance.FullName}!");
+                    mainForm = new FrmMain();
                     break;
 
                 default: // User / Customer
-                     mainForm = new FrmMain();
                     MessageBox.Show($"Đăng nhập thành công! Xin chào {AppSession.Instance.FullName}");
+                    mainForm = new FrmMain();
                     break;
             }
 
-            if (mainForm != null) 
+            if (mainForm != null)
             {
+                Hide(); // Ẩn form Login đi
                 mainForm.FormClosed += (s, args) => this.Close(); // Đóng hẳn app khi form chính đóng
                 mainForm.Show();
             }
             else 
             {
-                this.Show(); // Hiện lại nếu chưa có form đích
+                Show(); // Hiện lại nếu chưa có form đích
             }
         }
     }

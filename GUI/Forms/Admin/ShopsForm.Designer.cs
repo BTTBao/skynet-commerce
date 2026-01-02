@@ -14,12 +14,12 @@
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this._pageTitle = new System.Windows.Forms.Label();
             this._pageSub = new System.Windows.Forms.Label();
             this._cardPending = new Guna.UI2.WinForms.Guna2Panel();
@@ -42,10 +42,16 @@
             this.colA_Prod = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colA_Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colA_Action = new System.Windows.Forms.DataGridViewButtonColumn();
+            this._pnlPageInfo = new System.Windows.Forms.FlowLayoutPanel();
+            this._lblPageText = new System.Windows.Forms.Label();
+            this._cboPageSelect = new Guna.UI2.WinForms.Guna2ComboBox();
+            this._lblTotalPageText = new System.Windows.Forms.Label();
+            this._pnlPagination = new System.Windows.Forms.FlowLayoutPanel();
             this._cardPending.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._dgvPending)).BeginInit();
             this._cardAllShops.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._dgvActive)).BeginInit();
+            this._pnlPageInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // _pageTitle
@@ -71,6 +77,8 @@
             // 
             // _cardPending
             // 
+            this._cardPending.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this._cardPending.BackColor = System.Drawing.Color.Transparent;
             this._cardPending.BorderRadius = 12;
             this._cardPending.Controls.Add(this._dgvPending);
@@ -88,18 +96,18 @@
             this._dgvPending.AllowUserToAddRows = false;
             this._dgvPending.AllowUserToDeleteRows = false;
             this._dgvPending.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this._dgvPending.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
+            this._dgvPending.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
             this._dgvPending.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
-            this._dgvPending.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
+            this._dgvPending.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this._dgvPending.ColumnHeadersHeight = 40;
             this._dgvPending.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colP_Id,
@@ -108,14 +116,14 @@
             this.colP_Email,
             this.colP_Date,
             this.colP_Action});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this._dgvPending.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this._dgvPending.DefaultCellStyle = dataGridViewCellStyle9;
             this._dgvPending.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this._dgvPending.Location = new System.Drawing.Point(20, 60);
             this._dgvPending.MultiSelect = false;
@@ -204,12 +212,17 @@
             // 
             // _cardAllShops
             // 
+            this._cardAllShops.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this._cardAllShops.BackColor = System.Drawing.Color.Transparent;
             this._cardAllShops.BorderRadius = 12;
             this._cardAllShops.Controls.Add(this._lblAllShopsTitle);
             this._cardAllShops.Controls.Add(this._txtSearch);
             this._cardAllShops.Controls.Add(this._comboStatus);
             this._cardAllShops.Controls.Add(this._dgvActive);
+            this._cardAllShops.Controls.Add(this._pnlPageInfo);
+            this._cardAllShops.Controls.Add(this._pnlPagination);
             this._cardAllShops.FillColor = System.Drawing.Color.White;
             this._cardAllShops.Location = new System.Drawing.Point(25, 360);
             this._cardAllShops.Name = "_cardAllShops";
@@ -230,6 +243,7 @@
             // 
             // _txtSearch
             // 
+            this._txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._txtSearch.BorderRadius = 8;
             this._txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
             this._txtSearch.DefaultText = "";
@@ -244,6 +258,7 @@
             // 
             // _comboStatus
             // 
+            this._comboStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._comboStatus.BackColor = System.Drawing.Color.Transparent;
             this._comboStatus.BorderRadius = 8;
             this._comboStatus.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
@@ -263,18 +278,18 @@
             this._dgvActive.AllowUserToAddRows = false;
             this._dgvActive.AllowUserToDeleteRows = false;
             this._dgvActive.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            this._dgvActive.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.White;
+            this._dgvActive.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
             this._dgvActive.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(65)))), ((int)(((byte)(75)))), ((int)(((byte)(255)))));
-            this._dgvActive.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle11.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(65)))), ((int)(((byte)(75)))), ((int)(((byte)(255)))));
+            this._dgvActive.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             this._dgvActive.ColumnHeadersHeight = 45;
             this._dgvActive.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colA_Name,
@@ -283,14 +298,14 @@
             this.colA_Prod,
             this.colA_Status,
             this.colA_Action});
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this._dgvActive.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this._dgvActive.DefaultCellStyle = dataGridViewCellStyle12;
             this._dgvActive.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this._dgvActive.Location = new System.Drawing.Point(20, 70);
             this._dgvActive.MultiSelect = false;
@@ -298,7 +313,7 @@
             this._dgvActive.ReadOnly = true;
             this._dgvActive.RowHeadersVisible = false;
             this._dgvActive.RowTemplate.Height = 55;
-            this._dgvActive.Size = new System.Drawing.Size(1016, 268);
+            this._dgvActive.Size = new System.Drawing.Size(1016, 220);
             this._dgvActive.TabIndex = 3;
             this._dgvActive.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this._dgvActive.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -370,6 +385,70 @@
             this.colA_Action.Text = "•••";
             this.colA_Action.UseColumnTextForButtonValue = true;
             // 
+            // _pnlPageInfo
+            // 
+            this._pnlPageInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._pnlPageInfo.AutoSize = true;
+            this._pnlPageInfo.BackColor = System.Drawing.Color.Transparent;
+            this._pnlPageInfo.Controls.Add(this._lblPageText);
+            this._pnlPageInfo.Controls.Add(this._cboPageSelect);
+            this._pnlPageInfo.Controls.Add(this._lblTotalPageText);
+            this._pnlPageInfo.Location = new System.Drawing.Point(300, 293);
+            this._pnlPageInfo.Name = "_pnlPageInfo";
+            this._pnlPageInfo.Size = new System.Drawing.Size(200, 42);
+            this._pnlPageInfo.TabIndex = 11;
+            // 
+            // _lblPageText
+            // 
+            this._lblPageText.AutoSize = true;
+            this._lblPageText.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this._lblPageText.ForeColor = System.Drawing.Color.DimGray;
+            this._lblPageText.Location = new System.Drawing.Point(0, 8);
+            this._lblPageText.Margin = new System.Windows.Forms.Padding(0, 8, 5, 0);
+            this._lblPageText.Name = "_lblPageText";
+            this._lblPageText.Size = new System.Drawing.Size(39, 19);
+            this._lblPageText.TabIndex = 0;
+            this._lblPageText.Text = "Page";
+            // 
+            // _cboPageSelect
+            // 
+            this._cboPageSelect.BackColor = System.Drawing.Color.Transparent;
+            this._cboPageSelect.BorderColor = System.Drawing.Color.LightGray;
+            this._cboPageSelect.BorderRadius = 6;
+            this._cboPageSelect.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this._cboPageSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._cboPageSelect.FocusedColor = System.Drawing.Color.Empty;
+            this._cboPageSelect.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this._cboPageSelect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this._cboPageSelect.ItemHeight = 30;
+            this._cboPageSelect.Location = new System.Drawing.Point(47, 3);
+            this._cboPageSelect.Name = "_cboPageSelect";
+            this._cboPageSelect.Size = new System.Drawing.Size(70, 36);
+            this._cboPageSelect.TabIndex = 1;
+            // 
+            // _lblTotalPageText
+            // 
+            this._lblTotalPageText.AutoSize = true;
+            this._lblTotalPageText.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this._lblTotalPageText.ForeColor = System.Drawing.Color.DimGray;
+            this._lblTotalPageText.Location = new System.Drawing.Point(120, 8);
+            this._lblTotalPageText.Margin = new System.Windows.Forms.Padding(0, 8, 20, 0);
+            this._lblTotalPageText.Name = "_lblTotalPageText";
+            this._lblTotalPageText.Size = new System.Drawing.Size(33, 19);
+            this._lblTotalPageText.TabIndex = 2;
+            this._lblTotalPageText.Text = "of 0";
+            // 
+            // _pnlPagination
+            // 
+            this._pnlPagination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._pnlPagination.AutoSize = true;
+            this._pnlPagination.BackColor = System.Drawing.Color.Transparent;
+            this._pnlPagination.Location = new System.Drawing.Point(500, 295);
+            this._pnlPagination.Name = "_pnlPagination";
+            this._pnlPagination.Size = new System.Drawing.Size(200, 40);
+            this._pnlPagination.TabIndex = 10;
+            this._pnlPagination.WrapContents = false;
+            // 
             // ShopsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -389,6 +468,8 @@
             this._cardAllShops.ResumeLayout(false);
             this._cardAllShops.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this._dgvActive)).EndInit();
+            this._pnlPageInfo.ResumeLayout(false);
+            this._pnlPageInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -423,5 +504,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colA_Prod;
         private System.Windows.Forms.DataGridViewTextBoxColumn colA_Status;
         private System.Windows.Forms.DataGridViewButtonColumn colA_Action;
+
+        //phân trang
+        private System.Windows.Forms.FlowLayoutPanel _pnlPagination;
+        private System.Windows.Forms.FlowLayoutPanel _pnlPageInfo;
+        private System.Windows.Forms.Label _lblPageText;
+        private Guna.UI2.WinForms.Guna2ComboBox _cboPageSelect;
+        private System.Windows.Forms.Label _lblTotalPageText;
     }
 }

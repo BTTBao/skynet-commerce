@@ -31,8 +31,14 @@
             this._comboRole = new Guna.UI2.WinForms.Guna2ComboBox();
             this._txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
             this._lblAllUsers = new System.Windows.Forms.Label();
+            this._pnlPageInfo = new System.Windows.Forms.FlowLayoutPanel();
+            this._lblPageText = new System.Windows.Forms.Label();
+            this._cboPageSelect = new Guna.UI2.WinForms.Guna2ComboBox();
+            this._lblTotalPageText = new System.Windows.Forms.Label();
+            this._pnlPagination = new System.Windows.Forms.FlowLayoutPanel();
             this._mainCard.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._dgvUsers)).BeginInit();
+            this._pnlPageInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // _pageTitle
@@ -58,6 +64,9 @@
             // 
             // _mainCard
             // 
+            this._mainCard.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this._mainCard.BackColor = System.Drawing.Color.Transparent;
             this._mainCard.BorderRadius = 12;
             this._mainCard.Controls.Add(this._dgvUsers);
@@ -65,6 +74,8 @@
             this._mainCard.Controls.Add(this._comboRole);
             this._mainCard.Controls.Add(this._txtSearch);
             this._mainCard.Controls.Add(this._lblAllUsers);
+            this._mainCard.Controls.Add(this._pnlPageInfo);
+            this._mainCard.Controls.Add(this._pnlPagination);
             this._mainCard.FillColor = System.Drawing.Color.White;
             this._mainCard.Location = new System.Drawing.Point(25, 90);
             this._mainCard.Name = "_mainCard";
@@ -108,7 +119,7 @@
             this._dgvUsers.ReadOnly = true;
             this._dgvUsers.RowHeadersVisible = false;
             this._dgvUsers.RowTemplate.Height = 55;
-            this._dgvUsers.Size = new System.Drawing.Size(1016, 523);
+            this._dgvUsers.Size = new System.Drawing.Size(1016, 460);
             this._dgvUsers.TabIndex = 4;
             this._dgvUsers.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this._dgvUsers.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -203,6 +214,7 @@
             // 
             // _comboRole
             // 
+            this._comboRole.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._comboRole.BackColor = System.Drawing.Color.Transparent;
             this._comboRole.BorderRadius = 8;
             this._comboRole.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
@@ -219,6 +231,7 @@
             // 
             // _txtSearch
             // 
+            this._txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._txtSearch.BorderRadius = 8;
             this._txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
             this._txtSearch.DefaultText = "";
@@ -241,6 +254,75 @@
             this._lblAllUsers.TabIndex = 0;
             this._lblAllUsers.Text = "Tất cả người dùng";
             // 
+            // _pnlPageInfo
+            // 
+            this._pnlPageInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._pnlPageInfo.AutoSize = true;
+            this._pnlPageInfo.BackColor = System.Drawing.Color.Transparent;
+            this._pnlPageInfo.Controls.Add(this._lblPageText);
+            this._pnlPageInfo.Controls.Add(this._cboPageSelect);
+            this._pnlPageInfo.Controls.Add(this._lblTotalPageText);
+            this._pnlPageInfo.Location = new System.Drawing.Point(300, 560);
+            this._pnlPageInfo.Name = "_pnlPageInfo";
+            this._pnlPageInfo.Size = new System.Drawing.Size(200, 40);
+            this._pnlPageInfo.TabIndex = 6;
+            this._pnlPageInfo.WrapContents = false;
+            // 
+            // _lblPageText
+            // 
+            this._lblPageText.AutoSize = true;
+            this._lblPageText.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this._lblPageText.ForeColor = System.Drawing.Color.DimGray;
+            this._lblPageText.Location = new System.Drawing.Point(0, 8);
+            this._lblPageText.Margin = new System.Windows.Forms.Padding(0, 8, 5, 0);
+            this._lblPageText.Name = "_lblPageText";
+            this._lblPageText.Size = new System.Drawing.Size(39, 19);
+            this._lblPageText.TabIndex = 0;
+            this._lblPageText.Text = "Page";
+            // 
+            // _cboPageSelect
+            // 
+            this._cboPageSelect.BackColor = System.Drawing.Color.Transparent;
+            this._cboPageSelect.BorderColor = System.Drawing.Color.LightGray;
+            this._cboPageSelect.BorderRadius = 6;
+            this._cboPageSelect.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this._cboPageSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._cboPageSelect.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this._cboPageSelect.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this._cboPageSelect.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this._cboPageSelect.ForeColor = System.Drawing.Color.Black;
+            this._cboPageSelect.ItemHeight = 25;
+            this._cboPageSelect.Location = new System.Drawing.Point(47, 3);
+            this._cboPageSelect.Margin = new System.Windows.Forms.Padding(3, 3, 5, 3);
+            this._cboPageSelect.Name = "_cboPageSelect";
+            this._cboPageSelect.Size = new System.Drawing.Size(70, 31);
+            this._cboPageSelect.TabIndex = 1;
+            this._cboPageSelect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // _lblTotalPageText
+            // 
+            this._lblTotalPageText.AutoSize = true;
+            this._lblTotalPageText.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this._lblTotalPageText.ForeColor = System.Drawing.Color.DimGray;
+            this._lblTotalPageText.Location = new System.Drawing.Point(122, 8);
+            this._lblTotalPageText.Margin = new System.Windows.Forms.Padding(0, 8, 20, 0);
+            this._lblTotalPageText.Name = "_lblTotalPageText";
+            this._lblTotalPageText.Size = new System.Drawing.Size(41, 19);
+            this._lblTotalPageText.TabIndex = 2;
+            this._lblTotalPageText.Text = "of 10";
+            // 
+            // _pnlPagination
+            // 
+            this._pnlPagination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._pnlPagination.AutoSize = true;
+            this._pnlPagination.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this._pnlPagination.BackColor = System.Drawing.Color.Transparent;
+            this._pnlPagination.Location = new System.Drawing.Point(1036, 595);
+            this._pnlPagination.Name = "_pnlPagination";
+            this._pnlPagination.Size = new System.Drawing.Size(0, 0);
+            this._pnlPagination.TabIndex = 5;
+            this._pnlPagination.WrapContents = false;
+            // 
             // UsersForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -256,6 +338,8 @@
             this._mainCard.ResumeLayout(false);
             this._mainCard.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this._dgvUsers)).EndInit();
+            this._pnlPageInfo.ResumeLayout(false);
+            this._pnlPageInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -279,5 +363,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colRole;
         private System.Windows.Forms.DataGridViewTextBoxColumn colStatus;
         private System.Windows.Forms.DataGridViewButtonColumn colAction;
+        private System.Windows.Forms.FlowLayoutPanel _pnlPagination; // phân trang
+        private System.Windows.Forms.FlowLayoutPanel _pnlPageInfo;
+        private System.Windows.Forms.Label _lblPageText;
+        private Guna.UI2.WinForms.Guna2ComboBox _cboPageSelect;
+        private System.Windows.Forms.Label _lblTotalPageText;
     }
 }

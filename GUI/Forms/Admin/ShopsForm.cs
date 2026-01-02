@@ -1,7 +1,9 @@
 ﻿using Skynet_Commerce.BLL.Models.Admin;
+using Skynet_Ecommerce.BLL.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.Forms
@@ -9,7 +11,9 @@ namespace Skynet_Commerce.GUI.Forms
     public partial class ShopsForm : Form
     {
         private readonly ShopService _shopService;
-
+        // phân trang
+        private PaginationHelper _paginationHelper;
+        private List<ShopViewModel> _activeShopsCache = new List<ShopViewModel>();
         public ShopsForm()
         {
             InitializeComponent();
@@ -17,6 +21,15 @@ namespace Skynet_Commerce.GUI.Forms
 
             SetupStatusFilter();
             SetupGrids();
+
+            // phân trang
+            _paginationHelper = new PaginationHelper(
+                _pnlPagination,
+                _cboPageSelect,
+                _lblTotalPageText,
+                (page) => RenderActiveGrid(), // Callback
+                pageSize: 10
+            );
         }
 
         private void SetupGrids()
@@ -138,10 +151,15 @@ namespace Skynet_Commerce.GUI.Forms
                 if (_comboStatus.SelectedValue is ShopStatusOption opt) status = opt.Value;
                 else if (_comboStatus.SelectedValue != null) status = _comboStatus.SelectedValue.ToString();
 
-                List<ShopViewModel> shops = _shopService.GetShops(keyword, status);
+                // Lấy toàn bộ dữ liệu (Chưa phân trang)
+                List<ShopViewModel> allShops = _shopService.GetShops(keyword, status);
+                // Lưu vào Cache
+                _activeShopsCache = allShops;
+                // Cập nhật cho Helper biết tổng số bản ghi
+                // Helper sẽ tự tính toán số trang và vẽ lại nút
+                _paginationHelper.SetTotalRecords(allShops.Count);
 
-                _dgvActive.AutoGenerateColumns = false;
-                _dgvActive.DataSource = shops;
+                _paginationHelper.SetPage(1);
             }
             catch (Exception ex)
             {
@@ -152,7 +170,22 @@ namespace Skynet_Commerce.GUI.Forms
                 Cursor.Current = Cursors.Default;
             }
         }
+        // [MỚI] Hàm chỉ nhiệm vụ cắt dữ liệu và hiển thị
+        private void RenderActiveGrid()
+        {
+            // Lấy trang hiện tại từ Helper
+            int page = _paginationHelper.CurrentPage;
+            int size = _paginationHelper.PageSize;
 
+            // Cắt dữ liệu (Client-side pagination)
+            var pagedData = _activeShopsCache
+                            .Skip((page - 1) * size)
+                            .Take(size)
+                            .ToList();
+
+            _dgvActive.AutoGenerateColumns = false;
+            _dgvActive.DataSource = pagedData;
+        }
         private void _dgvActive_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             // Tô màu cột Status
