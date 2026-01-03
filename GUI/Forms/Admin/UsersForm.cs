@@ -1,9 +1,11 @@
-﻿using Skynet_Commerce.BLL.Models.Admin;
+﻿using Guna.UI2.WinForms;
+using Skynet_Commerce.BLL.Models.Admin;
 using Skynet_Commerce.BLL.Services.Admin;
-using Guna.UI2.WinForms;
+using Skynet_Ecommerce.BLL.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,6 +15,10 @@ namespace Skynet_Commerce.GUI.Forms
     {
         private readonly UserService _userService;
         private bool _isLoading = false;
+
+        //phân trang
+        private PaginationHelper _paginationHelper;
+        private List<UserViewModel> _allUsersCache = new List<UserViewModel>(); // Vẫn giữ Cache để cắt dữ liệu
 
         public class RoleOption
         {
@@ -30,6 +36,15 @@ namespace Skynet_Commerce.GUI.Forms
             // Đăng ký sự kiện thay đổi con trỏ chuột (Cursor)
             _dgvUsers.CellMouseEnter += (s, e) => { if (e.RowIndex >= 0) _dgvUsers.Cursor = Cursors.Hand; };
             _dgvUsers.CellMouseLeave += (s, e) => { _dgvUsers.Cursor = Cursors.Default; };
+
+            // phân trang
+            _paginationHelper = new PaginationHelper(
+                _pnlPagination,     // Panel chứa nút 1 2 3
+                _cboPageSelect,     // ComboBox chọn trang
+                _lblTotalPageText,  // Label "of 10"
+                (page) => RenderUserGrid(), // Callback: Khi đổi trang thì vẽ lại Grid
+                pageSize: 10        // Số dòng mỗi trang
+            );
         }
 
         // --- XỬ LÝ MÀU SẮC THÔNG MINH ---
@@ -148,6 +163,22 @@ namespace Skynet_Commerce.GUI.Forms
             await LoadUserDataAsync();
         }
 
+        private async void _txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                await LoadUserDataAsync();
+            }
+        }
+
+        private async void UsersForm_Load(object sender, EventArgs e)
+        {
+            await LoadUserDataAsync();
+        }
+
+        // Xử lý khi người dùng tự gõ số trang và nhấn Enter
+
         private async Task LoadUserDataAsync()
         {
             if (_isLoading) return;
@@ -162,8 +193,11 @@ namespace Skynet_Commerce.GUI.Forms
                 {
                     return _userService.GetAllUsersForView(keyword, role);
                 });
-                _dgvUsers.AutoGenerateColumns = false;
-                _dgvUsers.DataSource = users;
+                // Lưu vào Cache và tính tổng số trang
+                _allUsersCache = users;
+
+                _paginationHelper.SetTotalRecords(users.Count);
+                _paginationHelper.SetPage(1);
             }
             catch (Exception ex)
             {
@@ -176,18 +210,20 @@ namespace Skynet_Commerce.GUI.Forms
             }
         }
 
-        private async void _txtSearch_KeyDown(object sender, KeyEventArgs e)
+        // [HÀM MỚI] Hàm callback chỉ làm nhiệm vụ cắt dữ liệu từ Cache ra hiển thị
+        private void RenderUserGrid()
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                await LoadUserDataAsync();
-            }
-        }
+            int page = _paginationHelper.CurrentPage;
+            int size = _paginationHelper.PageSize;
 
-        private async void UsersForm_Load(object sender, EventArgs e)
-        {
-            await LoadUserDataAsync();
+            // Cắt dữ liệu (Client-side pagination)
+            var pagedData = _allUsersCache
+                            .Skip((page - 1) * size)
+                            .Take(size)
+                            .ToList();
+
+            _dgvUsers.AutoGenerateColumns = false;
+            _dgvUsers.DataSource = pagedData;
         }
     }
 }
