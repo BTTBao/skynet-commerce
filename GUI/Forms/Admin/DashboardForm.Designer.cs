@@ -26,7 +26,7 @@
             // 
             this._sidebar.Controls.Add(this.guna2PictureBox1);
             this._sidebar.Dock = System.Windows.Forms.DockStyle.Left;
-            this._sidebar.FillColor = System.Drawing.SystemColors.Desktop;
+            this._sidebar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(30)))), ((int)(((byte)(50)))));
             this._sidebar.Location = new System.Drawing.Point(0, 0);
             this._sidebar.Name = "_sidebar";
             this._sidebar.ShadowDecoration.Depth = 10;

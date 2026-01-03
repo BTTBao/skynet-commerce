@@ -1,8 +1,10 @@
 ﻿using Skynet_Commerce.BLL.Models.Admin;
 using Skynet_Commerce.BLL.Services.Admin;
+using Skynet_Ecommerce.BLL.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,6 +14,9 @@ namespace Skynet_Commerce.GUI.Forms
     {
         private readonly ProductService _productService;
 
+        // [PHÂN TRANG] Khai báo Helper và Cache
+        private PaginationHelper _paginationHelper;
+        private List<ProductViewModel> _allProductsCache = new List<ProductViewModel>();
         public ProductsForm()
         {
             InitializeComponent();
@@ -19,6 +24,14 @@ namespace Skynet_Commerce.GUI.Forms
 
             SetupGridEvents();
             LoadCategories();
+
+            _paginationHelper = new PaginationHelper(
+                _pnlPagination,      // Panel chứa nút số
+                _cboPageSelect,      // ComboBox chọn trang
+                _lblTotalPageText,   // Label "of Total"
+                (page) => RenderProductGrid(), // Callback: Khi đổi trang -> vẽ lại grid
+                pageSize: 10         // Số dòng mỗi trang
+            );
         }
 
         private void SetupGridEvents()
@@ -48,10 +61,17 @@ namespace Skynet_Commerce.GUI.Forms
                 string keyword = _txtSearch.Text.Trim();
                 string category = _comboCategory.SelectedItem != null ? _comboCategory.SelectedItem.ToString() : "All Categories";
 
+                // 1. Lấy toàn bộ dữ liệu
                 List<ProductViewModel> productList = _productService.GetAllProducts(keyword, category);
 
-                _dgvProducts.AutoGenerateColumns = false;
-                _dgvProducts.DataSource = productList;
+                // 2. Lưu vào Cache
+                _allProductsCache = productList;
+
+                // 3. Cập nhật PaginationHelper
+                _paginationHelper.SetTotalRecords(productList.Count);
+
+                // 4. Reset về trang 1
+                _paginationHelper.SetPage(1);
             }
             catch (Exception ex)
             {
@@ -61,6 +81,22 @@ namespace Skynet_Commerce.GUI.Forms
             {
                 Cursor.Current = Cursors.Default;
             }
+        }
+
+        // [HÀM MỚI] Cắt dữ liệu và hiển thị lên Grid
+        private void RenderProductGrid()
+        {
+            int page = _paginationHelper.CurrentPage;
+            int size = _paginationHelper.PageSize;
+
+            // Cắt dữ liệu (Client-side pagination)
+            var pagedData = _allProductsCache
+                            .Skip((page - 1) * size)
+                            .Take(size)
+                            .ToList();
+
+            _dgvProducts.AutoGenerateColumns = false;
+            _dgvProducts.DataSource = pagedData;
         }
 
         // --- ĐỊNH DẠNG HIỂN THỊ (MÀU SẮC, TIỀN TỆ) ---

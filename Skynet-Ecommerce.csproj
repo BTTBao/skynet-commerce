@@ -79,6 +79,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Helpers\PaginationHelper.cs" />
     <Compile Include="BLL\Helpers\UserValidator.cs" />
     <Compile Include="BLL\Models\Admin\CategoryViewModel.cs" />
     <Compile Include="BLL\Models\Admin\DashboardDTO.cs" />

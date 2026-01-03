@@ -1,10 +1,13 @@
-﻿using Skynet_Commerce.BLL.Services.Admin;
+﻿using Skynet_Commerce.BLL.Models.Admin;
+using Skynet_Commerce.BLL.Services.Admin;
+using Skynet_Ecommerce.BLL.Helpers;
+
 // using Skynet_Commerce.GUI.UserControls; // Không còn cần thiết
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Linq; // Dùng cho search đơn giản
+using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.Forms
 {
@@ -12,8 +15,9 @@ namespace Skynet_Commerce.GUI.Forms
     {
         private readonly CategoryService _categoryService;
 
-        // Biến lưu danh sách gốc để hỗ trợ tìm kiếm local (nếu muốn)
-        private dynamic _allCategories;
+
+        private PaginationHelper _paginationHelper;
+        private List<CategoryViewModel> _filteredCategoriesCache = new List<CategoryViewModel>();
 
         public CategoriesForm()
         {
@@ -21,6 +25,14 @@ namespace Skynet_Commerce.GUI.Forms
             _categoryService = new CategoryService();
 
             SetupGridEvents();
+
+            _paginationHelper = new PaginationHelper(
+                _pnlPagination,
+                _cboPageSelect,
+                _lblTotalPageText,
+                (page) => RenderCategoryGrid(), // Callback: Gọi khi đổi trang
+                pageSize: 10
+            );
         }
 
         private void SetupGridEvents()
@@ -45,22 +57,24 @@ namespace Skynet_Commerce.GUI.Forms
             {
                 Cursor.Current = Cursors.WaitCursor;
 
-                // Lấy dữ liệu
-                var data = _categoryService.GetAllCategories();
-                _allCategories = data; // Lưu lại để tìm kiếm
+                // 1. Lấy toàn bộ dữ liệu từ DB
+                var data = _categoryService.GetAllCategories(); // Giả sử trả về List<CategoryViewModel>
 
-                // Lọc theo từ khóa (nếu có)
+                // 2. Lọc theo từ khóa (Client-side filtering)
                 string keyword = _txtSearch.Text.Trim().ToLower();
                 if (!string.IsNullOrEmpty(keyword))
                 {
-                    // Giả sử 'data' là List<T>, ta dùng LINQ để lọc
-                    // Lưu ý: Cần cast về đúng kiểu ViewModel của bạn nếu dùng 'var'
-                    // Ở đây tôi viết generic, bạn có thể cần điều chỉnh .Where(...)
-                     data = data.Where(x => x.NameDisplay.ToLower().Contains(keyword)).ToList();
+                    data = data.Where(x => x.NameDisplay.ToLower().Contains(keyword)).ToList();
                 }
 
-                _dgvCategories.AutoGenerateColumns = false;
-                _dgvCategories.DataSource = data;
+                // 3. Lưu kết quả đã lọc vào Cache
+                _filteredCategoriesCache = data;
+
+                // 4. Cập nhật PaginationHelper
+                _paginationHelper.SetTotalRecords(data.Count);
+
+                // 5. Reset về trang 1 (Helper sẽ tự gọi RenderCategoryGrid)
+                _paginationHelper.SetPage(1);
             }
             catch (Exception ex)
             {
@@ -70,6 +84,20 @@ namespace Skynet_Commerce.GUI.Forms
             {
                 Cursor.Current = Cursors.Default;
             }
+        }
+        private void RenderCategoryGrid()
+        {
+            int page = _paginationHelper.CurrentPage;
+            int size = _paginationHelper.PageSize;
+
+            // Cắt dữ liệu (Client-side pagination)
+            var pagedData = _filteredCategoriesCache
+                            .Skip((page - 1) * size)
+                            .Take(size)
+                            .ToList();
+
+            _dgvCategories.AutoGenerateColumns = false;
+            _dgvCategories.DataSource = pagedData;
         }
 
         // --- ĐỊNH DẠNG HIỂN THỊ ---
