@@ -1,10 +1,12 @@
-﻿using Guna.UI2.WinForms;
+﻿using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using Skynet_Commerce.BLL.Models.Admin;
 using Skynet_Commerce.BLL.Services.Admin;
 using Skynet_Ecommerce.BLL.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -29,6 +31,7 @@ namespace Skynet_Commerce.GUI.Forms
         public UsersForm()
         {
             InitializeComponent(); // _dgvUsers đã được tạo ở đây
+
             _userService = new UserService();
 
             SetupRoleFilter();
@@ -139,6 +142,97 @@ namespace Skynet_Commerce.GUI.Forms
             menu.Show(_dgvUsers, cellRect.Left, cellRect.Bottom);
         }
 
+        #region Xuất excel
+        private void _btnExportExcel_Click(object sender, EventArgs e)
+        {
+            // Lấy dữ liệu hiện tại từ GridView
+            var userList = _dgvUsers.DataSource as List<UserViewModel>;
+            if (userList == null || userList.Count == 0)
+            {
+                MessageBox.Show("Không có dữ liệu để xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "Excel Files (*.xlsx)|*.xlsx";
+                sfd.FileName = $"DanhSachNguoiDung_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        ExportDataToExcel(userList, sfd.FileName);
+                        MessageBox.Show("Xuất Excel thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Có lỗi xảy ra khi xuất file: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void ExportDataToExcel(List<UserViewModel> data, string filePath)
+        {
+            using (var package = new ExcelPackage())
+            {
+                // Tạo Sheet mới
+                var worksheet = package.Workbook.Worksheets.Add("Users");
+
+                // --- 1. TẠO HEADER ---
+                string[] headers = { "Họ và Tên", "Email", "Số điện thoại", "Vai trò", "Trạng thái" };
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = headers[i];
+
+                    // Style cho Header
+                    var cell = worksheet.Cells[1, i + 1];
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(100, 88, 255)); // Màu tím giống Grid
+                    cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                // --- 2. ĐỔ DỮ LIỆU ---
+                int row = 2;
+                foreach (var user in data)
+                {
+                    worksheet.Cells[row, 1].Value = user.FullName;
+                    worksheet.Cells[row, 2].Value = user.Email;
+                    worksheet.Cells[row, 3].Value = user.Phone;
+
+                    // Format lại Vai trò cho đẹp (Giống logic hiển thị trên Grid)
+                    string roleDisplay = user.RoleName;
+                    if (user.RoleName == "Seller") roleDisplay = "Người bán";
+                    else if (user.RoleName == "Buyer") roleDisplay = "Người mua";
+                    worksheet.Cells[row, 4].Value = roleDisplay;
+
+                    // Format lại Trạng thái
+                    string statusDisplay = user.Status == "Active" ? "Hoạt động" : "Đã khoá";
+                    worksheet.Cells[row, 5].Value = statusDisplay;
+
+                    // Tô màu đỏ nếu bị khoá
+                    if (user.Status != "Active")
+                    {
+                        worksheet.Cells[row, 5].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                    }
+
+                    row++;
+                }
+
+                // --- 3. FORMAT CHUNG ---
+                worksheet.Cells.AutoFitColumns(); // Tự động giãn cột
+
+                // Lưu file
+                FileInfo fi = new FileInfo(filePath);
+                package.SaveAs(fi);
+            }
+        }
+
+        #endregion
+        
         private void SetupRoleFilter()
         {
             _comboRole.SelectedIndexChanged -= _comboRole_SelectedIndexChanged;

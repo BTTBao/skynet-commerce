@@ -20,6 +20,7 @@
             this._pageTitle = new System.Windows.Forms.Label();
             this._pageSub = new System.Windows.Forms.Label();
             this._mainCard = new Guna.UI2.WinForms.Guna2Panel();
+            this._btnExportExcel = new Guna.UI2.WinForms.Guna2Button();
             this._dgvUsers = new Guna.UI2.WinForms.Guna2DataGridView();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEmail = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -69,6 +70,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this._mainCard.BackColor = System.Drawing.Color.Transparent;
             this._mainCard.BorderRadius = 12;
+            this._mainCard.Controls.Add(this._btnExportExcel);
             this._mainCard.Controls.Add(this._dgvUsers);
             this._mainCard.Controls.Add(this._cardHeaderLine);
             this._mainCard.Controls.Add(this._comboRole);
@@ -84,6 +86,24 @@
             this._mainCard.Size = new System.Drawing.Size(1045, 608);
             this._mainCard.TabIndex = 2;
             // 
+            // _btnExportExcel
+            // 
+            this._btnExportExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this._btnExportExcel.BorderRadius = 8;
+            this._btnExportExcel.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this._btnExportExcel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this._btnExportExcel.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this._btnExportExcel.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this._btnExportExcel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(114)))), ((int)(((byte)(71)))));
+            this._btnExportExcel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this._btnExportExcel.ForeColor = System.Drawing.Color.White;
+            this._btnExportExcel.Location = new System.Drawing.Point(420, 20);
+            this._btnExportExcel.Name = "_btnExportExcel";
+            this._btnExportExcel.Size = new System.Drawing.Size(120, 36);
+            this._btnExportExcel.TabIndex = 5;
+            this._btnExportExcel.Text = "Xuất Excel";
+            this._btnExportExcel.Click += new System.EventHandler(this._btnExportExcel_Click);
+            // 
             // _dgvUsers
             // 
             this._dgvUsers.AllowUserToAddRows = false;
@@ -95,11 +115,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(50)))), ((int)(((byte)(100)))));
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(65)))), ((int)(((byte)(75)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(30)))), ((int)(((byte)(70)))));
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this._dgvUsers.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
@@ -354,6 +374,7 @@
         private Guna.UI2.WinForms.Guna2TextBox _txtSearch;
         private Guna.UI2.WinForms.Guna2ComboBox _comboRole;
         private System.Windows.Forms.Panel _cardHeaderLine;
+        private Guna.UI2.WinForms.Guna2Button _btnExportExcel;
 
         // --- KHAI BÁO GRIDVIEW VÀ CÁC CỘT TẠI ĐÂY ---
         private Guna.UI2.WinForms.Guna2DataGridView _dgvUsers;

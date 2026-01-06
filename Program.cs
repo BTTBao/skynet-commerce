@@ -1,4 +1,5 @@
-﻿using Skynet_Ecommerce.BLL.Services.Auth;
+﻿using OfficeOpenXml;
+using Skynet_Ecommerce.BLL.Services.Auth;
 using System;
 using System.Windows.Forms;
 
@@ -12,6 +13,8 @@ namespace Skynet_Ecommerce
         [STAThread]
         static void Main()
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form startupForm = AuthService.GetStartupForm();
