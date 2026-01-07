@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Skynet_Ecommerce.BLL.Services.Auth;
+using System;
 using System.Windows.Forms;
 
 namespace Skynet_Ecommerce
@@ -16,7 +14,12 @@ namespace Skynet_Ecommerce
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
+            Form startupForm = AuthService.GetStartupForm();
+
+            if (startupForm != null)
+            {
+                Application.Run(startupForm);
+            }
         }
     }
 }
