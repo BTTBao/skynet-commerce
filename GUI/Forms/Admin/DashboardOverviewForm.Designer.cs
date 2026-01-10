@@ -28,19 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this._statsContainer = new System.Windows.Forms.FlowLayoutPanel();
+            this._statsContainer = new System.Windows.Forms.TableLayoutPanel();
             this._chartsContainer = new System.Windows.Forms.TableLayoutPanel();
             this.SuspendLayout();
             // 
             // _statsContainer
             // 
             this._statsContainer.AutoScroll = true;
+            this._statsContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this._statsContainer.Dock = System.Windows.Forms.DockStyle.Top;
             this._statsContainer.Location = new System.Drawing.Point(20, 20);
             this._statsContainer.Name = "_statsContainer";
             this._statsContainer.Size = new System.Drawing.Size(1010, 160);
             this._statsContainer.TabIndex = 0;
-            this._statsContainer.WrapContents = false;
             // 
             // _chartsContainer
             // 
@@ -76,7 +76,7 @@
         #endregion
 
         // Khai báo biến Public/Private để bên code truy cập được
-        public System.Windows.Forms.FlowLayoutPanel _statsContainer;
+        public System.Windows.Forms.TableLayoutPanel _statsContainer;
         public System.Windows.Forms.TableLayoutPanel _chartsContainer;
     }
 }

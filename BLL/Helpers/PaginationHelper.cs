@@ -164,7 +164,7 @@ namespace Skynet_Ecommerce.BLL.Helpers
 
             if (isActive)
             {
-                btn.FillColor = Color.FromArgb(37, 99, 235); // Blue active
+                btn.FillColor = Color.FromArgb(20, 50, 100); // Blue active
                 btn.ForeColor = Color.White;
             }
             else
