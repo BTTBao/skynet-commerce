@@ -34,11 +34,6 @@ namespace Skynet_Commerce.GUI.Forms
 
         private void SetupGrids()
         {
-            // Pending Grid
-            _dgvPending.CellMouseEnter += (s, e) => { if (e.RowIndex >= 0) _dgvPending.Cursor = Cursors.Hand; };
-            _dgvPending.CellMouseLeave += (s, e) => { _dgvPending.Cursor = Cursors.Default; };
-            _dgvPending.CellContentClick += _dgvPending_CellContentClick;
-
             // Active Grid
             _dgvActive.CellMouseEnter += (s, e) => { if (e.RowIndex >= 0) _dgvActive.Cursor = Cursors.Hand; };
             _dgvActive.CellMouseLeave += (s, e) => { _dgvActive.Cursor = Cursors.Default; };
@@ -67,76 +62,7 @@ namespace Skynet_Commerce.GUI.Forms
 
         private void ShopsForm_Load(object sender, EventArgs e)
         {
-            LoadPendingShops();
             LoadActiveShops();
-        }
-
-        // --- XỬ LÝ PENDING SHOPS ---
-        private void LoadPendingShops()
-        {
-            List<PendingShopViewModel> pendingList = _shopService.GetPendingRegistrations();
-
-            if (pendingList.Count == 0)
-            {
-                _cardPending.Visible = false;
-                _cardAllShops.Location = _cardPending.Location;
-                // Tăng chiều cao Grid Active để lấp khoảng trống
-                int extraHeight = _cardPending.Height + 20;
-                _cardAllShops.Height = this.ClientSize.Height - _cardAllShops.Location.Y - 20;
-            }
-            else
-            {
-                _cardPending.Visible = true;
-                _dgvPending.AutoGenerateColumns = false;
-                _dgvPending.DataSource = pendingList;
-            }
-        }
-
-        private void _dgvPending_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // Kiểm tra cột Action
-            if (e.RowIndex < 0 || _dgvPending.Columns[e.ColumnIndex].Name != "colP_Action") return;
-
-            var item = _dgvPending.Rows[e.RowIndex].DataBoundItem as PendingShopViewModel;
-            if (item == null) return;
-
-            ContextMenuStrip menu = new ContextMenuStrip();
-
-            var itemApprove = menu.Items.Add("Duyệt đăng ký");
-            itemApprove.Image = SystemIcons.Shield.ToBitmap();
-            itemApprove.ForeColor = Color.Green;
-            itemApprove.Click += (s, ev) =>
-            {
-                if (MessageBox.Show($"Duyệt cửa hàng '{item.ShopName}'?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    try
-                    {
-                        _shopService.ApproveShopRegistration(item.RegistrationID);
-                        MessageBox.Show("Đã duyệt thành công!", "Thông báo");
-                        ReloadAll();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
-                }
-            };
-
-            var itemReject = menu.Items.Add("Từ chối");
-            itemReject.ForeColor = Color.Red;
-            itemReject.Click += (s, ev) =>
-            {
-                if (MessageBox.Show($"Từ chối đơn đăng ký này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                {
-                    try
-                    {
-                        _shopService.RejectShopRegistration(item.RegistrationID);
-                        MessageBox.Show("Đã từ chối.");
-                        LoadPendingShops();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
-                }
-            };
-
-            Rectangle cellRect = _dgvPending.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
-            menu.Show(_dgvPending, cellRect.Left, cellRect.Bottom);
         }
 
         // --- XỬ LÝ ACTIVE SHOPS ---
@@ -146,29 +72,15 @@ namespace Skynet_Commerce.GUI.Forms
             try
             {
                 string keyword = _txtSearch.Text.Trim();
-                string status = "All Status";
+                string status = _comboStatus.SelectedValue?.ToString() ?? "All Status";
 
-                if (_comboStatus.SelectedValue is ShopStatusOption opt) status = opt.Value;
-                else if (_comboStatus.SelectedValue != null) status = _comboStatus.SelectedValue.ToString();
-
-                // Lấy toàn bộ dữ liệu (Chưa phân trang)
                 List<ShopViewModel> allShops = _shopService.GetShops(keyword, status);
-                // Lưu vào Cache
                 _activeShopsCache = allShops;
-                // Cập nhật cho Helper biết tổng số bản ghi
-                // Helper sẽ tự tính toán số trang và vẽ lại nút
                 _paginationHelper.SetTotalRecords(allShops.Count);
-
                 _paginationHelper.SetPage(1);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải danh sách cửa hàng: " + ex.Message);
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
+            finally { Cursor.Current = Cursors.Default; }
         }
         // [MỚI] Hàm chỉ nhiệm vụ cắt dữ liệu và hiển thị
         private void RenderActiveGrid()
@@ -244,12 +156,6 @@ namespace Skynet_Commerce.GUI.Forms
 
             Rectangle cellRect = _dgvActive.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
             menu.Show(_dgvActive, cellRect.Left, cellRect.Bottom);
-        }
-
-        private void ReloadAll()
-        {
-            LoadPendingShops();
-            LoadActiveShops();
         }
 
         private void _txtSearch_KeyDown(object sender, KeyEventArgs e)

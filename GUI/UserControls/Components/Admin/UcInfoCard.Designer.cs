@@ -39,7 +39,7 @@
             // 
             // _bgPanel
             // 
-            this._bgPanel.BackColor = System.Drawing.Color.White;
+            this._bgPanel.BackColor = System.Drawing.Color.Transparent;
             this._bgPanel.BorderRadius = 12;
             this._bgPanel.Controls.Add(this._picIcon);
             this._bgPanel.Controls.Add(this._lblTitle);
@@ -56,10 +56,11 @@
             // 
             // _picIcon
             // 
+            this._picIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._picIcon.BorderRadius = 10;
             this._picIcon.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(255)))));
             this._picIcon.ImageRotate = 0F;
-            this._picIcon.Location = new System.Drawing.Point(160, 15);
+            this._picIcon.Location = new System.Drawing.Point(160, 65);
             this._picIcon.Name = "_picIcon";
             this._picIcon.Size = new System.Drawing.Size(45, 45);
             this._picIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
