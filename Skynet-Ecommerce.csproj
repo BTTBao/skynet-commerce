@@ -256,6 +256,42 @@
     <Compile Include="GUI\Forms\Login\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerDashboardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerDashboardForm.Designer.cs">
+      <DependentUpon>SellerDashboardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerInfoForm.Designer.cs">
+      <DependentUpon>SellerInfoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerMainForm.Designer.cs">
+      <DependentUpon>SellerMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerOrderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerOrderForm.Designer.cs">
+      <DependentUpon>SellerOrderForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerProductForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerProductForm.Designer.cs">
+      <DependentUpon>SellerProductForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerVoucherForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerVoucherForm.Designer.cs">
+      <DependentUpon>SellerVoucherForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -309,6 +345,9 @@
     <EmbeddedResource Include="GUI\Forms\Login\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Seller\SellerInfoForm.resx">
+      <DependentUpon>SellerInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcInfoCard.resx">
       <DependentUpon>UcInfoCard.cs</DependentUpon>
     </EmbeddedResource>
@@ -320,6 +359,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -338,6 +378,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Database\SQL.sql" />
+    <None Include="Resources\LOGO.jpg" />
     <Content Include="Resources\profile.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
