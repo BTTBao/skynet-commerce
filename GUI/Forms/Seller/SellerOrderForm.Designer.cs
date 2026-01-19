@@ -1,12 +1,15 @@
-﻿using System;
+﻿// SellerOrderForm.Designer.cs
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
 
 namespace Skynet_Ecommerce.GUI.Forms.Seller
 {
-    public partial class SellerOrderForm : Form
+    partial class SellerOrderForm
     {
+        private System.ComponentModel.IContainer components = null;
+
         private Guna2Panel panelHeader;
         private Label lblTitle;
         private Guna2Panel panelControls;
@@ -18,7 +21,14 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         private Guna2Button btnNextPage;
         private Label lblPageInfo;
 
-
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         private void InitializeComponent()
         {
@@ -39,122 +49,247 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.panelPagination.SuspendLayout();
             this.SuspendLayout();
 
-            // ======================
-            // Panel Header
-            // ======================
-            this.panelHeader.Dock = DockStyle.Top;
+            // 
+            // panelHeader
+            // 
+            this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelHeader.Height = 60;
-            this.panelHeader.FillColor = Color.FromArgb(31, 30, 68);
+            this.panelHeader.FillColor = System.Drawing.Color.FromArgb(31, 30, 68);
             this.panelHeader.Controls.Add(this.lblTitle);
+            this.panelHeader.Location = new System.Drawing.Point(0, 0);
+            this.panelHeader.Name = "panelHeader";
+            this.panelHeader.Size = new System.Drawing.Size(1100, 60);
+            this.panelHeader.TabIndex = 0;
 
+            // 
+            // lblTitle
+            // 
             this.lblTitle.Text = "Quản lý Đơn hàng";
-            this.lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            this.lblTitle.ForeColor = Color.White;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Location = new Point(20, 15);
+            this.lblTitle.Location = new System.Drawing.Point(20, 15);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(220, 32);
+            this.lblTitle.TabIndex = 0;
 
-            // ======================
-            // Panel Controls (Search + Filter)
-            // ======================
-            this.panelControls.Dock = DockStyle.Top;
+            // 
+            // panelControls
+            // 
+            this.panelControls.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControls.Height = 60;
-            this.panelControls.FillColor = Color.Transparent;
-            this.panelControls.Padding = new Padding(20, 10, 20, 10);
+            this.panelControls.FillColor = System.Drawing.Color.Transparent;
+            this.panelControls.Padding = new System.Windows.Forms.Padding(20, 10, 20, 10);
             this.panelControls.Controls.Add(this.txtSearch);
             this.panelControls.Controls.Add(this.cmbStatusFilter);
+            this.panelControls.Location = new System.Drawing.Point(0, 60);
+            this.panelControls.Name = "panelControls";
+            this.panelControls.Size = new System.Drawing.Size(1100, 60);
+            this.panelControls.TabIndex = 1;
 
-            // Search box
+            // 
+            // txtSearch
+            // 
             this.txtSearch.PlaceholderText = "Tìm kiếm đơn hàng...";
-            this.txtSearch.Size = new Size(300, 40);
+            this.txtSearch.Size = new System.Drawing.Size(300, 40);
             this.txtSearch.BorderRadius = 10;
-            this.txtSearch.Location = new Point(0, 10);
+            this.txtSearch.Location = new System.Drawing.Point(20, 10);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.TabIndex = 0;
+            this.txtSearch.TextChanged += new System.EventHandler(this.TxtSearch_TextChanged);
 
-            // Status filter
-            this.cmbStatusFilter.Size = new Size(180, 40);
-            this.cmbStatusFilter.Location = new Point(320, 10);
+            // 
+            // cmbStatusFilter
+            // 
+            this.cmbStatusFilter.Size = new System.Drawing.Size(200, 40);
+            this.cmbStatusFilter.Location = new System.Drawing.Point(340, 10);
             this.cmbStatusFilter.BorderRadius = 10;
-            this.cmbStatusFilter.Items.AddRange(new string[]
+            this.cmbStatusFilter.Name = "cmbStatusFilter";
+            this.cmbStatusFilter.TabIndex = 1;
+            this.cmbStatusFilter.Items.AddRange(new object[]
             {
-                "Tất cả", "Chờ xác nhận", "Xác nhận", "Đang chuẩn bị", "Đang giao", "Hoàn thành", "Hủy"
+                "Tất cả",
+                "Chờ xác nhận",
+                "Đã xác nhận",
+                "Đang chuẩn bị",
+                "Đang giao",
+                "Đã giao",
+                "Hoàn thành",
+                "Đã hủy"
             });
             this.cmbStatusFilter.SelectedIndex = 0;
-            this.cmbStatusFilter.SelectedIndexChanged += CmbStatusFilter_SelectedIndexChanged;
+            this.cmbStatusFilter.SelectedIndexChanged += new System.EventHandler(this.CmbStatusFilter_SelectedIndexChanged);
 
-            // ======================
-            // DataGridView Orders
-            // ======================
-            this.dgvOrders.Dock = DockStyle.Fill;
-            this.dgvOrders.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvOrders.BackgroundColor = Color.White;
+            // 
+            // dgvOrders
+            // 
+            this.dgvOrders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvOrders.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.None;
+            this.dgvOrders.BackgroundColor = System.Drawing.Color.White;
             this.dgvOrders.EnableHeadersVisualStyles = false;
-            this.dgvOrders.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(31, 30, 68);
-            this.dgvOrders.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            this.dgvOrders.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.dgvOrders.RowTemplate.Height = 40;
-            this.dgvOrders.GridColor = Color.LightGray;
+            this.dgvOrders.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(31, 30, 68);
+            this.dgvOrders.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            this.dgvOrders.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.dgvOrders.ColumnHeadersHeight = 40;
+            this.dgvOrders.RowTemplate.Height = 80;
+            this.dgvOrders.GridColor = System.Drawing.Color.LightGray;
             this.dgvOrders.AllowUserToAddRows = false;
-            this.dgvOrders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            this.dgvOrders.AllowUserToDeleteRows = false;
+            this.dgvOrders.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvOrders.ReadOnly = true;
+            this.dgvOrders.Location = new System.Drawing.Point(0, 120);
+            this.dgvOrders.Name = "dgvOrders";
+            this.dgvOrders.Size = new System.Drawing.Size(1100, 430);
+            this.dgvOrders.TabIndex = 2;
+            this.dgvOrders.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvOrders_CellClick);
 
-            // Các cột dữ liệu
-            this.dgvOrders.Columns.Add("Id", "ID");
-            this.dgvOrders.Columns.Add("Customer", "Khách hàng");
-            this.dgvOrders.Columns.Add("Date", "Ngày đặt");
-            this.dgvOrders.Columns.Add("Total", "Tổng tiền");
-            this.dgvOrders.Columns.Add("Status", "Trạng thái");
+            // Cột Mã đơn
+            System.Windows.Forms.DataGridViewTextBoxColumn colOrderId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colOrderId.Name = "OrderId";
+            colOrderId.HeaderText = "Mã đơn";
+            colOrderId.Width = 80;
+            colOrderId.ReadOnly = true;
+            this.dgvOrders.Columns.Add(colOrderId);
 
-            // Nút Cập nhật đơn
-            var updateBtn = new DataGridViewImageColumn();
-            updateBtn.HeaderText = "";
-            updateBtn.Image = Properties.Resources.LOGO; // icon cập nhật
-            updateBtn.ImageLayout = DataGridViewImageCellLayout.Zoom;
-            updateBtn.Width = 40;
-            this.dgvOrders.Columns.Add(updateBtn);
+            // Cột Ảnh sản phẩm
+            System.Windows.Forms.DataGridViewImageColumn colImage = new System.Windows.Forms.DataGridViewImageColumn();
+            colImage.Name = "ProductImage";
+            colImage.HeaderText = "Ảnh";
+            colImage.Width = 80;
+            colImage.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            colImage.ReadOnly = true;
+            this.dgvOrders.Columns.Add(colImage);
 
-            // Nút Xem chi tiết
-            var viewBtn = new DataGridViewImageColumn();
-            viewBtn.HeaderText = "";
-            viewBtn.Image = Properties.Resources.LOGO; // icon xem chi tiết
-            viewBtn.ImageLayout = DataGridViewImageCellLayout.Zoom;
-            viewBtn.Width = 40;
-            this.dgvOrders.Columns.Add(viewBtn);
+            // Cột Thông tin sản phẩm
+            System.Windows.Forms.DataGridViewTextBoxColumn colProductInfo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colProductInfo.Name = "ProductInfo";
+            colProductInfo.HeaderText = "Sản phẩm";
+            colProductInfo.Width = 280;
+            colProductInfo.ReadOnly = true;
+            colProductInfo.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvOrders.Columns.Add(colProductInfo);
 
-            this.dgvOrders.CellClick += DgvOrders_CellClick;
+            // Cột Số lượng
+            System.Windows.Forms.DataGridViewTextBoxColumn colQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colQuantity.Name = "Quantity";
+            colQuantity.HeaderText = "Số lượng";
+            colQuantity.Width = 80;
+            colQuantity.ReadOnly = true;
+            colQuantity.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.dgvOrders.Columns.Add(colQuantity);
 
-            // ======================
-            // Panel Pagination
-            // ======================
-            this.panelPagination.Dock = DockStyle.Bottom;
+            // Cột Tổng tiền
+            System.Windows.Forms.DataGridViewTextBoxColumn colTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colTotal.Name = "Total";
+            colTotal.HeaderText = "Tổng tiền";
+            colTotal.Width = 120;
+            colTotal.ReadOnly = true;
+            colTotal.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.dgvOrders.Columns.Add(colTotal);
+
+            // Cột Trạng thái
+            System.Windows.Forms.DataGridViewTextBoxColumn colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colStatus.Name = "Status";
+            colStatus.HeaderText = "Trạng thái";
+            colStatus.Width = 120;
+            colStatus.ReadOnly = true;
+            colStatus.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.dgvOrders.Columns.Add(colStatus);
+
+            // Cột Ngày đặt
+            System.Windows.Forms.DataGridViewTextBoxColumn colDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colDate.Name = "OrderDate";
+            colDate.HeaderText = "Ngày đặt";
+            colDate.Width = 140;
+            colDate.ReadOnly = true;
+            this.dgvOrders.Columns.Add(colDate);
+
+            // Cột Cập nhật trạng thái
+            System.Windows.Forms.DataGridViewButtonColumn btnUpdateStatus = new System.Windows.Forms.DataGridViewButtonColumn();
+            btnUpdateStatus.Name = "UpdateStatus";
+            btnUpdateStatus.HeaderText = "Cập nhật";
+            btnUpdateStatus.Text = "Cập nhật";
+            btnUpdateStatus.UseColumnTextForButtonValue = true;
+            btnUpdateStatus.Width = 90;
+            btnUpdateStatus.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(0, 120, 215);
+            btnUpdateStatus.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            btnUpdateStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dgvOrders.Columns.Add(btnUpdateStatus);
+
+            // Cột Xem chi tiết
+            System.Windows.Forms.DataGridViewButtonColumn btnViewDetail = new System.Windows.Forms.DataGridViewButtonColumn();
+            btnViewDetail.Name = "ViewDetail";
+            btnViewDetail.HeaderText = "Chi tiết";
+            btnViewDetail.Text = "Xem";
+            btnViewDetail.UseColumnTextForButtonValue = true;
+            btnViewDetail.Width = 80;
+            btnViewDetail.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(40, 167, 69);
+            btnViewDetail.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            btnViewDetail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dgvOrders.Columns.Add(btnViewDetail);
+
+            // 
+            // panelPagination
+            // 
+            this.panelPagination.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelPagination.Height = 50;
-            this.panelPagination.FillColor = Color.Transparent;
+            this.panelPagination.FillColor = System.Drawing.Color.Transparent;
             this.panelPagination.Controls.Add(this.btnPrevPage);
             this.panelPagination.Controls.Add(this.lblPageInfo);
             this.panelPagination.Controls.Add(this.btnNextPage);
+            this.panelPagination.Location = new System.Drawing.Point(0, 550);
+            this.panelPagination.Name = "panelPagination";
+            this.panelPagination.Size = new System.Drawing.Size(1100, 50);
+            this.panelPagination.TabIndex = 3;
 
+            // 
+            // btnPrevPage
+            // 
             this.btnPrevPage.Text = "<";
-            this.btnPrevPage.Size = new Size(40, 30);
-            this.btnPrevPage.Location = new Point(300, 10);
-            this.btnPrevPage.Click += BtnPrevPage_Click;
+            this.btnPrevPage.Size = new System.Drawing.Size(40, 30);
+            this.btnPrevPage.Location = new System.Drawing.Point(480, 10);
+            this.btnPrevPage.Name = "btnPrevPage";
+            this.btnPrevPage.TabIndex = 0;
+            this.btnPrevPage.BorderRadius = 5;
+            this.btnPrevPage.Click += new System.EventHandler(this.BtnPrevPage_Click);
 
+            // 
+            // btnNextPage
+            // 
             this.btnNextPage.Text = ">";
-            this.btnNextPage.Size = new Size(40, 30);
-            this.btnNextPage.Location = new Point(380, 10);
-            this.btnNextPage.Click += BtnNextPage_Click;
+            this.btnNextPage.Size = new System.Drawing.Size(40, 30);
+            this.btnNextPage.Location = new System.Drawing.Point(580, 10);
+            this.btnNextPage.Name = "btnNextPage";
+            this.btnNextPage.TabIndex = 2;
+            this.btnNextPage.BorderRadius = 5;
+            this.btnNextPage.Click += new System.EventHandler(this.BtnNextPage_Click);
 
+            // 
+            // lblPageInfo
+            // 
             this.lblPageInfo.Text = "1 / 10";
             this.lblPageInfo.AutoSize = true;
-            this.lblPageInfo.Location = new Point(350, 15);
-            this.lblPageInfo.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.lblPageInfo.Location = new System.Drawing.Point(530, 15);
+            this.lblPageInfo.Name = "lblPageInfo";
+            this.lblPageInfo.Size = new System.Drawing.Size(40, 13);
+            this.lblPageInfo.TabIndex = 1;
+            this.lblPageInfo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblPageInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
-            // ======================
+            // 
             // SellerOrderForm
-            // ======================
-            this.ClientSize = new Size(900, 500);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1100, 600);
             this.Controls.Add(this.dgvOrders);
             this.Controls.Add(this.panelPagination);
             this.Controls.Add(this.panelControls);
             this.Controls.Add(this.panelHeader);
+            this.Name = "SellerOrderForm";
             this.Text = "Quản lý đơn hàng";
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Load += new System.EventHandler(this.SellerOrderForm_Load);
 
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrders)).EndInit();
             this.panelHeader.ResumeLayout(false);
@@ -163,81 +298,6 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.panelPagination.ResumeLayout(false);
             this.panelPagination.PerformLayout();
             this.ResumeLayout(false);
-        }
-
-        // ======================
-        // Demo Data & Logic
-        // ======================
-        private void LoadDemoOrders()
-        {
-            dgvOrders.Rows.Clear();
-            dgvOrders.Rows.Add("1", "Nguyen Van A", "2026-01-17", "500,000", "Chờ xác nhận");
-            dgvOrders.Rows.Add("2", "Tran Thi B", "2026-01-16", "1,200,000", "Đang chuẩn bị");
-            dgvOrders.Rows.Add("3", "Le Van C", "2026-01-15", "800,000", "Đang giao");
-            dgvOrders.Rows.Add("4", "Pham Thi D", "2026-01-14", "2,000,000", "Hoàn thành");
-        }
-
-        private void CmbStatusFilter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            MessageBox.Show("Lọc theo trạng thái: " + cmbStatusFilter.SelectedItem);
-        }
-
-        private void BtnPrevPage_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Trang trước");
-        }
-
-        private void BtnNextPage_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Trang sau");
-        }
-
-        private void DgvOrders_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-
-            var status = dgvOrders.Rows[e.RowIndex].Cells["Status"].Value.ToString();
-
-            // Cột cập nhật
-            if (e.ColumnIndex == dgvOrders.Columns.Count - 2)
-            {
-                if (status == "Hoàn thành" || status == "Đã giao" || status == "Hủy")
-                {
-                    MessageBox.Show("Không thể cập nhật trạng thái đơn này!");
-                    return;
-                }
-
-                // Tuần tự cập nhật trạng thái
-                string newStatus = status;
-
-                switch (status)
-                {
-                    case "Chờ xác nhận":
-                        newStatus = "Xác nhận";
-                        break;
-                    case "Xác nhận":
-                        newStatus = "Đang chuẩn bị";
-                        break;
-                    case "Đang chuẩn bị":
-                        newStatus = "Đang giao";
-                        break;
-                    case "Đang giao":
-                        newStatus = "Hoàn thành";
-                        break;
-                    default:
-                        newStatus = status;
-                        break;
-                }
-
-                dgvOrders.Rows[e.RowIndex].Cells["Status"].Value = newStatus;
-                MessageBox.Show($"Đơn {dgvOrders.Rows[e.RowIndex].Cells["Id"].Value} cập nhật: {newStatus}");
-            }
-
-            // Cột xem chi tiết
-            if (e.ColumnIndex == dgvOrders.Columns.Count - 1)
-            {
-                MessageBox.Show("Xem chi tiết đơn: " + dgvOrders.Rows[e.RowIndex].Cells["Id"].Value);
-            }
         }
     }
 }
