@@ -1,0 +1,127 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    height: 70px;
+    width: 100%;
+    background-color: #131921;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-wrapper {
+    width: 90%;
+    max-width: 1250px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    color: white;
+    font-size: 24px;
+    font-weight: 800;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.logo span {
+    color: #ff9900;
+}
+
+.search-box {
+    flex: 1;
+    display: flex;
+    height: 40px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0 15px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-btn {
+    width: 80px;
+    background-color: #febd69;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.search-btn:hover {
+    background-color: #f3a847;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    color: white;
+}
+
+.nav-item {
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    color: #ff9900;
+}
+
+.cart {
+    border: 1px solid #ffffff55;
+    padding: 5px 12px;
+    border-radius: 4px;
+}
+
+.cart span {
+    color: #ff9900;
+    font-weight: bold;
+}
+@media (max-width: 768px) {
+    .navbar {
+        height: auto;
+        padding: 10px 0;
+    }
+
+    .nav-wrapper {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-box {
+        width: 100%;
+        order: 3;
+    }
+
+    .logo {
+        order: 1;
+        font-size: 20px;
+    }
+
+    .nav-links {
+        order: 2;
+        width: 100%;
+        justify-content: space-around;
+        font-size: 13px;
+    }
+}
