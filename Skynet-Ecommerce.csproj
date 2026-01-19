@@ -143,6 +143,12 @@
     <Compile Include="BLL\Services\Admin\ShopService.cs" />
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="BLL\Services\Auth\AuthService.cs" />
+    <Compile Include="BLL\Services\Seller\CategoryService.cs" />
+    <Compile Include="BLL\Services\Seller\ICategoryService.cs" />
+    <Compile Include="BLL\Services\Seller\IOrderService.cs" />
+    <Compile Include="BLL\Services\Seller\IProductService.cs" />
+    <Compile Include="BLL\Services\Seller\OrderService.cs" />
+    <Compile Include="BLL\Services\Seller\ProductService.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
     <Compile Include="DAL\Entities\AppSession.cs" />
@@ -156,6 +162,16 @@
     <Compile Include="DAL\Entities\FlashSaleProduct.cs" />
     <Compile Include="DAL\Repositories\Admin\AccountRepository.cs" />
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\CategoryRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\ICategoryRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\IOrderRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\IProductRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\IRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\IUnitOfWork.cs" />
+    <Compile Include="DAL\Repositories\Seller\OrderRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\ProductRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\Repository.cs" />
+    <Compile Include="DAL\Repositories\Seller\UnitOfWork.cs" />
     <Compile Include="GUI\Forms\Admin\CategoriesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -256,6 +272,12 @@
     <Compile Include="GUI\Forms\Login\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\Seller\AddProductForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\AddProductForm.Designer.cs">
+      <DependentUpon>AddProductForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\Seller\SellerDashboardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -273,6 +295,12 @@
     </Compile>
     <Compile Include="GUI\Forms\Seller\SellerMainForm.Designer.cs">
       <DependentUpon>SellerMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerOrderDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerOrderDetailForm.Designer.cs">
+      <DependentUpon>SellerOrderDetailForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Forms\Seller\SellerOrderForm.cs">
       <SubType>Form</SubType>

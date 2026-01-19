@@ -161,34 +161,5 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.ResumeLayout(false);
         }
 
-        private void BtnAddProduct_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Thêm sản phẩm");
-        }
-
-        private void BtnPrevPage_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Trang trước");
-        }
-
-        private void BtnNextPage_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Trang sau");
-        }
-
-        private void DgvProducts_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-
-            if (e.ColumnIndex == dgvProducts.Columns.Count - 2)
-            {
-                MessageBox.Show("Ẩn/Hiện sản phẩm: " + dgvProducts.Rows[e.RowIndex].Cells["Name"].Value);
-            }
-
-            if (e.ColumnIndex == dgvProducts.Columns.Count - 1)
-            {
-                MessageBox.Show("Sửa sản phẩm: " + dgvProducts.Rows[e.RowIndex].Cells["Name"].Value);
-            }
-        }
     }
 }
