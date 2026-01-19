@@ -1,0 +1,25 @@
+.container
+{
+    width: 100%;
+    background-color: blanchedalmond;
+    display: flex;
+    justify-content: center;
+}
+
+.wrapper{
+    width: 100%;
+    max-width: 1200px;
+}
+
+.list-item
+{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 10px;
+}
+.list-item .item{
+    width: auto;
+    height: 300px;
+    background-color: aquamarine;
+}
