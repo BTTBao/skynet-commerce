@@ -51,14 +51,12 @@ namespace Skynet_Ecommerce.BLL.Services.Auth
                             if (userRoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
                                 userRoleName.Equals("Administrator", StringComparison.OrdinalIgnoreCase))
                             {
-                                // return new AdminDashboardForm(); 
-                                MessageBox.Show("Auto-Login thành công: Role ADMIN");
+                                // return new AdminDashboardForm();
                                 return new DashboardForm(); // Tạm thời (Thay bằng AdminForm của bạn)
                             }
                             else
                             {
                                 // return new MainForm();
-                                MessageBox.Show("Auto-Login thành công: Role USER");
                                 return new FrmMain(); // Tạm thời (Thay bằng UserForm của bạn)
                             }
                         }

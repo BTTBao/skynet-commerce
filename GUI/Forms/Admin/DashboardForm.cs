@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Skynet_Commerce.DAL.Entities;
+using Skynet_Ecommerce.BLL.Helpers;
 using Skynet_Ecommerce.GUI.Forms.Login;
 using System;
 using System.Collections.Generic;
@@ -31,86 +32,206 @@ namespace Skynet_Commerce.GUI.Forms
             childForm.Show();
         }
 
+        private class MenuItemModel
+        {
+            public string Key { get; set; }
+            public string Title { get; set; }
+            public string IconUrl { get; set; }
+            public List<MenuItemModel> SubItems { get; set; } = new List<MenuItemModel>();
+        }
+
         private void CreateSidebarItems()
         {
-            // Thêm "Logout" vào cuối danh sách
-            var menuItems = new List<(string Key, string Title, string IconUrl)>
+            // --- CẤU HÌNH DATA MENU ---
+            var menuData = new List<MenuItemModel>
             {
-                ("Dashboard", "Tổng quan", "https://cdn-icons-png.flaticon.com/128/12255/12255013.png"),
-                ("Users", "Người dùng", "https://cdn-icons-png.flaticon.com/128/33/33308.png"),
-                ("Shops", "Cửa hàng", "https://cdn-icons-png.flaticon.com/128/8610/8610577.png"),
-                ("Products", "Sản phẩm", "https://cdn-icons-png.flaticon.com/128/10608/10608766.png"),
-                ("Orders", "Đơn hàng", "https://cdn-icons-png.flaticon.com/128/10161/10161680.png"),
-                ("Categories", "Danh mục", "https://cdn-icons-png.flaticon.com/128/12916/12916359.png"),
-                ("Logout", "Đăng xuất", "https://cdn-icons-png.flaticon.com/128/4400/4400629.png")
+                new MenuItemModel { Key = "Dashboard", Title = "Tổng quan", IconUrl = "https://cdn-icons-png.flaticon.com/128/12255/12255013.png" },
+                new MenuItemModel { Key = "Users", Title = "Người dùng", IconUrl = "https://cdn-icons-png.flaticon.com/128/33/33308.png" },
+        
+                // [QUAN TRỌNG] Item Cửa hàng có SubItems
+                new MenuItemModel
+                {
+                    Key = "ShopsParent",
+                    Title = "Cửa hàng                    ▼",
+                    IconUrl = "https://cdn-icons-png.flaticon.com/128/8610/8610577.png",
+                    SubItems = new List<MenuItemModel>
+                    {
+                        new MenuItemModel { Key = "ShopRequests", Title = "Duyệt cửa hàng", IconUrl = "https://cdn-icons-png.flaticon.com/128/157/157977.png" }, 
+                        new MenuItemModel { Key = "ShopList", Title = "Tất cả cửa hàng", IconUrl = "https://cdn-icons-png.flaticon.com/128/443/443635.png" }
+                    }
+                },
+
+                new MenuItemModel { Key = "Products", Title = "Sản phẩm", IconUrl = "https://cdn-icons-png.flaticon.com/128/10608/10608766.png" },
+                new MenuItemModel { Key = "Orders", Title = "Đơn hàng", IconUrl = "https://cdn-icons-png.flaticon.com/128/10161/10161680.png" },
+                new MenuItemModel { Key = "Categories", Title = "Danh mục", IconUrl = "https://cdn-icons-png.flaticon.com/128/12916/12916359.png" },
+                new MenuItemModel { Key = "Logout", Title = "Đăng xuất", IconUrl = "https://cdn-icons-png.flaticon.com/128/4400/4400629.png" }
             };
 
-            int yPos = 80;
+            int yPos = 80; // Vị trí Y bắt đầu
+            int btnHeight = 45;
+            int gap = 5;
 
-            foreach (var item in menuItems)
+            // --- VÒNG LẶP TẠO MENU ---
+            foreach (var item in menuData)
             {
-                Image rawIcon = LoadImageFromUrl(item.IconUrl);
+                // 1. Tạo Nút Cha
+                Guna2Button btnParent = CreateMenuButton(item.Title, item.IconUrl, item.Key, false);
+                btnParent.Location = new Point(10, yPos);
 
-                Guna2Button btn = new Guna2Button
-                {
-                    Text = item.Title,
-                    FillColor = Color.Transparent,
-                    ForeColor = Color.White,
-                    Font = new Font("Segoe UI", 10, FontStyle.Regular),
-
-                    // --- CẤU HÌNH ICON TỪ URL ---
-                    ImageSize = new Size(20, 20),
-                    ImageAlign = HorizontalAlignment.Left,
-                    ImageOffset = new Point(10, 0),
-                    TextOffset = new Point(20, 0),
-
-                    TextAlign = HorizontalAlignment.Left,
-                    Width = 230,
-                    Height = 45,
-                    Location = new Point(10, yPos),
-                    BorderRadius = 8,
-                    ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton,
-                    CheckedState = { FillColor = Color.DimGray, ForeColor = Color.White },
-                    Tag = item.Key
-                };
-                btn.BackColor = Color.Transparent;
-                btn.Image = RecolorImage(rawIcon, Color.White);
-                // [MỚI] Tùy chỉnh riêng cho nút Đăng xuất (Màu đỏ, tách biệt chút)
+                // Xử lý riêng cho Logout
                 if (item.Key == "Logout")
                 {
-                    btn.Dock = DockStyle.Bottom;
-                    btn.Margin = new Padding(10, 0, 30, 10);
-                    btn.ForeColor = Color.Red;
-                    btn.Image = RecolorImage(rawIcon, Color.Red);
-                    btn.CheckedState.FillColor = Color.Red; // Khi chọn sẽ hiện màu đỏ
-                    btn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.DefaultButton; // Không giữ trạng thái "đang chọn"
+                    btnParent.Dock = DockStyle.Bottom;
+                    btnParent.Margin = new Padding(10, 0, 30, 10);
+                    btnParent.FillColor = Color.Transparent;
+                    btnParent.ForeColor = Color.Red;
+                    btnParent.Image = ImageHelper.Recolor(btnParent.Image, Color.Red);
+                    btnParent.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.DefaultButton;
+                    _sidebar.Controls.Add(btnParent);
+                    continue; // Logout nằm dưới cùng, không tính yPos tiếp
                 }
 
-                btn.Click += Sidebar_Click;
+                _sidebar.Controls.Add(btnParent);
+                yPos += btnHeight + gap;
 
-                if (item.Key == "Dashboard") btn.Checked = true;
+                // 2. Nếu có SubItems -> Tạo Panel con chứa các nút con
+                if (item.SubItems.Count > 0)
+                {
+                    // Panel chứa sub-menu
+                    Panel pnlSub = new Panel();
+                    pnlSub.Width = 230;
+                    pnlSub.Height = item.SubItems.Count * (40 + 5); // Chiều cao = số item con * (cao + gap)
+                    pnlSub.Location = new Point(10, yPos);
+                    pnlSub.BackColor = Color.Transparent;
+                    pnlSub.Visible = false; // Mặc định ẩn
+                    pnlSub.Tag = "SubPanel_" + item.Key; // Tag để tìm kiếm nếu cần
 
-                _sidebar.Controls.Add(btn);
-                yPos += 50;
+                    int subY = 0;
+                    foreach (var sub in item.SubItems)
+                    {
+                        Guna2Button btnSub = CreateMenuButton(sub.Title, sub.IconUrl, sub.Key, true); // true = isSubItem
+                        btnSub.Location = new Point(0, subY); // Vị trí tương đối trong Panel
+                        btnSub.Size = new Size(230, 40); // Nhỏ hơn xíu
+
+                        pnlSub.Controls.Add(btnSub);
+                        subY += 45;
+                    }
+
+                    _sidebar.Controls.Add(pnlSub);
+
+                    // Sự kiện Click cha -> Toggle Panel con
+                    btnParent.Click += (s, e) =>
+                    {
+                        pnlSub.Visible = !pnlSub.Visible;
+                        // Nếu muốn đẹp hơn: Thay đổi icon mũi tên ở đây
+                        RearrangeSidebarItems(); // Hàm sắp xếp lại vị trí các nút bên dưới
+                    };
+
+                    // Mặc định tăng yPos ảo để chừa chỗ nếu nó mở (hoặc không, ở đây ta dùng hàm Rearrange)
+                    // Ta set Tag cho btnParent biết nó có panel con nào
+                    btnParent.Tag = pnlSub;
+                }
             }
         }
-        
-        // Hàm hỗ trợ tải ảnh từ URL
-        private Image LoadImageFromUrl(string url)
+
+        // 3. Hàm tạo Button chung (để code gọn hơn)
+        private Guna2Button CreateMenuButton(string text, string iconUrl, string key, bool isSubItem)
         {
-            try
+            Guna2Button btn = new Guna2Button();
+            btn.Text = text;
+            btn.FillColor = Color.Transparent;
+            btn.ForeColor = isSubItem ? Color.LightGray : Color.White; // Sub item màu nhạt hơn
+            btn.Font = new Font("Segoe UI", isSubItem ? 9 : 10, isSubItem ? FontStyle.Regular : FontStyle.Bold); // Sub item chữ nhỏ hơn
+
+            // Icon
+            if (!string.IsNullOrEmpty(iconUrl))
             {
-                var request = System.Net.WebRequest.Create(url);
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
-                {
-                    return Image.FromStream(stream);
-                }
+                Image rawIcon = ImageHelper.LoadFromUrl(iconUrl);
+                btn.Image = ImageHelper.Recolor(rawIcon, isSubItem ? Color.LightGray : Color.White);
+                btn.ImageSize = new Size(20, 20);
+                btn.ImageAlign = HorizontalAlignment.Left;
+                btn.ImageOffset = new Point(isSubItem ? 25 : 10, 0); // Sub item icon thụt vào sâu hơn
+                btn.TextOffset = new Point(30, 0);
+                btn.TextAlign = HorizontalAlignment.Center;
             }
-            catch
+            else if (isSubItem)
             {
-                // Nếu link lỗi hoặc mất mạng, trả về null (hoặc icon mặc định nếu muốn)
-                return null;
+                // Nếu sub item không có icon, ta để Text thụt vào
+                btn.TextOffset = new Point(40, 0);
+                btn.TextAlign = HorizontalAlignment.Left;
+            }
+
+            if (!isSubItem && !string.IsNullOrEmpty(iconUrl)) btn.TextOffset = new Point(20, 0);
+            else if (!isSubItem) btn.TextOffset = new Point(10, 0);
+
+            btn.TextAlign = HorizontalAlignment.Left;
+            btn.Size = new Size(230, 45);
+            btn.BorderRadius = 8;
+            btn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
+            btn.BackColor = Color.Transparent;
+
+            // Checked State
+            btn.CheckedState.FillColor = Color.DimGray;
+            btn.CheckedState.ForeColor = Color.White;
+
+            // Gán Tag là Key để xử lý click
+            // Lưu ý: Với nút cha có sub-menu, ta sẽ gán Tag là Panel ở vòng lặp trên, 
+            // nên ở đây ta tạm gán Key vào Name hoặc một property khác nếu cần. 
+            // Tuy nhiên, logic Sidebar_Click bên dưới dùng Tag, nên ta cứ gán key vào Tag trước.
+            // Logic vòng lặp trên sẽ override Tag của Parent Button sau.
+            btn.Tag = key;
+
+            // Chỉ gán sự kiện chuyển trang cho SubItems hoặc ParentItems không có con
+            if (key != "ShopsParent")
+            {
+                btn.Click += Sidebar_Click;
+            }
+
+            return btn;
+        }
+
+        // 4. Hàm sắp xếp lại vị trí (Accordion effect)
+        // Khi mở/đóng menu con, các nút bên dưới phải chạy lên/xuống
+        private void RearrangeSidebarItems()
+        {
+            int yPos = 80;
+            int gap = 5;
+
+            foreach (Control ctrl in _sidebar.Controls)
+            {
+                // Bỏ qua Logo, Logout (vì Logout dock Bottom), và các control không liên quan
+                if (ctrl is Guna2PictureBox) continue;
+                if (ctrl is Guna2Button btn && btn.Dock == DockStyle.Bottom) continue;
+
+                // Nếu là Button (Parent)
+                if (ctrl is Guna2Button parentBtn && !(parentBtn.Tag is string)) // Tag không phải string -> Tag là Panel (logic ở bước 2)
+                {
+                    parentBtn.Location = new Point(10, yPos);
+                    yPos += parentBtn.Height + gap;
+
+                    // Check xem Panel con của nó có hiện không
+                    if (parentBtn.Tag is Panel childPnl)
+                    {
+                        childPnl.Location = new Point(10, yPos);
+                        if (childPnl.Visible)
+                        {
+                            yPos += childPnl.Height + gap;
+                        }
+                    }
+                }
+                // Nếu là Button thường (Key string) và KHÔNG nằm trong Panel con
+                else if (ctrl is Guna2Button simpleBtn && simpleBtn.Parent == _sidebar)
+                {
+                    simpleBtn.Location = new Point(10, yPos);
+                    yPos += simpleBtn.Height + gap;
+                }
+                // Nếu là Panel (Sub menu container)
+                else if (ctrl is Panel pnl && pnl.Parent == _sidebar)
+                {
+                    // Panel vị trí đã được set theo Parent Button ở trên, nên ta không set ở đây
+                    // hoặc ta có thể handle logic ở đây cũng được. 
+                    // Tuy nhiên cách dễ nhất là handle theo cặp Parent-Child ở block "if parentBtn" phía trên.
+                }
             }
         }
         private void Sidebar_Click(object sender, EventArgs e)
@@ -124,12 +245,15 @@ namespace Skynet_Commerce.GUI.Forms
             {
                 case "Dashboard": LoadPage(new DashboardOverviewForm()); break;
                 case "Users": LoadPage(new UsersForm()); break;
-                case "Shops": LoadPage(new ShopsForm()); break;
+
+                // --- HAI MỤC MỚI ---
+                case "ShopRequests": LoadPage(new ShopRequestsForm()); break; // Form Duyệt
+                case "ShopList": LoadPage(new ShopsForm()); break;         // Form Danh sách
+                                                                              // -------------------
+
                 case "Products": LoadPage(new ProductsForm()); break;
                 case "Orders": LoadPage(new OrdersForm()); break;
                 case "Categories": LoadPage(new CategoriesForm()); break;
-
-                // [MỚI] Xử lý Đăng xuất
                 case "Logout":
                     if (MessageBox.Show("Bạn có chắc muốn đăng xuất khỏi trang Quản trị?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
@@ -149,31 +273,8 @@ namespace Skynet_Commerce.GUI.Forms
                         this.Close();
                     }
                     break;
-
-                default:
-                    MessageBox.Show("Tính năng đang phát triển!");
-                    break;
+                default: break;
             }
-        }
-        private Image RecolorImage(Image originalImage, Color newColor)
-        {
-            if (originalImage == null) return null;
-
-            Bitmap bmp = new Bitmap(originalImage);
-            for (int x = 0; x < bmp.Width; x++)
-            {
-                for (int y = 0; y < bmp.Height; y++)
-                {
-                    Color pixelColor = bmp.GetPixel(x, y);
-                    // Nếu điểm ảnh không trong suốt (có hình) thì đổi màu
-                    if (pixelColor.A > 0)
-                    {
-                        // Giữ nguyên độ trong suốt (Alpha), đổi màu RGB sang màu mới
-                        bmp.SetPixel(x, y, Color.FromArgb(pixelColor.A, newColor));
-                    }
-                }
-            }
-            return bmp;
         }
     }
 }

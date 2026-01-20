@@ -36,13 +36,34 @@ namespace Skynet_Commerce.GUI.Forms
                 _statsContainer.Controls.Clear();
                 var stats = _service.GetSummaryStats();
 
-                foreach (var stat in stats)
+                _statsContainer.ColumnStyles.Clear();
+                _statsContainer.ColumnCount = stats.Count; // Số cột = Số thẻ
+                _statsContainer.RowCount = 1;
+                _statsContainer.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
+
+                // Setup chia đều % cho các cột
+                float percent = 100f / stats.Count;
+                for (int i = 0; i < stats.Count; i++)
                 {
+                    _statsContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, percent));
+                }
+
+                // Thêm card vào từng cột
+                for (int i = 0; i < stats.Count; i++)
+                {
+                    var stat = stats[i];
                     var card = new UcInfoCard();
-                    // SetData(Title, Value, PercentText, IsIncrease)
+
+                    // Quan trọng: Dock Fill để card tự bung ra hết ô chứa
+                    card.Dock = DockStyle.Fill;
+
+                    // Margin để tạo khe hở giữa các card
+                    card.Margin = new Padding(10);
+
                     card.SetData(stat.Title, stat.Value, stat.Percent, stat.IsIncrease);
-                    card.Margin = new Padding(0, 0, 15, 15); // Khoảng cách giữa các thẻ
-                    _statsContainer.Controls.Add(card);
+
+                    // Thêm vào cột thứ i, hàng 0
+                    _statsContainer.Controls.Add(card, i, 0);
                 }
             }
             catch (Exception ex)

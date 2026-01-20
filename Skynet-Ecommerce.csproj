@@ -17,7 +17,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -42,6 +42,15 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=7.1.2.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.7.1.2\lib\net462\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=6.1.1.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.Interfaces.6.1.1\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.System.Drawing, Version=6.1.1.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.System.Drawing.6.1.1\lib\net462\EPPlus.System.Drawing.dll</HintPath>
+    </Reference>
     <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
       <HintPath>packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
     </Reference>
@@ -54,15 +63,53 @@
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Xml, Version=8.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Xml.8.0.2\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Encodings.Web.8.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=8.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Json.8.0.5\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
@@ -79,10 +126,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Helpers\ImageHelper.cs" />
     <Compile Include="BLL\Helpers\PaginationHelper.cs" />
     <Compile Include="BLL\Helpers\UserValidator.cs" />
     <Compile Include="BLL\Models\Admin\CategoryViewModel.cs" />
-    <Compile Include="BLL\Models\Admin\DashboardDTO.cs" />
     <Compile Include="BLL\Models\Admin\DashboardModel.cs" />
     <Compile Include="BLL\Models\Admin\OrderViewModel.cs" />
     <Compile Include="BLL\Models\Admin\PendingShopViewModel.cs" />
@@ -96,6 +143,12 @@
     <Compile Include="BLL\Services\Admin\ShopService.cs" />
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="BLL\Services\Auth\AuthService.cs" />
+    <Compile Include="BLL\Services\Seller\CategoryService.cs" />
+    <Compile Include="BLL\Services\Seller\ICategoryService.cs" />
+    <Compile Include="BLL\Services\Seller\IOrderService.cs" />
+    <Compile Include="BLL\Services\Seller\IProductService.cs" />
+    <Compile Include="BLL\Services\Seller\OrderService.cs" />
+    <Compile Include="BLL\Services\Seller\ProductService.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
     <Compile Include="DAL\Entities\AppSession.cs" />
@@ -109,6 +162,16 @@
     <Compile Include="DAL\Entities\FlashSaleProduct.cs" />
     <Compile Include="DAL\Repositories\Admin\AccountRepository.cs" />
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\CategoryRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\ICategoryRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\IOrderRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\IProductRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\IRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\IUnitOfWork.cs" />
+    <Compile Include="DAL\Repositories\Seller\OrderRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\ProductRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\Repository.cs" />
+    <Compile Include="DAL\Repositories\Seller\UnitOfWork.cs" />
     <Compile Include="GUI\Forms\Admin\CategoriesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +232,12 @@
     <Compile Include="GUI\Forms\Admin\ShopDetailForm.Designer.cs">
       <DependentUpon>ShopDetailForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\Admin\ShopRequestsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ShopRequestsForm.Designer.cs">
+      <DependentUpon>ShopRequestsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\Admin\ShopsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +271,54 @@
     </Compile>
     <Compile Include="GUI\Forms\Login\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\AddProductForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\AddProductForm.Designer.cs">
+      <DependentUpon>AddProductForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerDashboardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerDashboardForm.Designer.cs">
+      <DependentUpon>SellerDashboardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerInfoForm.Designer.cs">
+      <DependentUpon>SellerInfoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerMainForm.Designer.cs">
+      <DependentUpon>SellerMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerOrderDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerOrderDetailForm.Designer.cs">
+      <DependentUpon>SellerOrderDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerOrderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerOrderForm.Designer.cs">
+      <DependentUpon>SellerOrderForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerProductForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerProductForm.Designer.cs">
+      <DependentUpon>SellerProductForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerVoucherForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerVoucherForm.Designer.cs">
+      <DependentUpon>SellerVoucherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.cs">
       <SubType>UserControl</SubType>
@@ -241,6 +358,9 @@
     <EmbeddedResource Include="GUI\Forms\Admin\ShopDetailForm.resx">
       <DependentUpon>ShopDetailForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\ShopRequestsForm.resx">
+      <DependentUpon>ShopRequestsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\ShopsForm.resx">
       <DependentUpon>ShopsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -253,6 +373,9 @@
     <EmbeddedResource Include="GUI\Forms\Login\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Seller\SellerInfoForm.resx">
+      <DependentUpon>SellerInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcInfoCard.resx">
       <DependentUpon>UcInfoCard.cs</DependentUpon>
     </EmbeddedResource>
@@ -264,6 +387,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -282,6 +406,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Database\SQL.sql" />
+    <None Include="Resources\LOGO.jpg" />
     <Content Include="Resources\profile.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

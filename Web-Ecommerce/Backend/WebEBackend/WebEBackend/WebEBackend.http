@@ -1,0 +1,6 @@
+@WebEBackend_HostAddress = http://localhost:5198
+
+GET {{WebEBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
