@@ -139,7 +139,9 @@
     <Compile Include="BLL\Models\Admin\DashboardModel.cs" />
     <Compile Include="BLL\Models\Admin\OrderViewModel.cs" />
     <Compile Include="BLL\Models\Admin\PendingShopViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ProductFullDetailViewModel.cs" />
     <Compile Include="BLL\Models\Admin\ProductViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ShopFullDetailViewModel.cs" />
     <Compile Include="BLL\Models\Admin\ShopViewModel.cs" />
     <Compile Include="BLL\Models\Admin\UserViewModel.cs" />
     <Compile Include="BLL\Services\Admin\CategoryService.cs" />
@@ -355,8 +357,14 @@
     <EmbeddedResource Include="GUI\Forms\Admin\FormUserDetails.resx">
       <DependentUpon>FormUserDetails.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\OrderDetailForm.resx">
+      <DependentUpon>OrderDetailForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\OrdersForm.resx">
       <DependentUpon>OrdersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\ProductDetailForm.resx">
+      <DependentUpon>ProductDetailForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\ProductsForm.resx">
       <DependentUpon>ProductsForm.cs</DependentUpon>
