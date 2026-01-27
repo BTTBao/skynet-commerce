@@ -1,0 +1,239 @@
+/* src/pages/AccountPage.css */
+
+/* --- Tổng thể trang --- */
+.account-page-container {
+  max-width: 1280px; /* max-w-7xl */
+  margin: 0 auto;
+  padding: 32px 16px; /* py-8 px-4 */
+  background-color: #f9fafb; /* bg-gray-50 */
+  min-height: 100vh;
+}
+
+.account-page-title {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700;
+  color: #111827; /* text-gray-900 */
+  margin-bottom: 32px;
+}
+
+/* --- Bố cục Grid (Sidebar + Main) --- */
+.account-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mặc định 1 cột trên mobile */
+  gap: 32px;
+}
+
+/* Responsive: Trên màn hình lớn (Laptop) chia 4 cột */
+@media (min-width: 1024px) {
+  .account-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .sidebar-col {
+    grid-column: span 1 / span 1;
+  }
+
+  .main-col {
+    grid-column: span 3 / span 3;
+  }
+}
+
+/* --- Sidebar --- */
+.account-card {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #f3f4f6; /* border-gray-100 */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  padding: 24px;
+}
+
+.sidebar-sticky {
+  position: sticky;
+  top: 96px; /* top-24 (để không bị che bởi navbar) */
+}
+
+.avatar-section {
+  text-center: center;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 12px auto;
+  border-radius: 50%;
+  background: linear-gradient(to bottom right, #3b82f6, #4f46e5); /* blue to indigo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.875rem;
+  font-weight: 700;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.user-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.user-email {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* --- Navigation Menu (Tab Buttons) --- */
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tab-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  color: #4b5563; /* text-gray-600 */
+}
+
+.tab-btn:hover {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+/* Trạng thái Active của Tab */
+.tab-btn.active {
+  background-color: #eff6ff; /* bg-blue-50 */
+  color: #2563eb; /* text-blue-600 */
+}
+
+/* --- Phần nội dung các Tab con --- */
+
+/* Tab Tiêu đề chung */
+.tab-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 24px;
+}
+
+/* Wishlist Tab */
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .wishlist-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Address Tab */
+.address-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.add-address-btn {
+  background-color: #2563eb;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-address-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.address-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.address-name {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.default-badge {
+  font-size: 0.75rem;
+  background-color: #dbeafe; /* bg-blue-100 */
+  color: #2563eb;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.address-detail {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.address-actions {
+  display: flex;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.btn-edit { color: #2563eb; background: none; border: none; cursor: pointer; }
+.btn-delete { color: #ef4444; background: none; border: none; cursor: pointer; }
+
+/* Settings Tab */
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.setting-item {
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.setting-item:hover {
+  background-color: #f9fafb;
+}
+
+.setting-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-blue { color: #2563eb; }
+.arrow-icon { color: #9ca3af; }

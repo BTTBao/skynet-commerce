@@ -1,0 +1,120 @@
+/* src/components/account/MyOrdersTab.css */
+
+/* --- Trạng thái trống --- */
+.empty-orders {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+}
+
+.empty-icon-wrapper {
+    margin: 0 auto 16px auto;
+    color: #d1d5db;
+}
+
+/* --- Danh sách đơn hàng --- */
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.order-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    background-color: white;
+    transition: box-shadow 0.2s;
+}
+
+.order-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Header đơn hàng (Tên shop + Trạng thái) */
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 8px;
+}
+
+.shop-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #111827;
+}
+
+.status-badge {
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Phần nội dung sản phẩm */
+.product-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.product-thumb {
+    width: 60px;
+    height: 60px;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.product-name {
+    font-weight: 500;
+    margin: 0 0 4px 0;
+    color: #374151;
+}
+
+.product-count {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Footer (Tổng tiền + Nút xem) */
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.total-label {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.total-price {
+    font-weight: 700;
+    color: #ef4444; /* Màu đỏ */
+    font-size: 1.1rem;
+}
+
+.btn-view-detail {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #2563eb;
+    color: #2563eb;
+    background-color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-view-detail:hover {
+    background-color: #eff6ff; /* Xanh rất nhạt */
+}

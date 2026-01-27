@@ -17,7 +17,8 @@ function HomePage() {
         const fetchProducts = async () => {
             try {
                 // Đảm bảo Port đúng là 7215
-                const response = await fetch("https://localhost:7215/api/products");
+                // const response = await fetch("https://localhost:7215/api/products");
+                const response = await fetch("http://localhost:5198/api/Products");
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
                 
                 const data = await response.json();
@@ -51,7 +52,7 @@ function HomePage() {
 
     return (
         <div className="homepage">
-            <Navbar />
+    
             <header className="hero">
                 <div className="hero-content">
                     <h1>Săn Sale Cực Khủng</h1>

@@ -1,0 +1,197 @@
+/* src/components/account/AddressTab.css */
+
+/* Header của Tab */
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.address-header .tab-title {
+    margin-bottom: 0; /* Ghi đè margin mặc định của title */
+}
+
+/* Nút Thêm địa chỉ */
+.btn-add-address {
+    background-color: #2563eb; /* blue-600 */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-add-address:hover {
+    background-color: #1d4ed8; /* blue-700 */
+}
+
+/* Thông báo khi trống */
+.empty-address-msg {
+    color: #6b7280;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Danh sách địa chỉ */
+.address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Thẻ địa chỉ từng cái */
+.address-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    transition: box-shadow 0.2s;
+}
+
+.address-item:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Tên người nhận */
+.address-name {
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    color: #111827;
+}
+
+/* Badge Mặc định */
+.default-badge {
+    font-size: 0.75rem;
+    background-color: #dbeafe; /* blue-100 */
+    color: #2563eb; /* blue-600 */
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    font-weight: 600;
+}
+
+/* Chi tiết địa chỉ (dòng nhỏ) */
+.address-detail {
+    font-size: 0.9rem;
+    color: #4b5563; /* gray-600 */
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Khu vực nút hành động (Sửa/Xóa) */
+.address-actions {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.btn-action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-edit {
+    color: #2563eb; /* blue-600 */
+}
+.btn-edit:hover {
+    background-color: #eff6ff;
+}
+
+.btn-delete {
+    color: #ef4444; /* red-500 */
+}
+.btn-delete:hover {
+    background-color: #fef2f2;
+}
+
+/* src/components/account/AddressTab.css */
+/* ... (Giữ nguyên CSS cũ) ... */
+
+/* --- FORM THÊM MỚI --- */
+.add-address-form-container {
+    background: #f9fafb;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.half { width: 50%; }
+.third { width: 33.33%; }
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #374151;
+}
+
+.form-input, .form-select {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.form-input:focus, .form-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-cancel {
+    padding: 10px 20px;
+    border: 1px solid #d1d5db;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-save {
+    padding: 10px 24px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.btn-save:hover { background: #1d4ed8; }
+
+/* Responsive cho mobile */
+@media (max-width: 640px) {
+    .form-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .half, .third { width: 100%; }
+}
