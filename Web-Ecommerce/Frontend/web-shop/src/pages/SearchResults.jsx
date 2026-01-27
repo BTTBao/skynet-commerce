@@ -40,7 +40,6 @@ function SearchResults() {
 
     return (
         <>
-        <Navbar />
         <div className="search-page-container">
             <div className="search-header">
                 <h2>Kết quả tìm kiếm</h2>

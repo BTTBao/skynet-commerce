@@ -29,14 +29,9 @@
 }
 
 .list-item {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* Khoảng cách */
-    justify-content: flex-start; /* Canh trái */
-}
-
-.list-item > div { /* Hoặc .product-card */
-    width: calc((100% - 60px) / 4); 
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
 }
 .item-card {
     background-color: white;

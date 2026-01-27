@@ -90,7 +90,6 @@ function ProductDetail() {
 
     return (
         <>
-            <Navbar />
             <div className="detail-container">
                 <div className="detail-wrapper">
                     

@@ -10,7 +10,6 @@ function CartPage() {
     if (cartItems.length === 0) {
         return (
             <>
-                <Navbar />
                 <div className="empty-cart">
                     <h2>Giỏ hàng của bạn đang trống!</h2>
                     <Link to="/" className="btn-shop-now">Mua sắm ngay</Link>
@@ -21,7 +20,6 @@ function CartPage() {
 
     return (
         <>
-            <Navbar />
             <div className="cart-container">
                 <h2 className="cart-title">Giỏ Hàng Của Bạn</h2>
                 

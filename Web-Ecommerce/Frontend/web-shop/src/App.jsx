@@ -11,6 +11,7 @@ import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./pages/CartPage";
 import LoginPage from "./pages/LoginPage"; 
 import AccountPage from "./pages/AccountPage"; // <--- THÊM DÒNG NÀY
+import SellerShopPage from './pages/SellerShopPage';
 
 import Navbar from "./layouts/Navbar"; 
 import Footer from "./layouts/Footer";
@@ -29,6 +30,7 @@ function App() {
             
             {/* THÊM ROUTE NÀY */}
             <Route path="/account" element={<AccountPage />} />
+            <Route path="/shop-profile/:shopId" element={<SellerShopPage />} />
           </Routes>
           <Footer />
         </CartProvider>
