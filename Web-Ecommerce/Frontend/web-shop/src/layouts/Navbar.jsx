@@ -1,39 +1,128 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; // 1. Import Link
-import { useCart } from '../context/CartContext'; // 2. Import Context
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import "./Navbar.css";
 
 export default function Navbar() {
-    const { cartItems } = useCart(); // Lấy dữ liệu giỏ hàng
-
-    // 3. Tính tổng số lượng sản phẩm (Ví dụ: mua 2 áo + 3 quần = 5)
+    const { cartItems } = useCart();
     const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+    const navigate = useNavigate();
+
+    // --- STATES ---
+    const [searchTerm, setSearchTerm] = useState("");
+    const [category, setCategory] = useState("all");
+    
+    // State cho Lọc nâng cao
+    const [showFilter, setShowFilter] = useState(false); 
+    const [priceRange, setPriceRange] = useState({ min: "", max: "" });
+    const [sortBy, setSortBy] = useState("newest"); 
+
+    // --- HANDLERS ---
+    const handleSearch = (e) => {
+        e.preventDefault();
+        
+        const params = new URLSearchParams();
+        if (searchTerm) params.append("keyword", searchTerm);
+        if (category !== "all") params.append("category", category);
+        if (priceRange.min) params.append("minPrice", priceRange.min);
+        if (priceRange.max) params.append("maxPrice", priceRange.max);
+        params.append("sort", sortBy);
+
+        setShowFilter(false); 
+        navigate(`/search?${params.toString()}`); 
+    };
 
     return (
         <nav className="navbar">
             <div className="nav-wrapper">
-                {/* Click Logo về trang chủ */}
-                <Link to="/" className="logo">
-                    SHOP<span>DEAL</span>
-                </Link>
+                <Link to="/" className="logo">SHOP<span>DEAL</span></Link>
 
-                <div className="search-box">
-                    <input className="search-input" placeholder="Tìm sản phẩm, thương hiệu..." />
-                    <button className="search-btn">
-                        <i className="fa-solid fa-magnifying-glass"></i> Tìm
-                    </button>
+                {/* --- SEARCH BOX CONTAINER --- */}
+                <div className="search-container">
+                    <form className="search-box" onSubmit={handleSearch}>
+                        <select 
+                            className="search-select"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
+                            <option value="all">Tất cả</option>
+                            <option value="electronics">Điện tử</option>
+                            <option value="fashion">Thời trang</option>
+                        </select>
+                        
+                        <div className="divider">|</div>
+
+                        <input 
+                            className="search-input" 
+                            placeholder="Tìm kiếm..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+
+                        {/* Nút Lọc nâng cao (Đã thêm chữ để dễ bấm) */}
+                        <button 
+                            type="button" 
+                            className={`filter-toggle-btn ${showFilter ? "active" : ""}`}
+                            onClick={() => setShowFilter(!showFilter)}
+                            title="Lọc nâng cao"
+                        >
+                            <span>Lọc</span> <i className="fa-solid fa-sliders"></i>
+                        </button>
+
+                        <button type="submit" className="search-btn">
+                            <i className="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+
+                    {/* --- BẢNG LỌC NÂNG CAO --- */}
+                    {showFilter && (
+                        <div className="advanced-filter-panel">
+                            <div className="filter-group">
+                                <label>Khoảng giá (VNĐ)</label>
+                                <div className="price-inputs">
+                                    <input 
+                                        type="number" 
+                                        placeholder="Min" 
+                                        value={priceRange.min}
+                                        onChange={e => setPriceRange({...priceRange, min: e.target.value})}
+                                    />
+                                    <span>-</span>
+                                    <input 
+                                        type="number" 
+                                        placeholder="Max" 
+                                        value={priceRange.max}
+                                        onChange={e => setPriceRange({...priceRange, max: e.target.value})}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="filter-group">
+                                <label>Sắp xếp theo</label>
+                                <select 
+                                    value={sortBy} 
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="sort-select"
+                                >
+                                    <option value="newest">Mới nhất</option>
+                                    <option value="price_asc">Giá: Thấp đến Cao</option>
+                                    <option value="price_desc">Giá: Cao đến Thấp</option>
+                                    <option value="best_sell">Bán chạy nhất</option>
+                                </select>
+                            </div>
+                            
+                            <button onClick={handleSearch} className="apply-filter-btn">
+                                Áp dụng
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <div className="nav-links">
-                    {/* Click chữ Trang chủ cũng về trang chủ */}
                     <Link to="/" className="nav-item">Trang chủ</Link>
-                    
-                    <div className="nav-item">Tài khoản</div>
-                    
-                    {/* Click Giỏ hàng sang trang Cart */}
+                    <Link to="/" className="nav-item">Tài khoản</Link>
                     <Link to="/cart" className="nav-item cart">
-                        <i className="fa-solid fa-cart-shopping"></i> Giỏ hàng 
-                        <span className="cart-count">({totalItems})</span>
+                        <i className="fa-solid fa-cart-shopping"></i> 
+                        <span className="cart-count">{totalItems}</span>
                     </Link>
                 </div>
             </div>

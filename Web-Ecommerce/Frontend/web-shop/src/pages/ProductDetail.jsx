@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import Navbar from "../layouts/Navbar";
 import "./ProductDetail.css";
@@ -9,6 +9,7 @@ function ProductDetail() {
     const { addToCart } = useCart();
     
     const [product, setProduct] = useState(null);
+    const [shop, setShop] = useState(null);
     const [loading, setLoading] = useState(true);
     
     // State UI
@@ -20,21 +21,35 @@ function ProductDetail() {
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
+                // 1. Gọi API lấy Product
                 const response = await fetch(`https://localhost:7215/api/products/${id}`);
                 if (!response.ok) throw new Error("Lỗi tải sản phẩm");
-                const data = await response.json();
+                const productData = await response.json();
                 
-                setProduct(data);
-                
-                // Logic ảnh mặc định
-                const primaryImg = data.productImages.find(img => img.isPrimary) || data.productImages[0];
+                setProduct(productData);
+
+                // Setup ảnh chính
+                const primaryImg = productData.productImages?.find(img => img.isPrimary) || productData.productImages?.[0];
                 setMainImage(primaryImg?.imageUrl || "https://via.placeholder.com/500");
                 
-                // Tự động chọn size/màu đầu tiên
-                if(data.productVariants?.length > 0) {
-                     setSelectedSize(data.productVariants[0].size);
-                     setSelectedColor(data.productVariants[0].color);
+                // Setup variant mặc định (Chọn cái đầu tiên nếu có)
+                if(productData.productVariants?.length > 0) {
+                     setSelectedSize(productData.productVariants[0].size);
+                     setSelectedColor(productData.productVariants[0].color);
                 }
+
+                // 2. Xử lý lấy thông tin Shop
+                if (productData.shop) {
+                    setShop(productData.shop);
+                } 
+                else if (productData.shopId) {
+                    const shopRes = await fetch(`https://localhost:7215/api/shops/${productData.shopId}`);
+                    if (shopRes.ok) {
+                        const shopData = await shopRes.json();
+                        setShop(shopData);
+                    }
+                }
+
             } catch (error) {
                 console.error(error);
             } finally {
@@ -46,6 +61,7 @@ function ProductDetail() {
 
     const handleAddToCart = () => {
         if (!product) return;
+        
         const hasVariants = product.productVariants && product.productVariants.length > 0;
         if (hasVariants && (!selectedSize || !selectedColor)) {
             alert("Vui lòng chọn Size và Màu sắc!");
@@ -64,16 +80,13 @@ function ProductDetail() {
         );
     };
 
-    if (loading) return <div className="loading-screen">Đang tải chi tiết sản phẩm...</div>;
+    if (loading) return <div className="loading-screen">Đang tải...</div>;
     if (!product) return <div className="error-screen">Không tìm thấy sản phẩm!</div>;
-    
-    // Lọc size/color duy nhất
+
+    // Lọc danh sách Size và Color duy nhất từ Variants
     const uniqueSizes = [...new Set(product.productVariants?.map(v => v.size).filter(Boolean))];
     const uniqueColors = [...new Set(product.productVariants?.map(v => v.color).filter(Boolean))];
-
-    // --- TÍNH TOÁN GIÁ TẠM TÍNH ---
     const unitPrice = Number(product.price) || 0;
-    const estimatedTotal = unitPrice * quantity; // Giá x Số lượng
 
     return (
         <>
@@ -81,16 +94,15 @@ function ProductDetail() {
             <div className="detail-container">
                 <div className="detail-wrapper">
                     
-                    {/* CỘT TRÁI: THƯ VIỆN ẢNH */}
+                    {/* CỘT TRÁI: ẢNH */}
                     <div className="product-gallery">
                         <div className="main-image-frame">
                             <img src={mainImage} alt={product.name} className="main-img" />
                         </div>
-                        {/* Danh sách ảnh nhỏ (Thumbnail) */}
                         <div className="thumbnail-list">
                             {product.productImages?.map((img) => (
                                 <img 
-                                    key={img.imageId}
+                                    key={img.imageId || Math.random()}
                                     src={img.imageUrl} 
                                     alt="thumb"
                                     className={`thumb-img ${mainImage === img.imageUrl ? "active" : ""}`}
@@ -100,39 +112,35 @@ function ProductDetail() {
                         </div>
                     </div>
 
-                    {/* CỘT PHẢI: THÔNG TIN CHI TIẾT */}
+                    {/* CỘT PHẢI: THÔNG TIN */}
                     <div className="product-info">
                         <h1 className="product-name">{product.name}</h1>
                         
-                        {/* Thông tin phụ: SKU, Danh mục, Đã bán */}
                         <div className="product-meta">
-                            <span>Mã: <strong>{product.productVariants?.[0]?.sku || "N/A"}</strong></span>
-                            <span> | </span>
-                            <span>Danh mục: <strong>{product.category?.name || "Chưa cập nhật"}</strong></span>
-                            <span> | </span>
                             <span>Đã bán: <strong>{product.soldCount || 0}</strong></span>
+                            <span> | </span>
+                            <span>Tình trạng: <strong>{product.stockQuantity > 0 ? "Còn hàng" : "Hết hàng"}</strong></span>
                         </div>
 
-                        {/* Giá sản phẩm */}
                         <p className="product-price">{unitPrice.toLocaleString()}đ</p>
 
-                        {/* Mô tả ngắn */}
                         <div className="product-description">
-                            <h3>Mô tả sản phẩm:</h3>
-                            <p>{product.description || "Đang cập nhật mô tả cho sản phẩm này..."}</p>
+                             <p>{product.description}</p>
                         </div>
-
+                        
                         <hr className="divider" />
-
-                        {/* Chọn Size */}
+                        
+                        {/* --- BẮT ĐẦU PHẦN VARIANT (SIZE/COLOR) ĐƯỢC THÊM LẠI --- */}
+                        
+                        {/* 1. Chọn Size */}
                         {uniqueSizes.length > 0 && (
-                            <div className="variant-section">
+                            <div className="variant-group">
                                 <span className="variant-label">Kích thước:</span>
                                 <div className="variant-options">
-                                    {uniqueSizes.map(size => (
+                                    {uniqueSizes.map((size) => (
                                         <button 
-                                            key={size}
-                                            className={`size-btn ${selectedSize === size ? "selected" : ""}`}
+                                            key={size} 
+                                            className={`variant-btn ${selectedSize === size ? "active" : ""}`}
                                             onClick={() => setSelectedSize(size)}
                                         >
                                             {size}
@@ -142,15 +150,15 @@ function ProductDetail() {
                             </div>
                         )}
 
-                        {/* Chọn Màu (Đã bổ sung) */}
+                        {/* 2. Chọn Màu */}
                         {uniqueColors.length > 0 && (
-                            <div className="variant-section">
+                            <div className="variant-group">
                                 <span className="variant-label">Màu sắc:</span>
                                 <div className="variant-options">
-                                    {uniqueColors.map(color => (
+                                    {uniqueColors.map((color) => (
                                         <button 
-                                            key={color}
-                                            className={`color-btn ${selectedColor === color ? "selected" : ""}`}
+                                            key={color} 
+                                            className={`variant-btn ${selectedColor === color ? "active" : ""}`}
                                             onClick={() => setSelectedColor(color)}
                                         >
                                             {color}
@@ -159,8 +167,8 @@ function ProductDetail() {
                                 </div>
                             </div>
                         )}
+                        {/* --- KẾT THÚC PHẦN VARIANT --- */}
 
-                        {/* KHUVỰC MUA HÀNG & TÍNH TIỀN */}
                         <div className="purchase-area">
                             <div className="quantity-wrapper">
                                 <span className="variant-label">Số lượng:</span>
@@ -170,17 +178,43 @@ function ProductDetail() {
                                     <button onClick={() => setQuantity(quantity + 1)}>+</button>
                                 </div>
                             </div>
-
-                            {/* Hiển thị tạm tính */}
-                            <div className="total-estimate">
-                                <span>Tạm tính:</span>
-                                <span className="price-value">{estimatedTotal.toLocaleString()}đ</span>
-                            </div>
-
                             <button className="add-to-cart-btn full-width" onClick={handleAddToCart}>
                                 <i className="fa fa-shopping-cart"></i> Thêm Vào Giỏ Hàng
                             </button>
                         </div>
+
+                        {/* --- PHẦN SHOP INFO --- */}
+                        {shop && (
+                            <div className="shop-info-card">
+                                <div className="shop-header-left">
+                                    <img 
+                                        src={shop.avatarUrl || "https://via.placeholder.com/150"} 
+                                        alt={shop.shopName} 
+                                        className="shop-avatar" 
+                                    />
+                                    {shop.ratingAverage >= 4.5 && <span className="official-badge">Mall</span>}
+                                </div>
+                                
+                                <div className="shop-details-right">
+                                    <h4 className="shop-name">{shop.shopName}</h4>
+                                    
+                                    <div className="shop-stats">
+                                        <span><i className="fa fa-star" style={{color:'#ffce3d'}}></i> {shop.ratingAverage ? shop.ratingAverage.toFixed(1) : "N/A"}</span>
+                                        <span className="divider-vertical">|</span>
+                                        <span style={{color: shop.isActive ? 'green' : 'gray'}}>
+                                            {shop.isActive ? "Đang hoạt động" : "Nghỉ bán"}
+                                        </span>
+                                    </div>
+                                    
+                                    <div className="shop-actions">
+                                        <button className="btn-chat"><i className="fa-regular fa-message"></i> Chat</button>
+                                        <Link to={`/shop-profile/${shop.shopId}`} className="btn-view-shop">
+                                            <i className="fa-solid fa-store"></i> Xem Shop
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

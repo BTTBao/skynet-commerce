@@ -5,7 +5,6 @@ import Navbar from '../layouts/Navbar';
 import "./CartPage.css"; 
 
 function CartPage() {
-    // Lấy hàm removeFromCart từ Context
     const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
 
     if (cartItems.length === 0) {
@@ -34,18 +33,19 @@ function CartPage() {
                                 <th>Đơn giá</th>
                                 <th>Số lượng</th>
                                 <th>Thành tiền</th>
-                                <th>Thao tác</th> {/* Cột nút Xóa */}
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             {cartItems.map((item) => (
-                                <tr key={item.id}>
+                                /* 1. SỬA KEY: Dùng cartId để React phân biệt các dòng */
+                                <tr key={item.cartId}> 
+                                    
                                     {/* Cột 1: Ảnh & Tên */}
                                     <td className="cart-product-info">
                                         <img src={item.img} alt={item.name} />
                                         <div className="info-text">
                                             <span className="name">{item.name}</span>
-                                            {/* Hiện size/màu nếu có */}
                                             {(item.selectedSize || item.selectedColor) && (
                                                 <small style={{color: '#777'}}>
                                                     {item.selectedSize} / {item.selectedColor}
@@ -54,15 +54,16 @@ function CartPage() {
                                         </div>
                                     </td>
 
-                                    {/* Cột 2: Giá (Ép kiểu số) */}
+                                    {/* Cột 2: Giá */}
                                     <td>{Number(item.price).toLocaleString()}đ</td>
 
                                     {/* Cột 3: Tăng giảm số lượng */}
                                     <td>
                                         <div className="qty-control">
-                                            <button onClick={() => updateQuantity(item.id, -1)}>-</button>
+                                            {/* 2. SỬA UPDATE: Truyền cartId */}
+                                            <button onClick={() => updateQuantity(item.cartId, -1)}>-</button>
                                             <span>{item.quantity}</span>
-                                            <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+                                            <button onClick={() => updateQuantity(item.cartId, 1)}>+</button>
                                         </div>
                                     </td>
 
@@ -71,11 +72,12 @@ function CartPage() {
                                         {(Number(item.price) * item.quantity).toLocaleString()}đ
                                     </td>
 
-                                    {/* Cột 5: NÚT XÓA (Quan trọng) */}
+                                    {/* Cột 5: NÚT XÓA */}
                                     <td>
                                         <button 
                                             className="btn-delete" 
-                                            onClick={() => removeFromCart(item.id)}
+                                            /* 3. SỬA REMOVE: Truyền cartId */
+                                            onClick={() => removeFromCart(item.cartId)}
                                             title="Xóa sản phẩm này"
                                         >
                                             <i className="fa fa-trash"></i> Xóa

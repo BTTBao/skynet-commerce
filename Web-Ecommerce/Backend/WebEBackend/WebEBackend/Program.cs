@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebEBackend.Models;
-
+using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Cấu hình Controllers và xử lý lỗi vòng lặp JSON (Rất quan trọng cho Model Product của bạn)
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
