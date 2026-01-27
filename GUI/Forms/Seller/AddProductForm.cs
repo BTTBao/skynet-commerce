@@ -1,16 +1,10 @@
 ﻿using Skynet_Ecommerce.BLL.Services.Seller;
 using Skynet_Ecommerce.DAL.Repositories.Seller;
-using Skynet_Ecommerce.Repositories;
-using Skynet_Ecommerce.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Skynet_Ecommerce.GUI.Forms.Seller

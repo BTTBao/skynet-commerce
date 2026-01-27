@@ -12,7 +12,7 @@ namespace Skynet_Ecommerce.DAL.Repositories.Seller
         protected readonly ApplicationDbContext Context;
         protected readonly DbSet<T> DbSet;
 
-        public Repository(DbContext context)
+        public Repository(ApplicationDbContext context)
         {
             Context = context;
             DbSet = Context.Set<T>();
