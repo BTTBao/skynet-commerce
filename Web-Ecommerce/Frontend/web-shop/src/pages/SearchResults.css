@@ -1,0 +1,40 @@
+.search-page-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
+    min-height: 80vh;
+}
+
+.search-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.search-header h2 {
+    color: #333;
+    font-size: 24px;
+}
+
+.result-count {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Grid sản phẩm (Copy từ Home hoặc dùng chung class) */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.no-results {
+    text-align: center;
+    padding: 50px;
+    color: #888;
+}
+
+.no-results i {
+    font-size: 50px;
+    margin-bottom: 15px;
+}

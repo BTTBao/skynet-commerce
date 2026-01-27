@@ -1,4 +1,3 @@
-
 * {
     margin: 0;
     padding: 0;
@@ -6,10 +5,11 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* --- THANH NAVBAR --- */
 .navbar {
     height: 70px;
     width: 100%;
-    background-color: #131921;
+    background-color: #131921; /* Màu nền tối */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,58 +27,190 @@
     gap: 20px;
 }
 
+/* --- LOGO --- */
 .logo {
-    color: white;
     font-size: 24px;
     font-weight: 800;
+    color: white; /* QUAN TRỌNG: Màu trắng để nổi trên nền đen */
+    text-decoration: none;
     cursor: pointer;
     min-width: 120px;
+    letter-spacing: 1px;
 }
 
 .logo span {
     color: #ff9900;
 }
 
-.search-box {
-    flex: 1;
-    display: flex;
-    height: 40px;
+/* --- KHUNG TÌM KIẾM (Chứa cả nút Lọc) --- */
+.search-container {
+    position: relative; /* Điểm tựa cho bảng lọc hiện ra */
+    flex: 1; /* Tự động co giãn */
+    max-width: 600px;
+    margin: 0 20px;
 }
 
-.search-input {
-    width: 100%;
-    padding: 0 15px;
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 4px;
+    padding: 0 5px;
+    height: 40px;
+    border: 1px solid #ddd;
+}
+
+/* Select box danh mục */
+.search-select {
     border: none;
-    border-radius: 4px 0 0 4px;
     outline: none;
+    background: transparent;
+    padding: 0 5px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #333;
+}
+
+.divider {
+    color: #ccc;
+    margin: 0 5px;
+}
+
+/* Input nhập từ khóa */
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 0 10px;
+    font-size: 14px;
+    height: 100%;
+}
+
+/* --- NÚT BẬT/TẮT LỌC --- */
+.filter-toggle-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0 10px;
+    color: #555;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 100%;
+    border-left: 1px solid #eee; /* Vạch ngăn cách nhẹ */
+    transition: all 0.2s;
+}
+
+.filter-toggle-btn:hover, .filter-toggle-btn.active {
+    color: #ff9900;
+    background-color: #f8f8f8;
+}
+
+/* Nút tìm kiếm (Kính lúp) */
+.search-btn {
+    background: #ff9900;
+    border: none;
+    cursor: pointer;
+    color: #131921;
+    font-size: 16px;
+    height: 100%; /* Full chiều cao */
+    padding: 0 15px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-right: -5px; /* Để khớp với padding của box */
+}
+
+/* --- BẢNG LỌC NÂNG CAO (Dropdown) --- */
+.advanced-filter-panel {
+    position: absolute;
+    top: 115%; /* Cách thanh search 1 chút */
+    right: 0;
+    width: 320px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 20px;
+    z-index: 9999 !important; /* Đè lên tất cả */
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+/* Mũi tên tam giác chỉ lên */
+.advanced-filter-panel::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    right: 65px; /* Căn chỉnh vị trí mũi tên */
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid white;
+}
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-inputs input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     font-size: 14px;
 }
 
-.search-btn {
-    width: 80px;
-    background-color: #febd69;
+.sort-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+}
+
+.apply-filter-btn {
+    width: 100%;
+    background-color: #ff9900;
+    color: #131921;
     border: none;
-    border-radius: 0 4px 4px 0;
+    padding: 10px;
+    border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    transition: background 0.3s;
+    margin-top: 10px;
+    transition: background 0.2s;
 }
 
-.search-btn:hover {
-    background-color: #f3a847;
+.apply-filter-btn:hover {
+    background-color: #e68a00;
 }
 
+/* --- MENU PHẢI & GIỎ HÀNG --- */
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 25px;
-    color: white;
+    gap: 20px;
 }
 
 .nav-item {
     font-size: 14px;
     font-weight: 500;
-    cursor: pointer;
+    color: white;
+    text-decoration: none;
     transition: color 0.2s;
     white-space: nowrap;
 }
@@ -88,94 +220,66 @@
 }
 
 .cart {
-    border: 1px solid #ffffff55;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.3);
     padding: 5px 12px;
     border-radius: 4px;
 }
 
-.cart span {
+.cart:hover {
+    border-color: #ff9900;
+}
+
+.cart-count {
     color: #ff9900;
     font-weight: bold;
+    font-size: 14px;
 }
+/* Navbar.css */
+.advanced-filter-panel .filter-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    margin-top: 5px;
+}
+
+.advanced-filter-panel .filter-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 768px) {
     .navbar {
         height: auto;
         padding: 10px 0;
     }
-
     .nav-wrapper {
         flex-direction: column;
         gap: 15px;
     }
-
-    .search-box {
+    .search-container {
         width: 100%;
-        order: 3;
+        margin: 0;
+        order: 2; /* Đẩy xuống dưới */
     }
-
-    .logo {
-        order: 1;
-        font-size: 20px;
-    }
-
     .nav-links {
-        order: 2;
         width: 100%;
         justify-content: space-around;
-        font-size: 13px;
+        order: 3;
     }
-}
-
-.logo, .nav-item {
-    text-decoration: none; /* Bỏ gạch chân */
-    cursor: pointer;
-    color: inherit; /* Giữ màu chữ gốc */
-}
-
-/* Chỉnh lại Logo một chút để Link không bị lệch */
-.logo {
-    font-size: 24px;
-    font-weight: 800;
-    color: #333;
-    letter-spacing: 1px;
-}
-
-.logo span {
-    color: #d0011b;
-}
-
-/* Các item trong menu */
-.nav-links {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.nav-item {
-    font-size: 16px;
-    color: #ffffff;
-    transition: color 0.2s;
-}
-
-.nav-item:hover {
-    color: #d0011b;
-}
-
-/* Phần Giỏ hàng & Số lượng */
-.cart {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-weight: bold;
-}
-
-/* Số lượng sản phẩm */
-.cart-count {
-    background: #d0011b;
-    color: white;
-    font-size: 12px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    position: relative;
-    top: -2px; /* Đẩy lên cao xíu cho đẹp */
+    .logo {
+        order: 1;
+    }
+    /* Trên mobile bảng lọc sẽ full màn hình ngang */
+    .advanced-filter-panel {
+        width: 100%; 
+        right: 0;
+    }
 }

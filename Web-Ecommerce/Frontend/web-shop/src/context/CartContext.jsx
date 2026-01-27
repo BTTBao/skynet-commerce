@@ -12,49 +12,55 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    // SỬA 1: Nhận thêm tham số quantity và biến thể (size, color)
+    // --- SỬA LOGIC ADD TO CART ---
     const addToCart = (product, quantity = 1, variant = {}) => {
         setCartItems((prevItems) => {
-            // Kiểm tra xem sản phẩm (cùng ID và cùng Size/Màu) đã có chưa
-            // Lưu ý: Để đơn giản, ở đây mình check theo ID. 
-            // Nếu muốn chuyên sâu check theo size/color thì cần so sánh kỹ hơn.
-            const itemExists = prevItems.find((item) => item.id === product.id);
+            // 1. Tạo một ID duy nhất cho dòng sản phẩm này trong giỏ hàng
+            // Ví dụ: "101-XL-Red" hoặc "101-null-null" (nếu ko có variant)
+            const uniqueCartId = `${product.id}-${variant.size || ''}-${variant.color || ''}`;
+
+            // 2. Tìm xem trong giỏ đã có ID duy nhất này chưa
+            const itemExists = prevItems.find((item) => item.cartId === uniqueCartId);
 
             if (itemExists) {
+                // Nếu trùng cả ID, Size, Color -> Cộng dồn số lượng
                 return prevItems.map((item) =>
-                    item.id === product.id 
-                        ? { ...item, quantity: item.quantity + quantity } // Cộng dồn số lượng
+                    item.cartId === uniqueCartId
+                        ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             } else {
+                // Nếu khác Size hoặc Color -> Thêm dòng mới
                 return [...prevItems, { 
                     ...product, 
+                    cartId: uniqueCartId, // Quan trọng: Lưu ID định danh này
                     quantity: quantity, 
-                    selectedSize: variant.size,   // Lưu thêm Size
-                    selectedColor: variant.color  // Lưu thêm Màu
+                    selectedSize: variant.size, 
+                    selectedColor: variant.color 
                 }];
             }
         });
         alert("Đã thêm vào giỏ hàng thành công!");
     };
 
-    const removeFromCart = (id) => {
-        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    // --- SỬA LOGIC XÓA (Xóa theo cartId thay vì productId) ---
+    const removeFromCart = (cartId) => {
+        setCartItems((prevItems) => prevItems.filter((item) => item.cartId !== cartId));
     };
 
-    const updateQuantity = (id, amount) => {
+    // --- SỬA LOGIC UPDATE SỐ LƯỢNG (Theo cartId) ---
+    const updateQuantity = (cartId, amount) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
-                item.id === id 
+                item.cartId === cartId
                     ? { ...item, quantity: Math.max(1, item.quantity + amount) } 
                     : item
             )
         );
     };
 
-    // SỬA 2: Ép kiểu Number để đảm bảo tính toán đúng
     const totalPrice = cartItems.reduce((total, item) => {
-        const price = Number(item.price) || 0; // Chuyển chuỗi thành số, nếu lỗi thì về 0
+        const price = Number(item.price) || 0;
         const qty = Number(item.quantity) || 1;
         return total + (price * qty);
     }, 0);
