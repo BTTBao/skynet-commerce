@@ -6,7 +6,10 @@
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null)) components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
@@ -14,269 +17,577 @@
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this._dragControl = new Guna.UI2.WinForms.Guna2DragControl(this.components);
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            this._pnlHeader = new System.Windows.Forms.Panel();
+            this._lblStatus = new System.Windows.Forms.Label();
+            this._btnBan = new Guna.UI2.WinForms.Guna2Button();
+            this._btnSave = new Guna.UI2.WinForms.Guna2Button();
             this._lblTitle = new System.Windows.Forms.Label();
-            this._btnClose = new Guna.UI2.WinForms.Guna2ControlBox();
-            this._pnlInfo = new Guna.UI2.WinForms.Guna2Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this._picAvatar = new Guna.UI2.WinForms.Guna2PictureBox();
+            this._tabControl = new Guna.UI2.WinForms.Guna2TabControl();
+            this._tabInfo = new System.Windows.Forms.TabPage();
+            this._pnlStats3 = new Guna.UI2.WinForms.Guna2Panel();
+            this._lblRatingVal = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this._pnlStats2 = new Guna.UI2.WinForms.Guna2Panel();
+            this._lblTotalOrderVal = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this._txtShopId = new Guna.UI2.WinForms.Guna2TextBox();
-            this._txtShopName = new Guna.UI2.WinForms.Guna2TextBox();
+            this._pnlStats1 = new Guna.UI2.WinForms.Guna2Panel();
+            this._lblRevenueVal = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this._txtPhone = new Guna.UI2.WinForms.Guna2TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this._txtEmail = new Guna.UI2.WinForms.Guna2TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this._txtOwner = new Guna.UI2.WinForms.Guna2TextBox();
-            this._lblRating = new System.Windows.Forms.Label();
-            this._lblStock = new System.Windows.Forms.Label();
-            this._badgeStatus = new Guna.UI2.WinForms.Guna2Button();
-            this._btnToggleStatus = new Guna.UI2.WinForms.Guna2Button();
-            this._btnCancel = new Guna.UI2.WinForms.Guna2Button();
-            this._pnlInfo.SuspendLayout();
+            this.label7 = new System.Windows.Forms.Label();
+            this._txtDesc = new Guna.UI2.WinForms.Guna2TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this._txtName = new Guna.UI2.WinForms.Guna2TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this._tabProducts = new System.Windows.Forms.TabPage();
+            this._gridProducts = new Guna.UI2.WinForms.Guna2DataGridView();
+            this._tabOrders = new System.Windows.Forms.TabPage();
+            this._gridOrders = new Guna.UI2.WinForms.Guna2DataGridView();
+            this._pnlHeader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._picAvatar)).BeginInit();
+            this._tabControl.SuspendLayout();
+            this._tabInfo.SuspendLayout();
+            this._pnlStats3.SuspendLayout();
+            this._pnlStats2.SuspendLayout();
+            this._pnlStats1.SuspendLayout();
+            this._tabProducts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._gridProducts)).BeginInit();
+            this._tabOrders.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._gridOrders)).BeginInit();
             this.SuspendLayout();
             // 
-            // _dragControl
+            // _pnlHeader
             // 
-            this._dragControl.DockIndicatorTransparencyValue = 0.6D;
-            this._dragControl.TargetControl = this;
-            this._dragControl.UseTransparentDrag = true;
+            this._pnlHeader.BackColor = System.Drawing.Color.White;
+            this._pnlHeader.Controls.Add(this._lblStatus);
+            this._pnlHeader.Controls.Add(this._btnBan);
+            this._pnlHeader.Controls.Add(this._btnSave);
+            this._pnlHeader.Controls.Add(this._lblTitle);
+            this._pnlHeader.Controls.Add(this._picAvatar);
+            this._pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this._pnlHeader.Location = new System.Drawing.Point(0, 0);
+            this._pnlHeader.Name = "_pnlHeader";
+            this._pnlHeader.Size = new System.Drawing.Size(900, 80);
+            this._pnlHeader.TabIndex = 0;
+            // 
+            // _lblStatus
+            // 
+            this._lblStatus.AutoSize = true;
+            this._lblStatus.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this._lblStatus.ForeColor = System.Drawing.Color.Green;
+            this._lblStatus.Location = new System.Drawing.Point(92, 45);
+            this._lblStatus.Name = "_lblStatus";
+            this._lblStatus.Size = new System.Drawing.Size(125, 19);
+            this._lblStatus.TabIndex = 4;
+            this._lblStatus.Text = "● Đang hoạt động";
+            // 
+            // _btnBan
+            // 
+            this._btnBan.BorderRadius = 5;
+            this._btnBan.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+            this._btnBan.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this._btnBan.ForeColor = System.Drawing.Color.White;
+            this._btnBan.Location = new System.Drawing.Point(595, 20);
+            this._btnBan.Name = "_btnBan";
+            this._btnBan.Size = new System.Drawing.Size(130, 40);
+            this._btnBan.TabIndex = 3;
+            this._btnBan.Text = "Đình chỉ";
+            this._btnBan.Click += new System.EventHandler(this._btnBan_Click);
+            // 
+            // _btnSave
+            // 
+            this._btnSave.BorderRadius = 5;
+            this._btnSave.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this._btnSave.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this._btnSave.ForeColor = System.Drawing.Color.White;
+            this._btnSave.Location = new System.Drawing.Point(743, 20);
+            this._btnSave.Name = "_btnSave";
+            this._btnSave.Size = new System.Drawing.Size(130, 40);
+            this._btnSave.TabIndex = 2;
+            this._btnSave.Text = "Lưu thay đổi";
+            this._btnSave.Click += new System.EventHandler(this._btnSave_Click);
             // 
             // _lblTitle
             // 
             this._lblTitle.AutoSize = true;
-            this._lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this._lblTitle.Location = new System.Drawing.Point(20, 20);
+            this._lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this._lblTitle.Location = new System.Drawing.Point(90, 15);
             this._lblTitle.Name = "_lblTitle";
-            this._lblTitle.Size = new System.Drawing.Size(161, 25);
-            this._lblTitle.TabIndex = 0;
-            this._lblTitle.Text = "Chi tiết cửa hàng";
+            this._lblTitle.Size = new System.Drawing.Size(182, 30);
+            this._lblTitle.TabIndex = 1;
+            this._lblTitle.Text = "Hồ sơ cửa hàng";
             // 
-            // _btnClose
+            // _picAvatar
             // 
-            this._btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this._btnClose.FillColor = System.Drawing.Color.Transparent;
-            this._btnClose.IconColor = System.Drawing.Color.Gray;
-            this._btnClose.Location = new System.Drawing.Point(450, 10);
-            this._btnClose.Name = "_btnClose";
-            this._btnClose.Size = new System.Drawing.Size(40, 30);
-            this._btnClose.TabIndex = 1;
+            this._picAvatar.BorderRadius = 30;
+            this._picAvatar.FillColor = System.Drawing.Color.LightGray;
+            this._picAvatar.Location = new System.Drawing.Point(20, 10);
+            this._picAvatar.Name = "_picAvatar";
+            this._picAvatar.Size = new System.Drawing.Size(60, 60);
+            this._picAvatar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this._picAvatar.TabIndex = 0;
+            this._picAvatar.TabStop = false;
             // 
-            // _pnlInfo
+            // _tabControl
             // 
-            this._pnlInfo.Controls.Add(this.label1);
-            this._pnlInfo.Controls.Add(this.label2);
-            this._pnlInfo.Controls.Add(this.label3);
-            this._pnlInfo.Controls.Add(this.label4);
-            this._pnlInfo.Controls.Add(this.label5);
-            this._pnlInfo.Controls.Add(this._txtShopId);
-            this._pnlInfo.Controls.Add(this._txtShopName);
-            this._pnlInfo.Controls.Add(this._txtOwner);
-            this._pnlInfo.Controls.Add(this._lblRating);
-            this._pnlInfo.Controls.Add(this._lblStock);
-            this._pnlInfo.Controls.Add(this._badgeStatus);
-            this._pnlInfo.Controls.Add(this._btnToggleStatus);
-            this._pnlInfo.Controls.Add(this._btnCancel);
-            this._pnlInfo.Location = new System.Drawing.Point(12, 60);
-            this._pnlInfo.Name = "_pnlInfo";
-            this._pnlInfo.Size = new System.Drawing.Size(476, 378);
-            this._pnlInfo.TabIndex = 2;
+            this._tabControl.Controls.Add(this._tabInfo);
+            this._tabControl.Controls.Add(this._tabProducts);
+            this._tabControl.Controls.Add(this._tabOrders);
+            this._tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._tabControl.ItemSize = new System.Drawing.Size(180, 40);
+            this._tabControl.Location = new System.Drawing.Point(0, 80);
+            this._tabControl.Name = "_tabControl";
+            this._tabControl.SelectedIndex = 0;
+            this._tabControl.Size = new System.Drawing.Size(900, 570);
+            this._tabControl.TabButtonHoverState.BorderColor = System.Drawing.Color.Empty;
+            this._tabControl.TabButtonHoverState.FillColor = System.Drawing.Color.White;
+            this._tabControl.TabButtonHoverState.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
+            this._tabControl.TabButtonHoverState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this._tabControl.TabButtonHoverState.InnerColor = System.Drawing.Color.Empty;
+            this._tabControl.TabButtonIdleState.BorderColor = System.Drawing.Color.Empty;
+            this._tabControl.TabButtonIdleState.FillColor = System.Drawing.Color.White;
+            this._tabControl.TabButtonIdleState.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
+            this._tabControl.TabButtonIdleState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(160)))), ((int)(((byte)(167)))));
+            this._tabControl.TabButtonIdleState.InnerColor = System.Drawing.Color.Empty;
+            this._tabControl.TabButtonSelectedState.BorderColor = System.Drawing.Color.Empty;
+            this._tabControl.TabButtonSelectedState.FillColor = System.Drawing.Color.WhiteSmoke;
+            this._tabControl.TabButtonSelectedState.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
+            this._tabControl.TabButtonSelectedState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this._tabControl.TabButtonSelectedState.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this._tabControl.TabButtonSize = new System.Drawing.Size(180, 40);
+            this._tabControl.TabIndex = 1;
+            this._tabControl.TabMenuBackColor = System.Drawing.Color.White;
+            this._tabControl.TabMenuOrientation = Guna.UI2.WinForms.TabMenuOrientation.HorizontalTop;
             // 
-            // label1
+            // _tabInfo
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.Gray;
-            this.label1.Location = new System.Drawing.Point(30, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 15);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Mã cửa hàng";
+            this._tabInfo.BackColor = System.Drawing.Color.White;
+            this._tabInfo.Controls.Add(this._pnlStats3);
+            this._tabInfo.Controls.Add(this._pnlStats2);
+            this._tabInfo.Controls.Add(this._pnlStats1);
+            this._tabInfo.Controls.Add(this._txtPhone);
+            this._tabInfo.Controls.Add(this.label9);
+            this._tabInfo.Controls.Add(this._txtEmail);
+            this._tabInfo.Controls.Add(this.label8);
+            this._tabInfo.Controls.Add(this._txtOwner);
+            this._tabInfo.Controls.Add(this.label7);
+            this._tabInfo.Controls.Add(this._txtDesc);
+            this._tabInfo.Controls.Add(this.label3);
+            this._tabInfo.Controls.Add(this._txtName);
+            this._tabInfo.Controls.Add(this.label2);
+            this._tabInfo.Location = new System.Drawing.Point(4, 44);
+            this._tabInfo.Name = "_tabInfo";
+            this._tabInfo.Padding = new System.Windows.Forms.Padding(3);
+            this._tabInfo.Size = new System.Drawing.Size(892, 522);
+            this._tabInfo.TabIndex = 0;
+            this._tabInfo.Text = "Thông tin chung";
             // 
-            // label2
+            // _pnlStats3
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.label2.ForeColor = System.Drawing.Color.Gray;
-            this.label2.Location = new System.Drawing.Point(30, 80);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(80, 15);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Tên cửa hàng";
+            this._pnlStats3.BorderRadius = 10;
+            this._pnlStats3.Controls.Add(this._lblRatingVal);
+            this._pnlStats3.Controls.Add(this.label6);
+            this._pnlStats3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(243)))), ((int)(((byte)(199)))));
+            this._pnlStats3.Location = new System.Drawing.Point(470, 20);
+            this._pnlStats3.Name = "_pnlStats3";
+            this._pnlStats3.Size = new System.Drawing.Size(200, 80);
+            this._pnlStats3.TabIndex = 12;
             // 
-            // label3
+            // _lblRatingVal
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.label3.ForeColor = System.Drawing.Color.Gray;
-            this.label3.Location = new System.Drawing.Point(30, 150);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 15);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Chủ sở hữu";
+            this._lblRatingVal.AutoSize = true;
+            this._lblRatingVal.BackColor = System.Drawing.Color.Transparent;
+            this._lblRatingVal.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this._lblRatingVal.ForeColor = System.Drawing.Color.Orange;
+            this._lblRatingVal.Location = new System.Drawing.Point(10, 35);
+            this._lblRatingVal.Name = "_lblRatingVal";
+            this._lblRatingVal.Size = new System.Drawing.Size(60, 25);
+            this._lblRatingVal.TabIndex = 1;
+            this._lblRatingVal.Text = "5.0 ★";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.ForeColor = System.Drawing.Color.Gray;
+            this.label6.Location = new System.Drawing.Point(10, 10);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(50, 13);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Đánh giá";
+            // 
+            // _pnlStats2
+            // 
+            this._pnlStats2.BorderRadius = 10;
+            this._pnlStats2.Controls.Add(this._lblTotalOrderVal);
+            this._pnlStats2.Controls.Add(this.label4);
+            this._pnlStats2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(234)))), ((int)(((byte)(254)))));
+            this._pnlStats2.Location = new System.Drawing.Point(245, 20);
+            this._pnlStats2.Name = "_pnlStats2";
+            this._pnlStats2.Size = new System.Drawing.Size(200, 80);
+            this._pnlStats2.TabIndex = 11;
+            // 
+            // _lblTotalOrderVal
+            // 
+            this._lblTotalOrderVal.AutoSize = true;
+            this._lblTotalOrderVal.BackColor = System.Drawing.Color.Transparent;
+            this._lblTotalOrderVal.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this._lblTotalOrderVal.ForeColor = System.Drawing.Color.Blue;
+            this._lblTotalOrderVal.Location = new System.Drawing.Point(10, 35);
+            this._lblTotalOrderVal.Name = "_lblTotalOrderVal";
+            this._lblTotalOrderVal.Size = new System.Drawing.Size(23, 25);
+            this._lblTotalOrderVal.TabIndex = 1;
+            this._lblTotalOrderVal.Text = "0";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.ForeColor = System.Drawing.Color.Gray;
-            this.label4.Location = new System.Drawing.Point(30, 220);
+            this.label4.Location = new System.Drawing.Point(10, 10);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(75, 15);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Đánh giá & SP";
+            this.label4.Size = new System.Drawing.Size(78, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Tổng đơn hàng";
             // 
-            // label5
+            // _pnlStats1
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.label5.ForeColor = System.Drawing.Color.Gray;
-            this.label5.Location = new System.Drawing.Point(250, 220);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(62, 15);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Trạng thái";
+            this._pnlStats1.BorderRadius = 10;
+            this._pnlStats1.Controls.Add(this._lblRevenueVal);
+            this._pnlStats1.Controls.Add(this.label1);
+            this._pnlStats1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
+            this._pnlStats1.Location = new System.Drawing.Point(20, 20);
+            this._pnlStats1.Name = "_pnlStats1";
+            this._pnlStats1.Size = new System.Drawing.Size(200, 80);
+            this._pnlStats1.TabIndex = 10;
             // 
-            // _txtShopId
+            // _lblRevenueVal
             // 
-            this._txtShopId.BorderRadius = 6;
-            this._txtShopId.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this._txtShopId.DefaultText = "";
-            this._txtShopId.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this._txtShopId.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._txtShopId.Location = new System.Drawing.Point(30, 35);
-            this._txtShopId.Name = "_txtShopId";
-            this._txtShopId.PlaceholderText = "";
-            this._txtShopId.ReadOnly = true;
-            this._txtShopId.SelectedText = "";
-            this._txtShopId.Size = new System.Drawing.Size(200, 36);
-            this._txtShopId.TabIndex = 7;
+            this._lblRevenueVal.AutoSize = true;
+            this._lblRevenueVal.BackColor = System.Drawing.Color.Transparent;
+            this._lblRevenueVal.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this._lblRevenueVal.ForeColor = System.Drawing.Color.Green;
+            this._lblRevenueVal.Location = new System.Drawing.Point(10, 35);
+            this._lblRevenueVal.Name = "_lblRevenueVal";
+            this._lblRevenueVal.Size = new System.Drawing.Size(23, 25);
+            this._lblRevenueVal.TabIndex = 1;
+            this._lblRevenueVal.Text = "0";
             // 
-            // _txtShopName
+            // label1
             // 
-            this._txtShopName.BorderRadius = 6;
-            this._txtShopName.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this._txtShopName.DefaultText = "";
-            this._txtShopName.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this._txtShopName.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._txtShopName.Location = new System.Drawing.Point(30, 105);
-            this._txtShopName.Name = "_txtShopName";
-            this._txtShopName.PlaceholderText = "";
-            this._txtShopName.ReadOnly = true;
-            this._txtShopName.SelectedText = "";
-            this._txtShopName.Size = new System.Drawing.Size(410, 36);
-            this._txtShopName.TabIndex = 8;
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.ForeColor = System.Drawing.Color.Gray;
+            this.label1.Location = new System.Drawing.Point(10, 10);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Doanh thu";
+            // 
+            // _txtPhone
+            // 
+            this._txtPhone.BorderRadius = 5;
+            this._txtPhone.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this._txtPhone.DefaultText = "";
+            this._txtPhone.DisabledState.FillColor = System.Drawing.Color.WhiteSmoke;
+            this._txtPhone.FillColor = System.Drawing.Color.WhiteSmoke;
+            this._txtPhone.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this._txtPhone.Location = new System.Drawing.Point(470, 295);
+            this._txtPhone.Name = "_txtPhone";
+            this._txtPhone.ReadOnly = true;
+            this._txtPhone.Size = new System.Drawing.Size(300, 36);
+            this._txtPhone.TabIndex = 9;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.Gray;
+            this.label9.Location = new System.Drawing.Point(470, 275);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(70, 13);
+            this.label9.TabIndex = 8;
+            this.label9.Text = "Số điện thoại";
+            // 
+            // _txtEmail
+            // 
+            this._txtEmail.BorderRadius = 5;
+            this._txtEmail.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this._txtEmail.DefaultText = "";
+            this._txtEmail.DisabledState.FillColor = System.Drawing.Color.WhiteSmoke;
+            this._txtEmail.FillColor = System.Drawing.Color.WhiteSmoke;
+            this._txtEmail.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this._txtEmail.Location = new System.Drawing.Point(470, 225);
+            this._txtEmail.Name = "_txtEmail";
+            this._txtEmail.ReadOnly = true;
+            this._txtEmail.Size = new System.Drawing.Size(300, 36);
+            this._txtEmail.TabIndex = 7;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.ForeColor = System.Drawing.Color.Gray;
+            this.label8.Location = new System.Drawing.Point(470, 205);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(32, 13);
+            this.label8.TabIndex = 6;
+            this.label8.Text = "Email";
             // 
             // _txtOwner
             // 
-            this._txtOwner.BorderRadius = 6;
+            this._txtOwner.BorderRadius = 5;
             this._txtOwner.Cursor = System.Windows.Forms.Cursors.IBeam;
             this._txtOwner.DefaultText = "";
-            this._txtOwner.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this._txtOwner.DisabledState.FillColor = System.Drawing.Color.WhiteSmoke;
+            this._txtOwner.FillColor = System.Drawing.Color.WhiteSmoke;
             this._txtOwner.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._txtOwner.Location = new System.Drawing.Point(30, 175);
+            this._txtOwner.Location = new System.Drawing.Point(470, 155);
             this._txtOwner.Name = "_txtOwner";
-            this._txtOwner.PlaceholderText = "";
             this._txtOwner.ReadOnly = true;
-            this._txtOwner.SelectedText = "";
-            this._txtOwner.Size = new System.Drawing.Size(410, 36);
-            this._txtOwner.TabIndex = 9;
+            this._txtOwner.Size = new System.Drawing.Size(300, 36);
+            this._txtOwner.TabIndex = 5;
             // 
-            // _lblRating
+            // label7
             // 
-            this._lblRating.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this._lblRating.ForeColor = System.Drawing.Color.Orange;
-            this._lblRating.Location = new System.Drawing.Point(30, 245);
-            this._lblRating.Name = "_lblRating";
-            this._lblRating.Size = new System.Drawing.Size(64, 25);
-            this._lblRating.TabIndex = 10;
-            this._lblRating.Text = "★ 0.0";
+            this.label7.AutoSize = true;
+            this.label7.ForeColor = System.Drawing.Color.Gray;
+            this.label7.Location = new System.Drawing.Point(470, 135);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(61, 13);
+            this.label7.TabIndex = 4;
+            this.label7.Text = "Chủ sở hữu";
             // 
-            // _lblStock
+            // _txtDesc
             // 
-            this._lblStock.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this._lblStock.ForeColor = System.Drawing.Color.Gray;
-            this._lblStock.Location = new System.Drawing.Point(113, 248);
-            this._lblStock.Name = "_lblStock";
-            this._lblStock.Size = new System.Drawing.Size(100, 25);
-            this._lblStock.TabIndex = 11;
-            this._lblStock.Text = "(0 sản phẩm)";
+            this._txtDesc.BorderRadius = 5;
+            this._txtDesc.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this._txtDesc.DefaultText = "";
+            this._txtDesc.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this._txtDesc.Location = new System.Drawing.Point(20, 225);
+            this._txtDesc.Multiline = true;
+            this._txtDesc.Name = "_txtDesc";
+            this._txtDesc.Size = new System.Drawing.Size(400, 106);
+            this._txtDesc.TabIndex = 3;
             // 
-            // _badgeStatus
+            // label3
             // 
-            this._badgeStatus.BorderRadius = 10;
-            this._badgeStatus.Enabled = false;
-            this._badgeStatus.FillColor = System.Drawing.Color.Gray;
-            this._badgeStatus.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._badgeStatus.ForeColor = System.Drawing.Color.White;
-            this._badgeStatus.Location = new System.Drawing.Point(250, 245);
-            this._badgeStatus.Name = "_badgeStatus";
-            this._badgeStatus.Size = new System.Drawing.Size(120, 30);
-            this._badgeStatus.TabIndex = 12;
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.Color.Gray;
+            this.label3.Location = new System.Drawing.Point(20, 205);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(34, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Mô tả";
             // 
-            // _btnToggleStatus
+            // _txtName
             // 
-            this._btnToggleStatus.BorderRadius = 8;
-            this._btnToggleStatus.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this._btnToggleStatus.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._btnToggleStatus.ForeColor = System.Drawing.Color.White;
-            this._btnToggleStatus.Location = new System.Drawing.Point(30, 310);
-            this._btnToggleStatus.Name = "_btnToggleStatus";
-            this._btnToggleStatus.Size = new System.Drawing.Size(150, 40);
-            this._btnToggleStatus.TabIndex = 13;
-            this._btnToggleStatus.Text = "Khóa cửa hàng";
-            this._btnToggleStatus.Click += new System.EventHandler(this._btnToggleStatus_Click);
+            this._txtName.BorderRadius = 5;
+            this._txtName.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this._txtName.DefaultText = "";
+            this._txtName.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this._txtName.Location = new System.Drawing.Point(20, 155);
+            this._txtName.Name = "_txtName";
+            this._txtName.Size = new System.Drawing.Size(400, 36);
+            this._txtName.TabIndex = 1;
             // 
-            // _btnCancel
+            // label2
             // 
-            this._btnCancel.BorderColor = System.Drawing.Color.Silver;
-            this._btnCancel.BorderRadius = 8;
-            this._btnCancel.BorderThickness = 1;
-            this._btnCancel.FillColor = System.Drawing.Color.Transparent;
-            this._btnCancel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this._btnCancel.ForeColor = System.Drawing.Color.DimGray;
-            this._btnCancel.Location = new System.Drawing.Point(310, 310);
-            this._btnCancel.Name = "_btnCancel";
-            this._btnCancel.Size = new System.Drawing.Size(130, 40);
-            this._btnCancel.TabIndex = 14;
-            this._btnCancel.Text = "Đóng";
-            this._btnCancel.Click += new System.EventHandler(this._btnCancel_Click);
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.Gray;
+            this.label2.Location = new System.Drawing.Point(20, 135);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(55, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Tên Shop";
+            // 
+            // _tabProducts
+            // 
+            this._tabProducts.BackColor = System.Drawing.Color.White;
+            this._tabProducts.Controls.Add(this._gridProducts);
+            this._tabProducts.Location = new System.Drawing.Point(4, 44);
+            this._tabProducts.Name = "_tabProducts";
+            this._tabProducts.Padding = new System.Windows.Forms.Padding(3);
+            this._tabProducts.Size = new System.Drawing.Size(892, 522);
+            this._tabProducts.TabIndex = 1;
+            this._tabProducts.Text = "Danh sách sản phẩm";
+            // 
+            // _gridProducts
+            // 
+            this._gridProducts.AllowUserToAddRows = false;
+            this._gridProducts.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this._gridProducts.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this._gridProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this._gridProducts.BackgroundColor = System.Drawing.Color.White;
+            this._gridProducts.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this._gridProducts.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this._gridProducts.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this._gridProducts.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this._gridProducts.ColumnHeadersHeight = 40;
+            this._gridProducts.DefaultCellStyle = dataGridViewCellStyle3;
+            this._gridProducts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._gridProducts.EnableHeadersVisualStyles = false;
+            this._gridProducts.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this._gridProducts.Location = new System.Drawing.Point(3, 3);
+            this._gridProducts.Name = "_gridProducts";
+            this._gridProducts.ReadOnly = true;
+            this._gridProducts.RowHeadersVisible = false;
+            this._gridProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this._gridProducts.Size = new System.Drawing.Size(886, 516);
+            this._gridProducts.TabIndex = 0;
+            this._gridProducts.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
+            this._gridProducts.ThemeStyle.AlternatingRowsStyle.Font = null;
+            this._gridProducts.ThemeStyle.AlternatingRowsStyle.ForeColor = System.Drawing.Color.Empty;
+            this._gridProducts.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = System.Drawing.Color.Empty;
+            this._gridProducts.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = System.Drawing.Color.Empty;
+            this._gridProducts.ThemeStyle.BackColor = System.Drawing.Color.White;
+            this._gridProducts.ThemeStyle.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this._gridProducts.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            this._gridProducts.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this._gridProducts.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this._gridProducts.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
+            this._gridProducts.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            this._gridProducts.ThemeStyle.HeaderStyle.Height = 40;
+            this._gridProducts.ThemeStyle.ReadOnly = true;
+            this._gridProducts.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
+            this._gridProducts.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this._gridProducts.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this._gridProducts.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this._gridProducts.ThemeStyle.RowsStyle.Height = 22;
+            this._gridProducts.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this._gridProducts.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            // 
+            // _tabOrders
+            // 
+            this._tabOrders.BackColor = System.Drawing.Color.White;
+            this._tabOrders.Controls.Add(this._gridOrders);
+            this._tabOrders.Location = new System.Drawing.Point(4, 44);
+            this._tabOrders.Name = "_tabOrders";
+            this._tabOrders.Padding = new System.Windows.Forms.Padding(3);
+            this._tabOrders.Size = new System.Drawing.Size(892, 522);
+            this._tabOrders.TabIndex = 2;
+            this._tabOrders.Text = "Lịch sử đơn hàng";
+            // 
+            // _gridOrders
+            // 
+            this._gridOrders.AllowUserToAddRows = false;
+            this._gridOrders.AllowUserToDeleteRows = false;
+            this._gridOrders.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this._gridOrders.BackgroundColor = System.Drawing.Color.White;
+            this._gridOrders.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this._gridOrders.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this._gridOrders.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this._gridOrders.ColumnHeadersHeight = 40;
+            this._gridOrders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._gridOrders.EnableHeadersVisualStyles = false;
+            this._gridOrders.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this._gridOrders.Location = new System.Drawing.Point(3, 3);
+            this._gridOrders.Name = "_gridOrders";
+            this._gridOrders.ReadOnly = true;
+            this._gridOrders.RowHeadersVisible = false;
+            this._gridOrders.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this._gridOrders.Size = new System.Drawing.Size(886, 516);
+            this._gridOrders.TabIndex = 1;
+            this._gridOrders.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
+            this._gridOrders.ThemeStyle.AlternatingRowsStyle.Font = null;
+            this._gridOrders.ThemeStyle.AlternatingRowsStyle.ForeColor = System.Drawing.Color.Empty;
+            this._gridOrders.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = System.Drawing.Color.Empty;
+            this._gridOrders.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = System.Drawing.Color.Empty;
+            this._gridOrders.ThemeStyle.BackColor = System.Drawing.Color.White;
+            this._gridOrders.ThemeStyle.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this._gridOrders.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            this._gridOrders.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this._gridOrders.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this._gridOrders.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
+            this._gridOrders.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            this._gridOrders.ThemeStyle.HeaderStyle.Height = 40;
+            this._gridOrders.ThemeStyle.ReadOnly = true;
+            this._gridOrders.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
+            this._gridOrders.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this._gridOrders.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this._gridOrders.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this._gridOrders.ThemeStyle.RowsStyle.Height = 22;
+            this._gridOrders.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this._gridOrders.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             // 
             // ShopDetailForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(500, 450);
-            this.Controls.Add(this._pnlInfo);
-            this.Controls.Add(this._btnClose);
-            this.Controls.Add(this._lblTitle);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.ClientSize = new System.Drawing.Size(900, 650);
+            this.Controls.Add(this._tabControl);
+            this.Controls.Add(this._pnlHeader);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "ShopDetailForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ShopDetailForm";
-            this._pnlInfo.ResumeLayout(false);
-            this._pnlInfo.PerformLayout();
+            this.Text = "Chi tiết cửa hàng";
+            this._pnlHeader.ResumeLayout(false);
+            this._pnlHeader.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._picAvatar)).EndInit();
+            this._tabControl.ResumeLayout(false);
+            this._tabInfo.ResumeLayout(false);
+            this._tabInfo.PerformLayout();
+            this._pnlStats3.ResumeLayout(false);
+            this._pnlStats3.PerformLayout();
+            this._pnlStats2.ResumeLayout(false);
+            this._pnlStats2.PerformLayout();
+            this._pnlStats1.ResumeLayout(false);
+            this._pnlStats1.PerformLayout();
+            this._tabProducts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this._gridProducts)).EndInit();
+            this._tabOrders.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this._gridOrders)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private Guna.UI2.WinForms.Guna2DragControl _dragControl;
-        private Guna.UI2.WinForms.Guna2ControlBox _btnClose;
+        private System.Windows.Forms.Panel _pnlHeader;
+        private Guna.UI2.WinForms.Guna2PictureBox _picAvatar;
         private System.Windows.Forms.Label _lblTitle;
-        private Guna.UI2.WinForms.Guna2Panel _pnlInfo;
-
-        private System.Windows.Forms.Label label1, label2, label3, label4, label5;
-        private Guna.UI2.WinForms.Guna2TextBox _txtShopId;
-        private Guna.UI2.WinForms.Guna2TextBox _txtShopName;
+        private Guna.UI2.WinForms.Guna2Button _btnSave;
+        private Guna.UI2.WinForms.Guna2Button _btnBan;
+        private System.Windows.Forms.Label _lblStatus;
+        private Guna.UI2.WinForms.Guna2TabControl _tabControl;
+        private System.Windows.Forms.TabPage _tabInfo;
+        private System.Windows.Forms.TabPage _tabProducts;
+        private System.Windows.Forms.TabPage _tabOrders;
+        private Guna.UI2.WinForms.Guna2TextBox _txtName;
+        private System.Windows.Forms.Label label2;
+        private Guna.UI2.WinForms.Guna2TextBox _txtDesc;
+        private System.Windows.Forms.Label label3;
         private Guna.UI2.WinForms.Guna2TextBox _txtOwner;
-        private System.Windows.Forms.Label _lblRating;
-        private System.Windows.Forms.Label _lblStock;
-        private Guna.UI2.WinForms.Guna2Button _badgeStatus;
-
-        private Guna.UI2.WinForms.Guna2Button _btnToggleStatus;
-        private Guna.UI2.WinForms.Guna2Button _btnCancel;
+        private System.Windows.Forms.Label label7;
+        private Guna.UI2.WinForms.Guna2TextBox _txtPhone;
+        private System.Windows.Forms.Label label9;
+        private Guna.UI2.WinForms.Guna2TextBox _txtEmail;
+        private System.Windows.Forms.Label label8;
+        private Guna.UI2.WinForms.Guna2Panel _pnlStats1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label _lblRevenueVal;
+        private Guna.UI2.WinForms.Guna2Panel _pnlStats3;
+        private System.Windows.Forms.Label _lblRatingVal;
+        private System.Windows.Forms.Label label6;
+        private Guna.UI2.WinForms.Guna2Panel _pnlStats2;
+        private System.Windows.Forms.Label _lblTotalOrderVal;
+        private System.Windows.Forms.Label label4;
+        private Guna.UI2.WinForms.Guna2DataGridView _gridProducts;
+        private Guna.UI2.WinForms.Guna2DataGridView _gridOrders;
     }
 }

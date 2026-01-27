@@ -151,17 +151,17 @@ namespace Skynet_Commerce.GUI.Forms
         // --- XỬ LÝ MENU CHUỘT PHẢI (ACTION) ---
         private void _dgvProducts_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Kiểm tra click vào cột Action
             if (e.RowIndex < 0 || _dgvProducts.Columns[e.ColumnIndex].Name != "colAction") return;
 
             var product = _dgvProducts.Rows[e.RowIndex].DataBoundItem as ProductViewModel;
             if (product == null) return;
 
             ContextMenuStrip menu = new ContextMenuStrip();
+            menu.Font = new Font("Segoe UI", 10F);
 
-            // 1. Menu Sửa
-            var itemEdit = menu.Items.Add("Chỉnh sửa sản phẩm");
-            itemEdit.Image = SystemIcons.Information.ToBitmap();
+            // -- Xem / Sửa --
+            var itemEdit = menu.Items.Add("Xem chi tiết");
+            itemEdit.Image = SystemIcons.Application.ToBitmap();
             itemEdit.Click += (s, ev) =>
             {
                 using (var f = new ProductDetailForm(product.ProductID))
@@ -170,47 +170,86 @@ namespace Skynet_Commerce.GUI.Forms
                 }
             };
 
-            // 2. Menu Ẩn/Hiện
-            string toggleText = product.Status == "Active" ? "Ẩn sản phẩm này" : "Hiển thị sản phẩm";
-            var itemToggle = menu.Items.Add(toggleText);
-            itemToggle.Click += (s, ev) =>
-            {
-                if (MessageBox.Show($"Bạn có chắc muốn {toggleText.ToLower()}?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    try
-                    {
-                        _productService.ToggleProductStatus(product.ProductID);
-                        LoadProductData();
-                    }
-                    catch (Exception ex) { MessageBox.Show(ex.Message); }
-                }
-            };
+            // -- Trạng thái --
+            var itemStatus = new ToolStripMenuItem("Cập nhật trạng thái");
+            itemStatus.Image = SystemIcons.Shield.ToBitmap();
 
-            // 3. Menu Xóa
-            var itemDelete = menu.Items.Add("Xóa vĩnh viễn");
-            itemDelete.ForeColor = Color.Red;
-            itemDelete.Click += (s, ev) =>
-            {
-                if (MessageBox.Show("Cảnh báo: Hành động này không thể hoàn tác!\nXóa sản phẩm này?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-                {
-                    try
-                    {
-                        _productService.DeleteProduct(product.ProductID);
-                        MessageBox.Show("Đã xóa thành công.");
-                        LoadProductData();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Không thể xóa (có thể do ràng buộc đơn hàng).\nLỗi: " + ex.Message);
-                    }
-                }
-            };
+            // Active
+            var subActive = itemStatus.DropDownItems.Add("Hiển thị (Active)");
+            subActive.Click += (s, ev) => ChangeStatus(product.ProductID, "Active");
+            if (product.Status == "Active") ((ToolStripMenuItem)subActive).Checked = true;
 
-            // Hiển thị Menu ngay vị trí nút bấm
+            // Hidden (Ẩn)
+            var subHidden = itemStatus.DropDownItems.Add("Ẩn sản phẩm (Hidden)");
+            subHidden.Click += (s, ev) => ChangeStatus(product.ProductID, "Hidden");
+            if (product.Status == "Hidden") ((ToolStripMenuItem)subHidden).Checked = true;
+
+            // *LƯU Ý: Đã bỏ nút "Banned" vì DB không hỗ trợ*
+
+            menu.Items.Add(itemStatus);
+            menu.Items.Add(new ToolStripSeparator());
+
+            // -- Xóa --
+            //var itemDelete = menu.Items.Add("Xóa sản phẩm");
+            //itemDelete.Image = SystemIcons.Error.ToBitmap();
+            //itemDelete.ForeColor = Color.Red;
+            //itemDelete.Click += (s, ev) => HandleDeleteProduct(product);
+
             Rectangle cellRect = _dgvProducts.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
             menu.Show(_dgvProducts, cellRect.Left, cellRect.Bottom);
         }
 
+        // Helper: Xử lý thay đổi trạng thái
+        private void ChangeStatus(int id, string status)
+        {
+            try
+            {
+                _productService.UpdateProductStatus(id, status);
+                LoadProductData(); // Refresh Grid
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi cập nhật: " + ex.Message);
+            }
+        }
+
+        // Helper: Xử lý Xóa (Quan trọng)
+        private void HandleDeleteProduct(ProductViewModel product)
+        {
+            // Kiểm tra xem Service có báo là sản phẩm đang được dùng không (Query nhẹ trước)
+            // Lưu ý: Cần expose hàm IsProductInUse ra Interface hoặc Public của Service nếu chưa có
+            // Ở đây giả lập logic xử lý tại Client gọi xuống Service
+
+            var confirmResult = MessageBox.Show(
+                $"Bạn có chắc muốn xóa sản phẩm: {product.ProductName}?\n\nLưu ý: Nếu sản phẩm đã có đơn hàng, hệ thống sẽ chỉ chuyển sang trạng thái 'Deleted' thay vì xóa vĩnh viễn.",
+                "Xác nhận xóa",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                try
+                {
+                    _productService.DeleteProductSafe(product.ProductID);
+                    MessageBox.Show("Xử lý thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadProductData();
+                }
+                catch (Exception ex)
+                {
+                    // IN RA LỖI CHI TIẾT
+                    string message = ex.Message;
+                    if (ex.InnerException != null)
+                    {
+                        message += "\nChi tiết: " + ex.InnerException.Message;
+                        if (ex.InnerException.InnerException != null)
+                        {
+                            message += "\nSQL Error: " + ex.InnerException.InnerException.Message;
+                        }
+                    }
+                    MessageBox.Show(message, "Lỗi Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
         private void LoadCategories()
         {
             try

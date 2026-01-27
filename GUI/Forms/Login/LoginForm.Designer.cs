@@ -47,7 +47,6 @@
             this.switchRemember = new Guna.UI2.WinForms.Guna2ToggleSwitch();
             this.lblRemember = new System.Windows.Forms.Label();
             this.btnLogin = new Guna.UI2.WinForms.Guna2GradientButton();
-            this.guna2TextBox1 = new Guna.UI2.WinForms.Guna2TextBox();
             this.pnlMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picHeader)).BeginInit();
             this.SuspendLayout();
@@ -88,7 +87,6 @@
             // 
             this.pnlMain.BackColor = System.Drawing.Color.Transparent;
             this.pnlMain.BorderRadius = 15;
-            this.pnlMain.Controls.Add(this.guna2TextBox1);
             this.pnlMain.Controls.Add(this.btnBrandIcon);
             this.pnlMain.Controls.Add(this.picHeader);
             this.pnlMain.Controls.Add(this.lblTitle);
@@ -159,7 +157,7 @@
             this.txtUser.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtUser.ForeColor = System.Drawing.Color.White;
             this.txtUser.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtUser.Location = new System.Drawing.Point(35, 280);
+            this.txtUser.Location = new System.Drawing.Point(35, 284);
             this.txtUser.Name = "txtUser";
             this.txtUser.PlaceholderForeColor = System.Drawing.Color.Gray;
             this.txtUser.PlaceholderText = "Email / Phone";
@@ -178,7 +176,7 @@
             this.txtPass.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtPass.ForeColor = System.Drawing.Color.White;
             this.txtPass.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtPass.Location = new System.Drawing.Point(35, 335);
+            this.txtPass.Location = new System.Drawing.Point(35, 350);
             this.txtPass.Name = "txtPass";
             this.txtPass.PlaceholderForeColor = System.Drawing.Color.Gray;
             this.txtPass.PlaceholderText = "Password";
@@ -193,7 +191,7 @@
             this.switchRemember.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.switchRemember.CheckedState.InnerBorderColor = System.Drawing.Color.White;
             this.switchRemember.CheckedState.InnerColor = System.Drawing.Color.White;
-            this.switchRemember.Location = new System.Drawing.Point(35, 390);
+            this.switchRemember.Location = new System.Drawing.Point(35, 414);
             this.switchRemember.Name = "switchRemember";
             this.switchRemember.Size = new System.Drawing.Size(35, 20);
             this.switchRemember.TabIndex = 5;
@@ -207,7 +205,7 @@
             this.lblRemember.AutoSize = true;
             this.lblRemember.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblRemember.ForeColor = System.Drawing.Color.LightGray;
-            this.lblRemember.Location = new System.Drawing.Point(80, 392);
+            this.lblRemember.Location = new System.Drawing.Point(80, 416);
             this.lblRemember.Name = "lblRemember";
             this.lblRemember.Size = new System.Drawing.Size(85, 15);
             this.lblRemember.TabIndex = 6;
@@ -231,27 +229,6 @@
             this.btnLogin.TabIndex = 7;
             this.btnLogin.Text = "LOGIN";
             // 
-            // guna2TextBox1
-            // 
-            this.guna2TextBox1.BackColor = System.Drawing.Color.Transparent;
-            this.guna2TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.guna2TextBox1.DefaultText = "admin: seller1@skynet.com - hash_password_1";
-            this.guna2TextBox1.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.guna2TextBox1.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.guna2TextBox1.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.guna2TextBox1.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.guna2TextBox1.FillColor = System.Drawing.Color.Transparent;
-            this.guna2TextBox1.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.guna2TextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.guna2TextBox1.ForeColor = System.Drawing.Color.White;
-            this.guna2TextBox1.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.guna2TextBox1.Location = new System.Drawing.Point(43, 421);
-            this.guna2TextBox1.Name = "guna2TextBox1";
-            this.guna2TextBox1.PlaceholderText = "";
-            this.guna2TextBox1.SelectedText = "";
-            this.guna2TextBox1.Size = new System.Drawing.Size(265, 31);
-            this.guna2TextBox1.TabIndex = 3;
-            // 
             // LoginForm
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(15)))), ((int)(((byte)(30)))));
@@ -268,7 +245,5 @@
             this.ResumeLayout(false);
 
         }
-
-        private Guna.UI2.WinForms.Guna2TextBox guna2TextBox1;
     }
 }
