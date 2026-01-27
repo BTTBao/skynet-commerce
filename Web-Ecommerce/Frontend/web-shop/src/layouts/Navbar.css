@@ -125,3 +125,57 @@
         font-size: 13px;
     }
 }
+
+.logo, .nav-item {
+    text-decoration: none; /* Bỏ gạch chân */
+    cursor: pointer;
+    color: inherit; /* Giữ màu chữ gốc */
+}
+
+/* Chỉnh lại Logo một chút để Link không bị lệch */
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #d0011b;
+}
+
+/* Các item trong menu */
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-item {
+    font-size: 16px;
+    color: #ffffff;
+    transition: color 0.2s;
+}
+
+.nav-item:hover {
+    color: #d0011b;
+}
+
+/* Phần Giỏ hàng & Số lượng */
+.cart {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+}
+
+/* Số lượng sản phẩm */
+.cart-count {
+    background: #d0011b;
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    position: relative;
+    top: -2px; /* Đẩy lên cao xíu cho đẹp */
+}
