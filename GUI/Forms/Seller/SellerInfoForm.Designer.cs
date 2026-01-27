@@ -15,13 +15,6 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         private Guna2Button btnEdit, btnSave, btnChangeLogo;
         private Guna2RatingStar ratingStar;
 
-        public SellerInfoForm()
-        {
-            InitializeComponent();
-            LoadDummyData();
-            SetFieldsEditable(false);
-        }
-
         private void LoadDummyData()
         {
             txtShopName.Text = "Skynet Official Store";
