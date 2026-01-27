@@ -1,0 +1,68 @@
+/* src/components/SocialLogin.css */
+
+.social-login-container {
+  margin-top: 30px;
+}
+
+/* --- Divider (Đường kẻ ngang) --- */
+.divider-wrapper {
+  position: relative;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Đường kẻ chìm */
+.divider-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #e5e7eb; /* gray-200 */
+  z-index: 0;
+}
+
+/* Chữ đè lên */
+.divider-text-box {
+  position: relative;
+  z-index: 1;
+}
+
+.divider-text {
+  background-color: white; /* Cùng màu nền với card */
+  padding: 0 12px;
+  color: #6b7280; /* gray-500 */
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* --- Nút Social --- */
+.social-buttons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Chia 2 cột */
+  gap: 12px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: white;
+  border: 2px solid #e5e7eb; /* gray-200 */
+  border-radius: 10px;
+  font-weight: 600;
+  color: #374151; /* gray-700 */
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.social-btn:hover {
+  background-color: #f9fafb; /* gray-50 */
+  border-color: #d1d5db; /* gray-300 */
+}
+
+.social-icon {
+  width: 20px;
+  height: 20px;
+}

@@ -1,0 +1,89 @@
+/* src/components/account/SellerRegistrationTab.css */
+
+/* --- Trạng thái Thành công --- */
+.seller-success-container {
+    text-align: center;
+    padding: 40px;
+    color: #10b981; /* green-500 */
+    background-color: #f0fdf4; /* green-50 (nền nhẹ cho đẹp) */
+    border-radius: 12px;
+    border: 1px solid #dcfce7;
+}
+
+.seller-success-icon {
+    margin: 0 auto 16px auto;
+}
+
+.seller-success-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.seller-success-desc {
+    color: #6b7280; /* gray-500 */
+    font-size: 0.95rem;
+}
+
+/* --- Form Đăng ký --- */
+.seller-form {
+    max-width: 500px;
+}
+
+.error-msg {
+    color: #ef4444; /* red-500 */
+    background-color: #fef2f2;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid #fee2e2;
+    font-size: 0.9rem;
+}
+
+/* Nhóm ô nhập liệu */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151; /* gray-700 */
+}
+
+/* Ô input và textarea */
+.form-input, 
+.form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db; /* gray-300 */
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s;
+    box-sizing: border-box; /* Quan trọng: để padding không làm vỡ khung */
+}
+
+.form-input:focus, 
+.form-textarea:focus {
+    border-color: #2563eb; /* blue-600 */
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Nút Gửi */
+.btn-register-shop {
+    background-color: #2563eb; /* blue-600 */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.btn-register-shop:hover {
+    background-color: #1d4ed8; /* blue-700 */
+}
