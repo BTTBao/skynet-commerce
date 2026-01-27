@@ -237,7 +237,23 @@
     font-weight: bold;
     font-size: 14px;
 }
+/* Navbar.css */
+.advanced-filter-panel .filter-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    margin-top: 5px;
+}
 
+.advanced-filter-panel .filter-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
 /* --- MOBILE RESPONSIVE --- */
 @media (max-width: 768px) {
     .navbar {

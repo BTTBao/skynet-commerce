@@ -20,7 +20,7 @@ namespace WebEBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts(
             [FromQuery] string? keyword,
-            [FromQuery] string? category,
+            [FromQuery] int? categoryId, // 1. Sửa từ string? category thành int? categoryId
             [FromQuery] decimal? minPrice,
             [FromQuery] decimal? maxPrice,
             [FromQuery] string? sort)
@@ -33,17 +33,13 @@ namespace WebEBackend.Controllers
                 .Include(p => p.Shop)
                 .AsQueryable();
 
-            // --- A. LỌC THEO TỪ KHÓA ---
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(p => p.Name.Contains(keyword));
             }
-
-            // --- B. LỌC THEO DANH MỤC ---
-            if (!string.IsNullOrEmpty(category) && category != "all")
+            if (categoryId.HasValue)
             {
-                // Giả sử category gửi lên là Tên (Name). Nếu gửi ID thì sửa logic lại chút.
-                query = query.Where(p => p.Category != null && p.Category.CategoryName == category);
+                query = query.Where(p => p.CategoryId == categoryId);
             }
 
             // --- C. LỌC THEO GIÁ ---
