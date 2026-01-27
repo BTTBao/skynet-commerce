@@ -31,7 +31,7 @@ export default function LoginPage() {
             // ❌ XÓA DÒNG NÀY ĐI: localStorage.setItem('token', data.token);
             // Vì lúc này chưa có biến data!
             
-            url = 'http://localhost:5198/api/Auth/login'; 
+            url = 'https://localhost:7215/api/Auth/login'; 
             bodyData = {
                 email: formData.email,
                 password: formData.password
@@ -42,7 +42,7 @@ export default function LoginPage() {
                 alert("Mật khẩu xác nhận không khớp!");
                 return;
             }
-            url = 'http://localhost:5198/api/Auth/register';
+            url = 'https://localhost:7215/api/Auth/register';
             bodyData = {
                 fullName: formData.name,
                 email: formData.email,

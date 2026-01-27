@@ -1,7 +1,6 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import Navbar from '../layouts/Navbar';
 import "./CartPage.css"; 
 
 function CartPage() {
@@ -88,7 +87,11 @@ function CartPage() {
 
                     <div className="cart-summary">
                         <h3>Tổng cộng: <span className="final-price">{totalPrice.toLocaleString()}đ</span></h3>
-                        <button className="btn-checkout">Thanh Toán</button>
+                        
+                        {/* SỬA ĐOẠN NÀY: Thay button thường bằng Link tới trang checkout */}
+                        <Link to="/checkout" className="btn-checkout">
+                            Thanh Toán Ngay
+                        </Link>
                     </div>
                 </div>
             </div>

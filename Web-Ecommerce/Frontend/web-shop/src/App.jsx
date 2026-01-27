@@ -12,7 +12,8 @@ import CartPage from "./pages/CartPage";
 import LoginPage from "./pages/LoginPage"; 
 import AccountPage from "./pages/AccountPage"; // <--- THÊM DÒNG NÀY
 import SellerShopPage from './pages/SellerShopPage';
-
+import SearchResults from './pages/SearchResults';
+import CheckoutPage from './pages/CheckoutPage';
 import Navbar from "./layouts/Navbar"; 
 import Footer from "./layouts/Footer";
 
@@ -27,8 +28,9 @@ function App() {
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/login" element={<LoginPage />} />
-            
+            <Route path="/checkout" element={<CheckoutPage />} />
             {/* THÊM ROUTE NÀY */}
+            <Route path="/search" element={<SearchResults />} />
             <Route path="/account" element={<AccountPage />} />
             <Route path="/shop-profile/:shopId" element={<SellerShopPage />} />
           </Routes>

@@ -28,7 +28,7 @@ export default function Navbar() {
         const fetchCategories = async () => {
             try {
                 // LƯU Ý: Kiểm tra lại port Backend của bạn (5198, 7215, hay 7000)
-                const response = await fetch('http://localhost:5198/api/Categories');
+                const response = await fetch('https://localhost:7215/api/Categories');
                 if (response.ok) {
                     const data = await response.json();
                     setCategories(data);
