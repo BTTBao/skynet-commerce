@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using WebEBackend.Models;
+using WebEBackend.Services; // Nhớ using PhotoService
+using CloudinaryDotNet.Actions; // Nhớ using Cloudinary
 
 namespace WebEBackend.Controllers
 {
@@ -12,16 +14,17 @@ namespace WebEBackend.Controllers
     public class UserController : ControllerBase
     {
         private readonly SkynetCommerceContext _context;
-        private readonly IWebHostEnvironment _env;
+        private readonly IPhotoService _photoService; // 👈 Inject Service Cloudinary
 
-        public UserController(SkynetCommerceContext context, IWebHostEnvironment env)
+        // Cập nhật Constructor để nhận PhotoService
+        public UserController(SkynetCommerceContext context, IPhotoService photoService)
         {
             _context = context;
-            _env = env;
+            _photoService = photoService;
         }
 
         // ==========================================
-        // 1. LẤY DANH SÁCH ĐỊA CHỈ (Đã sắp xếp Mặc định lên đầu)
+        // 1. LẤY DANH SÁCH ĐỊA CHỈ (Đã sửa: Trả về đủ thông tin & Sắp xếp)
         // ==========================================
         [HttpGet("addresses")]
         public async Task<IActionResult> GetAddresses()
@@ -31,7 +34,7 @@ namespace WebEBackend.Controllers
 
             var addresses = await _context.UserAddresses
                 .Where(a => a.AccountId == accountId)
-                .OrderByDescending(a => a.IsDefault)
+                .OrderByDescending(a => a.IsDefault) // ✅ Mặc định lên đầu
                 .Select(a => new
                 {
                     a.AddressId,
@@ -39,12 +42,12 @@ namespace WebEBackend.Controllers
                     a.ReceiverFullName,
                     a.ReceiverPhone,
                     
-                    // 👇 BỔ SUNG CÁC DÒNG NÀY (NẾU THIẾU) 👇
-                    a.AddressLine, 
+                    // 👇 CÁC TRƯỜNG CẦN CHO FORM EDIT 👇
+                    a.AddressLine,
                     a.Ward,
                     a.District,
                     a.Province,
-                    // ----------------------------------------
+                    // ----------------------------------
 
                     FullAddress = $"{a.AddressLine}, {a.Ward}, {a.District}, {a.Province}",
                     a.IsDefault
@@ -63,7 +66,6 @@ namespace WebEBackend.Controllers
             var accountId = GetCurrentAccountId();
             if (accountId == -1) return Unauthorized();
 
-            // Nếu user chọn địa chỉ mới là mặc định -> Bỏ mặc định các cái cũ
             if (request.IsDefault)
             {
                 var defaultAddresses = await _context.UserAddresses
@@ -130,7 +132,7 @@ namespace WebEBackend.Controllers
         }
 
         // ==========================================
-        // 4. ĐĂNG KÝ SHOP
+        // 4. ĐĂNG KÝ SHOP (ĐÃ TÍCH HỢP CLOUDINARY)
         // ==========================================
         [HttpPost("register-shop")]
         public async Task<IActionResult> RegisterShop([FromForm] ShopRegisterRequest request)
@@ -153,22 +155,17 @@ namespace WebEBackend.Controllers
              if (await _context.ShopRegistrations.AnyAsync(r => r.CitizenId == request.CitizenID && r.Status == "Pending" && r.AccountId != accountId))
                 return BadRequest(new { message = "Số CCCD này đang được sử dụng trong đơn khác." });
 
+            // --- XỬ LÝ ẢNH VỚI CLOUDINARY ---
             string imagePath = null;
             if (request.CitizenImage != null)
             {
-                var fileName = $"{Guid.NewGuid()}_{request.CitizenImage.FileName}";
-                string rootPath = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
-                var uploadsFolder = Path.Combine(rootPath, "uploads", "identity");
-                
-                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-                
-                var filePath = Path.Combine(uploadsFolder, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await request.CitizenImage.CopyToAsync(stream);
-                }
-                imagePath = $"/uploads/identity/{fileName}"; 
+                var result = await _photoService.AddPhotoAsync(request.CitizenImage);
+                if (result.Error != null) 
+                    return BadRequest(new { message = "Lỗi upload ảnh: " + result.Error.Message });
+
+                imagePath = result.SecureUrl.AbsoluteUri; // Lấy URL https://...
             }
+            // --------------------------------
 
             var registration = new ShopRegistration
             {
@@ -198,7 +195,6 @@ namespace WebEBackend.Controllers
 
             if (address == null) return NotFound(new { message = "Địa chỉ không tồn tại" });
             
-            // ✅ FIX LỖI: So sánh bool? với true
             if (address.IsDefault == true) 
                 return BadRequest(new { message = "Không thể xóa địa chỉ mặc định. Hãy chọn địa chỉ khác làm mặc định trước." });
 
@@ -208,21 +204,19 @@ namespace WebEBackend.Controllers
         }
 
         // ==========================================
-        // 6. ĐẶT LÀM MẶC ĐỊNH (SET DEFAULT)
+        // 6. ĐẶT LÀM MẶC ĐỊNH
         // ==========================================
         [HttpPut("addresses/{id}/set-default")]
         public async Task<IActionResult> SetDefaultAddress(int id)
         {
             var accountId = GetCurrentAccountId();
             
-            // 1. Bỏ mặc định của tất cả địa chỉ cũ
             var allAddresses = await _context.UserAddresses.Where(a => a.AccountId == accountId).ToListAsync();
             foreach (var addr in allAddresses)
             {
                 addr.IsDefault = false;
             }
 
-            // 2. Set mặc định cho địa chỉ được chọn
             var targetAddress = allAddresses.FirstOrDefault(a => a.AddressId == id);
             if (targetAddress == null) return NotFound(new { message = "Địa chỉ không tồn tại" });
 
@@ -233,7 +227,7 @@ namespace WebEBackend.Controllers
         }
 
         // ==========================================
-        // 7. CẬP NHẬT ĐỊA CHỈ (EDIT)
+        // 7. CẬP NHẬT ĐỊA CHỈ
         // ==========================================
         [HttpPut("addresses/{id}")]
         public async Task<IActionResult> UpdateAddress(int id, [FromBody] AddAddressRequest request)
@@ -243,14 +237,12 @@ namespace WebEBackend.Controllers
 
             if (address == null) return NotFound();
 
-            // Nếu user sửa thành mặc định -> reset các cái cũ
             if (request.IsDefault)
             {
                 var defaults = await _context.UserAddresses.Where(a => a.AccountId == accountId && a.IsDefault == true).ToListAsync();
                 foreach(var d in defaults) d.IsDefault = false;
             }
 
-            // Cập nhật thông tin
             address.AddressName = request.AddressName;
             address.ReceiverFullName = request.ReceiverFullName;
             address.ReceiverPhone = request.ReceiverPhone;
