@@ -15,9 +15,7 @@ function HomePage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                // Đảm bảo Port đúng là 7215
-                 const response = await fetch("https://localhost:7215/api/products");
-                //const response = await fetch("http://localhost:5198/api/Products");
+                const response = await fetch("http://localhost:5198/api/Products");
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
                 
                 const data = await response.json();

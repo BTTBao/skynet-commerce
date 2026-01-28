@@ -29,8 +29,8 @@ function SellerShopPage() {
             try {
                 // Chạy song song 2 API để tiết kiệm thời gian
                 const [shopRes, prodRes] = await Promise.all([
-                    fetch(`https://localhost:7215/api/shops/${shopId}`),
-                    fetch(`https://localhost:7215/api/products`)
+                    fetch(`http://localhost:5198/api/shops/${shopId}`),
+                    fetch(`http://localhost:5198/api/products`)
                 ]);
 
                 // 1. Xử lý dữ liệu Shop
