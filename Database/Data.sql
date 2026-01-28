@@ -200,3 +200,6 @@ INSERT INTO Notifications (AccountID, Title, Message, LinkURL, IsRead) VALUES
 (4, N'Flash Sale sắp diễn ra', N'Siêu Sale Black Friday sẽ bắt đầu vào 29/11!', '/flashsale/3', 1), (2, N'Có đơn hàng mới', N'Bạn có 1 đơn hàng mới đang chờ xử lý.', '/seller/orders/6', 0),
 (3, N'Đánh giá mới', N'Bạn vừa nhận được một đánh giá 5 sao!', '/seller/reviews', 0), (4, N'Thông báo từ Admin', N'Hệ thống đã cập nhật chính sách bảo mật mới.', '/policies', 1),
 (7, N'Mã giảm giá', N'Tặng bạn mã giảm giá 20k cho đơn hàng tiếp theo.', '/vouchers', 0), (8, N'Tài khoản bị khóa', N'Tài khoản của bạn đã bị tạm khóa do vi phạm chính sách.', '/help', 1);
+
+use Skynet_commerce;
+select * from OrderShippingInfo;

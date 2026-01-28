@@ -5,9 +5,11 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 {
     public partial class SellerMainForm : Form
     {
-        public SellerMainForm()
+        private int shopID;
+        public SellerMainForm(int shopId)
         {
             InitializeComponent();
+            shopID = shopId;
 
             // Gán sự kiện cho các nút sidebar
             btnDashboard.Click += BtnDashboard_Click;
@@ -18,7 +20,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             btnLogout.Click += BtnLogout_Click;
 
             // Mặc định load Dashboard
-            LoadChildForm(new SellerDashboardForm());
+            LoadChildForm(new SellerDashboardForm(shopId));
         }
 
         private void LoadChildForm(Form childForm)
@@ -37,17 +39,17 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 
         private void BtnDashboard_Click(object sender, EventArgs e)
         {
-            LoadChildForm(new SellerDashboardForm());
+            LoadChildForm(new SellerDashboardForm(shopID));
         }
 
         private void BtnProduct_Click(object sender, EventArgs e)
         {
-            LoadChildForm(new SellerProductForm());
+            LoadChildForm(new SellerProductForm(shopID));
         }
 
         private void BtnOrder_Click(object sender, EventArgs e)
         {
-            LoadChildForm(new SellerOrderForm());
+            LoadChildForm(new SellerOrderForm(shopID));
         }
 
         private void BtnVoucher_Click(object sender, EventArgs e)

@@ -1,15 +1,13 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
-using System.Drawing;
 
 namespace Skynet_Ecommerce.GUI.Forms.Seller
 {
-    public partial class SellerMainForm : Form
+    partial class SellerMainForm
     {
         private System.ComponentModel.IContainer components = null;
-
-        // Các thành phần giao diện
         private Guna2Panel panelSidebar;
         private Guna2Panel panelContainer;
         private Guna2Button btnDashboard;
@@ -22,10 +20,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
@@ -42,131 +37,75 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.btnLogout = new Guna2Button();
 
             this.SuspendLayout();
-            this.panelSidebar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
 
-            // 
             // panelSidebar
-            // 
             this.panelSidebar.Dock = DockStyle.Left;
             this.panelSidebar.FillColor = Color.FromArgb(31, 30, 68);
-            this.panelSidebar.Size = new Size(220, 650);
-            this.panelSidebar.Controls.Add(this.btnLogout);
+            this.panelSidebar.Size = new Size(220, 750);
             this.panelSidebar.Controls.Add(this.btnShopInfo);
             this.panelSidebar.Controls.Add(this.btnVoucher);
             this.panelSidebar.Controls.Add(this.btnOrder);
             this.panelSidebar.Controls.Add(this.btnProduct);
             this.panelSidebar.Controls.Add(this.btnDashboard);
-            this.panelSidebar.Controls.Add(this.logoPictureBox); // logo trên cùng
+            this.panelSidebar.Controls.Add(this.logoPictureBox);
+            this.panelSidebar.Controls.Add(this.btnLogout);
 
-            // 
             // logoPictureBox
-            // 
-            this.logoPictureBox.Size = new Size(220, 120); // full chiều ngang của sidebar
-            this.logoPictureBox.Location = new Point(0, 0); // top-left của sidebar
-            this.logoPictureBox.Image = Properties.Resources.LOGO; // ảnh từ Resources
-            this.logoPictureBox.SizeMode = PictureBoxSizeMode.StretchImage; // fill toàn bộ khối
+            this.logoPictureBox.Size = new Size(220, 120);
+            this.logoPictureBox.Location = new Point(0, 0);
+            this.logoPictureBox.Image = Properties.Resources.LOGO;
+            this.logoPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             this.logoPictureBox.BackColor = Color.Transparent;
 
-            // 
-            // btnDashboard
-            // 
-            this.btnDashboard.Text = "Dashboard";
-            this.btnDashboard.Size = new Size(220, 50);
-            this.btnDashboard.Location = new Point(0, 120); // ngay dưới logo
-            this.btnDashboard.FillColor = Color.Transparent;
-            this.btnDashboard.ForeColor = Color.White;
-            this.btnDashboard.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.btnDashboard.HoverState.FillColor = Color.FromArgb(45, 45, 100);
-            this.btnDashboard.TextAlign = HorizontalAlignment.Left;
-            this.btnDashboard.TextOffset = new Point(20, 0);
-            this.btnDashboard.Cursor = Cursors.Hand;
+            // Hàm hỗ trợ thiết lập Style chung cho các nút Sidebar
+            void ConfigureButtonStyle(Guna2Button btn, int yPos, string text)
+            {
+                btn.Text = text;
+                btn.Size = new Size(220, 50);
+                btn.Location = new Point(0, yPos);
+                btn.FillColor = Color.FromArgb(31, 30, 68);
+                btn.ForeColor = Color.White;
+                btn.Font = new Font("Segoe UI", 10F);
+                btn.TextAlign = HorizontalAlignment.Left;
+                btn.TextOffset = new Point(20, 0);
+                btn.Cursor = Cursors.Hand;
+                btn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton; // Chế độ chọn 1
 
-            // 
-            // btnProduct
-            // 
-            this.btnProduct.Text = "Sản phẩm";
-            this.btnProduct.Size = new Size(220, 50);
-            this.btnProduct.Location = new Point(0, 170);
-            this.btnProduct.FillColor = Color.Transparent;
-            this.btnProduct.ForeColor = Color.White;
-            this.btnProduct.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.btnProduct.HoverState.FillColor = Color.FromArgb(45, 45, 100);
-            this.btnProduct.TextAlign = HorizontalAlignment.Left;
-            this.btnProduct.TextOffset = new Point(20, 0);
-            this.btnProduct.Cursor = Cursors.Hand;
+                // Trạng thái khi được chọn (Active)
+                btn.CheckedState.FillColor = Color.FromArgb(45, 45, 120); // Xanh đậm hơn
+                btn.CheckedState.ForeColor = Color.White;
+                btn.CheckedState.Font = new Font("Segoe UI", 10F, FontStyle.Bold); // Chữ in đậm
 
-            // 
-            // btnOrder
-            // 
-            this.btnOrder.Text = "Đơn hàng";
-            this.btnOrder.Size = new Size(220, 50);
-            this.btnOrder.Location = new Point(0, 220);
-            this.btnOrder.FillColor = Color.Transparent;
-            this.btnOrder.ForeColor = Color.White;
-            this.btnOrder.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.btnOrder.HoverState.FillColor = Color.FromArgb(45, 45, 100);
-            this.btnOrder.TextAlign = HorizontalAlignment.Left;
-            this.btnOrder.TextOffset = new Point(20, 0);
-            this.btnOrder.Cursor = Cursors.Hand;
+                // Trạng thái khi di chuột qua (Hover)
+                btn.HoverState.FillColor = Color.FromArgb(45, 45, 100);
+            }
 
-            // 
-            // btnVoucher
-            // 
-            this.btnVoucher.Text = "Voucher";
-            this.btnVoucher.Size = new Size(220, 50);
-            this.btnVoucher.Location = new Point(0, 270);
-            this.btnVoucher.FillColor = Color.Transparent;
-            this.btnVoucher.ForeColor = Color.White;
-            this.btnVoucher.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.btnVoucher.HoverState.FillColor = Color.FromArgb(45, 45, 100);
-            this.btnVoucher.TextAlign = HorizontalAlignment.Left;
-            this.btnVoucher.TextOffset = new Point(20, 0);
-            this.btnVoucher.Cursor = Cursors.Hand;
+            ConfigureButtonStyle(btnDashboard, 120, "Dashboard");
+            ConfigureButtonStyle(btnProduct, 170, "Sản phẩm");
+            ConfigureButtonStyle(btnOrder, 220, "Đơn hàng");
+            ConfigureButtonStyle(btnVoucher, 270, "Voucher");
+            ConfigureButtonStyle(btnShopInfo, 320, "Thông tin Shop");
 
-            // 
-            // btnShopInfo
-            // 
-            this.btnShopInfo.Text = "Thông tin Shop";
-            this.btnShopInfo.Size = new Size(220, 50);
-            this.btnShopInfo.Location = new Point(0, 320);
-            this.btnShopInfo.FillColor = Color.Transparent;
-            this.btnShopInfo.ForeColor = Color.White;
-            this.btnShopInfo.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.btnShopInfo.HoverState.FillColor = Color.FromArgb(45, 45, 100);
-            this.btnShopInfo.TextAlign = HorizontalAlignment.Left;
-            this.btnShopInfo.TextOffset = new Point(20, 0);
-            this.btnShopInfo.Cursor = Cursors.Hand;
-
-            // 
             // btnLogout
-            // 
             this.btnLogout.Dock = DockStyle.Bottom;
             this.btnLogout.FillColor = Color.FromArgb(255, 82, 82);
             this.btnLogout.Text = "Đăng xuất";
             this.btnLogout.Size = new Size(220, 50);
             this.btnLogout.ForeColor = Color.White;
             this.btnLogout.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.btnLogout.Cursor = Cursors.Hand;
 
-            // 
             // panelContainer
-            // 
             this.panelContainer.Dock = DockStyle.Fill;
             this.panelContainer.BackColor = Color.FromArgb(240, 242, 245);
 
-            // 
             // SellerMainForm
-            // 
-            this.ClientSize = new Size(1100, 650);
+            this.ClientSize = new Size(1300, 750);
             this.Controls.Add(this.panelContainer);
             this.Controls.Add(this.panelSidebar);
             this.Name = "SellerMainForm";
             this.Text = "Skynet Ecommerce - Seller Panel";
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            this.panelSidebar.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
             this.ResumeLayout(false);
         }
     }

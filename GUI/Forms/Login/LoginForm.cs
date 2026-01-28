@@ -1,11 +1,12 @@
-﻿using Skynet_Ecommerce.GUI.Forms.Login; // Đổi namespace nếu cần
-using Skynet_Commerce.DAL.Entities; // Namespace chứa AppSession
+﻿using Skynet_Commerce.DAL.Entities; // Namespace chứa AppSession
+using Skynet_Commerce.GUI.Forms; // Cần cho Entity Framework
+using Skynet_Ecommerce.GUI.Forms.Login; // Đổi namespace nếu cần
+using Skynet_Ecommerce.GUI.Forms.Seller;
 using System;
+using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Data.Entity;
-using Skynet_Commerce.GUI.Forms; // Cần cho Entity Framework
 
 namespace Skynet_Ecommerce.GUI.Forms.Login
 {
@@ -96,6 +97,24 @@ namespace Skynet_Ecommerce.GUI.Forms.Login
                 AppSession.Instance.FullName = userProfile?.FullName ?? "Unknown User";
                 AppSession.Instance.Role = userRoleName;
 
+                int shopId = 0;
+                if (userRoleName.Equals("Seller", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Giả sử context của bạn có DbSet<Shop> là Shops
+                    var shop = _context.Shops.FirstOrDefault(s => s.AccountID == account.AccountID);
+                    if (shop != null)
+                    {
+                        shopId = shop.ShopID;
+                        // Bạn có thể lưu vào AppSession nếu cần dùng ở nhiều nơi khác
+                        // AppSession.Instance.ShopID = shop.ShopID; 
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tài khoản Seller này chưa được tạo cửa hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        // Tùy chọn: return nếu bắt buộc phải có Shop mới cho vào
+                    }
+                }
+
                 // 5. XỬ LÝ "REMEMBER ME"
                 if (switchRemember.Checked)
                 {
@@ -112,7 +131,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Login
                 Properties.Settings.Default.Save(); // Lưu xuống ổ cứng
 
                 // 6. CHUYỂN HƯỚNG THEO ROLE
-                NavigateToMainForm(userRoleName);
+                NavigateToMainForm(userRoleName, shopId);
             }
             catch (Exception ex)
             {
@@ -120,7 +139,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Login
             }
         }
 
-        private void NavigateToMainForm(string role)
+        private void NavigateToMainForm(string role, int shopID)
         {
             Form mainForm = null;
 
@@ -129,31 +148,32 @@ namespace Skynet_Ecommerce.GUI.Forms.Login
             {
                 case "admin":
                 case "administrator":
-                    MessageBox.Show($"Xin chào Admin {AppSession.Instance.FullName}!");
-                    mainForm = new DashboardForm(); 
+                    MessageBox.Show($"Xin chào Admin {AppSession.Instance.FullName}!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    mainForm = new DashboardForm();
+                    break;
+
+                case "seller": // Thêm logic cho Seller ở đây
+                    MessageBox.Show($"Xin chào đối tác bán hàng: {AppSession.Instance.FullName}!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    mainForm = new SellerMainForm(shopID); // Điều hướng sang form dành riêng cho Seller
                     break;
 
                 case "staff":
-                case "seller":
-                    MessageBox.Show($"Xin chào Staff {AppSession.Instance.FullName}!");
+                    MessageBox.Show($"Xin chào nhân viên {AppSession.Instance.FullName}!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     mainForm = new FrmMain();
                     break;
 
-                default: // User / Customer
-                    MessageBox.Show($"Đăng nhập thành công! Xin chào {AppSession.Instance.FullName}");
+                default: // User / Customer / Hoặc các role khác
+                    MessageBox.Show($"Đăng nhập thành công! Xin chào {AppSession.Instance.FullName}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     mainForm = new FrmMain();
                     break;
             }
 
             if (mainForm != null)
             {
-                Hide(); // Ẩn form Login đi
-                mainForm.FormClosed += (s, args) => this.Close(); // Đóng hẳn app khi form chính đóng
+                this.Hide(); // Ẩn form Login
+                             // Đảm bảo khi đóng form chính thì ứng dụng sẽ thoát hoàn toàn
+                mainForm.FormClosed += (s, args) => this.Close();
                 mainForm.Show();
-            }
-            else 
-            {
-                Show(); // Hiện lại nếu chưa có form đích
             }
         }
     }

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using WebEBackend.Models; // Đảm bảo đúng namespace model của bạn
+using WebEBackend.Models;
 
 namespace WebEBackend.Controllers
 {
@@ -19,7 +19,7 @@ namespace WebEBackend.Controllers
         }
 
         // ==========================================
-        // API TẠO ĐƠN HÀNG (FULL LOGIC - AN TOÀN)
+        // API TẠO ĐƠN HÀNG (STRICT MODE - KHÔNG MẤT ITEM)
         // ==========================================
         [HttpPost("create")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
@@ -32,94 +32,95 @@ namespace WebEBackend.Controllers
             var accountId = GetCurrentAccountId();
             if (accountId == -1) return Unauthorized();
 
-            // 3. MỞ TRANSACTION (An toàn dữ liệu tuyệt đối)
+            // 3. MỞ TRANSACTION
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
                 // ===================================================================
-                // BƯỚC 1: CHUẨN BỊ VÀ KIỂM TRA DỮ LIỆU SẢN PHẨM (QUAN TRỌNG NHẤT)
+                // BƯỚC 1: VALIDATE SẢN PHẨM (CHẶT CHẼ)
                 // ===================================================================
-                // Phải làm bước này TRƯỚC khi lưu bất cứ cái gì vào DB để tránh rác
-                var productIds = request.Items.Select(i => i.ProductId).Distinct().ToList();
 
+                // Lấy danh sách ID sản phẩm khách đặt (loại bỏ trùng lặp để query)
+                var requestedProductIds = request.Items.Select(i => i.ProductId).Distinct().ToList();
+
+                // Query DB lấy thông tin sản phẩm
                 var productsInDb = await _context.Products
                                         .Include(p => p.ProductVariants)
-                                        .Where(p => productIds.Contains(p.ProductId))
+                                        .Where(p => requestedProductIds.Contains(p.ProductId))
                                         .ToListAsync();
 
-                // Gom nhóm sản phẩm theo ShopId
-                var itemsByShop = request.Items
-                    .GroupBy(item =>
-                    {
-                        var product = productsInDb.FirstOrDefault(p => p.ProductId == item.ProductId);
-                        // Nếu không tìm thấy sp hoặc ShopId = 0/null thì trả về 0
-                        return product?.ShopId ?? 0;
-                    })
-                    .Where(g => g.Key != 0) // Loại bỏ các nhóm không hợp lệ
-                    .ToList(); // Chốt danh sách ngay lập tức
-
-                // --- CHỐT CHẶN: Nếu không tìm thấy Shop nào hợp lệ -> BÁO LỖI NGAY ---
-                if (!itemsByShop.Any())
+                // CHECK 1: Số lượng sản phẩm tìm thấy phải khớp với số lượng ID gửi lên
+                if (productsInDb.Count < requestedProductIds.Count)
                 {
-                    return BadRequest(new
-                    {
-                        message = "Lỗi đặt hàng: Không tìm thấy sản phẩm hoặc Sản phẩm chưa được gán ShopId (ShopId=0). Vui lòng kiểm tra lại Database."
-                    });
+                    // Tìm ra ID nào bị thiếu
+                    var dbIds = productsInDb.Select(p => p.ProductId).ToList();
+                    var missingIds = requestedProductIds.Except(dbIds).ToList();
+                    return BadRequest(new { message = $"Lỗi: Sản phẩm có ID [{string.Join(", ", missingIds)}] không tồn tại hoặc đã bị xóa." });
+                }
+
+                // CHECK 2: Kiểm tra xem có sản phẩm nào bị lỗi ShopId (NULL hoặc 0) không
+                var invalidShopProducts = productsInDb.Where(p => p.ShopId == null || p.ShopId <= 0).ToList();
+                if (invalidShopProducts.Any())
+                {
+                    var names = string.Join(", ", invalidShopProducts.Select(p => p.Name));
+                    return BadRequest(new { message = $"Lỗi dữ liệu: Sản phẩm [{names}] chưa được gán Shop (ShopId bị thiếu). Vui lòng liên hệ Admin." });
                 }
 
                 // ===================================================================
-                // BƯỚC 2: TẠO ĐỊA CHỈ NGƯỜI DÙNG (USER ADDRESS)
+                // BƯỚC 2: GOM NHÓM THEO SHOP (DỮ LIỆU ĐÃ SẠCH)
                 // ===================================================================
-                var newAddress = new UserAddress
-                {
-                    AccountId = accountId,
-                    ReceiverFullName = request.ReceiverName, // Map từ Frontend
-                    ReceiverPhone = request.ReceiverPhone,   // Map từ Frontend
-                    AddressLine = request.AddressLine,       // Map từ Frontend
-
-                    // ĐIỀN GIÁ TRỊ MẶC ĐỊNH CHO CÁC CỘT NOT NULL (Tránh lỗi SQL)
-                    Ward = "Chưa cập nhật",
-                    District = "Chưa cập nhật",
-                    Province = "Chưa cập nhật",
-
-                    AddressName = "Địa chỉ đặt hàng",
-                    IsDefault = false
-                };
-
-                _context.UserAddresses.Add(newAddress);
-                await _context.SaveChangesAsync(); // Lưu để sinh AddressId
-                int addressId = newAddress.AddressId;
+                var itemsByShop = request.Items
+                    .GroupBy(item =>
+                    {
+                        var product = productsInDb.First(p => p.ProductId == item.ProductId);
+                        return product.ShopId!.Value; // Chắc chắn có value vì đã check ở trên
+                    })
+                    .ToList();
 
                 // ===================================================================
-                // BƯỚC 3: TẠO ORDER GROUP (HÓA ĐƠN TỔNG)
+                // BƯỚC 3: KIỂM TRA ĐỊA CHỈ
+                // ===================================================================
+                if (request.AddressId <= 0)
+                    return BadRequest(new { message = "Vui lòng chọn địa chỉ nhận hàng." });
+
+                var existingAddress = await _context.UserAddresses
+                    .FirstOrDefaultAsync(a => a.AddressId == request.AddressId && a.AccountId == accountId);
+
+                if (existingAddress == null)
+                    return BadRequest(new { message = "Địa chỉ không tồn tại hoặc không thuộc về tài khoản này." });
+
+                int addressId = existingAddress.AddressId;
+
+                // ===================================================================
+                // BƯỚC 4: TẠO ORDER GROUP (TỔNG)
                 // ===================================================================
                 var orderGroup = new OrderGroup
                 {
                     AccountId = accountId,
                     CreatedAt = DateTime.Now,
-                    TotalAmount = 0 // Sẽ cộng dồn sau
+                    TotalAmount = 0
                 };
                 _context.OrderGroups.Add(orderGroup);
-                await _context.SaveChangesAsync(); // Lưu để sinh OrderGroupId
+                await _context.SaveChangesAsync();
 
                 decimal grandTotal = 0;
 
                 // ===================================================================
-                // BƯỚC 4: TẠO ORDER CON CHO TỪNG SHOP
+                // BƯỚC 5: TẠO ORDER CON CHO TỪNG SHOP
                 // ===================================================================
                 foreach (var shopGroup in itemsByShop)
                 {
                     int shopId = shopGroup.Key;
                     decimal shopTotalAmount = 0;
 
-                    // 4.1 Tạo Order
+                    // 5.1 Tạo Order
                     var newOrder = new Order
                     {
                         OrderGroupId = orderGroup.OrderGroupId,
                         ShopId = shopId,
                         AccountId = accountId,
-                        AddressId = addressId, // Link với địa chỉ bước 2
+                        AddressId = addressId,
                         Status = "Pending",
                         CreatedAt = DateTime.Now,
                         IsReviewed = false,
@@ -127,19 +128,21 @@ namespace WebEBackend.Controllers
                     };
 
                     _context.Orders.Add(newOrder);
-                    await _context.SaveChangesAsync(); // Lưu để sinh OrderId
+                    await _context.SaveChangesAsync(); // Sinh OrderId
 
-                    // 4.2 Tạo Order Details
+                    // 5.2 Tạo Order Details (Chi tiết sản phẩm)
                     foreach (var item in shopGroup)
                     {
-                        var product = productsInDb.FirstOrDefault(p => p.ProductId == item.ProductId);
-                        if (product == null) continue;
+                        var product = productsInDb.First(p => p.ProductId == item.ProductId);
 
+                        // Mặc định lấy giá gốc (cho trường hợp không biến thể như Smart Phone)
                         decimal finalPrice = product.Price ?? 0;
                         int? variantId = null;
 
-                        // Check Variant (Màu/Size)
-                        if (!string.IsNullOrEmpty(item.Color) || !string.IsNullOrEmpty(item.Size))
+                        // Kiểm tra nếu khách có chọn Size hoặc Màu
+                        bool hasVariantRequest = !string.IsNullOrEmpty(item.Color) || !string.IsNullOrEmpty(item.Size);
+
+                        if (hasVariantRequest)
                         {
                             var variant = product.ProductVariants.FirstOrDefault(v =>
                                 (string.IsNullOrEmpty(item.Color) || v.Color == item.Color) &&
@@ -150,6 +153,17 @@ namespace WebEBackend.Controllers
                                 finalPrice = variant.Price ?? finalPrice;
                                 variantId = variant.VariantId;
                             }
+                            else
+                            {
+                                // Nếu khách chọn Size/Màu mà DB không có -> Báo lỗi luôn
+                                return BadRequest(new { message = $"Sản phẩm '{product.Name}' không còn loại Màu: {item.Color}, Size: {item.Size}." });
+                            }
+                        }
+
+                        // Kiểm tra giá cuối cùng (đề phòng sản phẩm chưa set giá)
+                        if (finalPrice <= 0)
+                        {
+                            return BadRequest(new { message = $"Sản phẩm '{product.Name}' chưa được cập nhật giá bán." });
                         }
 
                         var itemSubTotal = finalPrice * item.Quantity;
@@ -159,7 +173,7 @@ namespace WebEBackend.Controllers
                         {
                             OrderId = newOrder.OrderId,
                             ProductId = item.ProductId,
-                            VariantId = variantId,
+                            VariantId = variantId, // SQL phải cho phép NULL cột này
                             Quantity = item.Quantity,
                             UnitPrice = finalPrice,
                             SubTotal = itemSubTotal
@@ -167,39 +181,25 @@ namespace WebEBackend.Controllers
                         _context.OrderDetails.Add(detail);
                     }
 
-                    // Cập nhật tổng tiền đơn con
+                    // 5.3 Cập nhật tổng tiền Order con
                     newOrder.TotalAmount = shopTotalAmount;
                     grandTotal += shopTotalAmount;
 
-                    // 4.3 Tạo Shipping Info
-                    var shippingInfo = new OrderShippingInfo
-                    {
-                        OrderId = newOrder.OrderId,
-                        Status = "Processing",
-                        ShippingFee = 0,
-                        ShipperId = null,
-                        TrackingCode = null
-                    };
+                    // 5.4 Tạo Shipping & History
+                    var shippingInfo = new OrderShippingInfo { OrderId = newOrder.OrderId, Status = "Processing", ShippingFee = 0 };
                     _context.OrderShippingInfos.Add(shippingInfo);
 
-                    // 4.4 Tạo History Status
-                    var history = new OrderStatusHistory
-                    {
-                        OrderId = newOrder.OrderId,
-                        OldStatus = null,
-                        NewStatus = "Pending",
-                        ChangedAt = DateTime.Now
-                    };
+                    var history = new OrderStatusHistory { OrderId = newOrder.OrderId, NewStatus = "Pending", ChangedAt = DateTime.Now };
                     _context.OrderStatusHistories.Add(history);
                 }
 
                 // ===================================================================
-                // BƯỚC 5: HOÀN TẤT
+                // BƯỚC 6: HOÀN TẤT
                 // ===================================================================
                 orderGroup.TotalAmount = grandTotal;
                 await _context.SaveChangesAsync();
 
-                await transaction.CommitAsync(); // Xác nhận Transaction
+                await transaction.CommitAsync();
 
                 return Ok(new
                 {
@@ -210,39 +210,57 @@ namespace WebEBackend.Controllers
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                // Lấy lỗi gốc từ SQL để dễ debug
                 var innerMsg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return StatusCode(500, new { message = "Lỗi hệ thống: " + innerMsg });
+                // Log lỗi ra console server để debug
+                Console.WriteLine($"Order Error: {innerMsg}");
+                return StatusCode(500, new { message = "Lỗi hệ thống khi tạo đơn: " + innerMsg });
             }
         }
 
-        // API Lấy danh sách đơn hàng
+        // ==========================================
+        // CÁC API KHÁC (GET, CANCEL...) - GIỮ NGUYÊN
+        // ==========================================
         [HttpGet("mine")]
         public async Task<IActionResult> GetMyOrders()
         {
             var accountId = GetCurrentAccountId();
             if (accountId == -1) return Unauthorized();
 
-            var orders = await _context.Orders
-                .Where(o => o.AccountId == accountId)
-                .Include(o => o.Shop)
-                .Include(o => o.OrderDetails).ThenInclude(od => od.Product)
-                .OrderByDescending(o => o.CreatedAt)
-                .Select(o => new
+            var history = await _context.OrderGroups
+                .Where(g => g.AccountId == accountId)
+                .OrderByDescending(g => g.CreatedAt) // Mới nhất lên đầu
+                .Select(g => new
                 {
-                    o.OrderId,
-                    ShopName = o.Shop.ShopName,
-                    o.Status,
-                    o.TotalAmount,
-                    CreatedAt = o.CreatedAt,
-                    FirstProductName = o.OrderDetails.FirstOrDefault().Product.Name,
-                    ProductCount = o.OrderDetails.Sum(od => od.Quantity)
+                    g.OrderGroupId,
+                    CreatedAt = g.CreatedAt,
+                    TotalGroupAmount = g.TotalAmount, // Tổng tiền người dùng phải trả cho lần bấm nút đó
+
+                    // Danh sách các đơn con (Tách theo Shop) nằm trong Group này
+                    SubOrders = g.Orders.Select(o => new
+                    {
+                        o.OrderId,
+                        o.Status, // Status của từng đơn con (VD: Shop A đã giao, Shop B đang chuẩn bị)
+                        ShopName = o.Shop.ShopName,
+                        TotalOrderAmount = o.TotalAmount, // Tiền riêng của đơn shop này
+
+                        // Lấy sản phẩm đại diện để hiển thị
+                        FirstProductName = o.OrderDetails.Select(od => od.Product.Name).FirstOrDefault() ?? "Sản phẩm",
+                        ProductCount = o.OrderDetails.Sum(od => od.Quantity ?? 0),
+
+                        // Lấy chi tiết items (để hiển thị nếu cần)
+                        Items = o.OrderDetails.Select(od => new {
+                            ProductName = od.Product.Name,
+                            Quantity = od.Quantity ?? 0,
+                            Price = od.UnitPrice ?? 0,
+                            Variant = od.Variant != null ? $"{od.Variant.Color} {od.Variant.Size}" : ""
+                        }).ToList()
+                    }).ToList()
                 })
                 .ToListAsync();
 
-            return Ok(orders);
+            return Ok(history);
         }
-        // 2. LẤY CHI TIẾT ĐƠN HÀNG (API Mới)
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderDetail(int id)
         {
@@ -250,28 +268,40 @@ namespace WebEBackend.Controllers
             if (accountId == -1) return Unauthorized();
 
             var order = await _context.Orders
-                .Where(o => o.OrderId == id && o.AccountId == accountId) // Bảo mật: Chỉ xem được đơn của mình
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Product)
-                .Include(o => o.Address) // Lấy thông tin địa chỉ
+                .Where(o => o.OrderId == id && o.AccountId == accountId)
+                // Lưu ý: Khi dùng .Select(), không cần .Include() nữa vì EF Core đủ thông minh để biết cần lấy bảng nào
                 .Select(o => new
                 {
                     o.OrderId,
                     o.TotalAmount,
                     o.Status,
-                    ReceiverName = o.Address != null ? o.Address.ReceiverFullName : "N/A",
-                    ReceiverPhone = o.Address != null ? o.Address.ReceiverPhone : "N/A",
-                    ShippingAddress = o.Address != null 
-                        ? $"{o.Address.AddressLine}, {o.Address.Ward}, {o.Address.District}, {o.Address.Province}" 
-                        : "Địa chỉ đã bị xóa",
+                    // Xử lý an toàn khi không có địa chỉ
+                    ReceiverName = o.Address != null ? o.Address.ReceiverFullName : "Không xác định",
+                    ReceiverPhone = o.Address != null ? o.Address.ReceiverPhone : "Không xác định",
+                    ShippingAddress = o.Address != null
+                        ? $"{o.Address.AddressLine}, {o.Address.Ward}, {o.Address.District}, {o.Address.Province}"
+                        : "Địa chỉ đã bị xóa hoặc không tồn tại",
+
                     Items = o.OrderDetails.Select(od => new
                     {
                         od.ProductId,
-                        ProductName = od.Product.Name,
-                        Quantity = od.Quantity,
-                        Price = od.UnitPrice,
-                        // Nếu có ảnh thì lấy ảnh đầu tiên (tùy logic DB của bạn)
-                        Image = "https://via.placeholder.com/50" 
+                        // 1. Lấy tên sản phẩm an toàn (tránh lỗi null)
+                        ProductName = od.Product != null ? od.Product.Name : "Sản phẩm đã bị xóa",
+
+                        // 2. Lấy thêm thông tin Phân loại (Size/Màu) để hiển thị cho rõ
+                        // Nếu có Variant thì lấy, không thì null
+                        Color = od.Variant != null ? od.Variant.Color : null,
+                        Size = od.Variant != null ? od.Variant.Size : null,
+
+                        // 3. Ghép tên đầy đủ để hiển thị 1 dòng cho đẹp (Option cho Frontend dùng luôn)
+                        FullProductName = od.Product.Name + (od.Variant != null ? $" ({od.Variant.Color}, {od.Variant.Size})" : ""),
+
+                        // 4. Xử lý số lượng và giá (tránh null)
+                        Quantity = od.Quantity ?? 0,
+                        Price = od.UnitPrice ?? 0,
+
+                        // Ảnh demo (sau này bạn thay bằng logic lấy ảnh thật từ bảng ProductImages)
+                        Image = "https://via.placeholder.com/50"
                     }).ToList()
                 })
                 .FirstOrDefaultAsync();
@@ -281,7 +311,6 @@ namespace WebEBackend.Controllers
             return Ok(order);
         }
 
-        // 3. HỦY ĐƠN HÀNG (API Mới - Cho nút Hủy)
         [HttpPut("{id}/cancel")]
         public async Task<IActionResult> CancelOrder(int id)
         {
@@ -289,13 +318,10 @@ namespace WebEBackend.Controllers
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == id && o.AccountId == accountId);
 
             if (order == null) return NotFound();
-            
-            if (order.Status != "Pending") 
-                return BadRequest(new { message = "Chỉ có thể hủy đơn hàng khi đang chờ xác nhận." });
+            if (order.Status != "Pending") return BadRequest(new { message = "Chỉ có thể hủy đơn hàng khi đang chờ xác nhận." });
 
             order.Status = "Cancelled";
             await _context.SaveChangesAsync();
-
             return Ok(new { message = "Đã hủy đơn hàng." });
         }
 
@@ -309,16 +335,18 @@ namespace WebEBackend.Controllers
     }
 
     // ==========================================
-    // DTO: CLASS DỮ LIỆU NHẬN TỪ FRONTEND
+    // DTO REQUEST
     // ==========================================
     public class CreateOrderRequest
     {
-        public string ReceiverName { get; set; }
-        public string ReceiverPhone { get; set; }
-        public string AddressLine { get; set; }
-
+        public int AddressId { get; set; }
         public string? Note { get; set; }
         public string? PaymentMethod { get; set; }
+
+        // Những trường này để nhận cho vui (tránh lỗi JSON) chứ logic trên dùng AddressId rồi
+        public string? ReceiverName { get; set; }
+        public string? ReceiverPhone { get; set; }
+        public string? AddressLine { get; set; }
 
         public List<CartItemRequest> Items { get; set; }
     }

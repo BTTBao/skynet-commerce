@@ -14,8 +14,8 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 {
     public partial class SellerProductForm : Form
     {
-        private readonly IProductService _productService;
-        private readonly ICategoryService _categoryService;
+        private readonly ProductService _productService;
+        private readonly CategoryService _categoryService;
         private readonly int _shopId;
 
         private int _currentPage = 1;
@@ -35,13 +35,19 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             var unitOfWork = new UnitOfWork(context);
             _productService = new ProductService(unitOfWork);
             _categoryService = new CategoryService(unitOfWork);
+            this.Load += SellerProductForm_Load2;
+        }
+
+        private void SellerProductForm_Load1(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public SellerProductForm() : this(1) // Constructor mặc định với shopId = 1
         {
         }
 
-        private void SellerProductForm_Load(object sender, EventArgs e)
+        private void SellerProductForm_Load2(object sender, EventArgs e)
         {
             LoadProducts();
 
@@ -56,6 +62,12 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                 // Lấy tất cả sản phẩm của shop
                 _allProducts = _productService.GetProductsByShop(_shopId).ToList();
                 _filteredProducts = _allProducts;
+
+                if (_allProducts.Count == 0)
+                {
+                    MessageBox.Show("Chưa có sản phẩm nào. Vui lòng thêm sản phẩm mới.", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
 
                 // Tính tổng số trang
                 _totalPages = (int)Math.Ceiling((double)_filteredProducts.Count / _pageSize);
@@ -80,6 +92,8 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             {
                 dgvProducts.Rows.Clear();
 
+                if (_filteredProducts == null || _filteredProducts.Count == 0) return;
+
                 // Lấy sản phẩm của trang hiện tại
                 var productsToDisplay = _filteredProducts
                     .Skip((_currentPage - 1) * _pageSize)
@@ -88,23 +102,37 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 
                 foreach (var product in productsToDisplay)
                 {
+                    // Thêm một dòng mới và lấy chỉ số của dòng đó
                     int rowIndex = dgvProducts.Rows.Add();
                     DataGridViewRow row = dgvProducts.Rows[rowIndex];
 
+                    // Gán giá trị dựa trên chính xác "Name" của cột đã tạo ở Designer
                     row.Cells["Id"].Value = product.ProductID;
                     row.Cells["Name"].Value = product.Name;
                     row.Cells["Category"].Value = product.Category?.CategoryName ?? "N/A";
-                    row.Cells["Price"].Value = product.Price?.ToString("N0") + " VNĐ";
+                    row.Cells["Price"].Value = (product.Price ?? 0).ToString("N0") + " VNĐ";
                     row.Cells["Stock"].Value = product.StockQuantity ?? 0;
+                    row.Cells["SoldCount"].Value = product.SoldCount ?? 0;
+                    row.Cells["Status"].Value = product.Status ?? "N/A";
 
-                    // Lưu trạng thái của sản phẩm vào Tag
+                    // Gán icon cho 2 cột cuối (giữ nguyên logic của bạn)
+                    row.Cells[dgvProducts.Columns.Count - 2].Value = Properties.Resources.LOGO;
+                    row.Cells[dgvProducts.Columns.Count - 1].Value = Properties.Resources.LOGO;
+
+                    // Lưu đối tượng product vào Tag để xử lý sự kiện Click
                     row.Tag = product;
+
+                    // Cập nhật màu sắc dựa trên trạng thái ngay khi load
+                    if (product.Status == "Hidden")
+                    {
+                        row.DefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
+                        row.DefaultCellStyle.ForeColor = Color.Gray;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi hiển thị sản phẩm: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi hiển thị: " + ex.Message);
             }
         }
 
