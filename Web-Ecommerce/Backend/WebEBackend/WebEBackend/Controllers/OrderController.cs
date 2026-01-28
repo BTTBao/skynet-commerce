@@ -46,9 +46,9 @@ namespace WebEBackend.Controllers
 
                 // Query DB lấy thông tin sản phẩm
                 var productsInDb = await _context.Products
-                                        .Include(p => p.ProductVariants)
-                                        .Where(p => requestedProductIds.Contains(p.ProductId))
-                                        .ToListAsync();
+                                                .Include(p => p.ProductVariants)
+                                                .Where(p => requestedProductIds.Contains(p.ProductId))
+                                                .ToListAsync();
 
                 // CHECK 1: Số lượng sản phẩm tìm thấy phải khớp với số lượng ID gửi lên
                 if (productsInDb.Count < requestedProductIds.Count)
@@ -218,7 +218,7 @@ namespace WebEBackend.Controllers
         }
 
         // ==========================================
-        // CÁC API KHÁC (GET, CANCEL...) - GIỮ NGUYÊN
+        // CÁC API KHÁC (GET, CANCEL...)
         // ==========================================
         [HttpGet("mine")]
         public async Task<IActionResult> GetMyOrders()
@@ -239,9 +239,10 @@ namespace WebEBackend.Controllers
                     SubOrders = g.Orders.Select(o => new
                     {
                         o.OrderId,
-                        o.Status, // Status của từng đơn con (VD: Shop A đã giao, Shop B đang chuẩn bị)
+                        o.Status, 
+                        o.IsReviewed, // ✅ QUAN TRỌNG: Trả về trạng thái đã đánh giá hay chưa
                         ShopName = o.Shop.ShopName,
-                        TotalOrderAmount = o.TotalAmount, // Tiền riêng của đơn shop này
+                        TotalOrderAmount = o.TotalAmount, 
 
                         // Lấy sản phẩm đại diện để hiển thị
                         FirstProductName = o.OrderDetails.Select(od => od.Product.Name).FirstOrDefault() ?? "Sản phẩm",
@@ -269,7 +270,6 @@ namespace WebEBackend.Controllers
 
             var order = await _context.Orders
                 .Where(o => o.OrderId == id && o.AccountId == accountId)
-                // Lưu ý: Khi dùng .Select(), không cần .Include() nữa vì EF Core đủ thông minh để biết cần lấy bảng nào
                 .Select(o => new
                 {
                     o.OrderId,
@@ -289,7 +289,6 @@ namespace WebEBackend.Controllers
                         ProductName = od.Product != null ? od.Product.Name : "Sản phẩm đã bị xóa",
 
                         // 2. Lấy thêm thông tin Phân loại (Size/Màu) để hiển thị cho rõ
-                        // Nếu có Variant thì lấy, không thì null
                         Color = od.Variant != null ? od.Variant.Color : null,
                         Size = od.Variant != null ? od.Variant.Size : null,
 
@@ -343,7 +342,6 @@ namespace WebEBackend.Controllers
         public string? Note { get; set; }
         public string? PaymentMethod { get; set; }
 
-        // Những trường này để nhận cho vui (tránh lỗi JSON) chứ logic trên dùng AddressId rồi
         public string? ReceiverName { get; set; }
         public string? ReceiverPhone { get; set; }
         public string? AddressLine { get; set; }
