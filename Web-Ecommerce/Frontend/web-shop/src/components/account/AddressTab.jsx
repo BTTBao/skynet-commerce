@@ -113,19 +113,21 @@ const AddressTab = () => {
 
     // --- CHỨC NĂNG MỚI: CHUẨN BỊ SỬA (Populate Form) ---
     const handleEdit = (addr) => {
-        setEditingId(addr.addressId); // Set ID đang sửa
-        // Điền dữ liệu cũ vào form
-        // Lưu ý: Vì DB bạn lưu Tên Tỉnh (String) chứ ko lưu ID, nên khi sửa người dùng phải chọn lại địa điểm
-        // Hoặc bạn chỉ cho sửa Tên/SĐT/Số nhà. Ở đây mình cho load lại form cơ bản.
+        setEditingId(addr.addressId); 
         setFormData({
-            addressName: addr.addressName,
-            receiverFullName: addr.receiverFullName,
-            receiverPhone: addr.receiverPhone,
-            addressLine: addr.addressLine.split(',')[0], // Tạm lấy phần đầu
-            province: '', provinceId: '', // Reset địa điểm để chọn lại cho chính xác
-            district: '', districtId: '',
-            ward: '',
-            isDefault: addr.isDefault
+            addressName: addr.addressName || 'Nhà riêng',
+            receiverFullName: addr.receiverFullName || '',
+            receiverPhone: addr.receiverPhone || '',
+            
+            // 👇 SỬA DÒNG NÀY: Thêm ( || '') để nếu nó null thì lấy chuỗi rỗng, không bị lỗi split
+            addressLine: (addr.addressLine || '').split(',')[0], 
+            
+            province: addr.province || '', 
+            provinceId: '', 
+            district: addr.district || '', 
+            districtId: '',
+            ward: addr.ward || '',
+            isDefault: addr.isDefault || false
         });
         setShowForm(true);
     };

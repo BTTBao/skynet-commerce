@@ -31,13 +31,21 @@ namespace WebEBackend.Controllers
 
             var addresses = await _context.UserAddresses
                 .Where(a => a.AccountId == accountId)
-                .OrderByDescending(a => a.IsDefault) // ✅ Sắp xếp: True lên trước, False xuống sau
+                .OrderByDescending(a => a.IsDefault)
                 .Select(a => new
                 {
                     a.AddressId,
                     a.AddressName,
                     a.ReceiverFullName,
                     a.ReceiverPhone,
+                    
+                    // 👇 BỔ SUNG CÁC DÒNG NÀY (NẾU THIẾU) 👇
+                    a.AddressLine, 
+                    a.Ward,
+                    a.District,
+                    a.Province,
+                    // ----------------------------------------
+
                     FullAddress = $"{a.AddressLine}, {a.Ward}, {a.District}, {a.Province}",
                     a.IsDefault
                 })
