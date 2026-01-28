@@ -81,6 +81,9 @@ app.UseHttpsRedirection();
 // Kích hoạt CORS (Phải trước Auth)
 app.UseCors("AllowReactApp");
 
+// 👇 QUAN TRỌNG: Kích hoạt Static Files để xem được ảnh đã upload 👇
+app.UseStaticFiles(); 
+
 // Kích hoạt Authentication & Authorization (Đúng thứ tự)
 app.UseAuthentication();
 app.UseAuthorization();

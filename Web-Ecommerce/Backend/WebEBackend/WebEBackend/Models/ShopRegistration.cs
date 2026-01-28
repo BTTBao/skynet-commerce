@@ -19,5 +19,11 @@ public partial class ShopRegistration
 
     public DateTime? ReviewedAt { get; set; }
 
+    public string? CitizenId { get; set; }
+
+    public string? CitizenImageUrl { get; set; }
+
+    public string? RejectionReason { get; set; }
+
     public virtual Account Account { get; set; } = null!;
 }

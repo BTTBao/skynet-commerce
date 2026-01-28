@@ -222,7 +222,46 @@ namespace WebEBackend.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        // DTO Nhận dữ liệu
+public class ChangePasswordRequest
+{
+    public string OldPassword { get; set; }
+    public string NewPassword { get; set; }
+}
+
+// Thêm vào trong class AuthController
+[HttpPost("change-password")]
+[Authorize] // Bắt buộc phải đăng nhập
+public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+{
+    // 1. Lấy ID user từ Token
+    var identity = User.Identity as ClaimsIdentity;
+    var accountIdStr = identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    if (string.IsNullOrEmpty(accountIdStr)) return Unauthorized();
+    
+    int accountId = int.Parse(accountIdStr);
+
+    // 2. Tìm tài khoản trong DB
+    var account = await _context.Accounts.FindAsync(accountId);
+    if (account == null) return NotFound("Tài khoản không tồn tại");
+
+    // 3. Kiểm tra mật khẩu cũ (Dùng BCrypt)
+    bool isOldValid = BCrypt.Net.BCrypt.Verify(request.OldPassword, account.PasswordHash);
+    if (!isOldValid)
+    {
+        return BadRequest(new { message = "Mật khẩu hiện tại không đúng." });
     }
+
+    // 4. Mã hóa mật khẩu mới và Lưu
+    string newHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+    account.PasswordHash = newHash;
+
+    await _context.SaveChangesAsync();
+
+    return Ok(new { message = "Đổi mật khẩu thành công!" });
+}
+    }
+    
 
     // DTO Classes
     public class LoginRequest
