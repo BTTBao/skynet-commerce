@@ -212,7 +212,7 @@ namespace Skynet_Commerce.GUI.Forms.Admin
         private Guna.UI2.WinForms.Guna2TextBox txtCreatedAt;
         private Guna.UI2.WinForms.Guna2TextBox txtReviewedAt;
         private Guna.UI2.WinForms.Guna2TextBox txtCitizenID;
-        private System.Windows.Forms.PictureBox picCitizenImage;
+        private System.Windows.Forms.FlowLayoutPanel picCitizenImage;
         private Guna.UI2.WinForms.Guna2TextBox txtAccountID;
         private Guna.UI2.WinForms.Guna2TextBox txtEmail;
         private Guna.UI2.WinForms.Guna2TextBox txtPhone;
