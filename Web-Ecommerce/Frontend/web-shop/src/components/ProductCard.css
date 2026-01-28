@@ -1,0 +1,122 @@
+/* Khung thẻ sản phẩm */
+.item-card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Để các thẻ cao bằng nhau */
+    position: relative;
+}
+
+/* Hiệu ứng khi di chuột vào thẻ */
+.item-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-5px); /* Nổi lên nhẹ */
+    border-color: #d0011b;
+}
+
+/* Phần ảnh */
+.img-container {
+    width: 100%;
+    height: 200px; /* Chiều cao cố định cho ảnh */
+    display: block;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cắt ảnh vừa khung mà không bị méo */
+    transition: transform 0.5s ease;
+}
+
+.item-card:hover .img-container img {
+    transform: scale(1.05); /* Phóng to ảnh nhẹ khi hover */
+}
+
+/* Phần thông tin */
+.product-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-title {
+    font-size: 16px;
+    margin: 0 0 10px;
+    line-height: 1.4;
+    height: 44px; /* Giới hạn chiều cao tên (2 dòng) */
+    overflow: hidden;
+    display: -webkit-box;
+    /* -webkit-line-clamp: 2; */
+    -webkit-box-orient: vertical;
+}
+
+.product-title a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.product-title a:hover {
+    color: #d0011b;
+}
+
+.price {
+    font-size: 18px;
+    color: #d0011b;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* Nút bấm */
+.action-buttons {
+    margin-top: auto; /* Đẩy nút xuống đáy thẻ */
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa 2 nút */
+}
+
+.btn-detail, .add-to-cart {
+    flex: 1; /* Chia đều chiều rộng */
+    padding: 10px 0;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+/* Style nút Chi tiết (Màu trắng, viền xám) */
+.btn-detail {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: #555;
+    display: flex;           /* Để căn giữa icon và chữ */
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-detail:hover {
+    background-color: #f5f5f5;
+    border-color: #bbb;
+    color: #333;
+}
+
+/* Style nút Thêm giỏ (Màu đỏ chủ đạo) */
+.add-to-cart {
+    background-color: #d0011b;
+    border: 1px solid #d0011b;
+    color: white;
+}
+
+.add-to-cart:hover {
+    background-color: #b00118;
+    border-color: #b00118;
+}

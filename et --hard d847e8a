@@ -1,0 +1,17 @@
+[33m0187d5f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mBao-2[m[33m, [m[1;31morigin/Bao-2[m[33m)[m HEAD@{0}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33m21f5351[m HEAD@{1}: reset: moving to HEAD
+[33m21f5351[m HEAD@{2}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33md847e8a[m HEAD@{3}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33m43a72fc[m HEAD@{4}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33m3d2b2a1[m HEAD@{5}: checkout: moving from main to Bao-2
+[33mbd98e38[m HEAD@{6}: checkout: moving from Bao-2 to main
+[33m4e6f9d8[m HEAD@{7}: checkout: moving from main to Bao-2
+[33m4e6f9d8[m HEAD@{8}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33me52cf7a[m HEAD@{9}: checkout: moving from bao to main
+[33mf6add0b[m[33m ([m[1;31morigin/bao[m[33m, [m[1;32mbao[m[33m)[m HEAD@{10}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33maa3886f[m HEAD@{11}: commit: fix loi
+[33mf2a9723[m HEAD@{12}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33mb7f58cf[m HEAD@{13}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33mb1c9852[m HEAD@{14}: checkout: moving from main to bao
+[33m28616fc[m HEAD@{15}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33md2b2694[m HEAD@{16}: clone: from https://github.com/BTTBao/skynet-commerce.git
