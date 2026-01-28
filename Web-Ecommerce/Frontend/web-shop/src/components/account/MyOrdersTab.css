@@ -20,13 +20,17 @@
 }
 
 .order-card {
+    position: relative; /* 👈 QUAN TRỌNG NHẤT */
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     padding: 16px;
     background-color: white;
     transition: box-shadow 0.2s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
 }
-
 .order-card:hover {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
@@ -34,25 +38,42 @@
 /* Header đơn hàng (Tên shop + Trạng thái) */
 .order-header {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
     margin-bottom: 12px;
+    padding-bottom: 12px;
     border-bottom: 1px solid #f3f4f6;
-    padding-bottom: 8px;
+    width: 10%;
+    padding-right: 120px; /* 👈 TRỪA CHỖ: Để chữ Mã đơn không đè lên Badge */
 }
-
-.shop-name {
+.order-id {
     font-weight: 700;
-    font-size: 1.1rem;
     color: #111827;
+    font-size: 1rem;
 }
-
+/* Badge trạng thái: Treo góc phải, không bị kéo giãn */
 .status-badge {
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-}
+    position: absolute;
+    top: 12px;          /* Cách mép trên 12px */
+    right: 12px;        /* Cách mép phải 12px */
+    
+    /* 👇 QUAN TRỌNG: Thêm 2 dòng này để chống kéo giãn chiều cao */
+    height: 8%;       
+    width: auto;
+    /* -------------------------------------------------------- */
 
+    padding: 6px 12px;  /* Tạo khoảng thở cho chữ */
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    
+    /* Đảm bảo chữ nằm giữa badge */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Thêm chút bóng cho nổi */
+}
 /* Phần nội dung sản phẩm */
 .product-info {
     display: flex;
@@ -83,6 +104,12 @@
     margin: 0;
 }
 
+.order-date {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
 /* Footer (Tổng tiền + Nút xem) */
 .order-footer {
     display: flex;
@@ -93,48 +120,11 @@
     border-top: 1px solid #f3f4f6;
 }
 
-.total-label {
-    font-size: 0.9rem;
-    color: #6b7280;
-}
-
-.total-price {
-    font-weight: 700;
-    color: #ef4444; /* Màu đỏ */
-    font-size: 1.1rem;
-}
-
-.btn-view-detail {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: 1px solid #2563eb;
-    color: #2563eb;
-    background-color: white;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.btn-view-detail:hover {
-    background-color: #eff6ff; /* Xanh rất nhạt */
-}
-
-/* ... Giữ lại các CSS cũ của .order-card ... */
-
-.order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-.order-id { font-weight: 600; color: #374151; }
-.order-date { font-size: 0.8rem; color: #9ca3af; margin-top: 4px; }
+.total-label { font-size: 0.9rem; color: #6b7280; }
+.total-price { font-weight: 700; color: #ef4444; font-size: 1.1rem; }
 
 /* ACTION BUTTONS */
-.action-buttons {
-    display: flex;
-    gap: 10px;
-}
+.action-buttons { display: flex; gap: 10px; }
 
 .btn-action {
     display: flex;
@@ -149,169 +139,91 @@
     transition: all 0.2s;
 }
 
-.btn-view {
-    background-color: white;
-    border-color: #d1d5db;
-    color: #374151;
-}
+.btn-view { background-color: white; border-color: #d1d5db; color: #374151; }
 .btn-view:hover { background-color: #f3f4f6; }
 
-/* Nút Hủy màu đỏ */
-.btn-cancel {
-    background-color: #fee2e2;
-    color: #ef4444;
-}
+.btn-cancel { background-color: #fee2e2; color: #ef4444; }
 .btn-cancel:hover { background-color: #fecaca; }
 
-/* PAGINATION (PHÂN TRANG) */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 24px;
-}
+/* Nút Đánh Giá */
+.btn-rate { background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d; }
+.btn-rate:hover { background-color: #fde68a; }
 
+/* PAGINATION */
+.pagination { display: flex; justify-content: center; gap: 8px; margin-top: 24px; }
 .page-btn, .page-number {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #e5e7eb;
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
-    color: #374151;
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid #e5e7eb; background: white; border-radius: 6px; cursor: pointer; color: #374151;
 }
 .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.page-number.active {
-    background-color: #2563eb;
-    color: white;
-    border-color: #2563eb;
-}
+.page-number.active { background-color: #2563eb; color: white; border-color: #2563eb; }
 .page-number:hover:not(.active) { background-color: #f9fafb; }
 
-/* MODAL STYLES (POPUP) */
+/* MODAL STYLES */
 .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    animation: fadeIn 0.2s ease-out;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 2000;
 }
-
 .modal-content {
-    background: white;
-    width: 90%;
-    max-width: 500px;
-    border-radius: 12px;
-    padding: 24px;
-    position: relative;
-    max-height: 90vh;
-    overflow-y: auto;
-    animation: slideUp 0.3s ease-out;
+    background: white; width: 90%; max-width: 500px; border-radius: 12px; padding: 24px;
+    position: relative; max-height: 90vh; overflow-y: auto;
 }
+.modal-close-btn { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: #9ca3af; }
+.modal-title { font-size: 1.2rem; margin-bottom: 20px; color: #111; text-align: center; font-weight: 700; }
 
-.modal-close-btn {
-    position: absolute;
-    top: 16px; right: 16px;
-    background: none; border: none;
-    cursor: pointer; color: #9ca3af;
-}
-
-.modal-title { font-size: 1.2rem; margin-bottom: 20px; color: #111; }
-
+/* Detail Modal Styles */
 .detail-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; }
 .detail-section h4 { font-size: 0.95rem; margin-bottom: 10px; color: #4b5563; }
-
 .info-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; color: #374151; font-size: 0.95rem; }
-
 .detail-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .item-img-placeholder { width: 40px; height: 40px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
 .item-info { flex: 1; }
 .item-name { font-size: 0.9rem; font-weight: 500; }
 .item-meta { font-size: 0.8rem; color: #6b7280; }
 .item-price { font-weight: 600; }
-
 .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
 .summary-row.total { font-size: 1.1rem; font-weight: 700; color: #2563eb; margin-top: 12px; }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-/* ... CSS Cũ ... */
-
-/* Nút Đánh Giá (Màu vàng cam) */
-.btn-rate {
-    background-color: #fef3c7;
-    color: #d97706;
-    border: 1px solid #fcd34d;
-}
-.btn-rate:hover {
-    background-color: #fde68a;
-}
-
-/* Modal Đánh Giá */
-.review-modal {
-    max-width: 400px; /* Nhỏ hơn modal chi tiết */
-}
+/* ========================================= */
+/* MODAL ĐÁNH GIÁ (REVIEW MODAL) - ĐÃ SỬA LỖI */
+/* ========================================= */
+.review-modal { max-width: 450px; width: 100%; }
 
 .star-rating-container {
     display: flex;
-    flex-direction: column; /* Giữ cái này để chữ nằm dưới sao */
+    flex-direction: column; /* Xếp dọc: Hàng sao ở trên, Chữ ở dưới */
     align-items: center;
     margin-bottom: 20px;
+    gap: 10px;
 }
 
-/* 👇 THÊM ĐOẠN NÀY 👇 */
+/* ✅ SỬA LỖI SAO DỌC: Bắt buộc hàng chứa sao phải xếp ngang */
 .stars-row {
     display: flex;
-    flex-direction: row; /* Xếp ngang các ngôi sao */
-    gap: 8px; /* Khoảng cách giữa các ngôi sao */
+    flex-direction: row; 
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
 }
-/* 👆 ---------------- 👆 */
 
 .star-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.1s;
-    display: flex; /* Căn chỉnh icon chuẩn hơn */
+    background: none; border: none; cursor: pointer; padding: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
 }
 .star-btn:hover { transform: scale(1.2); }
 
-.rating-text {
-    margin-top: 8px;
-    font-weight: 600;
-    color: #d97706;
-}
+.rating-text { font-size: 1rem; font-weight: 700; color: #d97706; margin: 0; }
 
 .review-textarea {
-    width: 100%;
-    height: 100px;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    resize: none;
-    outline: none;
-    margin-bottom: 16px;
-    font-family: inherit;
+    width: 95%; height: 100px; padding: 12px;
+    border: 1px solid #d1d5db; border-radius: 8px;
+    resize: none; outline: none; margin-bottom: 16px; font-family: inherit;
 }
 .review-textarea:focus { border-color: #d97706; }
 
 .btn-submit-review {
-    width: 100%;
-    padding: 10px;
-    background-color: #d97706;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
+    width: 100%; padding: 10px; background-color: #d97706;
+    color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;
 }
 .btn-submit-review:hover { background-color: #b45309; }
