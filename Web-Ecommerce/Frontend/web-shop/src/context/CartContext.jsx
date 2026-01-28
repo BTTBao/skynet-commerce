@@ -8,31 +8,69 @@ export const CartProvider = ({ children }) => {
         return storedCart ? JSON.parse(storedCart) : [];
     });
 
-    // Tự động lưu vào LocalStorage mỗi khi cartItems thay đổi
+    // Tự động lưu LocalStorage
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    // --- LOGIC ADD TO CART ---
+    // ==================================================================
+    // 1. THÊM TÍNH NĂNG: LÀM MỚI DỮ LIỆU (Re-validate)
+    // Gọi hàm này khi vào trang CartPage để đảm bảo Status mới nhất từ DB
+    // ==================================================================
+    const refreshCartData = async () => {
+        if (cartItems.length === 0) return;
+
+        try {
+            // Cách đơn giản: Lấy lại danh sách Product từ API
+            // (Tốt hơn là nên có API: POST /api/cart/validate gửi list ID lên check)
+            const response = await fetch("http://localhost:5198/api/Products"); 
+            if (response.ok) {
+                const allProducts = await response.json();
+
+                setCartItems(prevItems => {
+                    return prevItems.map(cartItem => {
+                        // Tìm sản phẩm tương ứng trong DB mới nhất
+                        const liveProduct = allProducts.find(p => p.productId === (cartItem.productId || cartItem.id));
+                        
+                        if (liveProduct) {
+                            // Cập nhật lại Status và Giá (đề phòng giá đổi luôn)
+                            return {
+                                ...cartItem,
+                                status: liveProduct.status || liveProduct.Status, // Cập nhật Status mới nhất
+                                price: liveProduct.price || liveProduct.Price     // Cập nhật Giá mới nhất
+                            };
+                        }
+                        return cartItem;
+                    });
+                });
+            }
+        } catch (error) {
+            console.error("Không thể làm mới giỏ hàng:", error);
+        }
+    };
+
+    // --- ADD TO CART ---
     const addToCart = (product, quantity = 1, variant = {}) => {
         setCartItems((prevItems) => {
-            // 1. Tạo ID duy nhất: ID sp + Size + Color
-            const uniqueCartId = `${product.id}-${variant.size || ''}-${variant.color || ''}`;
-
-            // 2. Kiểm tra tồn tại
+            const uniqueCartId = `${product.id || product.productId}-${variant.size || ''}-${variant.color || ''}`;
             const itemExists = prevItems.find((item) => item.cartId === uniqueCartId);
 
+            // CHUẨN HÓA DỮ LIỆU ĐẦU VÀO
+            // Đảm bảo dù backend trả về 'Status' hay 'status' thì ta đều lưu thống nhất
+            const productStatus = product.status || product.Status || 'Active';
+
             if (itemExists) {
-                // Cộng dồn số lượng
                 return prevItems.map((item) =>
                     item.cartId === uniqueCartId
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             } else {
-                // Thêm mới
                 return [...prevItems, { 
                     ...product, 
+                    // Map lại các trường quan trọng để tránh lỗi undefined
+                    id: product.id || product.productId,
+                    status: productStatus, // <--- QUAN TRỌNG: Lưu cứng status vào
                     cartId: uniqueCartId, 
                     quantity: quantity, 
                     selectedSize: variant.size, 
@@ -43,12 +81,12 @@ export const CartProvider = ({ children }) => {
         alert("Đã thêm vào giỏ hàng thành công!");
     };
 
-    // --- LOGIC XÓA ---
+    // --- REMOVE ---
     const removeFromCart = (cartId) => {
         setCartItems((prevItems) => prevItems.filter((item) => item.cartId !== cartId));
     };
 
-    // --- LOGIC UPDATE SỐ LƯỢNG ---
+    // --- UPDATE QUANTITY ---
     const updateQuantity = (cartId, amount) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
@@ -59,22 +97,32 @@ export const CartProvider = ({ children }) => {
         );
     };
 
-    // --- LOGIC CLEAR CART (Dọn sạch giỏ hàng) ---
-    // <--- THÊM MỚI TẠI ĐÂY
+    // --- CLEAR CART ---
     const clearCart = () => {
         setCartItems([]); 
     };
 
-    // --- TÍNH TỔNG TIỀN ---
+    // --- TOTAL PRICE ---
     const totalPrice = cartItems.reduce((total, item) => {
         const price = Number(item.price) || 0;
         const qty = Number(item.quantity) || 1;
+        // Chỉ tính tiền sản phẩm KHÔNG bị ẩn (Tùy logic shop bạn)
+        // Nếu muốn tính hết thì bỏ điều kiện status này đi
+        if (item.status === 'Hidden') return total; 
+        
         return total + (price * qty);
     }, 0);
 
     return (
-        // Nhớ thêm clearCart vào value
-        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, totalPrice }}>
+        <CartContext.Provider value={{ 
+            cartItems, 
+            addToCart, 
+            removeFromCart, 
+            updateQuantity, 
+            clearCart, 
+            totalPrice,
+            refreshCartData // <--- Export thêm hàm này
+        }}>
             {children}
         </CartContext.Provider>
     );

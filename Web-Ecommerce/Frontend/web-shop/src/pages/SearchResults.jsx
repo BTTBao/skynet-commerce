@@ -22,14 +22,26 @@ function SearchResults() {
             try {
                 const queryString = searchParams.toString();
                 
-                // Gọi API lấy toàn bộ kết quả phù hợp
+                // Gọi API lấy kết quả tìm kiếm
                 const response = await fetch(`http://localhost:5198/api/products?${queryString}`);
                 
                 if (response.ok) {
                     const data = await response.json();
-                    setProducts(data);
+
+                    // ==============================================================
+                    // BƯỚC LỌC QUAN TRỌNG: ẨN SẢN PHẨM HIDDEN
+                    // ==============================================================
+                    const visibleProducts = data.filter(item => {
+                        // Lấy giá trị status (kiểm tra cả chữ hoa/thường cho chắc)
+                        const status = item.status || item.Status;
+                        
+                        // Chỉ giữ lại sản phẩm có Status KHÁC 'Hidden'
+                        return status !== 'Hidden';
+                    });
+
+                    setProducts(visibleProducts); // Lưu danh sách đã lọc
                     
-                    // --- 2. RESET VỀ TRANG 1 KHI TÌM KIẾM MỚI ---
+                    // Reset về trang 1 khi tìm kiếm mới
                     setCurrentPage(1); 
                 } else {
                     setProducts([]);
