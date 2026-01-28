@@ -135,15 +135,35 @@ namespace Skynet_Commerce.GUI.Forms
 
                 if (confirm == DialogResult.Yes)
                 {
-                    // Đảo trạng thái
-                    user.Status = user.Status == "Active" ? "Banned" : "Active";
+                    // 1. Lưu trạng thái cũ để revert nếu lỗi
+                    string oldStatus = user.Status;
 
-                    // TODO: Gọi Service để lưu xuống DB (Ví dụ: _userService.ChangeStatus(user.Id, user.Status))
-                    // Hiện tại code cũ bạn chỉ refresh grid, ở đây tôi giả lập update UI
-                    _dgvUsers.Refresh();
+                    // 2. Đổi trạng thái mới
+                    string newStatus = user.Status == "Active" ? "Banned" : "Active";
+                    user.Status = newStatus;
 
-                    // Cập nhật lại nút Ban ngay lập tức
-                    _dgvUsers_SelectionChanged(null, null);
+                    // 3. GỌI SERVICE ĐỂ UPDATE DATABASE
+                    // Lưu ý: Vì bạn đã có hàm UpdateUser dùng ở nút Edit, ta có thể tái sử dụng nó.
+                    // Nếu UserService của bạn có hàm riêng như ChangeStatus(id, status) thì càng tốt.
+                    bool isUpdated =  _userService.UpdateUser(user);
+
+                    if (isUpdated)
+                    {
+                        MessageBox.Show($"{actionText} thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
+                        // Hiện tại code cũ bạn chỉ refresh grid, ở đây tôi giả lập update UI
+                        _dgvUsers.Refresh();
+
+                        // Cập nhật lại nút Ban ngay lập tức
+                        _dgvUsers_SelectionChanged(null, null);
+                    }
+                    else
+                    {
+                        // Nếu lỗi, trả lại trạng thái cũ trên giao diện
+                        user.Status = oldStatus;
+                        MessageBox.Show("Có lỗi xảy ra, không thể cập nhật vào cơ sở dữ liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }

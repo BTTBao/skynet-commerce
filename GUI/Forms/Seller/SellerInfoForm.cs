@@ -15,6 +15,8 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         public SellerInfoForm()
         {
             InitializeComponent();
+            LoadDummyData();
+            SetFieldsEditable(false);
         }
     }
 }

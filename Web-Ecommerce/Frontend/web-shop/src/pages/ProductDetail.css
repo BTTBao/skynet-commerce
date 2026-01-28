@@ -1,0 +1,367 @@
+/* --- 1. KHUNG BAO NGOÀI (LAYOUT) --- */
+.detail-container {
+  background-color: #f5f5f5; /* Màu nền xám nhẹ cho toàn trang */
+  padding: 20px 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.detail-wrapper {
+  width: 1200px;
+  max-width: 95%;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  padding: 20px;
+  gap: 30px; /* Khoảng cách giữa cột ảnh và cột thông tin */
+}
+
+/* --- 2. CỘT TRÁI: ẢNH SẢN PHẨM --- */
+.product-gallery {
+  width: 40%; /* Chiếm 40% chiều rộng */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.main-image-frame {
+  width: 100%;
+  padding-top: 100%; /* Tạo khung vuông tỉ lệ 1:1 */
+  position: relative;
+  border: 1px solid #f2f2f2;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.main-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Đảm bảo ảnh hiển thị trọn vẹn */
+}
+
+.thumbnail-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto; /* Cho phép cuộn ngang nếu nhiều ảnh */
+  padding-bottom: 5px;
+}
+
+.thumb-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0.7;
+  transition: all 0.2s;
+}
+
+.thumb-img:hover, 
+.thumb-img.active {
+  border-color: #ee4d2d; /* Viền cam khi trỏ vào hoặc đang chọn */
+  opacity: 1;
+}
+
+/* --- 3. CỘT PHẢI: THÔNG TIN CHI TIẾT --- */
+.product-info {
+  flex: 1; /* Chiếm phần còn lại */
+  display: flex;
+  flex-direction: column;
+}
+
+.product-name {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.product-meta {
+  font-size: 0.9rem;
+  color: #757575;
+  margin-bottom: 15px;
+}
+
+.product-meta span {
+  margin-right: 10px;
+}
+
+.product-meta strong {
+  color: #ee4d2d;
+  margin-left: 4px;
+}
+
+.product-price {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ee4d2d; /* Màu cam giá tiền */
+  background-color: #fafafa;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.product-description p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.6;
+  white-space: pre-line; /* Giữ xuống dòng từ DB */
+  max-height: 150px;
+  overflow-y: auto; /* Cuộn nếu mô tả quá dài */
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #e8e8e8;
+  margin: 20px 0;
+}
+
+/* --- 4. PHẦN CHỌN VARIANT (SIZE/COLOR) --- */
+.variant-group {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  margin-bottom: 20px;
+}
+
+.variant-label {
+  width: 100px; /* Độ rộng cố định cho nhãn "Kích thước", "Màu sắc" */
+  color: #757575;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.variant-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.variant-btn {
+  padding: 6px 15px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  border-radius: 2px;
+  min-width: 60px;
+  transition: all 0.2s;
+}
+
+.variant-btn:hover {
+  border-color: #ee4d2d;
+  color: #ee4d2d;
+}
+
+/* Trạng thái được chọn */
+.variant-btn.active {
+  border-color: #ee4d2d;
+  color: #ee4d2d;
+  background-color: #fff5f1; /* Nền cam nhạt */
+  font-weight: 500;
+  position: relative;
+}
+
+/* Thêm dấu tích nhỏ ở góc nếu muốn (Option) */
+.variant-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0; right: 0;
+  border-bottom: 12px solid #ee4d2d;
+  border-left: 12px solid transparent;
+}
+
+/* --- 5. PHẦN SỐ LƯỢNG & NÚT MUA --- */
+.purchase-area {
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.quantity-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.quantity-control {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+.quantity-control button {
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.quantity-control input {
+  width: 50px;
+  text-align: center;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-top: none;
+  border-bottom: none;
+  font-size: 1rem;
+}
+
+.add-to-cart-btn {
+  background-color: #ee4d2d;
+  color: #fff;
+  border: 1px solid #ee4d2d;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: opacity 0.2s;
+  width: 250px; /* Độ rộng nút */
+}
+
+.add-to-cart-btn:hover {
+  opacity: 0.9;
+}
+
+/* --- 6. PHẦN THÔNG TIN SHOP (SHOP CARD) --- */
+.shop-info-card {
+  border-top: 1px solid #e8e8e8;
+  padding-top: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.shop-header-left {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  flex-shrink: 0;
+}
+
+.shop-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid #e8e8e8;
+  object-fit: cover;
+}
+
+.official-badge {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #d0011b;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.shop-details-right {
+  flex: 1;
+}
+
+.shop-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0 0 5px 0;
+}
+
+.shop-stats {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.divider-vertical {
+  color: #ccc;
+}
+
+.shop-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.shop-actions button,
+.shop-actions a {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 2px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-chat {
+  background-color: #00bfa5; /* Màu xanh chat */
+  color: white;
+  border: none;
+}
+
+.btn-view-shop {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  color: #555;
+}
+
+.btn-view-shop:hover {
+  background-color: #f5f5f5;
+}
+
+/* --- 7. MÀN HÌNH LOADING / ERROR --- */
+.loading-screen, .error-screen {
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error-screen {
+  color: red;
+}
+
+/* --- 8. RESPONSIVE (MOBILE) --- */
+@media (max-width: 768px) {
+  .detail-wrapper {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .product-gallery {
+    width: 100%;
+  }
+
+  .variant-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .variant-label {
+    margin-bottom: 8px;
+  }
+
+  .add-to-cart-btn {
+    width: 100%; /* Nút mua full màn hình trên mobile */
+  }
+}

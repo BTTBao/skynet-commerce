@@ -1,5 +1,6 @@
 ﻿using Skynet_Commerce.BLL.Models.Admin;
 using Skynet_Ecommerce;
+using Skynet_Ecommerce.BLL.Models.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace Skynet_Commerce.BLL.Services.Admin
                                   CategoryName = x.CategoryName,
                                   Price = x.p.Price ?? 0,
                                   StockQuantity = x.p.StockQuantity ?? 0,
-                                  Status = (x.p.StockQuantity == 0) ? "Out of Stock" : x.p.Status
+                                  Status = (x.p.StockQuantity == 0) ? "OutOfStock" : x.p.Status
                               }).ToList();
 
             return result;
@@ -76,41 +77,126 @@ namespace Skynet_Commerce.BLL.Services.Admin
             return _context.Products.FirstOrDefault(p => p.ProductID == id);
         }
 
-        public void UpdateProduct(int id, string name, decimal price, int stock)
+    public ProductFullDetailViewModel GetProductFullDetail(int productId)
+    {
+        // 1. Query thông tin chính + Shop + Category bằng .Include (Nạp ngay lập tức)
+        // Cách này thay thế cho việc dùng .Reference().Load() bị lỗi
+        var product = _context.Products
+                              .Include("Shop")       // Load thông tin Shop
+                              .Include("Category")   // Load thông tin Category
+                              .FirstOrDefault(p => p.ProductID == productId);
+
+        if (product == null) return null;
+
+        // 2. Lấy tên Chủ Shop (Shop Owner)
+        // Vì bảng Account chưa chắc đã có kết nối ngược lại User (User -> Account thì có, nhưng Account -> User có thể chưa config)
+        // Nên ta query trực tiếp từ bảng User dựa vào AccountID của Shop cho an toàn nhất.
+        string ownerName = "Unknown";
+        if (product.Shop != null)
         {
-            var p = _context.Products.FirstOrDefault(x => x.ProductID == id);
-            if (p == null) throw new Exception("Không tìm thấy sản phẩm");
+            var owner = _context.Users.FirstOrDefault(u => u.AccountID == product.Shop.AccountID);
+            if (owner != null) ownerName = owner.FullName;
+        }
 
-            p.Name = name;
-            p.Price = price;
-            p.StockQuantity = stock;
+        // 3. Lấy danh sách ảnh
+        var images = _context.ProductImages
+                             .Where(img => img.ProductID == productId)
+                             .Select(img => img.ImageURL)
+                             .ToList();
 
-            // Tự động cập nhật Status nếu hết hàng
-            if (stock > 0 && p.Status == "Out of Stock") p.Status = "Active";
-            if (stock == 0) p.Status = "Out of Stock";
+        // 4. Lấy danh sách biến thể
+        var variants = _context.ProductVariants
+                               .Where(v => v.ProductID == productId)
+                               .Select(v => new VariantViewModel
+                               {
+                                   SKU = v.SKU,
+                                   Size = v.Size,
+                                   Color = v.Color,
+                                   Price = v.Price ?? 0,
+                                   Stock = v.StockQuantity ?? 0
+                               }).ToList();
+
+        // 5. Map sang ViewModel
+        return new ProductFullDetailViewModel
+        {
+            ProductID = product.ProductID,
+            ProductName = product.Name,
+            Description = product.Description,
+            Price = product.Price ?? 0,
+            StockQuantity = product.StockQuantity ?? 0,
+            CategoryName = product.Category != null ? product.Category.CategoryName : "N/A",
+            Status = product.Status,
+            CreatedAt = product.CreatedAt ?? DateTime.Now,
+
+            ShopID = product.ShopID ?? 0,
+            ShopName = product.Shop != null ? product.Shop.ShopName : "Unknown",
+            ShopOwner = ownerName, // Đã lấy ở bước 2
+
+            Images = images,
+            Variants = variants
+        };
+    }
+    // Hàm Xóa an toàn (Nghiệp vụ Xóa Mềm)
+    public void DeleteProductSafe(int productId)
+        {
+            var p = _context.Products.FirstOrDefault(x => x.ProductID == productId);
+            if (p == null) throw new Exception("Sản phẩm không tồn tại.");
+
+            // 1. Kiểm tra ràng buộc
+            bool isUsedInOrders = _context.OrderDetails.Any(od => od.ProductID == productId);
+            bool isUsedInCart = _context.CartItems.Any(ci => ci.ProductID == productId);
+            bool isVariantUsed = _context.OrderDetails.Any(od => od.ProductVariant.ProductID == productId);
+
+            if (isUsedInOrders || isUsedInCart || isVariantUsed)
+            {
+                // === SOFT DELETE ===
+                // Database không có trạng thái 'Deleted', nên ta dùng 'Hidden'
+                p.Status = "Hidden";
+
+                // Đổi tên để đánh dấu (Optional: giúp Admin phân biệt hàng ẩn và hàng xóa)
+                if (!p.Name.StartsWith("[Đã xóa]"))
+                {
+                    p.Name = "[Đã xóa] " + p.Name;
+                }
+            }
+            else
+            {
+                // === HARD DELETE (Giữ nguyên logic cũ) ===
+                var images = _context.ProductImages.Where(x => x.ProductID == productId);
+                _context.ProductImages.RemoveRange(images);
+
+                var variants = _context.ProductVariants.Where(x => x.ProductID == productId);
+                _context.ProductVariants.RemoveRange(variants);
+
+                var reviews = _context.Reviews.Where(x => x.ProductID == productId);
+                _context.Reviews.RemoveRange(reviews);
+
+                var wishlists = _context.Wishlists.Where(x => x.ProductID == productId);
+                _context.Wishlists.RemoveRange(wishlists);
+
+                _context.Products.Remove(p);
+            }
 
             _context.SaveChanges();
         }
 
-        public void ToggleProductStatus(int id)
+        public void UpdateProductStatus(int productId, string newStatus)
         {
-            var p = _context.Products.FirstOrDefault(x => x.ProductID == id);
-            if (p == null) throw new Exception("Không tìm thấy sản phẩm");
+            // Validate dữ liệu đầu vào chặt chẽ để không gây lỗi SQL
+            var allowedStatuses = new List<string> { "Active", "Hidden", "OutOfStock" }
+            ;
 
-            // Logic: Nếu Active -> Hidden, Ngược lại -> Active
-            if (p.Status == "Active") p.Status = "Hidden";
-            else p.Status = "Active";
+            if (!allowedStatuses.Contains(newStatus))
+            {
+                throw new Exception($"Trạng thái '{newStatus}' không hợp lệ. Chỉ chấp nhận: Active, Hidden, OutOfStock.");
+            }
 
-            _context.SaveChanges();
-        }
-
-        public void DeleteProduct(int id)
-        {
-            var p = _context.Products.FirstOrDefault(x => x.ProductID == id);
-            if (p == null) throw new Exception("Không tìm thấy sản phẩm");
-
-            _context.Products.Remove(p);
-            _context.SaveChanges();
+            var p = _context.Products.Find(productId);
+            if (p != null)
+            {
+                p.Status = newStatus;
+                _context.SaveChanges();
+            }
         }
     }
 }

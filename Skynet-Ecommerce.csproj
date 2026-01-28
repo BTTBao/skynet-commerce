@@ -35,6 +35,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Skynet_Ecommerce.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
@@ -133,7 +139,9 @@
     <Compile Include="BLL\Models\Admin\DashboardModel.cs" />
     <Compile Include="BLL\Models\Admin\OrderViewModel.cs" />
     <Compile Include="BLL\Models\Admin\PendingShopViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ProductFullDetailViewModel.cs" />
     <Compile Include="BLL\Models\Admin\ProductViewModel.cs" />
+    <Compile Include="BLL\Models\Admin\ShopFullDetailViewModel.cs" />
     <Compile Include="BLL\Models\Admin\ShopViewModel.cs" />
     <Compile Include="BLL\Models\Admin\UserViewModel.cs" />
     <Compile Include="BLL\Services\Admin\CategoryService.cs" />
@@ -353,8 +361,14 @@
     <EmbeddedResource Include="GUI\Forms\Admin\FormUserDetails.resx">
       <DependentUpon>FormUserDetails.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\OrderDetailForm.resx">
+      <DependentUpon>OrderDetailForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\OrdersForm.resx">
       <DependentUpon>OrdersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\ProductDetailForm.resx">
+      <DependentUpon>ProductDetailForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\ProductsForm.resx">
       <DependentUpon>ProductsForm.cs</DependentUpon>
