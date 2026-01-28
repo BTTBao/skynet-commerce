@@ -2,12 +2,9 @@
 using Skynet_Ecommerce.DAL.Repositories.Seller;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Skynet_Ecommerce.GUI.Forms.Seller
@@ -27,31 +24,23 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         public SellerProductForm(int shopId)
         {
             InitializeComponent();
-
             _shopId = shopId;
 
-            // Khởi tạo services
+            // Khởi tạo context và services (Nên dùng Dependency Injection nếu có thể)
             var context = new ApplicationDbContext();
             var unitOfWork = new UnitOfWork(context);
             _productService = new ProductService(unitOfWork);
             _categoryService = new CategoryService(unitOfWork);
-            this.Load += SellerProductForm_Load2;
+
+            this.Load += SellerProductForm_Load;
         }
 
-        private void SellerProductForm_Load1(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        public SellerProductForm() : this(1) { }
 
-        public SellerProductForm() : this(1) // Constructor mặc định với shopId = 1
-        {
-        }
-
-        private void SellerProductForm_Load2(object sender, EventArgs e)
+        private void SellerProductForm_Load(object sender, EventArgs e)
         {
             LoadProducts();
-
-            // Thêm event cho textbox search
+            // Gán sự kiện TextChanged cho tìm kiếm
             txtSearch.TextChanged += TxtSearch_TextChanged;
         }
 
@@ -59,30 +48,19 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         {
             try
             {
-                // Lấy tất cả sản phẩm của shop
+                // Lấy toàn bộ sản phẩm của shop từ Service
                 _allProducts = _productService.GetProductsByShop(_shopId).ToList();
                 _filteredProducts = _allProducts;
 
-                if (_allProducts.Count == 0)
-                {
-                    MessageBox.Show("Chưa có sản phẩm nào. Vui lòng thêm sản phẩm mới.", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                // Tính tổng số trang
                 _totalPages = (int)Math.Ceiling((double)_filteredProducts.Count / _pageSize);
-
-                // Reset về trang 1
                 _currentPage = 1;
 
-                // Hiển thị dữ liệu
                 DisplayProducts();
                 UpdatePaginationInfo();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải danh sách sản phẩm: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -91,236 +69,143 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             try
             {
                 dgvProducts.Rows.Clear();
+                if (_filteredProducts == null || !_filteredProducts.Any()) return;
 
-                if (_filteredProducts == null || _filteredProducts.Count == 0) return;
-
-                // Lấy sản phẩm của trang hiện tại
-                var productsToDisplay = _filteredProducts
+                var pagedList = _filteredProducts
                     .Skip((_currentPage - 1) * _pageSize)
                     .Take(_pageSize)
                     .ToList();
 
-                foreach (var product in productsToDisplay)
+                foreach (var p in pagedList)
                 {
-                    // Thêm một dòng mới và lấy chỉ số của dòng đó
                     int rowIndex = dgvProducts.Rows.Add();
                     DataGridViewRow row = dgvProducts.Rows[rowIndex];
 
-                    // Gán giá trị dựa trên chính xác "Name" của cột đã tạo ở Designer
-                    row.Cells["Id"].Value = product.ProductID;
-                    row.Cells["Name"].Value = product.Name;
-                    row.Cells["Category"].Value = product.Category?.CategoryName ?? "N/A";
-                    row.Cells["Price"].Value = (product.Price ?? 0).ToString("N0") + " VNĐ";
-                    row.Cells["Stock"].Value = product.StockQuantity ?? 0;
-                    row.Cells["SoldCount"].Value = product.SoldCount ?? 0;
-                    row.Cells["Status"].Value = product.Status ?? "N/A";
+                    row.Cells["Id"].Value = p.ProductID;
+                    row.Cells["ColName"].Value = p.Name;
+                    row.Cells["Category"].Value = p.Category?.CategoryName ?? "Khác";
+                    row.Cells["Price"].Value = (p.Price ?? 0).ToString("N0");
+                    row.Cells["Stock"].Value = p.StockQuantity;
+                    row.Cells["Status"].Value = p.Status;
 
-                    // Gán icon cho 2 cột cuối (giữ nguyên logic của bạn)
-                    row.Cells[dgvProducts.Columns.Count - 2].Value = Properties.Resources.LOGO;
-                    row.Cells[dgvProducts.Columns.Count - 1].Value = Properties.Resources.LOGO;
+                    row.Tag = p;
 
-                    // Lưu đối tượng product vào Tag để xử lý sự kiện Click
-                    row.Tag = product;
-
-                    // Cập nhật màu sắc dựa trên trạng thái ngay khi load
-                    if (product.Status == "Hidden")
+                    if (p.Status == "Hidden")
                     {
-                        row.DefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
-                        row.DefaultCellStyle.ForeColor = Color.Gray;
+                        row.DefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
+                        row.DefaultCellStyle.ForeColor = Color.DarkGray;
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi hiển thị: " + ex.Message);
-            }
-        }
-
-        private void UpdatePaginationInfo()
-        {
-            if (_totalPages == 0)
-            {
-                lblPageInfo.Text = "0 / 0";
-                btnPrevPage.Enabled = false;
-                btnNextPage.Enabled = false;
-            }
-            else
-            {
-                lblPageInfo.Text = $"{_currentPage} / {_totalPages}";
-                btnPrevPage.Enabled = _currentPage > 1;
-                btnNextPage.Enabled = _currentPage < _totalPages;
-            }
-        }
-
-        private void TxtSearch_TextChanged(object sender, EventArgs e)
-        {
-            string searchText = txtSearch.Text.Trim().ToLower();
-
-            if (string.IsNullOrEmpty(searchText))
-            {
-                _filteredProducts = _allProducts;
-            }
-            else
-            {
-                _filteredProducts = _allProducts.Where(p =>
-                    p.Name.ToLower().Contains(searchText) ||
-                    (p.Category?.CategoryName.ToLower().Contains(searchText) ?? false)
-                ).ToList();
-            }
-
-            // Tính lại tổng số trang
-            _totalPages = (int)Math.Ceiling((double)_filteredProducts.Count / _pageSize);
-
-            // Reset về trang 1
-            _currentPage = 1;
-
-            // Hiển thị lại
-            DisplayProducts();
-            UpdatePaginationInfo();
-        }
-
-        private void BtnAddProduct_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Mở form thêm sản phẩm
-                AddProductForm addProductForm = new AddProductForm(_shopId);
-
-                if (addProductForm.ShowDialog() == DialogResult.OK)
-                {
-                    // Reload danh sách sản phẩm sau khi thêm thành công
-                    LoadProducts();
-
-                    MessageBox.Show("Đã thêm sản phẩm thành công!", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi mở form thêm sản phẩm: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void BtnPrevPage_Click(object sender, EventArgs e)
-        {
-            if (_currentPage > 1)
-            {
-                _currentPage--;
-                DisplayProducts();
-                UpdatePaginationInfo();
-            }
-        }
-
-        private void BtnNextPage_Click(object sender, EventArgs e)
-        {
-            if (_currentPage < _totalPages)
-            {
-                _currentPage++;
-                DisplayProducts();
-                UpdatePaginationInfo();
+                // Nếu vẫn lỗi, Message này sẽ chỉ rõ bạn đang thiếu cột nào
+                MessageBox.Show("Lỗi hiển thị chi tiết: " + ex.Message);
             }
         }
 
         private void DgvProducts_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // 1. Kiểm tra nếu click vào Header row (index -1) thì bỏ qua
             if (e.RowIndex < 0) return;
 
-            DataGridViewRow row = dgvProducts.Rows[e.RowIndex];
-            Product product = row.Tag as Product;
+            // 2. Lấy Product từ Tag
+            Product selectedProduct = dgvProducts.Rows[e.RowIndex].Tag as Product;
+            if (selectedProduct == null) return;
 
-            if (product == null) return;
+            // 3. Lấy tên cột được click
+            string colName = dgvProducts.Columns[e.ColumnIndex].Name;
 
-            // Nút Ẩn/Hiện (cột thứ 2 từ cuối)
-            if (e.ColumnIndex == dgvProducts.Columns.Count - 2)
+            switch (colName)
             {
-                ToggleProductStatus(product, row);
-            }
-
-            // Nút Sửa (cột cuối cùng)
-            if (e.ColumnIndex == dgvProducts.Columns.Count - 1)
-            {
-                EditProduct(product);
-            }
-        }
-
-        private void ToggleProductStatus(Product product, DataGridViewRow row)
-        {
-            try
-            {
-                string currentStatus = product.Status;
-                string newStatus = currentStatus == "Active" ? "Hidden" : "Active";
-                string action = newStatus == "Active" ? "hiện" : "ẩn";
-
-                DialogResult result = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn {action} sản phẩm '{product.Name}'?",
-                    "Xác nhận",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                {
-                    product.Status = newStatus;
-                    bool success = _productService.UpdateProduct(product);
-
-                    if (success)
-                    {
-                        MessageBox.Show($"Đã {action} sản phẩm thành công!", "Thông báo",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        // Cập nhật màu sắc của row
-                        if (newStatus == "Hidden")
-                        {
-                            row.DefaultCellStyle.BackColor = Color.LightGray;
-                            row.DefaultCellStyle.ForeColor = Color.DarkGray;
-                        }
-                        else
-                        {
-                            row.DefaultCellStyle.BackColor = Color.White;
-                            row.DefaultCellStyle.ForeColor = Color.Black;
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Có lỗi xảy ra khi cập nhật trạng thái sản phẩm!", "Lỗi",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                case "ViewProduct": // Phải khớp với Name trong Designer
+                    OpenDetailForm(selectedProduct);
+                    break;
+                case "EditProduct":
+                    OpenEditForm(selectedProduct);
+                    break;
+                case "ToggleStatus":
+                    HandleToggleStatus(selectedProduct, dgvProducts.Rows[e.RowIndex]);
+                    break;
             }
         }
 
-        private void EditProduct(Product product)
+        private void OpenDetailForm(Product product)
         {
-            try
-            {
-                // TODO: Tạo form EditProductForm tương tự AddProductForm
-                MessageBox.Show($"Chức năng sửa sản phẩm '{product.Name}' đang được phát triển.",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+            // Truyền trực tiếp Object Product sang Form Detail
+            SellerProductDetailForm detailForm = new SellerProductDetailForm(product);
+            detailForm.ShowDialog();
+        }
 
-                /*
-                // Code mẫu khi đã có EditProductForm:
-                EditProductForm editForm = new EditProductForm(product.ProductID, _shopId);
-                
-                if (editForm.ShowDialog() == DialogResult.OK)
-                {
-                    LoadProducts();
-                    MessageBox.Show("Đã cập nhật sản phẩm thành công!", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                */
-            }
-            catch (Exception ex)
+        private void OpenEditForm(Product product)
+        {
+
+            AddProductForm editForm = new AddProductForm(_shopId, product);
+
+            if (editForm.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoadProducts(); // Reload lại danh sách
             }
+        }
+
+        private void HandleToggleStatus(Product product, DataGridViewRow row)
+        {
+            string nextStatus = (product.Status == "Active") ? "Hidden" : "Active";
+            string actionText = (nextStatus == "Hidden") ? "ẨN" : "HIỆN";
+
+            var confirm = MessageBox.Show($"Bạn có chắc chắn muốn {actionText} sản phẩm này?",
+                                        "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                product.Status = nextStatus;
+                if (_productService.UpdateProduct(product)) // Cập nhật DB qua Service
+                {
+                    // Cập nhật UI ngay lập tức không cần load lại toàn bộ Grid
+                    row.Cells["Status"].Value = nextStatus;
+                    DisplayProducts(); // Hoặc xử lý màu sắc dòng tại đây để tối ưu
+                }
+            }
+        }
+
+        // ==========================================
+        // PHÂN TRANG & TÌM KIẾM
+        // ==========================================
+        private void TxtSearch_TextChanged(object sender, EventArgs e)
+        {
+            string key = txtSearch.Text.Trim().ToLower();
+            _filteredProducts = _allProducts.Where(p =>
+                p.Name.ToLower().Contains(key) ||
+                (p.Category?.CategoryName.ToLower().Contains(key) ?? false)
+            ).ToList();
+
+            _totalPages = (int)Math.Ceiling((double)_filteredProducts.Count / _pageSize);
+            _currentPage = 1;
+            DisplayProducts();
+            UpdatePaginationInfo();
+        }
+
+        private void UpdatePaginationInfo()
+        {
+            lblPageInfo.Text = $"{_currentPage} / {Math.Max(1, _totalPages)}";
+            btnPrevPage.Enabled = _currentPage > 1;
+            btnNextPage.Enabled = _currentPage < _totalPages;
+        }
+
+        private void BtnPrevPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage > 1) { _currentPage--; DisplayProducts(); UpdatePaginationInfo(); }
+        }
+
+        private void BtnNextPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage < _totalPages) { _currentPage++; DisplayProducts(); UpdatePaginationInfo(); }
+        }
+
+        private void BtnAddProduct_Click(object sender, EventArgs e)
+        {
+            AddProductForm addForm = new AddProductForm(_shopId);
+            if (addForm.ShowDialog() == DialogResult.OK) LoadProducts();
         }
     }
 }

@@ -17,13 +17,19 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
-        private readonly int _shopId; // ID của shop hiện tại
+        private readonly int _shopId;
 
+        // Thêm biến để xác định mode và lưu product đang edit
+        private bool _isEditMode = false;
+        private Product _editingProduct = null;
+
+        // Constructor cho chế độ Thêm mới
         public AddProductForm(int shopId)
         {
             InitializeComponent();
 
             _shopId = shopId;
+            _isEditMode = false;
 
             // Khởi tạo services
             var context = new ApplicationDbContext();
@@ -32,13 +38,134 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             _productService = new ProductService(unitOfWork);
         }
 
+        // Constructor cho chế độ Sửa
+        public AddProductForm(int shopId, Product product) : this(shopId)
+        {
+            _isEditMode = true;
+            _editingProduct = product;
+        }
+
         private void AddProductForm_Load(object sender, EventArgs e)
         {
             // Load danh mục sản phẩm từ database
             LoadCategories();
 
-            // Thêm một variant mặc định
-            AddVariantControl();
+            if (_isEditMode && _editingProduct != null)
+            {
+                // Chế độ sửa: Load dữ liệu sản phẩm
+                this.Text = "Chỉnh sửa sản phẩm";
+                btnSave.Text = "Cập nhật";
+                LoadProductData();
+            }
+            else
+            {
+                // Chế độ thêm: Thêm một variant mặc định
+                this.Text = "Thêm sản phẩm mới";
+                btnSave.Text = "Lưu";
+                AddVariantControl();
+            }
+        }
+
+        private void LoadProductData()
+        {
+            if (_editingProduct == null) return;
+
+            try
+            {
+                // Load thông tin cơ bản
+                txtProductName.Text = _editingProduct.Name;
+                txtDescription.Text = _editingProduct.Description;
+                txtPrice.Text = _editingProduct.Price.ToString();
+
+                // Chọn category
+                if (_editingProduct.CategoryID.HasValue)
+                {
+                    cboCategory.SelectedValue = _editingProduct.CategoryID.Value;
+                }
+
+                // Load ảnh chính
+                if (_editingProduct.ProductImages != null && _editingProduct.ProductImages.Any())
+                {
+                    var primaryImage = _editingProduct.ProductImages.FirstOrDefault(img => img.IsPrimary == true);
+                    if (primaryImage != null)
+                    {
+                        mainImagePath = primaryImage.ImageURL;
+                        try
+                        {
+                            // Nếu là URL, load từ URL
+                            if (mainImagePath.StartsWith("http"))
+                            {
+                                picMainImage.Load(mainImagePath);
+                            }
+                            else
+                            {
+                                // Nếu là đường dẫn local
+                                picMainImage.Image = Image.FromFile(mainImagePath);
+                            }
+                        }
+                        catch
+                        {
+                            // Nếu load ảnh thất bại, giữ nguyên path
+                        }
+                    }
+
+                    // Load ảnh phụ
+                    var subImages = _editingProduct.ProductImages.Where(img => img.IsPrimary != true).ToList();
+                    foreach (var img in subImages)
+                    {
+                        subImagePaths.Add(img.ImageURL);
+                        AddSubImageToPanel(img.ImageURL);
+                    }
+                }
+
+                // Load variants
+                if (_editingProduct.ProductVariants != null && _editingProduct.ProductVariants.Any())
+                {
+                    foreach (var variant in _editingProduct.ProductVariants)
+                    {
+                        var variantControl = new VariantControl();
+                        variantControl.OnRemove += VariantControl_OnRemove;
+                        variantControl.Margin = new Padding(5);
+
+                        // Set dữ liệu cho variant
+                        variantControl.SetVariantData(new VariantData
+                        {
+                            Color = variant.Color,
+                            Size = variant.Size,
+                            Price = (decimal)variant.Price,
+                            Stock = (int)variant.StockQuantity,
+                            SKU = variant.SKU
+                        });
+
+                        flowLayoutVariants.Controls.Add(variantControl);
+                        variantControls.Add(variantControl);
+                    }
+                }
+                else
+                {
+                    // Nếu không có variant, thêm một variant mặc định với thông tin sản phẩm
+                    var variantControl = new VariantControl();
+                    variantControl.OnRemove += VariantControl_OnRemove;
+                    variantControl.Margin = new Padding(5);
+
+                    variantControl.SetVariantData(new VariantData
+                    {
+                        Color = "Mặc định",
+                        Size = "Mặc định",
+                        Price = (decimal)_editingProduct.Price,
+                        Stock = (int)_editingProduct.StockQuantity,
+                        SKU = ""
+                    });
+
+                    flowLayoutVariants.Controls.Add(variantControl);
+                    variantControls.Add(variantControl);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi load dữ liệu sản phẩm: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void LoadCategories()
@@ -140,8 +267,17 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                 pictureBox.Size = new Size(110, 100);
                 pictureBox.Location = new Point(5, 5);
                 pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-                pictureBox.Image = Image.FromFile(imagePath);
                 pictureBox.BorderStyle = BorderStyle.FixedSingle;
+
+                // Load ảnh (hỗ trợ cả URL và local path)
+                if (imagePath.StartsWith("http"))
+                {
+                    pictureBox.Load(imagePath);
+                }
+                else
+                {
+                    pictureBox.Image = Image.FromFile(imagePath);
+                }
 
                 // Button xóa
                 Button btnRemove = new Button();
@@ -230,33 +366,15 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             {
                 try
                 {
-                    // Tạo ProductDTO
-                    var productDto = new ProductDTO
+                    if (_isEditMode)
                     {
-                        Name = txtProductName.Text.Trim(),
-                        Description = txtDescription.Text.Trim(),
-                        Price = decimal.Parse(txtPrice.Text.Trim()),
-                        CategoryId = (int)cboCategory.SelectedValue,
-                        MainImagePath = mainImagePath,
-                        SubImagePaths = subImagePaths,
-                        Variants = variantControls.Select(v => v.GetVariantData()).ToList()
-                    };
-
-                    // Lưu vào database
-                    bool success = _productService.AddProduct(productDto, _shopId);
-
-                    if (success)
-                    {
-                        MessageBox.Show("Thêm sản phẩm thành công!", "Thành công",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        this.DialogResult = DialogResult.OK;
-                        this.Close();
+                        // Chế độ cập nhật
+                        UpdateProduct();
                     }
                     else
                     {
-                        MessageBox.Show("Có lỗi xảy ra khi lưu sản phẩm!", "Lỗi",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Chế độ thêm mới
+                        AddProduct();
                     }
                 }
                 catch (Exception ex)
@@ -264,6 +382,125 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                     MessageBox.Show("Lỗi khi lưu sản phẩm: " + ex.Message, "Lỗi",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private void AddProduct()
+        {
+            // Tạo ProductDTO
+            var productDto = new ProductDTO
+            {
+                Name = txtProductName.Text.Trim(),
+                Description = txtDescription.Text.Trim(),
+                Price = decimal.Parse(txtPrice.Text.Trim()),
+                CategoryId = (int)cboCategory.SelectedValue,
+                MainImagePath = mainImagePath,
+                SubImagePaths = subImagePaths,
+                Variants = variantControls.Select(v => v.GetVariantData()).ToList()
+            };
+
+            // Lưu vào database
+            bool success = _productService.AddProduct(productDto, _shopId);
+
+            if (success)
+            {
+                MessageBox.Show("Thêm sản phẩm thành công!", "Thành công",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi xảy ra khi lưu sản phẩm!", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private List<ProductImage> GetProductImages()
+        {
+            var images = new List<ProductImage>();
+
+            // Ảnh chính
+            if (!string.IsNullOrEmpty(mainImagePath))
+            {
+                images.Add(new ProductImage
+                {
+                    ProductID = _editingProduct?.ProductID ?? 0,
+                    ImageURL = mainImagePath,
+                    IsPrimary = true
+                });
+            }
+
+            // Ảnh phụ
+            foreach (var imagePath in subImagePaths)
+            {
+                images.Add(new ProductImage
+                {
+                    ProductID = _editingProduct?.ProductID ?? 0,
+                    ImageURL = imagePath,
+                    IsPrimary = false
+                });
+            }
+
+            return images;
+        }
+
+        private List<ProductVariant> GetProductVariants()
+        {
+            var variants = new List<ProductVariant>();
+
+            foreach (var variantControl in variantControls)
+            {
+                var variantData = variantControl.GetVariantData();
+
+                variants.Add(new ProductVariant
+                {
+                    ProductID = _editingProduct?.ProductID ?? 0,
+                    Size = variantData.Size,
+                    Color = variantData.Color,
+                    SKU = variantData.SKU,
+                    Price = variantData.Price,
+                    StockQuantity = variantData.Stock
+                });
+            }
+
+            return variants;
+        }
+
+        private void UpdateProduct()
+        {
+            if (_editingProduct == null) return;
+
+            // Tạo ProductDTO với ID của sản phẩm đang edit
+            // Thu thập dữ liệu từ các controls trên Form
+            var product = new Product
+            {
+                ProductID = _editingProduct.ProductID,
+                Name = txtProductName.Text.Trim(),
+                Description = txtDescription.Text.Trim(),
+                Price = decimal.TryParse(txtPrice.Text.Trim(), out decimal price) ? price : 0,
+                CategoryID = cboCategory.SelectedValue != null ? (int?)cboCategory.SelectedValue : null,
+                ShopID = _shopId,
+                Status = "Active",
+                ProductImages = GetProductImages(),
+                ProductVariants = GetProductVariants()
+            };
+            // Cập nhật vào database
+            bool success = _productService.UpdateProduct(product);
+
+            if (success)
+            {
+                MessageBox.Show("Cập nhật sản phẩm thành công!", "Thành công",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi xảy ra khi cập nhật sản phẩm!", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -500,6 +737,16 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             OnRemove?.Invoke(this, EventArgs.Empty);
         }
 
+        // Thêm method để set dữ liệu cho variant (dùng khi edit)
+        public void SetVariantData(VariantData data)
+        {
+            txtColor.Text = data.Color ?? "";
+            txtSize.Text = data.Size ?? "";
+            txtPrice.Text = data.Price.ToString();
+            txtStock.Text = data.Stock.ToString();
+            txtSKU.Text = data.SKU ?? "";
+        }
+
         public bool ValidateVariant()
         {
             if (string.IsNullOrWhiteSpace(txtColor.Text))
@@ -570,5 +817,9 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         public int Stock { get; set; }
         public string SKU { get; set; }
     }
+    #endregion
+
+    #region ProductDTO Class
+    
     #endregion
 }

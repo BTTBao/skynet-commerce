@@ -15,7 +15,8 @@ namespace Skynet_Commerce.BLL.Services.Admin
             _context = new ApplicationDbContext();
         }
         // Hàm lấy danh sách Order cho trang Admin
-        public List<OrderViewModel> GetAllOrders(string keyword = "", string status = "All")
+        public List<OrderViewModel> GetAllOrders(string keyword = "", string status = "All", 
+            DateTime? fromDate = null, DateTime? toDate = null)
         {
             // 1. Khởi tạo query cơ bản (Joins)
             var query = from o in _context.Orders
@@ -44,6 +45,17 @@ namespace Skynet_Commerce.BLL.Services.Admin
             if (!string.IsNullOrEmpty(status) && status != "All")
             {
                 query = query.Where(x => x.o.Status == status);
+            }
+            
+            // 4. Lọc theo khoảng thời gian
+            if (fromDate.HasValue)
+            {
+                query = query.Where(x => x.o.CreatedAt >= fromDate.Value);
+            }
+            
+            if (toDate.HasValue)
+            {
+                query = query.Where(x => x.o.CreatedAt <= toDate.Value);
             }
 
             // 4. Sắp xếp và Projection (Chuyển đổi sang ViewModel)

@@ -96,6 +96,9 @@ CREATE TABLE ShopRegistrations (
     FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID) ON DELETE CASCADE
 );
 
+ALTER TABLE ShopRegistrations
+ADD CitizenID NVARCHAR(20), 
+    CitizenImageURL NVARCHAR(500);
 
 /* =====================================================
    4. CATEGORIES – SHOPS – PRODUCTS

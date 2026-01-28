@@ -20,6 +20,12 @@ namespace Skynet_Ecommerce
         public string Description { get; set; }
 
         [StringLength(20)]
+        public string CitizenID { get; set; }
+
+        [StringLength(500)]
+        public string CitizenImageURL { get; set; }
+
+        [StringLength(20)]
         public string Status { get; set; }
 
         public DateTime? CreatedAt { get; set; }

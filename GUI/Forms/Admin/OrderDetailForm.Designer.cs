@@ -37,7 +37,7 @@
             this._pnlHeader.Controls.Add(this._btnClose);
             this._pnlHeader.Controls.Add(this._lblTitle);
             this._pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this._pnlHeader.FillColor = System.Drawing.Color.White;
+            this._pnlHeader.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(30)))), ((int)(((byte)(50)))));
             this._pnlHeader.Location = new System.Drawing.Point(0, 0);
             this._pnlHeader.Name = "_pnlHeader";
             this._pnlHeader.ShadowDecoration.Depth = 5;
@@ -49,8 +49,8 @@
             // 
             this._btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._btnClose.BorderRadius = 5;
-            this._btnClose.FillColor = System.Drawing.Color.White;
-            this._btnClose.IconColor = System.Drawing.Color.Gray;
+            this._btnClose.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+            this._btnClose.IconColor = System.Drawing.Color.White;
             this._btnClose.Location = new System.Drawing.Point(943, 12);
             this._btnClose.Name = "_btnClose";
             this._btnClose.Size = new System.Drawing.Size(45, 35);
@@ -61,7 +61,7 @@
             this._lblTitle.AutoSize = true;
             this._lblTitle.BackColor = System.Drawing.Color.Transparent;
             this._lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this._lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(40)))));
+            this._lblTitle.ForeColor = System.Drawing.Color.White;
             this._lblTitle.Location = new System.Drawing.Point(20, 15);
             this._lblTitle.Name = "_lblTitle";
             this._lblTitle.Size = new System.Drawing.Size(165, 25);
@@ -91,10 +91,10 @@
             this._tabControl.TabButtonIdleState.ForeColor = System.Drawing.Color.Gray;
             this._tabControl.TabButtonIdleState.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(42)))), ((int)(((byte)(57)))));
             this._tabControl.TabButtonSelectedState.BorderColor = System.Drawing.Color.Empty;
-            this._tabControl.TabButtonSelectedState.FillColor = System.Drawing.Color.White;
+            this._tabControl.TabButtonSelectedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(37)))), ((int)(((byte)(49)))));
             this._tabControl.TabButtonSelectedState.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
-            this._tabControl.TabButtonSelectedState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this._tabControl.TabButtonSelectedState.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this._tabControl.TabButtonSelectedState.ForeColor = System.Drawing.Color.White;
+            this._tabControl.TabButtonSelectedState.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
             this._tabControl.TabButtonSize = new System.Drawing.Size(180, 45);
             this._tabControl.TabIndex = 1;
             this._tabControl.TabMenuBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(42)))), ((int)(((byte)(57)))));
