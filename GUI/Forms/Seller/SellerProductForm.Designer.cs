@@ -87,7 +87,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtSearch.DefaultText = "";
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtSearch.Location = new System.Drawing.Point(0, 10);
+            this.txtSearch.Location = new System.Drawing.Point(20, 10);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.PlaceholderText = "Tìm kiếm sản phẩm...";
@@ -101,7 +101,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.btnAddProduct.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.btnAddProduct.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnAddProduct.ForeColor = System.Drawing.Color.White;
-            this.btnAddProduct.Location = new System.Drawing.Point(320, 10);
+            this.btnAddProduct.Location = new System.Drawing.Point(340, 10);
             this.btnAddProduct.Name = "btnAddProduct";
             this.btnAddProduct.Size = new System.Drawing.Size(150, 40);
             this.btnAddProduct.TabIndex = 1;
@@ -161,7 +161,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.dgvProducts.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvProducts.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.dgvProducts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvProducts_CellClick);
-            
+
             var colId = new DataGridViewTextBoxColumn { Name = "Id", HeaderText = "ID", Width = 50 };
             var colName = new DataGridViewTextBoxColumn { Name = "ColName", HeaderText = "Tên Sản Phẩm", FillWeight = 150 };
             var colCate = new DataGridViewTextBoxColumn { Name = "Category", HeaderText = "Danh Mục" };
@@ -176,6 +176,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
             dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
             this.ViewProduct.DefaultCellStyle = dataGridViewCellStyle3;
             this.ViewProduct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ViewProduct.HeaderText = "Chi tiết";
@@ -190,6 +191,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             dataGridViewCellStyle4.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White;
             this.EditProduct.DefaultCellStyle = dataGridViewCellStyle4;
             this.EditProduct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.EditProduct.HeaderText = "Sửa";
@@ -204,6 +206,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
             dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
             this.ToggleStatus.DefaultCellStyle = dataGridViewCellStyle5;
             this.ToggleStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ToggleStatus.HeaderText = "Cập nhật";
@@ -232,33 +235,36 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             // 
             // btnPrevPage
             // 
+            this.btnPrevPage.Text = "<";
+            this.btnPrevPage.Size = new System.Drawing.Size(40, 30);
+            this.btnPrevPage.Location = new System.Drawing.Point(330, 10);
+            this.btnPrevPage.Name = "btnPrevPage";
+            this.btnPrevPage.TabIndex = 0;
+            this.btnPrevPage.BorderRadius = 5;
             this.btnPrevPage.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnPrevPage.ForeColor = System.Drawing.Color.White;
-            this.btnPrevPage.Location = new System.Drawing.Point(300, 10);
-            this.btnPrevPage.Name = "btnPrevPage";
-            this.btnPrevPage.Size = new System.Drawing.Size(40, 30);
-            this.btnPrevPage.TabIndex = 0;
-            this.btnPrevPage.Text = "<";
             // 
             // lblPageInfo
             // 
-            this.lblPageInfo.AutoSize = true;
-            this.lblPageInfo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblPageInfo.Location = new System.Drawing.Point(350, 15);
-            this.lblPageInfo.Name = "lblPageInfo";
-            this.lblPageInfo.Size = new System.Drawing.Size(58, 23);
-            this.lblPageInfo.TabIndex = 1;
             this.lblPageInfo.Text = "1 / 10";
+            this.lblPageInfo.AutoSize = true;
+            this.lblPageInfo.Location = new System.Drawing.Point(380, 15);
+            this.lblPageInfo.Name = "lblPageInfo";
+            this.lblPageInfo.Size = new System.Drawing.Size(40, 13);
+            this.lblPageInfo.TabIndex = 1;
+            this.lblPageInfo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblPageInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnNextPage
             // 
+            this.btnNextPage.Text = ">";
+            this.btnNextPage.Size = new System.Drawing.Size(40, 30);
+            this.btnNextPage.Location = new System.Drawing.Point(430, 10);
+            this.btnNextPage.Name = "btnNextPage";
+            this.btnNextPage.TabIndex = 2;
+            this.btnNextPage.BorderRadius = 5;
             this.btnNextPage.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnNextPage.ForeColor = System.Drawing.Color.White;
-            this.btnNextPage.Location = new System.Drawing.Point(380, 10);
-            this.btnNextPage.Name = "btnNextPage";
-            this.btnNextPage.Size = new System.Drawing.Size(40, 30);
-            this.btnNextPage.TabIndex = 2;
-            this.btnNextPage.Text = ">";
             // 
             // SellerProductForm
             // 
