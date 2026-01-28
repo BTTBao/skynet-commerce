@@ -183,12 +183,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                     row.Cells["Status"].Style.ForeColor = statusColor;
                     row.Cells["Status"].Style.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
 
-                    // Vô hiệu hóa nút cập nhật nếu đơn đã hoàn thành hoặc hủy
-                    if (order.Status == "Completed" || order.Status == "Cancelled")
-                    {
-                        row.Cells["UpdateStatus"].Style.BackColor = Color.Gray;
-                        row.Cells["UpdateStatus"].Style.ForeColor = Color.White;
-                    }
+                    
 
                     // Lưu order vào Tag
                     row.Tag = order;
@@ -386,11 +381,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                         row.Cells["Status"].Style.ForeColor = GetStatusColor(newStatus);
 
                         // Vô hiệu hóa nút nếu đạt trạng thái cuối
-                        if (newStatus == "Completed" || newStatus == "Cancelled")
-                        {
-                            row.Cells["UpdateStatus"].Style.BackColor = Color.Gray;
-                            row.Cells["UpdateStatus"].Style.ForeColor = Color.White;
-                        }
+                       
                     }
                     else
                     {

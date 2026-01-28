@@ -48,6 +48,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.panelHeader.Controls.Add(this.lblTitle);
 
             this.lblTitle.Text = "Quản lý Sản phẩm";
+            this.lblTitle.BackColor = System.Drawing.Color.FromArgb(31, 30, 68);
             this.lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             this.lblTitle.ForeColor = Color.White;
             this.lblTitle.AutoSize = true;
@@ -91,12 +92,18 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             this.dgvProducts.AllowUserToAddRows = false;
             this.dgvProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
+            this.dgvProducts.Columns.Clear(); // Xóa các cột cũ nếu có
+            this.dgvProducts.AutoGenerateColumns = false;
             // Cột dữ liệu
             this.dgvProducts.Columns.Add("Id", "ID");
             this.dgvProducts.Columns.Add("Name", "Tên sản phẩm");
             this.dgvProducts.Columns.Add("Category", "Danh mục");
             this.dgvProducts.Columns.Add("Price", "Giá");
             this.dgvProducts.Columns.Add("Stock", "Tồn kho");
+            this.dgvProducts.Columns.Add("SoldCount", "Đã bán");
+            this.dgvProducts.Columns.Add("Status", "Trạng thái");
+
+            
 
             // Cột nút ẩn/hiện
             var hideBtn = new DataGridViewImageColumn();

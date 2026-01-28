@@ -1,7 +1,5 @@
 ﻿using Skynet_Ecommerce.BLL.Services.Seller;
 using Skynet_Ecommerce.DAL.Repositories.Seller;
-using Skynet_Ecommerce.Repositories;
-using Skynet_Ecommerce.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

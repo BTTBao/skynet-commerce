@@ -65,6 +65,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             // lblTitle
             // 
             this.lblTitle.Text = "Quản lý Đơn hàng";
+            this.lblTitle.BackColor = System.Drawing.Color.FromArgb(31, 30, 68);
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.AutoSize = true;
@@ -204,28 +205,46 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             colDate.ReadOnly = true;
             this.dgvOrders.Columns.Add(colDate);
 
+            // ==========================================
             // Cột Cập nhật trạng thái
+            // ==========================================
             System.Windows.Forms.DataGridViewButtonColumn btnUpdateStatus = new System.Windows.Forms.DataGridViewButtonColumn();
             btnUpdateStatus.Name = "UpdateStatus";
             btnUpdateStatus.HeaderText = "Cập nhật";
             btnUpdateStatus.Text = "Cập nhật";
             btnUpdateStatus.UseColumnTextForButtonValue = true;
             btnUpdateStatus.Width = 90;
+            btnUpdateStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+
+            // Thiết lập màu mặc định
             btnUpdateStatus.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(0, 120, 215);
             btnUpdateStatus.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
-            btnUpdateStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+
+            // CỐ ĐỊNH MÀU KHI ĐƯỢC CHỌN (Ấn vào dòng màu không đổi)
+            btnUpdateStatus.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(0, 120, 215);
+            btnUpdateStatus.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
+
             this.dgvOrders.Columns.Add(btnUpdateStatus);
 
+            // ==========================================
             // Cột Xem chi tiết
+            // ==========================================
             System.Windows.Forms.DataGridViewButtonColumn btnViewDetail = new System.Windows.Forms.DataGridViewButtonColumn();
             btnViewDetail.Name = "ViewDetail";
             btnViewDetail.HeaderText = "Chi tiết";
             btnViewDetail.Text = "Xem";
             btnViewDetail.UseColumnTextForButtonValue = true;
             btnViewDetail.Width = 80;
+            btnViewDetail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+
+            // Thiết lập màu mặc định
             btnViewDetail.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(40, 167, 69);
             btnViewDetail.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
-            btnViewDetail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+
+            // CỐ ĐỊNH MÀU KHI ĐƯỢC CHỌN
+            btnViewDetail.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(40, 167, 69);
+            btnViewDetail.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
+
             this.dgvOrders.Columns.Add(btnViewDetail);
 
             // 
