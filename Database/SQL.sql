@@ -414,6 +414,12 @@ CREATE TABLE OrderStatusHistory (
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID) ON DELETE CASCADE
 );
 
+use skynet_commerce;
+-- Thêm cột CCCD và Ảnh vào bảng đăng ký
+ALTER TABLE ShopRegistrations
+ADD CitizenID NVARCHAR(20), 
+    CitizenImageURL NVARCHAR(500);
+GO
 
 /* =====================================================
    16. INDEXES
