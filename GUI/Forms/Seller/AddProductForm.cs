@@ -1,4 +1,5 @@
-﻿using Skynet_Ecommerce.BLL.Services.Seller;
+﻿using Skynet_Ecommerce.BLL.Helpers;
+using Skynet_Ecommerce.BLL.Services.Seller;
 using Skynet_Ecommerce.DAL.Repositories.Seller;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Skynet_Ecommerce.BLL.Helpers;
 
 namespace Skynet_Ecommerce.GUI.Forms.Seller
 {
@@ -362,26 +364,59 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         #region Save and Cancel Events
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (ValidateForm())
+            // 1. Kiểm tra dữ liệu nhập vào (Validate)
+            if (!ValidateForm()) return;
+
+            // 2. Bật chế độ "Đang xử lý" (để người dùng biết đang upload)
+            this.Cursor = Cursors.WaitCursor;
+            btnSave.Enabled = false;
+            btnSave.Text = "Đang lưu..."; // Đổi text nút cho chuyên nghiệp
+
+            try
             {
-                try
+                // --- BƯỚC QUAN TRỌNG: UPLOAD ẢNH LÊN CLOUD ---
+
+                // A. Upload ảnh chính
+                // Hàm UploadImage đã có logic: Nếu là link online rồi thì bỏ qua, nếu là file máy thì upload.
+                if (!string.IsNullOrEmpty(mainImagePath))
                 {
-                    if (_isEditMode)
-                    {
-                        // Chế độ cập nhật
-                        UpdateProduct();
-                    }
-                    else
-                    {
-                        // Chế độ thêm mới
-                        AddProduct();
-                    }
+                    mainImagePath = CloudinaryHelper.UploadImage(mainImagePath);
                 }
-                catch (Exception ex)
+
+                // B. Upload danh sách ảnh phụ
+                List<string> onlineSubImages = new List<string>();
+                foreach (string path in subImagePaths)
                 {
-                    MessageBox.Show("Lỗi khi lưu sản phẩm: " + ex.Message, "Lỗi",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Upload từng ảnh và lấy link về
+                    string onlineUrl = CloudinaryHelper.UploadImage(path);
+                    onlineSubImages.Add(onlineUrl);
                 }
+                // Cập nhật lại list ảnh phụ thành list link online
+                subImagePaths = onlineSubImages;
+
+                // ------------------------------------------------
+
+                // 3. Gọi hàm Lưu/Cập nhật (Các hàm này sẽ dùng mainImagePath mới là URL)
+                if (_isEditMode)
+                {
+                    UpdateProduct();
+                }
+                else
+                {
+                    AddProduct();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Cursor = Cursors.Default; // Trả lại chuột bình thường nếu lỗi
+                MessageBox.Show($"Lỗi xử lý ảnh: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // 4. Khôi phục trạng thái form
+                this.Cursor = Cursors.Default;
+                btnSave.Enabled = true;
+                btnSave.Text = _isEditMode ? "Cập nhật" : "Lưu";
             }
         }
 
