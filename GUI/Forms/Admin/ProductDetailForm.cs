@@ -3,6 +3,7 @@ using Skynet_Commerce.BLL.Services.Admin;
 using Skynet_Ecommerce.BLL.Models.Admin;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.Forms
@@ -56,7 +57,7 @@ namespace Skynet_Commerce.GUI.Forms
 
                 // 4. Bind Tab Images
                 _flowImages.Controls.Clear();
-                if (_productData.Images != null)
+                if (_productData.Images != null && _productData.Images.Any())
                 {
                     foreach (var imgUrl in _productData.Images)
                     {
@@ -66,15 +67,39 @@ namespace Skynet_Commerce.GUI.Forms
                             Height = 150,
                             SizeMode = PictureBoxSizeMode.Zoom,
                             BorderStyle = BorderStyle.FixedSingle,
-                            Margin = new Padding(10)
+                            Margin = new Padding(10),
+                            BackColor = Color.LightGray
                         };
-                        // Dùng thư viện load ảnh hoặc gán URL (Giả sử bạn có hàm load)
-                        // pic.LoadAsync(imgUrl); 
-                        // Vì demo nên mình set BackColor để thấy khung
-                        pic.BackColor = Color.LightGray;
+                        
+                        // Load ảnh từ URL
+                        try
+                        {
+                            if (!string.IsNullOrWhiteSpace(imgUrl))
+                            {
+                                pic.LoadAsync(imgUrl.Trim());
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Nếu load thất bại, giữ màu nền xám
+                            Console.WriteLine($"Không thể load ảnh: {imgUrl}. Lỗi: {ex.Message}");
+                        }
 
                         _flowImages.Controls.Add(pic);
                     }
+                }
+                else
+                {
+                    // Hiển thị thông báo không có ảnh
+                    var lblNoImage = new Label
+                    {
+                        Text = "Không có ảnh sản phẩm",
+                        Font = new Font("Segoe UI", 10F, FontStyle.Italic),
+                        ForeColor = Color.Gray,
+                        AutoSize = true,
+                        Margin = new Padding(10)
+                    };
+                    _flowImages.Controls.Add(lblNoImage);
                 }
             }
             catch (Exception ex)

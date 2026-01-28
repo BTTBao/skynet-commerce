@@ -47,14 +47,17 @@ namespace Skynet_Commerce.GUI.Forms
         private void SetupFilters()
         {
             _cboStatus.SelectedIndexChanged -= _cboStatus_SelectedIndexChanged;
+
+            // Danh sách trạng thái chuẩn Tiếng Việt
             var statusList = new List<StatusOption>()
             {
-                new StatusOption { DisplayName = "Tất cả",         Value = "All" },
-                new StatusOption { DisplayName = "Chờ xác nhận",   Value = "Pending" },
-                new StatusOption { DisplayName = "Đang xử lý",     Value = "Processing" },
-                new StatusOption { DisplayName = "Đang giao",      Value = "Shipped" },
-                new StatusOption { DisplayName = "Đã hoàn thành",  Value = "Completed" },
-                new StatusOption { DisplayName = "Đã hủy",         Value = "Cancelled" }
+                new StatusOption { DisplayName = "Tất cả trạng thái", Value = "All" },
+                new StatusOption { DisplayName = "Chờ xác nhận",      Value = "Pending" },    // Mới đặt
+                new StatusOption { DisplayName = "Đang xử lý",        Value = "Processing" }, // Shop đang đóng gói
+                new StatusOption { DisplayName = "Đang vận chuyển",   Value = "Shipping" },   // Đã giao bưu tá
+                new StatusOption { DisplayName = "Giao thành công",   Value = "Delivered" },  // Khách đã nhận
+                new StatusOption { DisplayName = "Đã quyết toán",     Value = "Settled" },    // Admin đã trả tiền Shop
+                new StatusOption { DisplayName = "Đã hủy",            Value = "Cancelled" }   // Đơn hủy
             };
 
             _cboStatus.DataSource = statusList;
@@ -115,34 +118,45 @@ namespace Skynet_Commerce.GUI.Forms
         // --- ĐỊNH DẠNG HIỂN THỊ (MÀU SẮC, TIỀN TỆ) ---
         private void _dgvOrders_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            // 1. Format Status (Tô màu trạng thái)
+            // 1. Format Status (Việt hóa và Tô màu)
             if (_dgvOrders.Columns[e.ColumnIndex].Name == "colStatus")
             {
                 string status = e.Value?.ToString();
+
+                // Mặc định
+                e.CellStyle.Font = new Font(e.CellStyle.Font, FontStyle.Bold);
+
                 switch (status)
                 {
-                    case "Completed":
-                        e.Value = "● Hoàn thành";
-                        e.CellStyle.ForeColor = Color.FromArgb(16, 185, 129); // Green
+                    case "Pending":
+                        e.Value = "● Chờ xác nhận";
+                        e.CellStyle.ForeColor = Color.FromArgb(245, 158, 11); // Cam (Amber)
+                        break;
+                    case "Processing":
+                        e.Value = "● Đang xử lý";
+                        e.CellStyle.ForeColor = Color.FromArgb(59, 130, 246); // Xanh dương (Blue)
+                        break;
+                    case "Shipping":
+                        e.Value = "● Đang giao";
+                        e.CellStyle.ForeColor = Color.FromArgb(139, 92, 246); // Tím (Purple)
+                        break;
+                    case "Delivered":
+                        e.Value = "● Giao thành công";
+                        e.CellStyle.ForeColor = Color.FromArgb(16, 185, 129); // Xanh lá (Green)
+                        break;
+                    case "Settled":
+                        e.Value = "● Đã quyết toán";
+                        e.CellStyle.ForeColor = Color.FromArgb(5, 150, 105); // Xanh đậm (Emerald)
                         break;
                     case "Cancelled":
                         e.Value = "● Đã hủy";
-                        e.CellStyle.ForeColor = Color.FromArgb(239, 68, 68); // Red
-                        break;
-                    case "Pending":
-                        e.Value = "● Chờ duyệt";
-                        e.CellStyle.ForeColor = Color.FromArgb(245, 158, 11); // Amber
-                        break;
-                    case "Shipped":
-                        e.Value = "● Đang giao";
-                        e.CellStyle.ForeColor = Color.FromArgb(59, 130, 246); // Blue
+                        e.CellStyle.ForeColor = Color.FromArgb(239, 68, 68); // Đỏ (Red)
                         break;
                     default:
                         e.Value = "● " + status;
                         e.CellStyle.ForeColor = Color.Gray;
                         break;
                 }
-                e.CellStyle.Font = new Font(e.CellStyle.Font, FontStyle.Bold);
             }
 
             // 2. Format Cột Tiền (Bold)

@@ -90,7 +90,7 @@ namespace Skynet_Commerce.GUI.Forms.Admin
 
             y += 20;
 
-            // PictureBox for Citizen Image
+            // Label for Citizen Images
             var lblImage = new Label
             {
                 Text = "Ảnh CCCD:",
@@ -102,13 +102,16 @@ namespace Skynet_Commerce.GUI.Forms.Admin
             pnlCitizenInfo.Controls.Add(lblImage);
             y += 30;
 
-            picCitizenImage = new PictureBox
+            // FlowLayoutPanel để chứa nhiều ảnh CCCD
+            picCitizenImage = new FlowLayoutPanel
             {
                 Location = new Point(20, y),
-                Size = new Size(550, 350),
+                Size = new Size(550, 400),
                 BorderStyle = BorderStyle.FixedSingle,
-                SizeMode = PictureBoxSizeMode.Zoom,
-                BackColor = Color.FromArgb(240, 240, 240)
+                BackColor = Color.FromArgb(240, 240, 240),
+                AutoScroll = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true
             };
             pnlCitizenInfo.Controls.Add(picCitizenImage);
         }
@@ -181,18 +184,7 @@ namespace Skynet_Commerce.GUI.Forms.Admin
 
                 // Citizen Information
                 txtCitizenID.Text = registration.CitizenID ?? "N/A";
-                if (!string.IsNullOrEmpty(registration.CitizenImageURL))
-                {
-                    try
-                    {
-                        picCitizenImage.ImageLocation = registration.CitizenImageURL;
-                        picCitizenImage.SizeMode = PictureBoxSizeMode.Zoom;
-                    }
-                    catch
-                    {
-                        picCitizenImage.Image = null;
-                    }
-                }
+                LoadCitizenImages(registration.CitizenImageURL);
 
                 // Account Information
                 txtAccountID.Text = registration.AccountID.ToString();
@@ -218,6 +210,58 @@ namespace Skynet_Commerce.GUI.Forms.Admin
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadCitizenImages(string imageUrls)
+        {
+            picCitizenImage.Controls.Clear();
+
+            if (string.IsNullOrWhiteSpace(imageUrls))
+            {
+                var lblNoImage = new Label
+                {
+                    Text = "Không có ảnh CCCD",
+                    Font = new Font("Segoe UI", 10F, FontStyle.Italic),
+                    ForeColor = Color.Gray,
+                    AutoSize = true,
+                    Margin = new Padding(10)
+                };
+                picCitizenImage.Controls.Add(lblNoImage);
+                return;
+            }
+
+            // Split URLs bằng dấu phẩy
+            var urls = imageUrls.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var url in urls)
+            {
+                var trimmedUrl = url.Trim();
+                if (string.IsNullOrWhiteSpace(trimmedUrl))
+                    continue;
+
+                var pic = new PictureBox
+                {
+                    Width = 250,
+                    Height = 180,
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Margin = new Padding(5),
+                    BackColor = Color.White
+                };
+
+                try
+                {
+                    pic.LoadAsync(trimmedUrl);
+                }
+                catch (Exception ex)
+                {
+                    // Nếu load thất bại, hiển thị thông báo lỗi
+                    pic.BackColor = Color.LightGray;
+                    Console.WriteLine($"Không thể load ảnh CCCD: {trimmedUrl}. Lỗi: {ex.Message}");
+                }
+
+                picCitizenImage.Controls.Add(pic);
             }
         }
 

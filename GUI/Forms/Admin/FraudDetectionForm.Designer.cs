@@ -88,7 +88,7 @@
             this.tabUserRisk.Name = "tabUserRisk";
             this.tabUserRisk.Size = new System.Drawing.Size(992, 552);
             this.tabUserRisk.TabIndex = 0;
-            this.tabUserRisk.Text = "🚨 User Bom Hàng";
+            this.tabUserRisk.Text = "User Bom Hàng";
             // 
             // gridUsers
             // 
@@ -235,7 +235,7 @@
             this.tabShopRisk.Name = "tabShopRisk";
             this.tabShopRisk.Size = new System.Drawing.Size(992, 552);
             this.tabShopRisk.TabIndex = 1;
-            this.tabShopRisk.Text = "🏪 Shop Buff Ảo";
+            this.tabShopRisk.Text = "Shop Buff Ảo";
             // 
             // gridShops
             // 
@@ -323,7 +323,7 @@
             this.tabCloneRisk.Name = "tabCloneRisk";
             this.tabCloneRisk.Size = new System.Drawing.Size(992, 552);
             this.tabCloneRisk.TabIndex = 2;
-            this.tabCloneRisk.Text = "👥 Tài khoản Clone";
+            this.tabCloneRisk.Text = "Tài khoản Clone";
             // 
             // gridClones
             // 
