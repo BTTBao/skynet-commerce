@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Skynet_Commerce.GUI.Forms;
+using Skynet_Commerce.GUI.Forms.Admin;
 
 namespace Skynet_Commerce.GUI.Forms
 {
@@ -63,7 +65,22 @@ namespace Skynet_Commerce.GUI.Forms
 
                 new MenuItemModel { Key = "Products", Title = "Sản phẩm", IconUrl = "https://cdn-icons-png.flaticon.com/128/10608/10608766.png" },
                 new MenuItemModel { Key = "Orders", Title = "Đơn hàng", IconUrl = "https://cdn-icons-png.flaticon.com/128/10161/10161680.png" },
+                
+                // [MỚI] Item Tài chính có SubItems
+                new MenuItemModel
+                {
+                    Key = "FinanceParent",
+                    Title = "Tài chính                    ▼",
+                    IconUrl = "https://cdn-icons-png.flaticon.com/128/2489/2489756.png",
+                    SubItems = new List<MenuItemModel>
+                    {
+                        new MenuItemModel { Key = "Settlement", Title = "Đối soát công nợ", IconUrl = "https://cdn-icons-png.flaticon.com/128/3135/3135706.png" },
+                        new MenuItemModel { Key = "PaymentHistory", Title = "Lịch sử thanh toán", IconUrl = "https://cdn-icons-png.flaticon.com/128/2331/2331966.png" }
+                    }
+                },
+                
                 new MenuItemModel { Key = "Categories", Title = "Danh mục", IconUrl = "https://cdn-icons-png.flaticon.com/128/12916/12916359.png" },
+                new MenuItemModel { Key = "FraudDetection", Title = "Quản lý rủi ro", IconUrl = "https://cdn-icons-png.flaticon.com/128/4501/4501286.png" },
                 new MenuItemModel { Key = "Logout", Title = "Đăng xuất", IconUrl = "https://cdn-icons-png.flaticon.com/128/4400/4400629.png" }
             };
 
@@ -182,7 +199,7 @@ namespace Skynet_Commerce.GUI.Forms
             btn.Tag = key;
 
             // Chỉ gán sự kiện chuyển trang cho SubItems hoặc ParentItems không có con
-            if (key != "ShopsParent")
+            if (key != "ShopsParent" && key != "FinanceParent")
             {
                 btn.Click += Sidebar_Click;
             }
@@ -246,14 +263,21 @@ namespace Skynet_Commerce.GUI.Forms
                 case "Dashboard": LoadPage(new DashboardOverviewForm()); break;
                 case "Users": LoadPage(new UsersForm()); break;
 
-                // --- HAI MỤC MỚI ---
+                // --- HAI MỤC CỬAHÀNG ---
                 case "ShopRequests": LoadPage(new ShopRequestsForm()); break; // Form Duyệt
                 case "ShopList": LoadPage(new ShopsForm()); break;         // Form Danh sách
-                                                                              // -------------------
 
                 case "Products": LoadPage(new ProductsForm()); break;
                 case "Orders": LoadPage(new OrdersForm()); break;
+                
+                // --- MỤC TÀI CHÍNH ---
+                case "Settlement": LoadPage(new SettlementForm()); break; // Form Đối soát
+                case "PaymentHistory": LoadPage(new PaymentHistoryForm()); break; // Form Lịch sử thanh toán
+                // -------------------
+                
                 case "Categories": LoadPage(new CategoriesForm()); break;
+                case "FraudDetection": LoadPage(new FraudDetectionForm()); break;
+
                 case "Logout":
                     if (MessageBox.Show("Bạn có chắc muốn đăng xuất khỏi trang Quản trị?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {

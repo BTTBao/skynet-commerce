@@ -95,7 +95,8 @@ public class ShopService
     }
     // Lấy danh sách Shop
     // Cập nhật hàm này để nhận tham số lọc
-    public List<ShopViewModel> GetShops(string keyword = "", string status = "All Status")
+    public List<ShopViewModel> GetShops(string keyword = "", string status = "All Status",
+        DateTime? fromDate = null, DateTime? toDate = null)
     {
         // 1. Khởi tạo Query cơ bản
         var query = from s in _context.Shops
@@ -122,6 +123,17 @@ public class ShopService
         {
             query = query.Where(x => x.Shop.IsActive == false);
         }
+        
+        // 4. Lọc theo khoảng thời gian đăng ký
+        if (fromDate.HasValue)
+        {
+            query = query.Where(x => x.Shop.CreatedAt >= fromDate.Value);
+        }
+        
+        if (toDate.HasValue)
+        {
+            query = query.Where(x => x.Shop.CreatedAt <= toDate.Value);
+        }
 
         // 4. Thực thi và Mapping (Projection)
         return query.ToList().Select(x => new ShopViewModel
@@ -133,6 +145,17 @@ public class ShopService
             StockQuantity = x.ProductCount,
             Status = (x.Shop.IsActive == true) ? "Active" : "Suspended"
         }).ToList();
+    }
+
+    // Cập nhật trạng thái shop
+    public void UpdateShopStatus(int shopId, string newStatus)
+    {
+        var shop = _context.Shops.FirstOrDefault(s => s.ShopID == shopId);
+        if (shop != null)
+        {
+            shop.IsActive = (newStatus == "Active");
+            _context.SaveChanges();
+        }
     }
 
     // Lấy danh sách Active (đã duyệt)

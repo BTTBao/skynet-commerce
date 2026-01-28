@@ -8,85 +8,58 @@ namespace Skynet_Commerce.BLL.Services
 {
     public class DashboardService
     {
-        // Hàm lấy thống kê cho 4-5 thẻ bài trên cùng
+        // Hàm lấy thống kê cho thẻ bài từ View v_Admin_Dashboard_Overview
         public List<StatCardData> GetSummaryStats()
         {
             using (var db = new ApplicationDbContext())
             {
-                var now = DateTime.Now;
-                var startOfThisMonth = new DateTime(now.Year, now.Month, 1);
-                var startOfLastMonth = startOfThisMonth.AddMonths(-1);
-                var endOfLastMonth = startOfThisMonth.AddDays(-1);
+                var overview = db.Database.SqlQuery<DashboardOverviewDTO>(
+                    "SELECT * FROM v_Admin_Dashboard_Overview"
+                ).FirstOrDefault();
 
-                // 1. Total Users (Lưu ý: User của bạn không có CreatedAt nên không tính % tăng trưởng được)
-                var totalUsers = db.Users.Count();
+                if (overview == null)
+                {
+                    return new List<StatCardData>();
+                }
 
-                // 2. Active Sellers (Shop Active)
-                var activeShops = db.Shops.Count(s => s.IsActive == true);
+                var revenueGrowth = CalculateGrowth((double)overview.RevenueThisMonth, (double)overview.RevenueLastMonth);
 
-                // 3. Total Orders & Growth
-                var totalOrders = db.Orders.Count();
-                var ordersThisMonth = db.Orders.Count(o => o.CreatedAt >= startOfThisMonth);
-                var ordersLastMonth = db.Orders.Count(o => o.CreatedAt >= startOfLastMonth && o.CreatedAt <= endOfLastMonth);
-                var orderGrowth = CalculateGrowth(ordersThisMonth, ordersLastMonth);
-
-                // 4. Revenue (Doanh thu từ Order đã Completed) & Growth
-                // Giả định Status "Completed" là đơn thành công
-                var totalRevenue = db.Orders
-                                     .Where(o => o.Status == "Completed")
-                                     .Sum(o => o.TotalAmount) ?? 0;
-
-                var revenueThisMonth = db.Orders
-                                         .Where(o => o.Status == "Completed" && o.CreatedAt >= startOfThisMonth)
-                                         .Sum(o => o.TotalAmount) ?? 0;
-
-                var revenueLastMonth = db.Orders
-                                         .Where(o => o.Status == "Completed" && o.CreatedAt >= startOfLastMonth && o.CreatedAt <= endOfLastMonth)
-                                         .Sum(o => o.TotalAmount) ?? 0;
-
-                var revenueGrowth = CalculateGrowth((double)revenueThisMonth, (double)revenueLastMonth);
-
-                // 5. Total Products
-                var totalProducts = db.Products.Count();
-
-
-                // Trả về danh sách hiển thị
                 return new List<StatCardData>
                 {
                     new StatCardData
                     {
-                        Title = "Tổng số người dùng",
-                        Value = totalUsers.ToString("N0"),
-                        Percent = "--",
-                        IsIncrease = true
+                        Title = "Tổng người dùng",
+                        Value = overview.TotalUsers.ToString("N0"),
+                        Percent = $"+{overview.NewUsersLast7Days} (7 ngày)",
+                        IsIncrease = overview.NewUsersLast7Days > 0
                     },
                     new StatCardData
                     {
-                        Title = "Tổng số shop",
-                        Value = activeShops.ToString("N0"),
-                        Percent = "Hoạt động",
-                        IsIncrease = true
+                        Title = "Shop hoạt động",
+                        Value = overview.TotalActiveShops.ToString("N0"),
+                        Percent = $"+{overview.NewShopsLast30Days} (30 ngày)",
+                        IsIncrease = overview.NewShopsLast30Days > 0
                     },
                     new StatCardData
                     {
-                        Title = "Tổng số đơn đặt hàng",
-                        Value = totalOrders.ToString("N0"),
-                        Percent = $"{orderGrowth:+#0.0;-#0.0}%",
-                        IsIncrease = orderGrowth >= 0
-                    },
-                    new StatCardData
-                    {
-                        Title = "Doanh thu",
-                        Value = totalRevenue.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")),
-                        Percent = $"{revenueGrowth:+#0.0;-#0.0}%",
-                        IsIncrease = revenueGrowth >= 0
-                    },
-                    new StatCardData
-                    {
-                        Title = "Tổng số sản phẩm",
-                        Value = totalProducts.ToString("N0"),
+                        Title = "Sản phẩm đang bán",
+                        Value = overview.TotalActiveProducts.ToString("N0"),
                         Percent = "Còn hàng",
                         IsIncrease = true
+                    },
+                    new StatCardData
+                    {
+                        Title = "Tổng đơn hàng",
+                        Value = overview.TotalOrders.ToString("N0"),
+                        Percent = $"{overview.OrdersThisMonth} tháng này",
+                        IsIncrease = true
+                    },
+                    new StatCardData
+                    {
+                        Title = "Doanh thu tháng",
+                        Value = overview.RevenueThisMonth.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")),
+                        Percent = $"{revenueGrowth:+0.0;-0.0}%",
+                        IsIncrease = revenueGrowth >= 0
                     }
                 };
             }
@@ -99,41 +72,21 @@ namespace Skynet_Commerce.BLL.Services
             return ((current - previous) / previous) * 100;
         }
 
-        // Biểu đồ 1: Doanh thu 6 tháng gần nhất
+        // Biểu đồ 1: Doanh thu 6 tháng gần nhất từ View
         public List<ChartData> GetRevenueChartData()
         {
             using (var db = new ApplicationDbContext())
             {
-                var sixMonthsAgo = DateTime.Now.AddMonths(-5); // Lấy từ 5 tháng trước đến nay
+                var data = db.Database.SqlQuery<RevenueByMonthDTO>(
+                    "SELECT TOP 6 * FROM v_Admin_Revenue_ByMonth ORDER BY Year DESC, Month DESC"
+                ).ToList();
 
-                // Nhóm theo Tháng/Năm
-                // Lưu ý: LINQ to Entities không hỗ trợ format string trực tiếp, nên ta lấy data thô rồi xử lý client
-                var rawData = db.Orders
-                    .Where(o => o.Status == "Completed" && o.CreatedAt >= sixMonthsAgo)
-                    .GroupBy(o => new { o.CreatedAt.Value.Year, o.CreatedAt.Value.Month })
-                    .Select(g => new
+                return data.OrderBy(x => x.Year).ThenBy(x => x.Month)
+                    .Select(x => new ChartData
                     {
-                        Year = g.Key.Year,
-                        Month = g.Key.Month,
-                        Total = g.Sum(x => x.TotalAmount) ?? 0
-                    })
-                    .ToList();
-
-                // Map sang ChartData và điền các tháng bị thiếu (nếu có)
-                var result = new List<ChartData>();
-                for (int i = 5; i >= 0; i--)
-                {
-                    var d = DateTime.Now.AddMonths(-i);
-                    var record = rawData.FirstOrDefault(r => r.Month == d.Month && r.Year == d.Year);
-
-                    result.Add(new ChartData
-                    {
-                        Label = d.ToString("MMM"), // Jan, Feb...
-                        Value = (double)(record?.Total ?? 0)
-                    });
-                }
-
-                return result;
+                        Label = $"{x.Month}/{x.Year}",
+                        Value = (double)x.TotalRevenue
+                    }).ToList();
             }
         }
 
@@ -170,5 +123,121 @@ namespace Skynet_Commerce.BLL.Services
                 return result;
             }
         }
+
+        // Top Products
+        public List<TopProductDTO> GetTopProducts()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                return db.Database.SqlQuery<TopProductDTO>(
+                    "SELECT * FROM v_Admin_TopProducts"
+                ).ToList();
+            }
+        }
+
+        // Top Shops
+        public List<TopShopDTO> GetTopShops()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                return db.Database.SqlQuery<TopShopDTO>(
+                    "SELECT * FROM v_Admin_TopShops"
+                ).ToList();
+            }
+        }
+
+        // Order Status Statistics for Pie Chart
+        public List<OrderStatusStatDTO> GetOrderStatusStats()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                return db.Database.SqlQuery<OrderStatusStatDTO>(
+                    "SELECT * FROM v_Admin_OrderStatus_Stats"
+                ).ToList();
+            }
+        }
+
+        // Fraud Alerts Count
+        public FraudAlertsDTO GetFraudAlerts()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var highCancelRate = db.Database.SqlQuery<int>(
+                    "SELECT COUNT(*) FROM v_Fraud_HighCancelRate"
+                ).FirstOrDefault();
+
+                var reviewSpam = db.Database.SqlQuery<int>(
+                    "SELECT COUNT(*) FROM v_Fraud_ReviewSpam"
+                ).FirstOrDefault();
+
+                var cloneAccounts = db.Database.SqlQuery<int>(
+                    "SELECT COUNT(DISTINCT ReceiverPhone) FROM v_Fraud_DuplicateInfo"
+                ).FirstOrDefault();
+
+                return new FraudAlertsDTO
+                {
+                    HighCancelRateCount = highCancelRate,
+                    ReviewSpamCount = reviewSpam,
+                    CloneAccountsCount = cloneAccounts
+                };
+            }
+        }
+    }
+
+    // DTOs
+    public class DashboardOverviewDTO
+    {
+        public int TotalUsers { get; set; }
+        public int NewUsersLast7Days { get; set; }
+        public int TotalActiveShops { get; set; }
+        public int NewShopsLast30Days { get; set; }
+        public int TotalActiveProducts { get; set; }
+        public int TotalOrders { get; set; }
+        public int OrdersThisMonth { get; set; }
+        public decimal RevenueThisMonth { get; set; }
+        public decimal RevenueLastMonth { get; set; }
+    }
+
+    public class RevenueByMonthDTO
+    {
+        public string YearMonth { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int TotalOrders { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public decimal PlatformFee { get; set; }
+    }
+
+    public class TopProductDTO
+    {
+        public int ProductID { get; set; }
+        public string ProductName { get; set; }
+        public string ShopName { get; set; }
+        public int SoldCount { get; set; }
+        public decimal Price { get; set; }
+        public decimal TotalRevenue { get; set; }
+    }
+
+    public class TopShopDTO
+    {
+        public int ShopID { get; set; }
+        public string ShopName { get; set; }
+        public int TotalOrders { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public decimal RatingAverage { get; set; }
+    }
+
+    public class OrderStatusStatDTO
+    {
+        public string Status { get; set; }
+        public int OrderCount { get; set; }
+        public decimal TotalAmount { get; set; }
+    }
+
+    public class FraudAlertsDTO
+    {
+        public int HighCancelRateCount { get; set; }
+        public int ReviewSpamCount { get; set; }
+        public int CloneAccountsCount { get; set; }
     }
 }

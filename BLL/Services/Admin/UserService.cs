@@ -1,5 +1,6 @@
 ﻿using Skynet_Commerce.BLL.Models.Admin;
 using Skynet_Ecommerce;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +15,8 @@ namespace Skynet_Commerce.BLL.Services.Admin
             _context = new ApplicationDbContext();
         }
         // Cập nhật hàm này nhận tham số keyword và role
-        public List<UserViewModel> GetAllUsersForView(string keyword = "", string role = "All Roles")
+        public List<UserViewModel> GetAllUsersForView(string keyword = "", string role = "All Roles",
+            DateTime? fromDate = null, DateTime? toDate = null)
         {
             // 1. Khởi tạo query cơ bản
             var query = _context.Users
@@ -37,6 +39,17 @@ namespace Skynet_Commerce.BLL.Services.Admin
                     u.Account.Email.Contains(keyword) ||
                     u.Account.Phone.Contains(keyword)
                 );
+            }
+            
+            // 4. Lọc theo khoảng thời gian đăng ký
+            if (fromDate.HasValue)
+            {
+                query = query.Where(u => u.Account.CreatedAt >= fromDate.Value);
+            }
+            
+            if (toDate.HasValue)
+            {
+                query = query.Where(u => u.Account.CreatedAt <= toDate.Value);
             }
 
             // 4. Select ra ViewModel (Projection)
