@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 
 namespace Skynet_Ecommerce.GUI.Forms.Seller
@@ -31,6 +32,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             { "Đang giao", "Shipping" },
             { "Đã giao", "Delivered" },
             { "Hoàn thành", "Completed" },
+            { "Đã quyết toán", "Settled" },
             { "Đã hủy", "Cancelled" }
         };
 
@@ -42,6 +44,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             { "Shipping", "Đang giao" },
             { "Delivered", "Đã giao" },
             { "Completed", "Hoàn thành" },
+            { "Settled", "Đã quyết toán" },
             { "Cancelled", "Đã hủy" }
         };
 
@@ -110,7 +113,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                     // Mã đơn
                     row.Cells["OrderId"].Value = "#" + order.OrderID;
 
-                    // Ảnh sản phẩm
+                    // Ảnh sản phẩm từ Cloudinary
                     var productImage = firstOrderDetail.Product?.ProductImages?.FirstOrDefault(img => img.IsPrimary == true)
                                       ?? firstOrderDetail.Product?.ProductImages?.FirstOrDefault();
 
@@ -118,21 +121,18 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                     {
                         try
                         {
-                            string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, productImage.ImageURL);
-                            if (File.Exists(imagePath))
-                            {
-                                Image originalImage = Image.FromFile(imagePath);
-                                row.Cells["ProductImage"].Value = originalImage;
-                            }
-                            else
-                            {
-                                row.Cells["ProductImage"].Value = null;
-                            }
+                            // Load ảnh từ Cloudinary URL
+                            Image cloudinaryImage = LoadImageFromUrl(productImage.ImageURL);
+                            row.Cells["ProductImage"].Value = cloudinaryImage;
                         }
                         catch
                         {
                             row.Cells["ProductImage"].Value = null;
                         }
+                    }
+                    else
+                    {
+                        row.Cells["ProductImage"].Value = null;
                     }
 
                     // Thông tin sản phẩm
@@ -183,8 +183,6 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                     row.Cells["Status"].Style.ForeColor = statusColor;
                     row.Cells["Status"].Style.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
 
-                    
-
                     // Lưu order vào Tag
                     row.Tag = order;
                 }
@@ -193,6 +191,30 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             {
                 MessageBox.Show("Lỗi khi hiển thị đơn hàng: " + ex.Message + "\n" + ex.StackTrace, "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Load ảnh từ URL Cloudinary
+        /// </summary>
+        private Image LoadImageFromUrl(string imageUrl)
+        {
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    byte[] imageBytes = webClient.DownloadData(imageUrl);
+                    using (MemoryStream ms = new MemoryStream(imageBytes))
+                    {
+                        return Image.FromStream(ms);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nếu cần
+                Console.WriteLine($"Lỗi khi tải ảnh từ {imageUrl}: {ex.Message}");
+                return null;
             }
         }
 
@@ -210,6 +232,8 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                 case "Delivered":
                 case "Completed":
                     return Color.Green;
+                case "Settled":
+                    return Color.DarkGreen;
                 case "Cancelled":
                     return Color.Red;
                 default:
@@ -333,8 +357,8 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             {
                 string currentStatus = order.Status;
 
-                // Kiểm tra nếu đơn đã hoàn thành hoặc hủy
-                if (currentStatus == "Completed" || currentStatus == "Cancelled")
+                // Kiểm tra nếu đơn đã quyết toán hoặc hủy
+                if (currentStatus == "Settled" || currentStatus == "Cancelled")
                 {
                     MessageBox.Show("Đơn hàng này không thể cập nhật trạng thái!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -379,9 +403,6 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                         order.Status = newStatus;
                         row.Cells["Status"].Value = newStatusVN;
                         row.Cells["Status"].Style.ForeColor = GetStatusColor(newStatus);
-
-                        // Vô hiệu hóa nút nếu đạt trạng thái cuối
-                       
                     }
                     else
                     {
@@ -399,7 +420,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 
         private string GetNextStatus(string currentStatus)
         {
-            // Quy trình trạng thái: Pending -> Confirmed -> Preparing -> Shipping -> Delivered -> Completed
+            // Quy trình trạng thái: Pending -> Confirmed -> Preparing -> Shipping -> Delivered -> Completed -> Settled
             switch (currentStatus)
             {
                 case "Pending":
@@ -413,6 +434,8 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
                 case "Delivered":
                     return "Completed";
                 case "Completed":
+                    return "Settled";
+                case "Settled":
                 case "Cancelled":
                     return null; // Không thể cập nhật thêm
                 default:

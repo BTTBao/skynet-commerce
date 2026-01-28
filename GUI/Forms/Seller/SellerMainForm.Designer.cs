@@ -83,7 +83,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             ConfigureButtonStyle(btnDashboard, 120, "Dashboard");
             ConfigureButtonStyle(btnProduct, 170, "Sản phẩm");
             ConfigureButtonStyle(btnOrder, 220, "Đơn hàng");
-            ConfigureButtonStyle(btnVoucher, 270, "Voucher");
+            ConfigureButtonStyle(btnVoucher, 270, "Ví shop");
             ConfigureButtonStyle(btnShopInfo, 320, "Thông tin Shop");
 
             // btnLogout

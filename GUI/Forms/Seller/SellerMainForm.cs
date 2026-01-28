@@ -59,7 +59,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 
         private void BtnShopInfo_Click(object sender, EventArgs e)
         {
-            LoadChildForm(new SellerInfoForm());
+            LoadChildForm(new SellerInfoForm(shopID));
         }
 
         private void BtnLogout_Click(object sender, EventArgs e)
@@ -67,7 +67,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             var confirm = MessageBox.Show("Bạn có muốn đăng xuất?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm == DialogResult.Yes)
             {
-                this.Close(); // hoặc về login form
+                new Login.LoginForm().Show();
             }
         }
     }

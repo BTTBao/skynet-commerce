@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using BCrypt.Net;
 
 namespace Skynet_Ecommerce.GUI.Forms.Login
 {
@@ -60,84 +61,109 @@ namespace Skynet_Ecommerce.GUI.Forms.Login
         {
             try
             {
-                // 2. TÌM TÀI KHOẢN TRONG CSDL
-                // Lưu ý: PasswordHash thực tế nên dùng BCrypt để Verify, ở đây demo so sánh chuỗi
+                // 1. Tìm tài khoản trong CSDL
                 var account = _context.Accounts
-                    .Include(a => a.Users)      // Load thông tin User
-                    .Include(a => a.UserRoles) // Load thông tin Role
+                    .Include(a => a.Users)
+                    .Include(a => a.UserRoles)
                     .FirstOrDefault(a => a.Email == email);
 
                 if (account == null)
                 {
-                    MessageBox.Show("Không tồn tại tài khoản!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Không tồn tại tài khoản!",
+                        "Lỗi đăng nhập",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                     return;
                 }
 
                 if (account.IsActive == false)
                 {
-                    MessageBox.Show("Tài khoản đã bị khoá!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Tài khoản đã bị khoá!",
+                        "Lỗi đăng nhập",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                     return;
                 }
-                // Kiểm tra tài khoản và mật khẩu
-                if (account.PasswordHash != password)
+
+                // 2. KIỂM TRA MẬT KHẨU BẰNG BCrypt
+                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, account.PasswordHash);
+
+                if (!isPasswordValid)
                 {
-                    MessageBox.Show("Tài khoản hoặc mật khẩu không chính xác!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Tài khoản hoặc mật khẩu không chính xác!",
+                        "Lỗi đăng nhập",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                     return;
                 }
 
                 // 3. LẤY THÔNG TIN USER & ROLE
                 var userProfile = account.Users.FirstOrDefault();
                 var roleObj = account.UserRoles.FirstOrDefault();
-                var userRoleName = roleObj != null ? roleObj.RoleName : "Customer";
+                string userRoleName = roleObj?.RoleName ?? "Customer";
 
-                // 4. LƯU VÀO APPSESSION (Global State)
-                AppSession.Instance.Clear(); // Xóa session cũ
+                // 4. LƯU VÀO APPSESSION
+                AppSession.Instance.Clear();
                 AppSession.Instance.AccountID = account.AccountID;
                 AppSession.Instance.Email = account.Email;
                 AppSession.Instance.FullName = userProfile?.FullName ?? "Unknown User";
                 AppSession.Instance.Role = userRoleName;
 
+                // 5. LẤY SHOPID NẾU LÀ SELLER
                 int shopId = 0;
                 if (userRoleName.Equals("Seller", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Giả sử context của bạn có DbSet<Shop> là Shops
                     var shop = _context.Shops.FirstOrDefault(s => s.AccountID == account.AccountID);
                     if (shop != null)
                     {
                         shopId = shop.ShopID;
-                        // Bạn có thể lưu vào AppSession nếu cần dùng ở nhiều nơi khác
-                        // AppSession.Instance.ShopID = shop.ShopID; 
+                        // AppSession.Instance.ShopID = shopId; // nếu cần
                     }
                     else
                     {
-                        MessageBox.Show("Tài khoản Seller này chưa được tạo cửa hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        // Tùy chọn: return nếu bắt buộc phải có Shop mới cho vào
+                        MessageBox.Show(
+                            "Tài khoản Seller chưa được tạo cửa hàng!",
+                            "Thông báo",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
                     }
                 }
 
-                // 5. XỬ LÝ "REMEMBER ME"
+                // 6. REMEMBER ME (không lưu password thô)
                 if (switchRemember.Checked)
                 {
                     Properties.Settings.Default.RememberUser = email;
-                    Properties.Settings.Default.RememberPass = password; // Thực tế nên mã hóa trước khi lưu
                     Properties.Settings.Default.IsRemembered = true;
                 }
                 else
                 {
                     Properties.Settings.Default.RememberUser = "";
-                    Properties.Settings.Default.RememberPass = "";
                     Properties.Settings.Default.IsRemembered = false;
                 }
-                Properties.Settings.Default.Save(); // Lưu xuống ổ cứng
+                Properties.Settings.Default.RememberPass = ""; // KHÔNG LƯU PASSWORD
+                Properties.Settings.Default.Save();
 
-                // 6. CHUYỂN HƯỚNG THEO ROLE
+                // 7. CHUYỂN FORM THEO ROLE
                 NavigateToMainForm(userRoleName, shopId);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi kết nối CSDL: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Lỗi hệ thống: " + ex.Message,
+                    "Lỗi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
+
 
         private void NavigateToMainForm(string role, int shopID)
         {

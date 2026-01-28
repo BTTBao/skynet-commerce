@@ -20,7 +20,8 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             { "Shipping", "Đang giao" },
             { "Delivered", "Đã giao" },
             { "Completed", "Hoàn thành" },
-            { "Cancelled", "Đã hủy" }
+            { "Cancelled", "Đã hủy" },
+            { "Settled", "Đã quyết toán" }
         };
 
         private Dictionary<string, string> _shippingStatusMapping = new Dictionary<string, string>

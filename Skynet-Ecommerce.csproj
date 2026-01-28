@@ -42,6 +42,9 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BCrypt.Net-Next, Version=4.0.3.0, Culture=neutral, PublicKeyToken=1e11be04b6288443, processorArchitecture=MSIL">
+      <HintPath>packages\BCrypt.Net-Next.4.0.3\lib\net472\BCrypt.Net-Next.dll</HintPath>
+    </Reference>
     <Reference Include="CloudinaryDotNet, Version=1.28.0.0, Culture=neutral, PublicKeyToken=c8234dc617ae7841, processorArchitecture=MSIL">
       <HintPath>packages\CloudinaryDotNet.1.28.0\lib\net452\CloudinaryDotNet.dll</HintPath>
     </Reference>
@@ -215,6 +218,7 @@
     <Compile Include="BLL\Services\Seller\OrderService.cs" />
     <Compile Include="BLL\Services\Seller\ProductService.cs" />
     <Compile Include="BLL\Services\Seller\SellerDashboardService.cs" />
+    <Compile Include="BLL\Services\Seller\ShopServiceSeller.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
     <Compile Include="DAL\Entities\AppSession.cs" />
@@ -239,6 +243,7 @@
     <Compile Include="DAL\Repositories\Seller\ProductRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\Repository.cs" />
     <Compile Include="DAL\Repositories\Seller\SellerDashboardRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\ShopRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\UnitOfWork.cs" />
     <Compile Include="GUI\Forms\Admin\CategoriesForm.cs">
       <SubType>Form</SubType>
@@ -375,6 +380,12 @@
     </Compile>
     <Compile Include="GUI\Forms\Seller\AddProductForm.Designer.cs">
       <DependentUpon>AddProductForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Forms\Seller\SellerDashboardForm.cs">
       <SubType>Form</SubType>
