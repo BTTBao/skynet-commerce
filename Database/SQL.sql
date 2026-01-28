@@ -96,9 +96,6 @@ CREATE TABLE ShopRegistrations (
     FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID) ON DELETE CASCADE
 );
 
-ALTER TABLE ShopRegistrations
-ADD CitizenID NVARCHAR(20), 
-    CitizenImageURL NVARCHAR(500);
 
 /* =====================================================
    4. CATEGORIES – SHOPS – PRODUCTS
@@ -426,6 +423,8 @@ GO
 ALTER TABLE ShopRegistrations
 ADD RejectionReason NVARCHAR(MAX);
 GO
+ALTER TABLE ProductImages 
+ALTER COLUMN ImageURL NVARCHAR(MAX);
 /* =====================================================
    16. INDEXES
 ===================================================== */
@@ -436,6 +435,3 @@ CREATE INDEX IX_OrderDetail_OrderID ON OrderDetails(OrderID);
 CREATE INDEX IX_CartItems_CartID ON CartItems(CartID);
 CREATE INDEX IX_ProductImages_ProductID ON ProductImages(ProductID);
 
-select * from orders
-
-select * from Accounts;

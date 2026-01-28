@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Eye, XCircle, ChevronLeft, ChevronRight, MapPin, Phone, User, Star, Store, Calendar, Truck } from 'lucide-react';
+import { Package, XCircle, ChevronLeft, ChevronRight, MapPin, Phone, User, Star, Store, Calendar, Truck, CheckCircle } from 'lucide-react';
 import './MyOrdersTab.css';
 
 const MyOrdersTab = () => {
@@ -20,7 +20,7 @@ const MyOrdersTab = () => {
     const [reviewData, setReviewData] = useState({ orderId: null, rating: 5, comment: '' });
     const [hoverRating, setHoverRating] = useState(0); 
 
-    // 1. LẤY DANH SÁCH ĐƠN HÀNG (API GetMyOrders trả về OrderGroup)
+    // 1. LẤY DANH SÁCH ĐƠN HÀNG
     const fetchOrders = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -29,7 +29,6 @@ const MyOrdersTab = () => {
             });
             if (res.ok) {
                 const data = await res.json();
-                // Data trả về là danh sách Group, sắp xếp mới nhất lên đầu
                 setOrderGroups(data);
             }
         } catch (err) {
@@ -43,7 +42,7 @@ const MyOrdersTab = () => {
         fetchOrders();
     }, []);
 
-    // 2. XỬ LÝ HỦY ĐƠN CON (SubOrder)
+    // 2. XỬ LÝ HỦY ĐƠN
     const handleCancelOrder = async (orderId) => {
         if (!window.confirm("Bạn có chắc chắn muốn hủy đơn hàng của Shop này không?")) return;
         const token = localStorage.getItem('token');
@@ -54,7 +53,7 @@ const MyOrdersTab = () => {
             });
             if (res.ok) {
                 alert("Hủy đơn hàng thành công!");
-                fetchOrders(); // Load lại toàn bộ danh sách để cập nhật trạng thái
+                fetchOrders(); 
             } else {
                 const data = await res.json();
                 alert(data.message || "Không thể hủy đơn hàng.");
@@ -65,7 +64,7 @@ const MyOrdersTab = () => {
         }
     };
 
-    // 3. XỬ LÝ XEM CHI TIẾT (SubOrder)
+    // 3. XỬ LÝ XEM CHI TIẾT
     const handleViewDetail = async (orderId) => {
         setShowModal(true);
         setLoadingDetail(true);
@@ -114,6 +113,17 @@ const MyOrdersTab = () => {
             if (res.ok) {
                 alert("Cảm ơn bạn đã đánh giá!");
                 setShowReviewModal(false);
+
+                // --- CẬP NHẬT STATE ĐỂ KHÓA NÚT ĐÁNH GIÁ NGAY LẬP TỨC ---
+                setOrderGroups(prevGroups => prevGroups.map(group => ({
+                    ...group,
+                    subOrders: group.subOrders.map(order => 
+                        order.orderId === reviewData.orderId 
+                            ? { ...order, isReviewed: true } // Đánh dấu đã review
+                            : order
+                    )
+                })));
+
             } else {
                 alert("Gửi đánh giá thất bại.");
             }
@@ -123,10 +133,11 @@ const MyOrdersTab = () => {
         }
     };
 
-    // Helper Status
+    // --- HELPER TRẠNG THÁI ---
     const getStatusText = (status) => {
         switch(status) {
             case 'Pending': return 'Chờ xác nhận';
+            case 'Confirmed': return 'Đã xác nhận';
             case 'Shipping': return 'Đang giao';
             case 'Delivered': return 'Đã giao';
             case 'Cancelled': return 'Đã hủy';
@@ -135,10 +146,10 @@ const MyOrdersTab = () => {
     };
 
     const getStatusClass = (status) => {
-        return `status-tag status-${status.toLowerCase()}`;
+        return `status-tag status-${status ? status.toLowerCase() : 'pending'}`;
     };
 
-    // Pagination (Phân trang theo Group)
+    // Pagination
     const indexOfLastGroup = currentPage * groupsPerPage;
     const indexOfFirstGroup = indexOfLastGroup - groupsPerPage;
     const currentGroups = orderGroups.slice(indexOfFirstGroup, indexOfLastGroup);
@@ -158,14 +169,13 @@ const MyOrdersTab = () => {
                 </div>
             ) : (
                 <div className="order-group-list">
-                    {/* --- LOOP QUA TỪNG LẦN ĐẶT HÀNG (GROUP) --- */}
                     {currentGroups.map((group) => (
                         <div key={group.orderGroupId} className="order-group-card">
                             
-                            {/* Header của Group: Ngày & Tổng tiền lần đó */}
+                            {/* Header Group */}
                             <div className="group-header">
                                 <div className="group-meta">
-                                    <span className="group-id">Mã giao dịch: #{group.orderGroupId}</span>
+                                    <span className="group-id">Mã GD: #{group.orderGroupId}</span>
                                     <span className="group-date">
                                         <Calendar size={14} style={{marginRight:4, marginBottom:2}}/>
                                         {new Date(group.createdAt).toLocaleString('vi-VN')}
@@ -176,26 +186,27 @@ const MyOrdersTab = () => {
                                 </div>
                             </div>
 
-                            {/* Body của Group: Liệt kê các đơn con (SubOrders) */}
+                            {/* Body Group */}
                             <div className="group-body">
                                 {group.subOrders.map((order) => (
                                     <div key={order.orderId} className="sub-order-item">
                                         
-                                        {/* Tên Shop & Trạng thái đơn con */}
+                                        {/* Shop Info & Status */}
                                         <div className="sub-order-header">
                                             <div className="shop-info">
                                                 <Store size={18} color="#ee4d2d"/>
                                                 <span className="shop-name">{order.shopName}</span>
                                             </div>
                                             <div className="order-status-wrapper">
-                                                {order.status === 'Shipping' && <Truck size={16} className="mr-1"/>}
+                                                {order.status === 'Confirmed' && <CheckCircle size={16} className="mr-1 status-icon-confirmed"/>}
+                                                {order.status === 'Shipping' && <Truck size={16} className="mr-1 status-icon-shipping"/>}
                                                 <span className={getStatusClass(order.status)}>
                                                     {getStatusText(order.status)}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        {/* Thông tin sản phẩm đại diện */}
+                                        {/* Content */}
                                         <div className="sub-order-content" onClick={() => handleViewDetail(order.orderId)}>
                                             <div className="product-preview">
                                                 <div className="img-box">
@@ -218,22 +229,31 @@ const MyOrdersTab = () => {
                                             </div>
                                         </div>
 
-                                        {/* Nút hành động cho đơn con */}
+                                        {/* Actions */}
                                         <div className="sub-order-actions">
                                             <button className="btn-secondary" onClick={() => handleViewDetail(order.orderId)}>
                                                 Xem chi tiết
                                             </button>
 
+                                            {/* Chỉ hủy được khi Pending */}
                                             {order.status === 'Pending' && (
                                                 <button className="btn-danger" onClick={() => handleCancelOrder(order.orderId)}>
                                                     Hủy đơn
                                                 </button>
                                             )}
 
+                                            {/* LOGIC NÚT ĐÁNH GIÁ */}
                                             {order.status === 'Delivered' && (
-                                                <button className="btn-primary" onClick={() => openReviewModal(order.orderId)}>
-                                                    Đánh giá
-                                                </button>
+                                                !order.isReviewed ? (
+                                                    <button className="btn-primary" onClick={() => openReviewModal(order.orderId)}>
+                                                        Đánh giá
+                                                    </button>
+                                                ) : (
+                                                    <button className="btn-secondary" disabled 
+                                                        style={{ color: '#10b981', borderColor: '#10b981', background: '#ecfdf5', cursor: 'default' }}>
+                                                        <CheckCircle size={14} style={{marginRight: 4}}/> Đã đánh giá
+                                                    </button>
+                                                )
                                             )}
                                         </div>
                                     </div>
@@ -242,7 +262,7 @@ const MyOrdersTab = () => {
                         </div>
                     ))}
 
-                    {/* Phân trang */}
+                    {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="pagination">
                             <button className="page-btn" disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)}>
@@ -257,7 +277,7 @@ const MyOrdersTab = () => {
                 </div>
             )}
 
-            {/* MODAL CHI TIẾT (Giữ nguyên logic hiển thị) */}
+            {/* MODAL CHI TIẾT */}
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -284,9 +304,8 @@ const MyOrdersTab = () => {
                                             <div key={index} className="detail-item">
                                                 <div className="item-img-placeholder"><Package size={20}/></div>
                                                 <div className="item-info">
-                                                    {/* Hiển thị tên đầy đủ từ Backend mới */}
                                                     <p className="item-name">{item.fullProductName || item.productName}</p> 
-                                                    <p className="item-meta">x{item.quantity}</p>
+                                                    <p className="item-meta">x{item.quantity} {item.variant ? `(${item.variant})` : ''}</p>
                                                 </div>
                                                 <p className="item-price">{(item.price * item.quantity).toLocaleString()}đ</p>
                                             </div>
@@ -303,11 +322,10 @@ const MyOrdersTab = () => {
                 </div>
             )}
 
-            {/* MODAL ĐÁNH GIÁ (Giữ nguyên) */}
+            {/* MODAL ĐÁNH GIÁ */}
             {showReviewModal && (
                 <div className="modal-overlay" onClick={() => setShowReviewModal(false)}>
                     <div className="modal-content review-modal" onClick={e => e.stopPropagation()}>
-                        {/* ... (Code modal đánh giá giữ nguyên như cũ) ... */}
                         <button className="modal-close-btn" onClick={() => setShowReviewModal(false)}><XCircle size={24}/></button>
                         <h3 className="modal-title">Đánh giá sản phẩm</h3>
                         <div className="star-rating-container">
