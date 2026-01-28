@@ -1,9 +1,11 @@
 ﻿using Skynet_Commerce.BLL.Models.Admin;
 using Skynet_Commerce.BLL.Services.Admin; // Đảm bảo namespace đúng service
 using Skynet_Commerce.GUI.Forms.Admin;
+using Skynet_Ecommerce;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Skynet_Commerce.GUI.Forms
@@ -45,7 +47,7 @@ namespace Skynet_Commerce.GUI.Forms
             ContextMenuStrip menu = new ContextMenuStrip();
 
             // Xem chi tiết
-            var itemDetail = menu.Items.Add("📋 Xem chi tiết");
+            var itemDetail = menu.Items.Add("Xem chi tiết");
             itemDetail.ForeColor = Color.FromArgb(59, 130, 246);
             itemDetail.Click += (s, ev) =>
             {
@@ -60,12 +62,39 @@ namespace Skynet_Commerce.GUI.Forms
             itemApprove.ForeColor = Color.Green;
             itemApprove.Click += (s, ev) =>
             {
-                if (MessageBox.Show($"Duyệt cửa hàng '{item.ShopName}'?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show($"Duyệt cửa hàng '{item.ShopName}'?\n\nTài khoản sẽ được cấp quyền Seller.", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     try
                     {
+                        // Approve shop registration
                         _shopService.ApproveShopRegistration(item.RegistrationID);
-                        MessageBox.Show("Đã duyệt thành công!", "Thông báo");
+
+                        // Grant Seller role to the account
+                        using (var context = new Skynet_Ecommerce.ApplicationDbContext())
+                        {
+                            var registration = context.ShopRegistrations.Find(item.RegistrationID);
+                            if (registration != null)
+                            {
+                                // Check if user already has Seller role
+                                bool hasSellerRole = context.UserRoles.Any(ur => 
+                                    ur.AccountID == registration.AccountID && 
+                                    ur.RoleName == "Seller");
+
+                                if (!hasSellerRole)
+                                {
+                                    var newRole = new UserRole
+                                    {
+                                        AccountID = registration.AccountID,
+                                        RoleName = "Seller",
+                                        CreatedAt = DateTime.Now
+                                    };
+                                    context.UserRoles.Add(newRole);
+                                    context.SaveChanges();
+                                }
+                            }
+                        }
+
+                        MessageBox.Show("Đã duyệt thành công và cấp quyền Seller!", "Thông báo");
                         LoadPendingShops(); // Refresh lại
                     }
                     catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
@@ -145,7 +174,7 @@ namespace Skynet_Commerce.GUI.Forms
                                 var registration = context.ShopRegistrations.Find(item.RegistrationID);
                                 if (registration != null)
                                 {
-                                    registration.Description = reason;
+                                    registration.RejectionReason = reason;
                                     context.SaveChanges();
                                 }
                             }
