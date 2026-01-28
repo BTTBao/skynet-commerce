@@ -9,7 +9,7 @@ function HomePage() {
 
     // 2. State quản lý trang hiện tại
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 8; // Số lượng hiển thị mỗi trang
+    const pageSize = 10; // Số lượng hiển thị mỗi trang
 
     // 3. Gọi API 1 lần duy nhất khi vào web
     useEffect(() => {

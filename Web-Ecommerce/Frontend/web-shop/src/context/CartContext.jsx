@@ -8,32 +8,32 @@ export const CartProvider = ({ children }) => {
         return storedCart ? JSON.parse(storedCart) : [];
     });
 
+    // Tự động lưu vào LocalStorage mỗi khi cartItems thay đổi
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    // --- SỬA LOGIC ADD TO CART ---
+    // --- LOGIC ADD TO CART ---
     const addToCart = (product, quantity = 1, variant = {}) => {
         setCartItems((prevItems) => {
-            // 1. Tạo một ID duy nhất cho dòng sản phẩm này trong giỏ hàng
-            // Ví dụ: "101-XL-Red" hoặc "101-null-null" (nếu ko có variant)
+            // 1. Tạo ID duy nhất: ID sp + Size + Color
             const uniqueCartId = `${product.id}-${variant.size || ''}-${variant.color || ''}`;
 
-            // 2. Tìm xem trong giỏ đã có ID duy nhất này chưa
+            // 2. Kiểm tra tồn tại
             const itemExists = prevItems.find((item) => item.cartId === uniqueCartId);
 
             if (itemExists) {
-                // Nếu trùng cả ID, Size, Color -> Cộng dồn số lượng
+                // Cộng dồn số lượng
                 return prevItems.map((item) =>
                     item.cartId === uniqueCartId
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             } else {
-                // Nếu khác Size hoặc Color -> Thêm dòng mới
+                // Thêm mới
                 return [...prevItems, { 
                     ...product, 
-                    cartId: uniqueCartId, // Quan trọng: Lưu ID định danh này
+                    cartId: uniqueCartId, 
                     quantity: quantity, 
                     selectedSize: variant.size, 
                     selectedColor: variant.color 
@@ -43,12 +43,12 @@ export const CartProvider = ({ children }) => {
         alert("Đã thêm vào giỏ hàng thành công!");
     };
 
-    // --- SỬA LOGIC XÓA (Xóa theo cartId thay vì productId) ---
+    // --- LOGIC XÓA ---
     const removeFromCart = (cartId) => {
         setCartItems((prevItems) => prevItems.filter((item) => item.cartId !== cartId));
     };
 
-    // --- SỬA LOGIC UPDATE SỐ LƯỢNG (Theo cartId) ---
+    // --- LOGIC UPDATE SỐ LƯỢNG ---
     const updateQuantity = (cartId, amount) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
@@ -59,6 +59,13 @@ export const CartProvider = ({ children }) => {
         );
     };
 
+    // --- LOGIC CLEAR CART (Dọn sạch giỏ hàng) ---
+    // <--- THÊM MỚI TẠI ĐÂY
+    const clearCart = () => {
+        setCartItems([]); 
+    };
+
+    // --- TÍNH TỔNG TIỀN ---
     const totalPrice = cartItems.reduce((total, item) => {
         const price = Number(item.price) || 0;
         const qty = Number(item.quantity) || 1;
@@ -66,7 +73,8 @@ export const CartProvider = ({ children }) => {
     }, 0);
 
     return (
-        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, totalPrice }}>
+        // Nhớ thêm clearCart vào value
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, totalPrice }}>
             {children}
         </CartContext.Provider>
     );
