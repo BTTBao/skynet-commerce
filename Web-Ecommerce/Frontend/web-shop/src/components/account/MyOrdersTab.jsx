@@ -6,16 +6,16 @@ const MyOrdersTab = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // --- STATES CHO PHÂN TRANG ---
+    // STATES CHO PHÂN TRANG
     const [currentPage, setCurrentPage] = useState(1);
     const ordersPerPage = 5; 
 
-    // --- STATES CHO MODAL CHI TIẾT ---
+    // STATES CHO MODAL
     const [showModal, setShowModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [loadingDetail, setLoadingDetail] = useState(false);
 
-    // --- STATES CHO MODAL ĐÁNH GIÁ ---
+    // STATES CHO ĐÁNH GIÁ
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [reviewData, setReviewData] = useState({ orderId: null, rating: 5, comment: '' });
     const [hoverRating, setHoverRating] = useState(0); 
@@ -42,17 +42,15 @@ const MyOrdersTab = () => {
         fetchOrders();
     }, []);
 
-    // 2. XỬ LÝ HỦY ĐƠN HÀNG
+    // 2. XỬ LÝ HỦY ĐƠN
     const handleCancelOrder = async (orderId) => {
         if (!window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) return;
-
         const token = localStorage.getItem('token');
         try {
             const res = await fetch(`http://localhost:5198/api/Order/${orderId}/cancel`, {
                 method: 'PUT', 
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-
             if (res.ok) {
                 alert("Hủy đơn hàng thành công!");
                 setOrders(orders.map(order => 
@@ -73,7 +71,6 @@ const MyOrdersTab = () => {
         setShowModal(true);
         setLoadingDetail(true);
         const token = localStorage.getItem('token');
-
         try {
             const res = await fetch(`http://localhost:5198/api/Order/${orderId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -94,7 +91,7 @@ const MyOrdersTab = () => {
         setSelectedOrder(null);
     };
 
-    // 4. XỬ LÝ ĐÁNH GIÁ (REVIEW)
+    // 4. XỬ LÝ ĐÁNH GIÁ
     const openReviewModal = (order) => {
         setReviewData({ orderId: order.orderId, rating: 5, comment: '' });
         setShowReviewModal(true);
@@ -105,7 +102,6 @@ const MyOrdersTab = () => {
             alert("Vui lòng viết vài lời nhận xét nhé!");
             return;
         }
-
         const token = localStorage.getItem('token');
         try {
             const res = await fetch('http://localhost:5198/api/Reviews', {
@@ -120,7 +116,6 @@ const MyOrdersTab = () => {
                     comment: reviewData.comment
                 })
             });
-
             if (res.ok) {
                 alert("Cảm ơn bạn đã đánh giá!");
                 setShowReviewModal(false);
@@ -133,7 +128,7 @@ const MyOrdersTab = () => {
         }
     };
 
-    // --- LOGIC MÀU SẮC & TEXT ---
+    // Helper
     const getStatusColor = (status) => {
         switch(status) {
             case 'Delivered': return '#10b981'; 
@@ -154,12 +149,11 @@ const MyOrdersTab = () => {
         }
     };
 
-    // --- LOGIC PHÂN TRANG ---
+    // Pagination
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
     const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
     const totalPages = Math.ceil(orders.length / ordersPerPage);
-
     const changePage = (pageNumber) => setCurrentPage(pageNumber);
 
     if (loading) return <div className="p-4">Đang tải đơn hàng...</div>;
@@ -175,7 +169,6 @@ const MyOrdersTab = () => {
                 </div>
             ) : (
                 <>
-                    {/* DANH SÁCH ĐƠN HÀNG */}
                     <div className="order-list">
                         {currentOrders.map((order) => (
                             <div key={order.orderId} className="order-card">
@@ -202,7 +195,10 @@ const MyOrdersTab = () => {
                                         <p className="product-count">
                                             {order.productCount > 1 ? `và ${order.productCount - 1} sản phẩm khác` : `Số lượng: 1`}
                                         </p>
-                                        <p className="order-date">{new Date(order.orderDate).toLocaleDateString('vi-VN')}</p>
+                                        {/* ✅ SỬA LỖI Invalid Date: Thêm kiểm tra null */}
+                                        <p className="order-date">
+                                            {order.orderDate ? new Date(order.orderDate).toLocaleDateString('vi-VN') : ''}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -212,19 +208,16 @@ const MyOrdersTab = () => {
                                         <span className="total-price">{order.totalAmount?.toLocaleString()}đ</span>
                                     </div>
                                     <div className="action-buttons">
-                                        {/* Nút Xem Chi Tiết */}
                                         <button className="btn-action btn-view" onClick={() => handleViewDetail(order.orderId)}>
                                             <Eye size={16} /> Chi tiết
                                         </button>
 
-                                        {/* Nút Hủy (Chỉ hiện khi Pending) */}
                                         {order.status === 'Pending' && (
                                             <button className="btn-action btn-cancel" onClick={() => handleCancelOrder(order.orderId)}>
                                                 <XCircle size={16} /> Hủy đơn
                                             </button>
                                         )}
 
-                                        {/* 👇 NÚT ĐÁNH GIÁ (MỚI - Chỉ hiện khi Delivered) 👇 */}
                                         {order.status === 'Delivered' && (
                                             <button className="btn-action btn-rate" onClick={() => openReviewModal(order)}>
                                                 <Star size={16} fill="currentColor" /> Đánh giá
@@ -236,17 +229,11 @@ const MyOrdersTab = () => {
                         ))}
                     </div>
 
-                    {/* PHÂN TRANG */}
                     {totalPages > 1 && (
                         <div className="pagination">
-                            <button 
-                                className="page-btn" 
-                                disabled={currentPage === 1}
-                                onClick={() => changePage(currentPage - 1)}
-                            >
+                            <button className="page-btn" disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)}>
                                 <ChevronLeft size={20} />
                             </button>
-                            
                             {[...Array(totalPages)].map((_, index) => (
                                 <button
                                     key={index}
@@ -256,12 +243,7 @@ const MyOrdersTab = () => {
                                     {index + 1}
                                 </button>
                             ))}
-
-                            <button 
-                                className="page-btn" 
-                                disabled={currentPage === totalPages}
-                                onClick={() => changePage(currentPage + 1)}
-                            >
+                            <button className="page-btn" disabled={currentPage === totalPages} onClick={() => changePage(currentPage + 1)}>
                                 <ChevronRight size={20} />
                             </button>
                         </div>
@@ -269,106 +251,82 @@ const MyOrdersTab = () => {
                 </>
             )}
 
-            {/* --- MODAL CHI TIẾT ĐƠN HÀNG --- */}
+            {/* MODAL CHI TIẾT */}
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
                         <button className="modal-close-btn" onClick={closeModal}><XCircle size={24}/></button>
-                        
                         <h3 className="modal-title">Chi tiết đơn hàng #{selectedOrder?.orderId}</h3>
                         
-                        {loadingDetail ? (
-                            <p>Đang tải chi tiết...</p>
-                        ) : selectedOrder ? (
+                        {loadingDetail ? <p>Đang tải chi tiết...</p> : selectedOrder ? (
                             <div className="order-detail-body">
-                                {/* Thông tin người nhận */}
                                 <div className="detail-section">
                                     <h4>Thông tin nhận hàng</h4>
                                     <div className="info-row"><User size={16}/> <span>{selectedOrder.receiverName}</span></div>
                                     <div className="info-row"><Phone size={16}/> <span>{selectedOrder.receiverPhone}</span></div>
                                     <div className="info-row"><MapPin size={16}/> <span>{selectedOrder.shippingAddress}</span></div>
                                 </div>
-
-                                {/* Danh sách sản phẩm */}
                                 <div className="detail-section">
                                     <h4>Sản phẩm</h4>
                                     <div className="detail-items-list">
-    {selectedOrder.items?.map((item, index) => (
-        <div key={index} className="detail-item">
-            <div className="item-img-placeholder"><Package size={20}/></div>
-            <div className="item-info">
-                {/* 👇 SỬA DÒNG NÀY: Thêm || item.ProductName */}
-                <p className="item-name">{item.productName || item.ProductName || "Tên sản phẩm lỗi"}</p> 
-                
-                {/* 👇 SỬA DÒNG NÀY: Thêm || item.Quantity */}
-                <p className="item-meta">x{item.quantity || item.Quantity}</p>
-            </div>
-            {/* 👇 SỬA DÒNG NÀY: Thêm || item.Price */}
-            <p className="item-price">
-                {((item.price || item.Price || 0) * (item.quantity || item.Quantity || 1)).toLocaleString()}đ
-            </p>
-        </div>
-    ))}
-</div>
-                                </div>
-
-                                {/* Tổng kết */}
-                                <div className="detail-summary">
-                                    <div className="summary-row">
-                                        <span>Phí vận chuyển</span>
-                                        <span>0đ</span>
+                                        {selectedOrder.items?.map((item, index) => (
+                                            <div key={index} className="detail-item">
+                                                <div className="item-img-placeholder"><Package size={20}/></div>
+                                                <div className="item-info">
+                                                    <p className="item-name">{item.productName || item.ProductName || "Sản phẩm"}</p> 
+                                                    <p className="item-meta">x{item.quantity || item.Quantity}</p>
+                                                </div>
+                                                <p className="item-price">{((item.price || item.Price || 0) * (item.quantity || item.Quantity || 1)).toLocaleString()}đ</p>
+                                            </div>
+                                        ))}
                                     </div>
+                                </div>
+                                <div className="detail-summary">
                                     <div className="summary-row total">
                                         <span>Tổng cộng</span>
                                         <span>{selectedOrder.totalAmount?.toLocaleString()}đ</span>
                                     </div>
                                 </div>
                             </div>
-                        ) : (
-                            <p>Không tìm thấy thông tin đơn hàng.</p>
-                        )}
+                        ) : <p>Không tìm thấy thông tin.</p>}
                     </div>
                 </div>
             )}
 
-            {/* 👇 MODAL ĐÁNH GIÁ (MỚI) 👇 */}
+            {/* MODAL ĐÁNH GIÁ (ĐÃ UPDATE CSS STARS-ROW) */}
             {showReviewModal && (
                 <div className="modal-overlay" onClick={() => setShowReviewModal(false)}>
                     <div className="modal-content review-modal" onClick={e => e.stopPropagation()}>
                         <button className="modal-close-btn" onClick={() => setShowReviewModal(false)}><XCircle size={24}/></button>
-                        
-                        <h3 className="modal-title" style={{textAlign: 'center'}}>Đánh giá sản phẩm</h3>
+                        <h3 className="modal-title">Đánh giá sản phẩm</h3>
                         
                         <div className="star-rating-container">
-    
-    {/* 👇 THÊM THẺ DIV NÀY ĐỂ BỌC CÁC NGÔI SAO 👇 */}
-    <div className="stars-row"> 
-        {[1, 2, 3, 4, 5].map((star) => (
-            <button 
-                key={star}
-                type="button"
-                className="star-btn"
-                onMouseEnter={() => setHoverRating(star)}
-                onMouseLeave={() => setHoverRating(0)}
-                onClick={() => setReviewData({...reviewData, rating: star})}
-            >
-                <Star 
-                    size={32} 
-                    color="#facc15" 
-                    fill={(hoverRating || reviewData.rating) >= star ? "#facc15" : "none"} 
-                />
-            </button>
-        ))}
-    </div>
-    {/* 👆 KẾT THÚC THẺ DIV BỌC NGÔI SAO 👆 */}
-
-    <p className="rating-text">
-        {reviewData.rating === 5 ? 'Tuyệt vời' : 
-         reviewData.rating === 4 ? 'Hài lòng' : 
-         reviewData.rating === 3 ? 'Bình thường' : 
-         reviewData.rating === 2 ? 'Không hài lòng' : 'Tệ'}
-    </p>
-</div>
+                            {/* ✅ Div bao quanh các ngôi sao để CSS stars-row hoạt động */}
+                            <div className="stars-row"> 
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button 
+                                        key={star}
+                                        type="button"
+                                        className="star-btn"
+                                        onMouseEnter={() => setHoverRating(star)}
+                                        onMouseLeave={() => setHoverRating(0)}
+                                        onClick={() => setReviewData({...reviewData, rating: star})}
+                                    >
+                                        <Star 
+                                            size={32} 
+                                            color="#facc15" 
+                                            fill={(hoverRating || reviewData.rating) >= star ? "#facc15" : "none"} 
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                            <p className="rating-text">
+                                {reviewData.rating === 5 ? 'Tuyệt vời' : 
+                                 reviewData.rating === 4 ? 'Hài lòng' : 
+                                 reviewData.rating === 3 ? 'Bình thường' : 
+                                 reviewData.rating === 2 ? 'Không hài lòng' : 'Tệ'}
+                            </p>
+                        </div>
 
                         <textarea 
                             className="review-textarea"
