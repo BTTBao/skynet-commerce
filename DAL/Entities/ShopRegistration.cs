@@ -27,7 +27,8 @@ namespace Skynet_Ecommerce
 
         [StringLength(20)]
         public string Status { get; set; }
-
+        public string RejectionReason { get; set; }
+        
         public DateTime? CreatedAt { get; set; }
 
         public DateTime? ReviewedAt { get; set; }

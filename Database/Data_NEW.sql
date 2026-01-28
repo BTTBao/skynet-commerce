@@ -5,6 +5,83 @@ GO
    TẠO DỮ LIỆU MẪU THỰC TẾ CHO HỆ THỐNG E-COMMERCE
    Bao gồm đầy đủ các nghiệp vụ và case đặc biệt
 ===================================================== */
+-- Ngăn chặn trigger tự động tạo dữ liệu (ví dụ: tạo UserRole khi insert Account)
+EXEC sp_msforeachtable 'ALTER TABLE ? DISABLE TRIGGER all';
+
+-- Level: Chat & Flash Sales & Notifications
+DELETE FROM ChatMessages;
+DELETE FROM ChatRooms;
+DELETE FROM FlashSaleProducts;
+DELETE FROM FlashSales;
+DELETE FROM Notifications;
+
+-- Level: Order Processing & History
+DELETE FROM OrderStatusHistory;
+DELETE FROM OrderShippingInfo;
+DELETE FROM Payments;
+DELETE FROM Reviews;
+DELETE FROM Wishlists;
+
+-- Level: Order Details & Cart
+DELETE FROM OrderDetails;
+DELETE FROM CartItems;
+DELETE FROM Carts;
+
+-- Level: Orders & Vouchers
+DELETE FROM Orders;
+DELETE FROM OrderGroups;
+DELETE FROM Vouchers;
+
+-- Level: Products & Inventory
+DELETE FROM ProductImages;
+DELETE FROM ProductVariants;
+DELETE FROM Products;
+DELETE FROM Categories;
+
+-- Level: Shops & Business
+DELETE FROM Shops;
+DELETE FROM ShopRegistrations;
+DELETE FROM ShippingPartners;
+
+-- Level: User Info
+DELETE FROM UserAddresses;
+DELETE FROM UserRoles;
+DELETE FROM Users;
+
+-- Level: Root
+DELETE FROM Accounts;
+
+-- 2. RESET IDENTITY (Để ID bắt đầu lại từ 1)
+DBCC CHECKIDENT ('ChatMessages', RESEED, 0);
+DBCC CHECKIDENT ('ChatRooms', RESEED, 0);
+DBCC CHECKIDENT ('FlashSaleProducts', RESEED, 0);
+DBCC CHECKIDENT ('FlashSales', RESEED, 0);
+DBCC CHECKIDENT ('Notifications', RESEED, 0);
+DBCC CHECKIDENT ('OrderStatusHistory', RESEED, 0);
+DBCC CHECKIDENT ('OrderShippingInfo', RESEED, 0);
+DBCC CHECKIDENT ('Payments', RESEED, 0);
+DBCC CHECKIDENT ('Reviews', RESEED, 0);
+DBCC CHECKIDENT ('Wishlists', RESEED, 0);
+DBCC CHECKIDENT ('OrderDetails', RESEED, 0);
+DBCC CHECKIDENT ('CartItems', RESEED, 0);
+DBCC CHECKIDENT ('Carts', RESEED, 0);
+DBCC CHECKIDENT ('Orders', RESEED, 0);
+DBCC CHECKIDENT ('OrderGroups', RESEED, 0);
+DBCC CHECKIDENT ('Vouchers', RESEED, 0);
+DBCC CHECKIDENT ('ProductImages', RESEED, 0);
+DBCC CHECKIDENT ('ProductVariants', RESEED, 0);
+DBCC CHECKIDENT ('Products', RESEED, 0);
+DBCC CHECKIDENT ('Categories', RESEED, 0);
+DBCC CHECKIDENT ('Shops', RESEED, 0);
+DBCC CHECKIDENT ('ShopRegistrations', RESEED, 0);
+DBCC CHECKIDENT ('ShippingPartners', RESEED, 0);
+DBCC CHECKIDENT ('UserAddresses', RESEED, 0);
+DBCC CHECKIDENT ('UserRoles', RESEED, 0);
+DBCC CHECKIDENT ('Users', RESEED, 0);
+DBCC CHECKIDENT ('Accounts', RESEED, 0);
+
+PRINT '=== CLEANUP COMPLETED ===';
+GO
 
 -- ===== 1. ACCOUNTS =====
 SET IDENTITY_INSERT Accounts ON;
@@ -795,40 +872,7 @@ INSERT INTO ChatMessages (MessageID, RoomID, SenderID, MessageType, MessageText,
 
 SET IDENTITY_INSERT ChatMessages OFF;
 
+-- Bật lại trigger để hệ thống hoạt động bình thường sau khi nạp dữ liệu
+EXEC sp_msforeachtable 'ALTER TABLE ? ENABLE TRIGGER all';
 
-/* =====================================================
-   KIỂM TRA DỮ LIỆU ĐÃ TẠO
-===================================================== */
-
-PRINT N'===== THỐNG KÊ DỮ LIỆU ĐÃ TẠO =====';
-PRINT N'Số Accounts: ' + CAST((SELECT COUNT(*) FROM Accounts) AS NVARCHAR(10));
-PRINT N'Số Users: ' + CAST((SELECT COUNT(*) FROM Users) AS NVARCHAR(10));
-PRINT N'Số Shops: ' + CAST((SELECT COUNT(*) FROM Shops) AS NVARCHAR(10));
-PRINT N'Số Products: ' + CAST((SELECT COUNT(*) FROM Products) AS NVARCHAR(10));
-PRINT N'Số Orders: ' + CAST((SELECT COUNT(*) FROM Orders) AS NVARCHAR(10));
-PRINT N'Số Reviews: ' + CAST((SELECT COUNT(*) FROM Reviews) AS NVARCHAR(10));
-
-PRINT N'';
-PRINT N'===== KIỂM TRA CÁC CASE ĐẶC BIỆT =====';
-
--- Check user "Bom hàng"
-PRINT N'User có tỷ lệ hủy đơn cao (>= 50%):';
-SELECT * FROM v_Fraud_HighCancelRate;
-
--- Check buff đánh giá
-PRINT N'';
-PRINT N'Case Buff đánh giá (3+ reviews 5 sao trong 10 phút):';
-SELECT * FROM v_Fraud_ReviewSpam;
-
--- Check clone account
-PRINT N'';
-PRINT N'Clone accounts (dùng chung SĐT):';
-SELECT * FROM v_Fraud_DuplicateInfo;
-
--- Check shop balances
-PRINT N'';
-PRINT N'Số dư các Shop (chờ thanh toán):';
-SELECT * FROM v_Admin_ShopBalances;
-
-PRINT N'';
 PRINT N'===== HOÀN TẤT TẠO DỮ LIỆU MẪU =====';
