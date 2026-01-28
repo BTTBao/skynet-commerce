@@ -1,0 +1,82 @@
+/* src/components/InputField.css */
+
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #374151; /* gray-700 */
+}
+
+/* Wrapper để đặt icon đè lên input */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Icon bên trái */
+.input-icon-left {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af; /* gray-400 */
+  display: flex;
+  align-items: center;
+  pointer-events: none; /* Để click xuyên qua icon vào input */
+}
+
+/* Style cho ô input */
+.input-control {
+  width: 100%;
+  padding: 12px 16px; /* Padding mặc định */
+  padding-left: 40px; /* Chừa chỗ cho icon bên trái */
+  font-size: 1rem;
+  border: 2px solid #e5e7eb; /* gray-200 */
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  color: #1f2937; /* gray-900 */
+}
+
+/* Khi focus vào ô input */
+.input-control:focus {
+  border-color: #2563eb; /* blue-600 */
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); /* Hiệu ứng ring */
+}
+
+/* Icon bên phải (ví dụ: mắt xem pass) */
+.input-icon-right {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  color: #9ca3af; /* gray-400 */
+}
+
+/* Nếu có icon bên phải thì tăng padding phải lên */
+.input-control:has(+ .input-icon-right) {
+    padding-right: 40px;
+}
+
+/* Nút bấm icon bên phải (ví dụ nút mắt) */
+.input-icon-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.input-icon-btn:hover {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}

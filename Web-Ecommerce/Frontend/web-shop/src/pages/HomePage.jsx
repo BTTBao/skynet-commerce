@@ -1,22 +1,55 @@
-import Navbar from "../layouts/Navbar";
+import { useState, useEffect } from "react";
 import "./HomePage.css";
 import ProductCard from "../components/ProductCard";
 
 function HomePage() {
+    // 1. State chứa TOÀN BỘ sản phẩm từ DB
+    const [allProducts, setAllProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const products = [
-        { id: 1, name: "Áo Thun Oversize", price: "250.000đ", img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=500&auto=format&fit=crop" },
-        { id: 2, name: "Giày Sneaker White", price: "1.200.000đ", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop" },
-        { id: 3, name: "Balo Thời Trang", price: "450.000đ", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=500&auto=format&fit=crop" },
-        { id: 4, name: "Đồng Hồ Smartwatch", price: "2.500.000đ", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=500&auto=format&fit=crop" },
-        { id: 5, name: "Tai Nghe Không Dây", price: "890.000đ", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&auto=format&fit=crop" },
-        { id: 6, name: "Kính Râm Phi Công", price: "350.000đ", img: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=500&auto=format&fit=crop" },
-        { id: 7, name: "Túi Xách Da Nam", price: "1.100.000đ", img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=500&auto=format&fit=crop" },
-    ];
+    // 2. State quản lý trang hiện tại
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 8; // Số lượng hiển thị mỗi trang
+
+    // 3. Gọi API 1 lần duy nhất khi vào web
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch("http://localhost:5198/api/Products");
+                if (!response.ok) throw new Error("Lỗi tải dữ liệu");
+                
+                const data = await response.json();
+                setAllProducts(data); // Lưu hết vào đây
+            } catch (error) {
+                console.error("Lỗi:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    // --- LOGIC PHÂN TRANG (Cắt mảng) ---
+    // Vị trí bắt đầu và kết thúc của trang hiện tại
+    const indexOfLastItem = currentPage * pageSize;
+    const indexOfFirstItem = indexOfLastItem - pageSize;
+    
+    // Cắt lấy danh sách sản phẩm cho trang hiện tại
+    const currentProducts = allProducts.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Tính tổng số trang
+    const totalPages = Math.ceil(allProducts.length / pageSize);
+
+    // Hàm đổi trang
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 500, behavior: 'smooth' });
+    };
 
     return (
         <div className="homepage">
-            <Navbar />
+    
             <header className="hero">
                 <div className="hero-content">
                     <h1>Săn Sale Cực Khủng</h1>
@@ -28,11 +61,59 @@ function HomePage() {
             <div className="container">
                 <div className="wrapper">
                     <h2 className="section-title">Sản Phẩm Mới Nhất</h2>
-                    <div className="list-item">
-                        {products.map(item => (
-                            <ProductCard key={item.id} product={item} />
-                        ))}
-                    </div>
+                    
+                    {loading ? (
+                        <p>Đang tải dữ liệu...</p>
+                    ) : (
+                        <>
+                            {/* Hiển thị danh sách ĐÃ ĐƯỢC CẮT (currentProducts) */}
+                            <div className="list-item">
+                                {currentProducts.map(item => (
+                                    <ProductCard 
+                                        key={item.productId} 
+                                        product={{
+                                            ...item,
+                                            id: item.productId,
+                                            price: item.price,
+                                            img: item.productImages?.[0]?.imageUrl || "..."
+                                        }} 
+                                    />
+                                ))}
+                            </div>
+
+                            {/* UI Phân trang (Chỉ hiện khi có > 1 trang) */}
+                            {totalPages > 1 && (
+                                <div className="pagination">
+                                    <button 
+                                        className="page-btn"
+                                        disabled={currentPage === 1}
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                    >
+                                        &laquo;
+                                    </button>
+
+                                    {/* Tạo nút số trang */}
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <button
+                                            key={index + 1}
+                                            className={`page-btn ${currentPage === index + 1 ? 'active' : ''}`}
+                                            onClick={() => handlePageChange(index + 1)}
+                                        >
+                                            {index + 1}
+                                        </button>
+                                    ))}
+
+                                    <button 
+                                        className="page-btn"
+                                        disabled={currentPage === totalPages}
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                    >
+                                        &raquo;
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
         </div>

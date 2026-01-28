@@ -145,11 +145,12 @@ namespace Skynet_Commerce.GUI.Forms
             itemView.Image = SystemIcons.Information.ToBitmap();
             itemView.Click += (s, ev) =>
             {
+                // Đổi tên FormUserDetails thành ShopDetailForm
                 using (var detailForm = new ShopDetailForm(shop.ShopID))
                 {
                     if (detailForm.ShowDialog() == DialogResult.OK)
                     {
-                        LoadActiveShops();
+                        LoadActiveShops(); // Refresh lại lưới bên ngoài nếu có thay đổi
                     }
                 }
             };

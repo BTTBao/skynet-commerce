@@ -1,0 +1,100 @@
+/* src/layouts/Footer.css */
+
+/* Tổng thể Footer */
+.footer {
+  background-color: #1f2937; /* Màu xám đậm (gray-800) */
+  color: white;
+  padding: 48px 0; /* py-12 */
+  margin-top: auto; /* Đẩy footer xuống đáy trang */
+  width: 100%;
+}
+
+/* Container giới hạn độ rộng nội dung */
+.footer-container {
+  max-width: 1200px; /* max-w-7xl tương đương */
+  margin: 0 auto;    /* Căn giữa mx-auto */
+  padding: 0 16px;   /* px-4 */
+}
+
+/* Lưới chia cột (Grid) */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mặc định 1 cột trên mobile */
+  gap: 32px; /* Khoảng cách giữa các cột */
+  margin-bottom: 32px;
+}
+
+/* Responsive: Trên màn hình lớn (PC/Tablet) chia thành 4 cột */
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Các thành phần trong cột */
+.brand-name {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 900;
+  margin-bottom: 16px;
+  font-family: "Righteous", cursive;
+}
+
+.brand-desc {
+  color: #9ca3af; /* Màu xám nhạt (gray-400) */
+  line-height: 1.5;
+}
+
+.footer-heading {
+  font-weight: bold;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-list li {
+  color: #9ca3af; /* gray-400 */
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.footer-list li:hover {
+  color: white;
+}
+
+/* Các nút mạng xã hội */
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #374151; /* gray-700 */
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+}
+
+.social-icon:hover {
+  background-color: #4b5563; /* gray-600 sáng hơn chút */
+}
+
+/* Dòng bản quyền cuối cùng */
+.footer-bottom {
+  border-top: 1px solid #374151; /* gray-700 */
+  padding-top: 32px;
+  text-align: center;
+  color: #9ca3af; /* gray-400 */
+  font-size: 0.9rem;
+}

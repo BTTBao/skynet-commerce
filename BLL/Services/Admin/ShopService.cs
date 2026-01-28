@@ -14,43 +14,85 @@ public class ShopService
         _context = new ApplicationDbContext();
     }
 
-    // Hàm lấy chi tiết Shop và chuyển đổi sang ViewModel
-    public ShopViewModel GetShopDetail(int shopId)
+    public ShopFullDetailViewModel GetShopFullDetail(int shopId)
     {
-        // Sử dụng LINQ Query để join bảng
-        var query = from s in _context.Shops
-                    join u in _context.Users on s.AccountID equals u.AccountID // Điểm mấu chốt: Join qua AccountID
-                    where s.ShopID == shopId
-                    select new
-                    {
-                        Shop = s,
-                        OwnerName = u.FullName, // Lấy tên từ bảng User
-                        ProductCount = s.Products.Count() // Đếm số sản phẩm
-                    };
+        // 1. Lấy thông tin cơ bản + Chủ shop
+        var shopData = (from s in _context.Shops
+                        join u in _context.Users on s.AccountID equals u.AccountID
+                        join a in _context.Accounts on s.AccountID equals a.AccountID
+                        where s.ShopID == shopId
+                        select new { s, u, a }).FirstOrDefault();
 
-        var data = query.FirstOrDefault();
+        if (shopData == null) return null;
 
-        if (data == null) return null;
+        // 2. Lấy danh sách sản phẩm (Top 50)
+        var products = _context.Products
+                        .Where(p => p.ShopID == shopId)
+                        .Select(p => new SimpleProductViewModel
+                        {
+                            ProductID = p.ProductID,
+                            Name = p.Name,
+                            Price = p.Price ?? 0,
+                            Stock = p.StockQuantity ?? 0,
+                            Sold = p.SoldCount ?? 0
+                        }).OrderByDescending(p => p.Sold).Take(50).ToList();
 
-        // Mapping sang ViewModel
-        return new ShopViewModel
+        // 3. Lấy danh sách đơn hàng (Gần đây nhất)
+        var orders = _context.Orders
+                        .Where(o => o.ShopID == shopId)
+                        .OrderByDescending(o => o.CreatedAt)
+                        .Take(20)
+                        .Select(o => new SimpleOrderViewModel
+                        {
+                            OrderID = o.OrderID,
+                            TotalAmount = o.TotalAmount ?? 0,
+                            Status = o.Status,
+                            Date = o.CreatedAt ?? DateTime.Now
+                        }).ToList();
+
+        // 4. Tính toán thống kê
+        // Giả sử Status = "Completed" mới tính doanh thu
+        decimal revenue = _context.Orders
+                            .Where(o => o.ShopID == shopId && o.Status == "Completed")
+                            .Sum(o => o.TotalAmount) ?? 0;
+
+        int totalOrderCount = _context.Orders.Count(o => o.ShopID == shopId);
+
+        // 5. Map sang ViewModel
+        return new ShopFullDetailViewModel
         {
-            ShopID = data.Shop.ShopID,
-            ShopName = data.Shop.ShopName,
-            AccountID = data.Shop.AccountID,
+            ShopID = shopData.s.ShopID,
+            ShopName = shopData.s.ShopName,
+            Description = shopData.s.Description,
+            AvatarURL = shopData.s.AvatarURL,
+            Status = (shopData.s.IsActive == true) ? "Active" : "Suspended",
+            CreatedAt = shopData.s.CreatedAt ?? DateTime.Now,
+            Rating = shopData.s.RatingAverage ?? 0,
 
-            // Lấy OwnerName từ kết quả Join
-            OwnerName = data.OwnerName,
+            OwnerName = shopData.u.FullName,
+            Email = shopData.a.Email,
+            Phone = shopData.a.Phone, // Nếu Account có cột Phone
 
-            RatingAverage = data.Shop.RatingAverage ?? 0,
+            TotalProducts = products.Count, // Hoặc count DB nếu list quá dài
+            TotalOrders = totalOrderCount,
+            TotalRevenue = revenue,
 
-            // Lấy số lượng đã đếm
-            StockQuantity = data.ProductCount,
-
-            Status = (data.Shop.IsActive == true) ? "Active" : "Suspended"
+            TopProducts = products,
+            RecentOrders = orders
         };
     }
 
+    // Hàm update thông tin cơ bản (cho nút Lưu)
+    public void UpdateShopBasicInfo(int shopId, string newName, string newDesc)
+    {
+        var shop = _context.Shops.Find(shopId);
+        if (shop != null)
+        {
+            shop.ShopName = newName;
+            shop.Description = newDesc;
+            _context.SaveChanges();
+        }
+    }
     // Lấy danh sách Shop
     // Cập nhật hàm này để nhận tham số lọc
     public List<ShopViewModel> GetShops(string keyword = "", string status = "All Status")

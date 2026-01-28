@@ -1,0 +1,128 @@
+/* src/pages/LoginPage.css */
+
+/* Tổng thể trang: Căn giữa, nền xám nhẹ */
+.login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f3f4f6; /* gray-100 */
+}
+
+/* Phần thân chính chứa form */
+.login-main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Container giới hạn độ rộng của form */
+.login-container {
+  width: 100%;
+  max-width: 450px; /* Form sẽ không rộng quá 450px */
+}
+
+/* --- Header của Form --- */
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827; /* gray-900 */
+  margin-bottom: 8px;
+  /* Bạn nên bỏ font chữ viết tay đi cho chuyên nghiệp */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.login-subtitle {
+  color: #6b7280; /* gray-500 */
+  font-size: 1rem;
+}
+
+/* --- Cái hộp trắng chứa form (Card) --- */
+.login-card {
+  background-color: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* shadow-xl đẹp hơn */
+}
+
+/* --- Tabs Đăng nhập / Đăng ký --- */
+.tab-group {
+  display: flex;
+  background-color: #f3f4f6; /* gray-100 */
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  flex: 1; /* Chia đều chiều rộng */
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #6b7280; /* gray-500 */
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* Style cho tab đang chọn */
+.tab-btn.active {
+  background-color: white;
+  color: #2563eb; /* blue-600 */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Các tùy chọn phụ (Ghi nhớ, Quên MK) --- */
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151; /* gray-700 */
+  cursor: pointer;
+}
+
+.forgot-password {
+  color: #2563eb; /* blue-600 */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* --- Nút Submit chính --- */
+.submit-btn {
+  width: 100%;
+  margin-top: 24px;
+  padding: 12px;
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #1d4ed8; /* blue-700 */
+}
