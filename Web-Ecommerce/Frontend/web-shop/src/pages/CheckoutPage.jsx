@@ -18,7 +18,9 @@ function CheckoutPage() {
         paymentMethod: 'cod'
     });
 
-    // Check login
+    // =========================================================
+    // CODE MỚI: TỰ ĐỘNG LẤY THÔNG TIN USER & ĐỊA CHỈ
+    // =========================================================
     useEffect(() => {
         if (isCheckedRef.current) return;
         isCheckedRef.current = true;
@@ -27,7 +29,59 @@ function CheckoutPage() {
         if (!token) {
             alert("Bạn cần đăng nhập để thanh toán!");
             navigate('/login', { state: { from: location }, replace: true });
+            return;
         }
+
+        const fetchUserData = async () => {
+            try {
+                const headers = {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                };
+
+                // BƯỚC 1: LẤY DANH SÁCH ĐỊA CHỈ TỪ USER CONTROLLER
+                // Lưu ý: Đổi port 5198 hoặc 7215 tùy vào máy bạn đang chạy
+                const addrRes = await fetch('http://localhost:5198/api/User/addresses', { headers });
+                
+                if (addrRes.ok) {
+                    const addresses = await addrRes.json();
+                    
+                    if (addresses.length > 0) {
+                        // Tìm địa chỉ mặc định, nếu không có thì lấy cái đầu tiên
+                        const defaultAddr = addresses.find(a => a.isDefault) || addresses[0];
+                        
+                        setFormData(prev => ({
+                            ...prev,
+                            // Mapping theo tên biến trả về trong UserController.cs
+                            fullName: defaultAddr.receiverFullName, 
+                            phone: defaultAddr.receiverPhone,
+                            address: defaultAddr.fullAddress // Backend đã gộp dòng: AddressLine, Ward, District...
+                        }));
+                        return; // Đã lấy được địa chỉ ngon lành -> Dừng, không cần gọi profile nữa
+                    }
+                }
+
+                // BƯỚC 2: NẾU CHƯA CÓ ĐỊA CHỈ -> LẤY THÔNG TIN CƠ BẢN TỪ AUTH CONTROLLER
+                // (Để ít nhất cũng điền được Tên và SĐT cho khách)
+                const profileRes = await fetch('http://localhost:5198/api/Auth/me', { headers });
+                
+                if (profileRes.ok) {
+                    const profile = await profileRes.json();
+                    setFormData(prev => ({
+                        ...prev,
+                        fullName: profile.fullName || '',
+                        phone: profile.phone || '',
+                        address: '' // Để trống cho khách tự nhập
+                    }));
+                }
+
+            } catch (error) {
+                console.error("Lỗi lấy thông tin người dùng:", error);
+            }
+        };
+
+        fetchUserData();
+
     }, [navigate, location]);
 
     const handleChange = (e) => {
@@ -45,25 +99,23 @@ function CheckoutPage() {
 
         const token = localStorage.getItem('token');
 
-        // =========================================================
-        // PAYLOAD ĐÃ ĐƯỢC CHỈNH SỬA ĐỂ KHỚP VỚI BACKEND
-        // =========================================================
+        // Payload gửi lên Backend
         const payload = {
             receiverName: formData.fullName, 
-            
             receiverPhone: formData.phone,
             addressLine: formData.address,
             note: formData.note,
             paymentMethod: formData.paymentMethod,
             items: cartItems.map(item => ({
-                productId: item.id,
-                price: item.price,
+                productId: item.id || item.productId, // Fallback nếu tên biến khác nhau
                 quantity: item.quantity,
                 color: item.selectedColor || null,
                 size: item.selectedSize || null
             }))
         };
+        
         console.log("Dữ liệu gửi đi:", payload);
+
         try {
             const response = await fetch('http://localhost:5198/api/Order/create', {
                 method: 'POST',
@@ -77,34 +129,25 @@ function CheckoutPage() {
             const result = await response.json();
 
             if (response.ok) {
-                // --- THÀNH CÔNG ---
                 alert("Đặt hàng thành công! Mã đơn: " + result.orderGroupId);
-                
-                // Bọc clearCart và navigate trong try-catch riêng 
-                // để nếu nó lỗi thì cũng không báo "Lỗi kết nối server"
                 try {
                     clearCart(); 
-                    navigate('/account');
+                    navigate('/account'); // Chuyển hướng về trang tài khoản/đơn hàng
                 } catch (err) {
-                    console.error("Lỗi dọn giỏ hàng (không ảnh hưởng đơn hàng):", err);
-                    // Vẫn chuyển trang kể cả khi clearCart lỗi
-                    window.location.href = '/profile'; 
+                    window.location.href = '/account'; 
                 }
-                return; // <--- QUAN TRỌNG: Dừng hàm tại đây
-            } 
-            
-            // --- LỖI TỪ BACKEND (400, 500...) ---
-            let errorMessage = result.message || result.title || "Có lỗi xảy ra";
-            if (result.errors) {
-                const firstErrorKey = Object.keys(result.errors)[0];
-                errorMessage = result.errors[firstErrorKey][0];
+            } else {
+                let errorMessage = result.message || result.title || "Có lỗi xảy ra";
+                if (result.errors) {
+                    const firstErrorKey = Object.keys(result.errors)[0];
+                    errorMessage = result.errors[firstErrorKey][0];
+                }
+                alert("Lỗi đặt hàng: " + errorMessage);
             }
-            alert("Lỗi đặt hàng: " + errorMessage);
 
         } catch (error) {
-            // --- LỖI MẠNG / KHÔNG GỌI ĐƯỢC API ---
             console.error("Lỗi network:", error);
-            alert("Không thể kết nối đến server (hoặc server đang tắt).");
+            alert("Không thể kết nối đến server.");
         }
     };
 
@@ -169,9 +212,9 @@ function CheckoutPage() {
                                     COD (Thanh toán khi nhận hàng)
                                 </label>
                                 <label>
-                                    <input type="radio" name="paymentMethod" value="banking" 
+                                    <input type="radio" name="paymentMethod disabled" value="banking" 
                                         checked={formData.paymentMethod === 'banking'} onChange={handleChange}/> 
-                                    Chuyển khoản ngân hàng
+                                    Chuyển khoản ngân hàng (bảo trì)
                                 </label>
                             </div>
                         </div>
@@ -183,7 +226,7 @@ function CheckoutPage() {
                     <h3>Đơn hàng của bạn</h3>
                     <div className="summary-items">
                         {cartItems.map((item) => (
-                            <div key={item.cartId || item.productId} className="summary-item">
+                            <div key={item.cartId || item.productId || item.id} className="summary-item">
                                 <div className="summary-item-left">
                                     <span className="sum-name">{item.name}</span>
                                     <span className="sum-qty">x {item.quantity}</span>

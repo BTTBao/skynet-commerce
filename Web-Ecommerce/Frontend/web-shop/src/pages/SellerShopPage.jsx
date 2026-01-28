@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Bỏ useLocation, chỉ cần useParams
+import { useParams } from "react-router-dom";
 import Navbar from "../layouts/Navbar";
 import ProductCard from "../components/ProductCard";
 import "./SellerShopPage.css"; 
 
 function SellerShopPage() {
-    const { shopId } = useParams(); // Lấy ID từ URL (VD: shopId = 1)
+    const { shopId } = useParams();
     
     const [shop, setShop] = useState(null);
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState([]); // Tất cả sản phẩm của shop
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('products');
 
-    // Hàm an toàn để lấy dữ liệu (Do backend có thể trả về hoa/thường)
+    // --- STATE MỚI CHO FILTER & PAGINATION ---
+    const [sortType, setSortType] = useState('popular'); // 'popular', 'newest', 'price-asc', 'price-desc'
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10; // Số sản phẩm trên 1 trang
+
+    // Hàm an toàn để lấy dữ liệu (Giữ nguyên)
     const getVal = (obj, keyLower, keyUpper) => {
         if (!obj) return null;
         return obj[keyLower] !== undefined ? obj[keyLower] : obj[keyUpper];
@@ -27,27 +32,22 @@ function SellerShopPage() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Chạy song song 2 API để tiết kiệm thời gian
                 const [shopRes, prodRes] = await Promise.all([
                     fetch(`http://localhost:5198/api/shops/${shopId}`),
                     fetch(`http://localhost:5198/api/products`)
                 ]);
 
-                // 1. Xử lý dữ liệu Shop
                 if (shopRes.ok) {
                     const shopData = await shopRes.json();
                     setShop(shopData);
                 } else {
-                    console.error("Không tìm thấy shop");
                     setShop(null);
                 }
 
-                // 2. Xử lý dữ liệu Sản phẩm
                 if (prodRes.ok) {
                     const prodData = await prodRes.json();
                     const currentShopId = parseInt(shopId);
                     
-                    // Lọc sản phẩm thuộc shop này
                     const shopProducts = prodData.filter(p => 
                         (p.shopId === currentShopId) || 
                         (p.ShopId === currentShopId) || 
@@ -66,29 +66,72 @@ function SellerShopPage() {
         if (shopId) {
             fetchData();
         }
-    }, [shopId]); // Khi URL thay đổi ID -> Gọi lại API ngay
+    }, [shopId]);
+
+    // --- LOGIC XỬ LÝ SẮP XẾP ---
+    // Tạo bản sao để sort không ảnh hưởng mảng gốc
+    const getSortedProducts = () => {
+        let sorted = [...products];
+        
+        sorted.sort((a, b) => {
+            // Helper lấy giá trị an toàn bên trong sort
+            const valA = (keyL, keyU) => getVal(a, keyL, keyU);
+            const valB = (keyL, keyU) => getVal(b, keyL, keyU);
+
+            switch (sortType) {
+                case 'price-asc': // Giá thấp -> cao
+                    return (valA('price', 'Price') || 0) - (valB('price', 'Price') || 0);
+                
+                case 'price-desc': // Giá cao -> thấp
+                    return (valB('price', 'Price') || 0) - (valA('price', 'Price') || 0);
+                
+                case 'newest': // Mới nhất (Dùng ID hoặc CreatedAt nếu có)
+                    // Ở đây giả sử ID lớn là mới hơn
+                    return (valB('productId', 'ProductId') || 0) - (valA('productId', 'ProductId') || 0);
+                
+                case 'popular': // Phổ biến (Dựa theo số lượng bán)
+                default:
+                    return (valB('soldCount', 'SoldCount') || 0) - (valA('soldCount', 'SoldCount') || 0);
+            }
+        });
+        return sorted;
+    };
+
+    const sortedProducts = getSortedProducts();
+
+    // --- LOGIC XỬ LÝ PHÂN TRANG ---
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentProducts = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+
+    // Hàm đổi trang
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Hàm đổi kiểu sắp xếp (Reset về trang 1 khi đổi sort)
+    const handleSortChange = (type) => {
+        setSortType(type);
+        setCurrentPage(1);
+    };
 
     if (loading) return <div className="loading-container">Đang tải dữ liệu Shop...</div>;
     
-    // Nếu load xong mà vẫn không có shop (do ID sai hoặc API lỗi)
     if (!shop) return (
         <>
             <Navbar />
             <div className="error-container" style={{padding: '50px', textAlign: 'center'}}>
                 <h2>Không tìm thấy Shop có ID: {shopId}</h2>
-                <p>Vui lòng kiểm tra lại đường dẫn.</p>
             </div>
         </>
     );
 
-    // Chuẩn bị dữ liệu hiển thị (Dùng getVal để tránh lỗi null)
     const displayShop = {
         name: getVal(shop, 'shopName', 'ShopName'),
         avatar: getVal(shop, 'avatarUrl', 'AvatarUrl'),
         cover: getVal(shop, 'coverImageUrl', 'CoverImageUrl'),
         desc: getVal(shop, 'description', 'Description'),
         rating: getVal(shop, 'ratingAverage', 'RatingAverage'),
-        followers: getVal(shop, 'followers', 'Followers') || 0, // Entity chưa có thì để 0
+        followers: getVal(shop, 'followers', 'Followers') || 0,
         joinDate: getVal(shop, 'createdAt', 'CreatedAt'),
         isActive: getVal(shop, 'isActive', 'IsActive')
     };
@@ -96,21 +139,15 @@ function SellerShopPage() {
     return (
         <>
             <div className="seller-shop-container">
-                
-                {/* --- HEADER --- */}
+                {/* --- HEADER (GIỮ NGUYÊN) --- */}
                 <div className="shop-header-section">
-                    <div 
-                        className="shop-cover-bg" 
-                        style={{ backgroundImage: `url(${displayShop.cover || 'https://via.placeholder.com/1200x300'})` }}
-                    ></div>
-
+                    <div className="shop-cover-bg" style={{ backgroundImage: `url(${displayShop.cover || 'https://via.placeholder.com/1200x300'})` }}></div>
                     <div className="shop-info-wrapper">
                         <div className="shop-profile-card">
                             <div className="shop-avatar-box">
                                 <img src={displayShop.avatar || "https://via.placeholder.com/150"} alt={displayShop.name} />
                                 {displayShop.isActive && <span className="status-badge">Online</span>}
                             </div>
-                            
                             <div className="shop-details-main">
                                 <h1 className="shop-name-title">{displayShop.name}</h1>
                                 <div className="shop-actions-row">
@@ -119,42 +156,19 @@ function SellerShopPage() {
                                 </div>
                             </div>
                         </div>
-
                         <div className="shop-stats-grid">
-                            <div className="stat-item">
-                                <i className="fa fa-box-open"></i>
-                                <span>Sản phẩm: <strong>{products.length}</strong></span>
-                            </div>
-                            <div className="stat-item">
-                                <i className="fa fa-star"></i>
-                                <span>Đánh giá: <strong>{displayShop.rating ? Number(displayShop.rating).toFixed(1) : 0}/5.0</strong></span>
-                            </div>
-                            <div className="stat-item">
-                                <i className="fa fa-user-plus"></i>
-                                <span>Người theo dõi: <strong>{displayShop.followers}</strong></span>
-                            </div>
-                             <div className="stat-item">
-                                <i className="fa fa-clock"></i>
-                                <span>Tham gia: <strong>{formatDate(displayShop.joinDate)}</strong></span>
-                            </div>
+                            <div className="stat-item"><i className="fa fa-box-open"></i><span>Sản phẩm: <strong>{products.length}</strong></span></div>
+                            <div className="stat-item"><i className="fa fa-star"></i><span>Đánh giá: <strong>{displayShop.rating ? Number(displayShop.rating).toFixed(1) : 0}/5.0</strong></span></div>
+                            <div className="stat-item"><i className="fa fa-user-plus"></i><span>Người theo dõi: <strong>{displayShop.followers}</strong></span></div>
+                             <div className="stat-item"><i className="fa fa-clock"></i><span>Tham gia: <strong>{formatDate(displayShop.joinDate)}</strong></span></div>
                         </div>
                     </div>
                 </div>
 
                 {/* --- TABS --- */}
                 <div className="shop-nav-tabs">
-                    <button 
-                        className={`tab-item ${activeTab === 'products' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('products')}
-                    >
-                        Tất cả sản phẩm
-                    </button>
-                    <button 
-                        className={`tab-item ${activeTab === 'about' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('about')}
-                    >
-                        Hồ sơ Shop
-                    </button>
+                    <button className={`tab-item ${activeTab === 'products' ? 'active' : ''}`} onClick={() => setActiveTab('products')}>Tất cả sản phẩm</button>
+                    <button className={`tab-item ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>Hồ sơ Shop</button>
                 </div>
 
                 {/* --- BODY --- */}
@@ -163,18 +177,38 @@ function SellerShopPage() {
                     {/* TAB: PRODUCTS */}
                     {activeTab === 'products' && (
                         <>
+                            {/* --- FILTER BAR ĐÃ CẬP NHẬT LOGIC --- */}
                             <div className="shop-filter-bar">
                                 <span>Sắp xếp theo:</span>
-                                <button className="filter-opt active">Phổ biến</button>
-                                <button className="filter-opt">Mới nhất</button>
-                                <select className="price-sort">
-                                    <option>Giá: Thấp đến Cao</option>
-                                    <option>Giá: Cao đến Thấp</option>
+                                
+                                <button 
+                                    className={`filter-opt ${sortType === 'popular' ? 'active' : ''}`}
+                                    onClick={() => handleSortChange('popular')}
+                                >
+                                    Phổ biến
+                                </button>
+                                
+                                <button 
+                                    className={`filter-opt ${sortType === 'newest' ? 'active' : ''}`}
+                                    onClick={() => handleSortChange('newest')}
+                                >
+                                    Mới nhất
+                                </button>
+                                
+                                <select 
+                                    className="price-sort" 
+                                    onChange={(e) => handleSortChange(e.target.value)}
+                                    value={sortType === 'price-asc' || sortType === 'price-desc' ? sortType : ''}
+                                >
+                                    <option value="" disabled>Giá</option>
+                                    <option value="price-asc">Giá: Thấp đến Cao</option>
+                                    <option value="price-desc">Giá: Cao đến Thấp</option>
                                 </select>
                             </div>
 
+                            {/* --- PRODUCT GRID (HIỂN THỊ currentProducts) --- */}
                             <div className="product-grid">
-                                {products.map((item) => (
+                                {currentProducts.map((item) => (
                                     <ProductCard 
                                         key={item.productId || item.ProductId} 
                                         product={{
@@ -189,19 +223,49 @@ function SellerShopPage() {
                                     />
                                 ))}
                             </div>
+                            
                             {products.length === 0 && <div className="empty-state">Shop này chưa đăng bán sản phẩm nào.</div>}
+
+                            {/* --- PAGINATION CONTROLS --- */}
+                            {products.length > itemsPerPage && (
+                                <div className="pagination-container">
+                                    <button 
+                                        onClick={() => paginate(currentPage - 1)} 
+                                        disabled={currentPage === 1}
+                                        className="page-btn"
+                                    >
+                                        &laquo;
+                                    </button>
+
+                                    {Array.from({ length: totalPages }, (_, index) => (
+                                        <button
+                                            key={index + 1}
+                                            onClick={() => paginate(index + 1)}
+                                            className={`page-btn ${currentPage === index + 1 ? 'active' : ''}`}
+                                        >
+                                            {index + 1}
+                                        </button>
+                                    ))}
+
+                                    <button 
+                                        onClick={() => paginate(currentPage + 1)} 
+                                        disabled={currentPage === totalPages}
+                                        className="page-btn"
+                                    >
+                                        &raquo;
+                                    </button>
+                                </div>
+                            )}
                         </>
                     )}
 
-                    {/* TAB: ABOUT */}
+                    {/* TAB: ABOUT (GIỮ NGUYÊN) */}
                     {activeTab === 'about' && (
                         <div className="shop-about-section">
                             <h3>Giới thiệu về {displayShop.name}</h3>
                             <div className="about-content">
                                 {displayShop.desc ? (
-                                    displayShop.desc.split('\n').map((line, index) => (
-                                        <p key={index}>{line}</p>
-                                    ))
+                                    displayShop.desc.split('\n').map((line, index) => <p key={index}>{line}</p>)
                                 ) : (
                                     <p style={{color: '#888'}}>Shop chưa cập nhật mô tả.</p>
                                 )}
