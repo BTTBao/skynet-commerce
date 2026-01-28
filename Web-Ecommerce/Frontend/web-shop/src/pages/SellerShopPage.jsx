@@ -95,7 +95,6 @@ function SellerShopPage() {
 
     return (
         <>
-            <Navbar />
             <div className="seller-shop-container">
                 
                 {/* --- HEADER --- */}
