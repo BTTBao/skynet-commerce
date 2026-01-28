@@ -312,17 +312,17 @@
     <Compile Include="GUI\Forms\Seller\SellerOrderForm.Designer.cs">
       <DependentUpon>SellerOrderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerProductDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerProductDetailForm.Designer.cs">
+      <DependentUpon>SellerProductDetailForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\Seller\SellerProductForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\Forms\Seller\SellerProductForm.Designer.cs">
       <DependentUpon>SellerProductForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Forms\Seller\SellerVoucherForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Forms\Seller\SellerVoucherForm.Designer.cs">
-      <DependentUpon>SellerVoucherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.cs">
       <SubType>UserControl</SubType>
@@ -379,6 +379,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Seller\SellerInfoForm.resx">
       <DependentUpon>SellerInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Seller\SellerProductDetailForm.resx">
+      <DependentUpon>SellerProductDetailForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Seller\SellerProductForm.resx">
+      <DependentUpon>SellerProductForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcInfoCard.resx">
       <DependentUpon>UcInfoCard.cs</DependentUpon>

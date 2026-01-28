@@ -54,7 +54,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
 
         private void BtnVoucher_Click(object sender, EventArgs e)
         {
-            LoadChildForm(new SellerVoucherForm());
+            
         }
 
         private void BtnShopInfo_Click(object sender, EventArgs e)
