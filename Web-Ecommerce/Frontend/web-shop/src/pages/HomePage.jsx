@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Navbar from "../layouts/Navbar";
 import "./HomePage.css";
 import ProductCard from "../components/ProductCard";
 
@@ -10,14 +9,13 @@ function HomePage() {
 
     // 2. State quản lý trang hiện tại
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 8; // Số lượng hiển thị mỗi trang
+    const pageSize = 10; // Số lượng hiển thị mỗi trang
 
     // 3. Gọi API 1 lần duy nhất khi vào web
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                // Đảm bảo Port đúng là 7215
-                const response = await fetch("https://localhost:7215/api/products");
+                const response = await fetch("http://localhost:5198/api/Products");
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
                 
                 const data = await response.json();
@@ -51,7 +49,7 @@ function HomePage() {
 
     return (
         <div className="homepage">
-            <Navbar />
+    
             <header className="hero">
                 <div className="hero-content">
                     <h1>Săn Sale Cực Khủng</h1>

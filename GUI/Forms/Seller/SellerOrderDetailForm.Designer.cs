@@ -96,10 +96,11 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             // lblTitle
             // 
             this.lblTitle.Text = "Chi tiết đơn hàng";
-            this.lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            this.lblTitle.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
+            this.lblTitle.BackColor = Color.FromArgb(31, 30, 68);
             this.lblTitle.ForeColor = Color.White;
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Location = new Point(20, 20);
+            this.lblTitle.Location = new Point(20, 15);
 
             // 
             // btnClose
@@ -332,6 +333,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             // lblTotalAmount
             // 
             this.lblTotalAmount.Text = "Tổng cộng: 0 VNĐ";
+            this.lblTotalAmount.BackColor = Color.FromArgb(31, 30, 68);
             this.lblTotalAmount.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             this.lblTotalAmount.ForeColor = Color.White;
             this.lblTotalAmount.AutoSize = true;
@@ -342,7 +344,7 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             // 
             this.AutoScaleDimensions = new SizeF(6F, 13F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(900, 700);
+            this.ClientSize = new Size(900, 750);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelHeader);
             this.Name = "SellerOrderDetailForm";

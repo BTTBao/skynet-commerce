@@ -417,7 +417,15 @@ CREATE TABLE OrderStatusHistory (
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID) ON DELETE CASCADE
 );
 
-
+use skynet_commerce;
+-- Thêm cột CCCD và Ảnh vào bảng đăng ký
+ALTER TABLE ShopRegistrations
+ADD CitizenID NVARCHAR(20), 
+    CitizenImageURL NVARCHAR(500);
+GO
+ALTER TABLE ShopRegistrations
+ADD RejectionReason NVARCHAR(MAX);
+GO
 /* =====================================================
    16. INDEXES
 ===================================================== */
@@ -428,3 +436,6 @@ CREATE INDEX IX_OrderDetail_OrderID ON OrderDetails(OrderID);
 CREATE INDEX IX_CartItems_CartID ON CartItems(CartID);
 CREATE INDEX IX_ProductImages_ProductID ON ProductImages(ProductID);
 
+select * from orders
+
+select * from Accounts;

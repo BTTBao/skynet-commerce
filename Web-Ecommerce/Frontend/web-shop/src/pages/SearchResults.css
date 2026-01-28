@@ -38,3 +38,86 @@
     font-size: 50px;
     margin-bottom: 15px;
 }
+
+.search-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 60vh;
+}
+
+.search-header {
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.search-header h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.result-count {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Grid sản phẩm */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Tự động chia cột */
+    gap: 20px;
+}
+
+/* Loading & No Results */
+.loading-container, .no-results {
+    text-align: center;
+    padding: 50px 0;
+    color: #666;
+}
+
+.no-results i {
+    font-size: 50px;
+    color: #ddd;
+    margin-bottom: 15px;
+}
+
+/* --- PHÂN TRANG (PAGINATION) --- */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    gap: 8px;
+}
+
+.page-btn {
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-weight: 500;
+    color: #333;
+}
+
+.page-btn:hover:not(:disabled) {
+    border-color: #ee4d2d;
+    color: #ee4d2d;
+}
+
+.page-btn.active {
+    background-color: #ee4d2d; /* Màu cam Shopee */
+    color: white;
+    border-color: #ee4d2d;
+}
+
+.page-btn:disabled {
+    background-color: #f9f9f9;
+    color: #ccc;
+    cursor: not-allowed;
+    border-color: #eee;
+}

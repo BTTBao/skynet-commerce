@@ -159,8 +159,10 @@
     <Compile Include="BLL\Services\Seller\ICategoryService.cs" />
     <Compile Include="BLL\Services\Seller\IOrderService.cs" />
     <Compile Include="BLL\Services\Seller\IProductService.cs" />
+    <Compile Include="BLL\Services\Seller\ISellerDashboardService.cs" />
     <Compile Include="BLL\Services\Seller\OrderService.cs" />
     <Compile Include="BLL\Services\Seller\ProductService.cs" />
+    <Compile Include="BLL\Services\Seller\SellerDashboardService.cs" />
     <Compile Include="DAL\Entities\Account.cs" />
     <Compile Include="DAL\Config\ApplicationDbContext.cs" />
     <Compile Include="DAL\Entities\AppSession.cs" />
@@ -179,10 +181,12 @@
     <Compile Include="DAL\Repositories\Seller\IOrderRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\IProductRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\IRepository.cs" />
+    <Compile Include="DAL\Repositories\Seller\ISellerDashboardRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\IUnitOfWork.cs" />
     <Compile Include="DAL\Repositories\Seller\OrderRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\ProductRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\Repository.cs" />
+    <Compile Include="DAL\Repositories\Seller\SellerDashboardRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\UnitOfWork.cs" />
     <Compile Include="GUI\Forms\Admin\CategoriesForm.cs">
       <SubType>Form</SubType>

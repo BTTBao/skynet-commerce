@@ -1,7 +1,6 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import Navbar from '../layouts/Navbar';
 import "./CartPage.css"; 
 
 function CartPage() {
@@ -10,7 +9,6 @@ function CartPage() {
     if (cartItems.length === 0) {
         return (
             <>
-                <Navbar />
                 <div className="empty-cart">
                     <h2>Giỏ hàng của bạn đang trống!</h2>
                     <Link to="/" className="btn-shop-now">Mua sắm ngay</Link>
@@ -21,7 +19,6 @@ function CartPage() {
 
     return (
         <>
-            <Navbar />
             <div className="cart-container">
                 <h2 className="cart-title">Giỏ Hàng Của Bạn</h2>
                 
@@ -90,7 +87,11 @@ function CartPage() {
 
                     <div className="cart-summary">
                         <h3>Tổng cộng: <span className="final-price">{totalPrice.toLocaleString()}đ</span></h3>
-                        <button className="btn-checkout">Thanh Toán</button>
+                        
+                        {/* SỬA ĐOẠN NÀY: Thay button thường bằng Link tới trang checkout */}
+                        <Link to="/checkout" className="btn-checkout">
+                            Thanh Toán Ngay
+                        </Link>
                     </div>
                 </div>
             </div>

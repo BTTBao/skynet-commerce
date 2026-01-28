@@ -1,0 +1,252 @@
+.my-orders-container {
+    padding: 20px;
+    background-color: #f8f9fa; /* Nền xám nhẹ cho toàn vùng */
+    min-height: 600px;
+}
+
+.tab-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* --- GROUP CARD (Vỏ ngoài) --- */
+.order-group-card {
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+/* Header Group: Ngày & Tổng tiền */
+.group-header {
+    background: #fafafa;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.group-meta {
+    display: flex;
+    gap: 15px;
+}
+
+.group-date {
+    display: flex;
+    align-items: center;
+}
+
+.highlight-price {
+    color: #ee4d2d; /* Màu đỏ cam Shopee */
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-left: 5px;
+}
+
+/* --- SUB ORDER (Đơn con bên trong) --- */
+.sub-order-item {
+    padding: 20px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.sub-order-item:last-child {
+    border-bottom: none;
+}
+
+/* Header Đơn con: Shop & Status */
+.sub-order-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.shop-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.status-tag {
+    font-size: 0.85rem;
+    padding: 2px 0;
+    text-transform: uppercase;
+}
+.status-pending { color: #f59e0b; }
+.status-shipping { color: #3b82f6; }
+.status-delivered { color: #10b981; }
+.status-cancelled { color: #ef4444; }
+
+/* Nội dung sản phẩm */
+.sub-order-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #fff;
+}
+
+.product-preview {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.img-box {
+    width: 60px;
+    height: 60px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.main-product-name {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.product-variant-hint {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.more-products-tag {
+    font-size: 0.8rem;
+    color: #666;
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.sub-order-price {
+    font-weight: 500;
+    color: #333;
+}
+
+/* Nút hành động */
+.sub-order-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px dashed #eee;
+}
+
+.btn-secondary, .btn-danger, .btn-primary {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary {
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #555;
+}
+.btn-secondary:hover { background: #f9f9f9; }
+
+.btn-danger {
+    background: #fff;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+}
+.btn-danger:hover { background: #fef2f2; }
+
+.btn-primary {
+    background: #ee4d2d;
+    border: 1px solid #ee4d2d;
+    color: white;
+}
+.btn-primary:hover { background: #d73211; }
+
+/* MODAL STYLES */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.detail-group {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-group h4 {
+    margin-bottom: 10px;
+    color: #ee4d2d;
+    font-size: 1rem;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.item-name {
+    font-weight: 500;
+}
+
+.big-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ee4d2d;
+    float: right;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+.page-btn {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.page-btn:disabled { opacity: 0.5; cursor: not-allowed; }

@@ -73,17 +73,18 @@ public partial class SkynetCommerceContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-9E807K6;Initial Catalog=Skynet_commerce;Integrated Security=True;Trust Server Certificate=True");
 
+    //=> optionsBuilder.UseSqlServer("Data Source=DESKTOP-D40AP7A\\SQLEXPRESS;Initial Catalog=Skynet_commerce;Integrated Security=True;Trust Server Certificate=True");
+     => optionsBuilder.UseSqlServer("Data Source=DESKTOP-9E807K6;Initial Catalog=Skynet_commerce;Integrated Security=True;Trust Server Certificate=True");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK__Accounts__349DA5867C0BB102");
+            entity.HasKey(e => e.AccountId).HasName("PK__Accounts__349DA5869C3E4F97");
 
-            entity.HasIndex(e => e.Phone, "UQ__Accounts__5C7E359E339F437E").IsUnique();
+            entity.HasIndex(e => e.Phone, "UQ__Accounts__5C7E359E71B06B6B").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Accounts__A9D105344D8D5E4B").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Accounts__A9D10534F965EB13").IsUnique();
 
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.CreatedAt)
@@ -97,7 +98,7 @@ public partial class SkynetCommerceContext : DbContext
 
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD797A8A285C4");
+            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD797E32490EA");
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
@@ -107,12 +108,12 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__Carts__AccountID__72C60C4A");
+                .HasConstraintName("FK__Carts__AccountID__73BA3083");
         });
 
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.HasKey(e => e.CartItemId).HasName("PK__CartItem__488B0B2A41B4E7AF");
+            entity.HasKey(e => e.CartItemId).HasName("PK__CartItem__488B0B2A1B0B0606");
 
             entity.HasIndex(e => e.CartId, "IX_CartItems_CartID");
 
@@ -126,21 +127,21 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Cart).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.CartId)
-                .HasConstraintName("FK__CartItems__CartI__778AC167");
+                .HasConstraintName("FK__CartItems__CartI__787EE5A0");
 
             entity.HasOne(d => d.Product).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CartItems__Produ__787EE5A0");
+                .HasConstraintName("FK__CartItems__Produ__797309D9");
 
             entity.HasOne(d => d.Variant).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.VariantId)
-                .HasConstraintName("FK__CartItems__Varia__797309D9");
+                .HasConstraintName("FK__CartItems__Varia__7A672E12");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2BB5BF5F00");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B1467283A");
 
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName).HasMaxLength(150);
@@ -148,12 +149,12 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.ParentCategory).WithMany(p => p.InverseParentCategory)
                 .HasForeignKey(d => d.ParentCategoryId)
-                .HasConstraintName("FK__Categorie__Paren__5441852A");
+                .HasConstraintName("FK__Categorie__Paren__5535A963");
         });
 
         modelBuilder.Entity<ChatAttachment>(entity =>
         {
-            entity.HasKey(e => e.AttachmentId).HasName("PK__ChatAtta__442C64DE0E944B70");
+            entity.HasKey(e => e.AttachmentId).HasName("PK__ChatAtta__442C64DEC8E51EDD");
 
             entity.Property(e => e.AttachmentId).HasColumnName("AttachmentID");
             entity.Property(e => e.FilePublicId).HasMaxLength(255);
@@ -165,12 +166,12 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Message).WithMany(p => p.ChatAttachments)
                 .HasForeignKey(d => d.MessageId)
-                .HasConstraintName("FK__ChatAttac__Messa__3587F3E0");
+                .HasConstraintName("FK__ChatAttac__Messa__367C1819");
         });
 
         modelBuilder.Entity<ChatMessage>(entity =>
         {
-            entity.HasKey(e => e.MessageId).HasName("PK__ChatMess__C87C037CAFE2223E");
+            entity.HasKey(e => e.MessageId).HasName("PK__ChatMess__C87C037C846D88F1");
 
             entity.Property(e => e.MessageId).HasColumnName("MessageID");
             entity.Property(e => e.CreatedAt)
@@ -184,17 +185,17 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Room).WithMany(p => p.ChatMessages)
                 .HasForeignKey(d => d.RoomId)
-                .HasConstraintName("FK__ChatMessa__RoomI__31B762FC");
+                .HasConstraintName("FK__ChatMessa__RoomI__32AB8735");
 
             entity.HasOne(d => d.Sender).WithMany(p => p.ChatMessages)
                 .HasForeignKey(d => d.SenderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ChatMessa__Sende__32AB8735");
+                .HasConstraintName("FK__ChatMessa__Sende__339FAB6E");
         });
 
         modelBuilder.Entity<ChatRoom>(entity =>
         {
-            entity.HasKey(e => e.RoomId).HasName("PK__ChatRoom__32863919C03B657A");
+            entity.HasKey(e => e.RoomId).HasName("PK__ChatRoom__32863919360BB76F");
 
             entity.HasIndex(e => new { e.BuyerId, e.ShopId }, "UQ_Chat").IsUnique();
 
@@ -208,16 +209,16 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Buyer).WithMany(p => p.ChatRooms)
                 .HasForeignKey(d => d.BuyerId)
-                .HasConstraintName("FK__ChatRooms__Buyer__2BFE89A6");
+                .HasConstraintName("FK__ChatRooms__Buyer__2CF2ADDF");
 
             entity.HasOne(d => d.Shop).WithMany(p => p.ChatRooms)
                 .HasForeignKey(d => d.ShopId)
-                .HasConstraintName("FK__ChatRooms__ShopI__2CF2ADDF");
+                .HasConstraintName("FK__ChatRooms__ShopI__2DE6D218");
         });
 
         modelBuilder.Entity<FlashSale>(entity =>
         {
-            entity.HasKey(e => e.FlashSaleId).HasName("PK__FlashSal__D603A20490089E63");
+            entity.HasKey(e => e.FlashSaleId).HasName("PK__FlashSal__D603A2046DFBEE95");
 
             entity.Property(e => e.FlashSaleId).HasColumnName("FlashSaleID");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -226,7 +227,7 @@ public partial class SkynetCommerceContext : DbContext
 
         modelBuilder.Entity<FlashSaleProduct>(entity =>
         {
-            entity.HasKey(e => e.FlashSaleProductId).HasName("PK__FlashSal__4DE6F0C9E2E61CBD");
+            entity.HasKey(e => e.FlashSaleProductId).HasName("PK__FlashSal__4DE6F0C9DFACBBAC");
 
             entity.Property(e => e.FlashSaleProductId).HasColumnName("FlashSaleProductID");
             entity.Property(e => e.FlashSaleId).HasColumnName("FlashSaleID");
@@ -237,20 +238,20 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.FlashSale).WithMany(p => p.FlashSaleProducts)
                 .HasForeignKey(d => d.FlashSaleId)
-                .HasConstraintName("FK__FlashSale__Flash__44CA3770");
+                .HasConstraintName("FK__FlashSale__Flash__45BE5BA9");
 
             entity.HasOne(d => d.Product).WithMany(p => p.FlashSaleProducts)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__FlashSale__Produ__45BE5BA9");
+                .HasConstraintName("FK__FlashSale__Produ__46B27FE2");
 
             entity.HasOne(d => d.Variant).WithMany(p => p.FlashSaleProducts)
                 .HasForeignKey(d => d.VariantId)
-                .HasConstraintName("FK__FlashSale__Varia__46B27FE2");
+                .HasConstraintName("FK__FlashSale__Varia__47A6A41B");
         });
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E3208279AF0");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E323BAC610C");
 
             entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
@@ -266,12 +267,12 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__Notificat__Accou__4B7734FF");
+                .HasConstraintName("FK__Notificat__Accou__4C6B5938");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF65068005");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF6D241258");
 
             entity.HasIndex(e => e.AccountId, "IX_Order_AccountID");
 
@@ -291,25 +292,25 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__Orders__AccountI__05D8E0BE");
+                .HasConstraintName("FK__Orders__AccountI__06CD04F7");
 
             entity.HasOne(d => d.Address).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.AddressId)
-                .HasConstraintName("FK__Orders__AddressI__06CD04F7");
+                .HasConstraintName("FK__Orders__AddressI__07C12930");
 
             entity.HasOne(d => d.OrderGroup).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.OrderGroupId)
-                .HasConstraintName("FK__Orders__OrderGro__03F0984C");
+                .HasConstraintName("FK__Orders__OrderGro__04E4BC85");
 
             entity.HasOne(d => d.Shop).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ShopId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Orders__ShopID__04E4BC85");
+                .HasConstraintName("FK__Orders__ShopID__05D8E0BE");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C97EA3112");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CDF53D5AE");
 
             entity.HasIndex(e => e.OrderId, "IX_OrderDetail_OrderID");
 
@@ -324,21 +325,21 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__OrderDeta__Order__0B91BA14");
+                .HasConstraintName("FK__OrderDeta__Order__0C85DE4D");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Produ__0C85DE4D");
+                .HasConstraintName("FK__OrderDeta__Produ__0D7A0286");
 
             entity.HasOne(d => d.Variant).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.VariantId)
-                .HasConstraintName("FK__OrderDeta__Varia__0D7A0286");
+                .HasConstraintName("FK__OrderDeta__Varia__0E6E26BF");
         });
 
         modelBuilder.Entity<OrderGroup>(entity =>
         {
-            entity.HasKey(e => e.OrderGroupId).HasName("PK__OrderGro__31C8544FB7E350DD");
+            entity.HasKey(e => e.OrderGroupId).HasName("PK__OrderGro__31C8544F48A45817");
 
             entity.Property(e => e.OrderGroupId).HasColumnName("OrderGroupID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
@@ -350,12 +351,12 @@ public partial class SkynetCommerceContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.OrderGroups)
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderGrou__Accou__7E37BEF6");
+                .HasConstraintName("FK__OrderGrou__Accou__7F2BE32F");
         });
 
         modelBuilder.Entity<OrderShippingInfo>(entity =>
         {
-            entity.HasKey(e => e.ShippingInfoId).HasName("PK__OrderShi__A72E5D95DA122288");
+            entity.HasKey(e => e.ShippingInfoId).HasName("PK__OrderShi__A72E5D95AF5B548F");
 
             entity.ToTable("OrderShippingInfo");
 
@@ -372,17 +373,17 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderShippingInfos)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__OrderShip__Order__3D2915A8");
+                .HasConstraintName("FK__OrderShip__Order__3E1D39E1");
 
             entity.HasOne(d => d.Shipper).WithMany(p => p.OrderShippingInfos)
                 .HasForeignKey(d => d.ShipperId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__OrderShip__Shipp__3E1D39E1");
+                .HasConstraintName("FK__OrderShip__Shipp__3F115E1A");
         });
 
         modelBuilder.Entity<OrderStatusHistory>(entity =>
         {
-            entity.HasKey(e => e.HistoryId).HasName("PK__OrderSta__4D7B4ADDC9533D52");
+            entity.HasKey(e => e.HistoryId).HasName("PK__OrderSta__4D7B4ADDBBED4376");
 
             entity.ToTable("OrderStatusHistory");
 
@@ -396,12 +397,12 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderStatusHistories)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__OrderStat__Order__4F47C5E3");
+                .HasConstraintName("FK__OrderStat__Order__503BEA1C");
         });
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__9B556A583A81CEF9");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__9B556A5801DC2E2C");
 
             entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
             entity.Property(e => e.Amount).HasColumnType("decimal(12, 2)");
@@ -418,12 +419,12 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.OrderGroup).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderGroupId)
-                .HasConstraintName("FK__Payments__OrderG__1332DBDC");
+                .HasConstraintName("FK__Payments__OrderG__14270015");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED0A493D02");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED0A53C426");
 
             entity.HasIndex(e => e.CategoryId, "IX_Product_CategoryID");
 
@@ -446,16 +447,16 @@ public partial class SkynetCommerceContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Products__Catego__66603565");
+                .HasConstraintName("FK__Products__Catego__6754599E");
 
             entity.HasOne(d => d.Shop).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ShopId)
-                .HasConstraintName("FK__Products__ShopID__656C112C");
+                .HasConstraintName("FK__Products__ShopID__66603565");
         });
 
         modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F4EC99AEB9D9");
+            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F4EC428C5A57");
 
             entity.HasIndex(e => e.ProductId, "IX_ProductImages_ProductID");
 
@@ -469,14 +470,14 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductImages)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__ProductIm__Produ__6A30C649");
+                .HasConstraintName("FK__ProductIm__Produ__6B24EA82");
         });
 
         modelBuilder.Entity<ProductVariant>(entity =>
         {
-            entity.HasKey(e => e.VariantId).HasName("PK__ProductV__0EA233E4A7B62532");
+            entity.HasKey(e => e.VariantId).HasName("PK__ProductV__0EA233E475055AAC");
 
-            entity.HasIndex(e => e.Sku, "UQ__ProductV__CA1ECF0D9D01494D").IsUnique();
+            entity.HasIndex(e => e.Sku, "UQ__ProductV__CA1ECF0DF36D8B87").IsUnique();
 
             entity.Property(e => e.VariantId).HasColumnName("VariantID");
             entity.Property(e => e.Color).HasMaxLength(50);
@@ -490,12 +491,12 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductVariants)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__ProductVa__Produ__6EF57B66");
+                .HasConstraintName("FK__ProductVa__Produ__6FE99F9F");
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.ReviewId).HasName("PK__Reviews__74BC79AE48472B4E");
+            entity.HasKey(e => e.ReviewId).HasName("PK__Reviews__74BC79AE98EC6CAE");
 
             entity.Property(e => e.ReviewId).HasColumnName("ReviewID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
@@ -511,25 +512,25 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__Reviews__Account__19DFD96B");
+                .HasConstraintName("FK__Reviews__Account__1AD3FDA4");
 
             entity.HasOne(d => d.OrderDetail).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.OrderDetailId)
-                .HasConstraintName("FK__Reviews__OrderDe__1BC821DD");
+                .HasConstraintName("FK__Reviews__OrderDe__1CBC4616");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__Reviews__Product__18EBB532");
+                .HasConstraintName("FK__Reviews__Product__19DFD96B");
 
             entity.HasOne(d => d.Shop).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.ShopId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Reviews__ShopID__1AD3FDA4");
+                .HasConstraintName("FK__Reviews__ShopID__1BC821DD");
         });
 
         modelBuilder.Entity<ShippingPartner>(entity =>
         {
-            entity.HasKey(e => e.ShipperId).HasName("PK__Shipping__1F8AFFB92FB2DF07");
+            entity.HasKey(e => e.ShipperId).HasName("PK__Shipping__1F8AFFB9798CCDEB");
 
             entity.Property(e => e.ShipperId).HasColumnName("ShipperID");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -541,11 +542,11 @@ public partial class SkynetCommerceContext : DbContext
 
         modelBuilder.Entity<Shop>(entity =>
         {
-            entity.HasKey(e => e.ShopId).HasName("PK__Shops__67C5562992B30B1E");
+            entity.HasKey(e => e.ShopId).HasName("PK__Shops__67C55629A5D3503A");
 
-            entity.HasIndex(e => e.AccountId, "UQ__Shops__349DA587A14AF8DA").IsUnique();
+            entity.HasIndex(e => e.AccountId, "UQ__Shops__349DA58717ECF22B").IsUnique();
 
-            entity.HasIndex(e => e.ShopName, "UQ__Shops__649A7D964F63735C").IsUnique();
+            entity.HasIndex(e => e.ShopName, "UQ__Shops__649A7D965B65935C").IsUnique();
 
             entity.Property(e => e.ShopId).HasColumnName("ShopID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
@@ -567,15 +568,21 @@ public partial class SkynetCommerceContext : DbContext
             entity.HasOne(d => d.Account).WithOne(p => p.Shop)
                 .HasForeignKey<Shop>(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Shops__AccountID__5BE2A6F2");
+                .HasConstraintName("FK__Shops__AccountID__5CD6CB2B");
         });
 
         modelBuilder.Entity<ShopRegistration>(entity =>
         {
-            entity.HasKey(e => e.RegistrationId).HasName("PK__ShopRegi__6EF58830C44A9571");
+            entity.HasKey(e => e.RegistrationId).HasName("PK__ShopRegi__6EF58830234C027B");
 
             entity.Property(e => e.RegistrationId).HasColumnName("RegistrationID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.CitizenId)
+                .HasMaxLength(20)
+                .HasColumnName("CitizenID");
+            entity.Property(e => e.CitizenImageUrl)
+                .HasMaxLength(500)
+                .HasColumnName("CitizenImageURL");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -587,14 +594,14 @@ public partial class SkynetCommerceContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.ShopRegistrations)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__ShopRegis__Accou__5165187F");
+                .HasConstraintName("FK__ShopRegis__Accou__52593CB8");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACA940F4DE");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACC65C3F77");
 
-            entity.HasIndex(e => e.AccountId, "UQ__Users__349DA587A41F264E").IsUnique();
+            entity.HasIndex(e => e.AccountId, "UQ__Users__349DA58772B9CD65").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
@@ -613,7 +620,7 @@ public partial class SkynetCommerceContext : DbContext
 
         modelBuilder.Entity<UserAddress>(entity =>
         {
-            entity.HasKey(e => e.AddressId).HasName("PK__UserAddr__091C2A1BFEA6152C");
+            entity.HasKey(e => e.AddressId).HasName("PK__UserAddr__091C2A1BEE4C28B3");
 
             entity.Property(e => e.AddressId).HasColumnName("AddressID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
@@ -635,7 +642,7 @@ public partial class SkynetCommerceContext : DbContext
 
         modelBuilder.Entity<UserRole>(entity =>
         {
-            entity.HasKey(e => e.UserRoleId).HasName("PK__UserRole__3D978A552B798842");
+            entity.HasKey(e => e.UserRoleId).HasName("PK__UserRole__3D978A553138CCB1");
 
             entity.HasIndex(e => new { e.AccountId, e.RoleName }, "UQ_UserRole").IsUnique();
 
@@ -653,9 +660,9 @@ public partial class SkynetCommerceContext : DbContext
 
         modelBuilder.Entity<Voucher>(entity =>
         {
-            entity.HasKey(e => e.VoucherId).HasName("PK__Vouchers__3AEE79C19FB787E1");
+            entity.HasKey(e => e.VoucherId).HasName("PK__Vouchers__3AEE79C11509326A");
 
-            entity.HasIndex(e => e.Code, "UQ__Vouchers__A25C5AA7E506A135").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__Vouchers__A25C5AA701A8D82E").IsUnique();
 
             entity.Property(e => e.VoucherId).HasColumnName("VoucherID");
             entity.Property(e => e.Code).HasMaxLength(50);
@@ -670,12 +677,12 @@ public partial class SkynetCommerceContext : DbContext
             entity.HasOne(d => d.Shop).WithMany(p => p.Vouchers)
                 .HasForeignKey(d => d.ShopId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Vouchers__ShopID__2645B050");
+                .HasConstraintName("FK__Vouchers__ShopID__2739D489");
         });
 
         modelBuilder.Entity<Wishlist>(entity =>
         {
-            entity.HasKey(e => e.WishlistId).HasName("PK__Wishlist__233189CB1DBC0CD2");
+            entity.HasKey(e => e.WishlistId).HasName("PK__Wishlist__233189CB4DEBF546");
 
             entity.HasIndex(e => new { e.AccountId, e.ProductId }, "UQ_Wishlist").IsUnique();
 
@@ -689,12 +696,12 @@ public partial class SkynetCommerceContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.Wishlists)
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Wishlists__Accou__208CD6FA");
+                .HasConstraintName("FK__Wishlists__Accou__2180FB33");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Wishlists)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Wishlists__Produ__2180FB33");
+                .HasConstraintName("FK__Wishlists__Produ__22751F6C");
         });
 
         OnModelCreatingPartial(modelBuilder);

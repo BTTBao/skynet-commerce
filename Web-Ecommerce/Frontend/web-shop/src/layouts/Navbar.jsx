@@ -1,33 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+// Import icon từ lucide-react (thay thế cho thẻ <i class="fa...">)
+import { User, LogOut, ShoppingCart, Search, SlidersHorizontal } from 'lucide-react'; 
 import "./Navbar.css";
 
 export default function Navbar() {
+    // --- HOOKS ---
     const { cartItems } = useCart();
-    const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
 
-    // --- STATES ---
-    const [searchTerm, setSearchTerm] = useState("");
-    
-    // State dữ liệu danh mục từ API
-    const [categories, setCategories] = useState([]); 
-    
-    // State danh mục đang chọn
-    const [selectedCategory, setSelectedCategory] = useState("all");
+    // Tính tổng số lượng giỏ hàng
+    const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-    // State cho Lọc nâng cao
+    // --- STATES CHO TÌM KIẾM & LỌC ---
+    const [searchTerm, setSearchTerm] = useState("");
+    const [categories, setCategories] = useState([]); 
+    const [selectedCategory, setSelectedCategory] = useState("all");
     const [showFilter, setShowFilter] = useState(false); 
     const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     const [sortBy, setSortBy] = useState("newest"); 
 
-    // --- EFFECT: LẤY DỮ LIỆU TỪ API ---
+    // --- EFFECT: LẤY DANH MỤC TỪ API ---
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                // Nhớ đổi port 7000 thành port backend thực tế của bạn
-                const response = await fetch('https://localhost:7215/api/Categories');
+                // LƯU Ý: Kiểm tra lại port Backend của bạn (5198, 7215, hay 7000)
+                const response = await fetch('http://localhost:5198/api/Categories');
                 if (response.ok) {
                     const data = await response.json();
                     setCategories(data);
@@ -40,16 +41,20 @@ export default function Navbar() {
     }, []);
 
     // --- HANDLERS ---
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
     const handleSearch = (e) => {
-        e.preventDefault(); // Ngăn reload trang
+        e.preventDefault();
         
         const params = new URLSearchParams();
         if (searchTerm) params.append("keyword", searchTerm);
         
-        // Logic lọc: Nếu khác 'all' thì đẩy categoryId lên URL
         if (selectedCategory !== "all") {
-                params.append("categoryId", selectedCategory); 
-            }
+            params.append("categoryId", selectedCategory); 
+        }
         
         if (priceRange.min) params.append("minPrice", priceRange.min);
         if (priceRange.max) params.append("maxPrice", priceRange.max);
@@ -62,20 +67,19 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <div className="nav-wrapper">
-                <Link to="/" className="logo">SHOP<span>DEAL</span></Link>
+                {/* 1. LOGO */}
+                <Link to="/" className="logo">
+                    SHOP<span>DEAL</span>
+                </Link>
 
-                {/* --- SEARCH BOX CONTAINER --- */}
+                {/* 2. SEARCH BOX & FILTER */}
                 <div className="search-container">
                     <form className="search-box" onSubmit={handleSearch}>
-                        {/* Đã xóa phần <select> danh mục ở đây cho gọn */}
-
                         <input 
                             className="search-input" 
                             placeholder="Tìm kiếm sản phẩm..." 
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            // Bỏ padding-left lớn nếu trước đó CSS có set cho chỗ dropdown
-                            style={{ paddingLeft: '15px' }} 
                         />
 
                         {/* Nút bật tắt Lọc nâng cao */}
@@ -85,27 +89,28 @@ export default function Navbar() {
                             onClick={() => setShowFilter(!showFilter)}
                             title="Bộ lọc tìm kiếm"
                         >
-                            <span>Lọc</span> <i className="fa-solid fa-sliders"></i>
+                            <span className="filter-text">Lọc</span> 
+                            <SlidersHorizontal size={18} />
                         </button>
 
+                        {/* Nút Submit tìm kiếm */}
                         <button type="submit" className="search-btn">
-                            <i className="fa-solid fa-magnifying-glass"></i>
+                            <Search size={20} />
                         </button>
                     </form>
 
-                    {/* --- BẢNG LỌC NÂNG CAO --- */}
+                    {/* --- BẢNG LỌC NÂNG CAO (Dropdown) --- */}
                     {showFilter && (
                         <div className="advanced-filter-panel">
-                            
-                            {/* 1. Phần chọn Danh Mục (Mới thêm vào đây) */}
+                            {/* Chọn Danh Mục */}
                             <div className="filter-group">
-                                <label>Danh mục sản phẩm</label>
+                                <label>Danh mục</label>
                                 <select 
-                                    className="sort-select" // Tái sử dụng class style của select bên dưới
+                                    className="form-select"
                                     value={selectedCategory}
                                     onChange={(e) => setSelectedCategory(e.target.value)}
                                 >
-                                    <option value="all">-- Tất cả danh mục --</option>
+                                    <option value="all">-- Tất cả --</option>
                                     {categories.map((cat) => (
                                         <option key={cat.categoryId} value={cat.categoryId}>
                                             {cat.categoryName}
@@ -114,33 +119,33 @@ export default function Navbar() {
                                 </select>
                             </div>
 
-                            {/* 2. Phần chọn Khoảng giá */}
+                            {/* Chọn Khoảng giá */}
                             <div className="filter-group">
                                 <label>Khoảng giá (VNĐ)</label>
                                 <div className="price-inputs">
                                     <input 
                                         type="number" 
-                                        placeholder="Tối thiểu" 
+                                        placeholder="Min" 
                                         value={priceRange.min}
                                         onChange={e => setPriceRange({...priceRange, min: e.target.value})}
                                     />
                                     <span>-</span>
                                     <input 
                                         type="number" 
-                                        placeholder="Tối đa" 
+                                        placeholder="Max" 
                                         value={priceRange.max}
                                         onChange={e => setPriceRange({...priceRange, max: e.target.value})}
                                     />
                                 </div>
                             </div>
 
-                            {/* 3. Phần Sắp xếp */}
+                            {/* Chọn Sắp xếp */}
                             <div className="filter-group">
-                                <label>Sắp xếp theo</label>
+                                <label>Sắp xếp</label>
                                 <select 
+                                    className="form-select"
                                     value={sortBy} 
                                     onChange={(e) => setSortBy(e.target.value)}
-                                    className="sort-select"
                                 >
                                     <option value="newest">Mới nhất</option>
                                     <option value="price_asc">Giá: Thấp đến Cao</option>
@@ -149,22 +154,43 @@ export default function Navbar() {
                                 </select>
                             </div>
                             
-                            {/* Nút Áp dụng */}
+                            {/* Actions */}
                             <div className="filter-actions">
                                 <button type="button" onClick={handleSearch} className="apply-filter-btn">
-                                    Xem kết quả
+                                    Áp dụng
                                 </button>
                             </div>
                         </div>
                     )}
                 </div>
 
+                {/* 3. MENU LINKS & AUTH */}
                 <div className="nav-links">
                     <Link to="/" className="nav-item">Trang chủ</Link>
-                    <Link to="/account" className="nav-item">Tài khoản</Link>
-                    <Link to="/cart" className="nav-item cart">
-                        <i className="fa-solid fa-cart-shopping"></i> 
-                        <span className="cart-count">{totalItems}</span>
+                    
+                    {/* --- LOGIC HIỂN THỊ USER --- */}
+                    {user ? (
+                        <div className="user-menu">
+                            <Link to="/account" className="user-link">
+                                <User size={18} />
+                                <span className="user-name-text">{user.name}</span>
+                            </Link>
+                            <button onClick={handleLogout} className="logout-btn" title="Đăng xuất">
+                                <LogOut size={18} />
+                            </button>
+                        </div>
+                    ) : (
+                        <Link to="/login" className="nav-item">
+                            <User size={18} style={{ marginRight: '5px' }}/>
+                            Tài khoản
+                        </Link>
+                    )}
+                    
+                    {/* --- GIỎ HÀNG --- */}
+                    <Link to="/cart" className="nav-item cart-item">
+                        <ShoppingCart size={20} style={{ marginRight: '5px' }} />
+                        Giỏ hàng 
+                        {totalItems > 0 && <span className="cart-count">{totalItems}</span>}
                     </Link>
                 </div>
             </div>
