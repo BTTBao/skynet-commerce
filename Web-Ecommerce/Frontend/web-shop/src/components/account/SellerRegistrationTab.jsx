@@ -110,7 +110,7 @@ const SellerRegistrationTab = () => {
             </div>
         );
     }
-
+    
     // C. BỊ TỪ CHỐI (REJECTED) HOẶC CHƯA ĐĂNG KÝ (NONE)
     return (
         <div>
