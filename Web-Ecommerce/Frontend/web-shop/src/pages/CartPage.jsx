@@ -1,10 +1,33 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // 1. Thêm useNavigate
 import "./CartPage.css"; 
-
+import { useEffect } from 'react';
 function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, totalPrice, refreshCartData } = useCart();
+    const navigate = useNavigate(); // 2. Khởi tạo hook điều hướng
+    useEffect(() => {
+        refreshCartData();
+    }, []);
+    const handleCheckout = () => {
+        // Log ra xem thực tế dữ liệu là gì (F12 để xem)
+        console.log("Dữ liệu giỏ hàng hiện tại:", cartItems);
+        const hiddenItems = cartItems.filter(item => {
+            // Lấy status dù backend trả về hoa hay thường
+            const currentStatus = item.status || item.Status; 
+            return currentStatus === 'Hidden';
+        });
+
+        if (hiddenItems.length > 0) {
+            const itemNames = hiddenItems.map(i => i.name).join(', ');
+            hiddenItems.forEach(item => {
+                removeFromCart(item.cartId);
+            });
+            alert(`Sản phẩm [ ${itemNames} ] đã ngừng kinh doanh nên hệ thống đã xóa khỏi giỏ hàng. Vui lòng kiểm tra lại.`);
+        } else {
+            navigate('/checkout');
+        }
+    };
 
     if (cartItems.length === 0) {
         return (
@@ -35,14 +58,20 @@ function CartPage() {
                         </thead>
                         <tbody>
                             {cartItems.map((item) => (
-                                /* 1. SỬA KEY: Dùng cartId để React phân biệt các dòng */
                                 <tr key={item.cartId}> 
-                                    
                                     {/* Cột 1: Ảnh & Tên */}
                                     <td className="cart-product-info">
                                         <img src={item.img} alt={item.name} />
                                         <div className="info-text">
                                             <span className="name">{item.name}</span>
+                                            
+                                            {/* (Tùy chọn) Hiện chữ cảnh báo nhẹ nếu muốn */}
+                                            {item.status === 'Hidden' && (
+                                                <span style={{color:'red', fontSize:'12px', display:'block'}}>
+                                                    (Ngừng kinh doanh)
+                                                </span>
+                                            )}
+
                                             {(item.selectedSize || item.selectedColor) && (
                                                 <small style={{color: '#777'}}>
                                                     {item.selectedSize} / {item.selectedColor}
@@ -57,7 +86,6 @@ function CartPage() {
                                     {/* Cột 3: Tăng giảm số lượng */}
                                     <td>
                                         <div className="qty-control">
-                                            {/* 2. SỬA UPDATE: Truyền cartId */}
                                             <button onClick={() => updateQuantity(item.cartId, -1)}>-</button>
                                             <span>{item.quantity}</span>
                                             <button onClick={() => updateQuantity(item.cartId, 1)}>+</button>
@@ -73,7 +101,6 @@ function CartPage() {
                                     <td>
                                         <button 
                                             className="btn-delete" 
-                                            /* 3. SỬA REMOVE: Truyền cartId */
                                             onClick={() => removeFromCart(item.cartId)}
                                             title="Xóa sản phẩm này"
                                         >
@@ -88,10 +115,10 @@ function CartPage() {
                     <div className="cart-summary">
                         <h3>Tổng cộng: <span className="final-price">{totalPrice.toLocaleString()}đ</span></h3>
                         
-                        {/* SỬA ĐOẠN NÀY: Thay button thường bằng Link tới trang checkout */}
-                        <Link to="/checkout" className="btn-checkout">
+                        {/* 4. THAY LINK BẰNG BUTTON ĐỂ GỌI HÀM CHECK LOGIC */}
+                        <button onClick={handleCheckout} className="btn-checkout">
                             Thanh Toán Ngay
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </div>

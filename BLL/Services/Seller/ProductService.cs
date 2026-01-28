@@ -1,5 +1,4 @@
-﻿// Services/ProductService.cs
-using Skynet_Ecommerce.DAL.Repositories.Seller;
+﻿using Skynet_Ecommerce.DAL.Repositories.Seller;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,24 +9,18 @@ namespace Skynet_Ecommerce.BLL.Services.Seller
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly string _imageDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProductImages");
+        // Bỏ biến _imageDirectory vì không cần lưu ảnh cục bộ nữa
 
         public ProductService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-
-            // Tạo thư mục lưu ảnh nếu chưa có
-            if (!Directory.Exists(_imageDirectory))
-            {
-                Directory.CreateDirectory(_imageDirectory);
-            }
         }
 
         public bool AddProduct(ProductDTO productDto, int shopId)
         {
             try
             {
-                // Tạo Product
+                // 1. Tạo Product
                 var product = new Product
                 {
                     ShopID = shopId,
@@ -44,38 +37,34 @@ namespace Skynet_Ecommerce.BLL.Services.Seller
                 _unitOfWork.Products.Add(product);
                 _unitOfWork.Complete(); // Lưu để lấy ProductID
 
-                // Lưu ảnh chính
+                // 2. Lưu ảnh chính (Dùng trực tiếp URL từ DTO, KHÔNG gọi SaveImage)
                 if (!string.IsNullOrEmpty(productDto.MainImagePath))
                 {
-                    string savedImagePath = SaveImage(productDto.MainImagePath, product.ProductID, true);
-
                     var mainImage = new ProductImage
                     {
                         ProductID = product.ProductID,
-                        ImageURL = savedImagePath,
+                        ImageURL = productDto.MainImagePath, // URL Cloudinary
                         IsPrimary = true
                     };
                     _unitOfWork.ProductImages.Add(mainImage);
                 }
 
-                // Lưu ảnh phụ
+                // 3. Lưu ảnh phụ (Dùng trực tiếp URL từ DTO)
                 if (productDto.SubImagePaths != null && productDto.SubImagePaths.Any())
                 {
                     foreach (var imagePath in productDto.SubImagePaths)
                     {
-                        string savedImagePath = SaveImage(imagePath, product.ProductID, false);
-
                         var subImage = new ProductImage
                         {
                             ProductID = product.ProductID,
-                            ImageURL = savedImagePath,
+                            ImageURL = imagePath, // URL Cloudinary
                             IsPrimary = false
                         };
                         _unitOfWork.ProductImages.Add(subImage);
                     }
                 }
 
-                // Lưu variants
+                // 4. Lưu variants
                 if (productDto.Variants != null && productDto.Variants.Any())
                 {
                     foreach (var variantData in productDto.Variants)
@@ -98,29 +87,14 @@ namespace Skynet_Ecommerce.BLL.Services.Seller
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.WriteLine($"Error adding product: {ex.Message}");
-                return false;
+                // Nếu muốn debug kỹ hơn, hãy throw ex ra ngoài để Form bắt được
+                throw;
             }
         }
 
-        private string SaveImage(string sourcePath, int productId, bool isPrimary)
-        {
-            try
-            {
-                string fileName = $"{productId}_{(isPrimary ? "main" : Guid.NewGuid().ToString())}_{Path.GetFileName(sourcePath)}";
-                string destinationPath = Path.Combine(_imageDirectory, fileName);
-
-                File.Copy(sourcePath, destinationPath, true);
-
-                // Trả về đường dẫn tương đối
-                return Path.Combine("ProductImages", fileName);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error saving image: {ex.Message}");
-            }
-        }
+        // Bỏ hàm SaveImage vì không dùng nữa
+        // private string SaveImage(...) { ... }
 
         public Product GetProductById(int id)
         {
@@ -140,8 +114,9 @@ namespace Skynet_Ecommerce.BLL.Services.Seller
                 _unitOfWork.Complete();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

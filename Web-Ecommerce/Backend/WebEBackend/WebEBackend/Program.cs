@@ -23,7 +23,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+// Đăng ký Cloudinary Service
+builder.Services.AddScoped<WebEBackend.Services.IPhotoService, WebEBackend.Services.PhotoService>();
 // Kết nối Database
 builder.Services.AddDbContext<SkynetCommerceContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

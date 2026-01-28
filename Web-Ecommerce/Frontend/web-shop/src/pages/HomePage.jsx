@@ -11,7 +11,6 @@ function HomePage() {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10; // Số lượng hiển thị mỗi trang
 
-    // 3. Gọi API 1 lần duy nhất khi vào web
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -19,7 +18,13 @@ function HomePage() {
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
                 
                 const data = await response.json();
-                setAllProducts(data); // Lưu hết vào đây
+                const visibleProducts = data.filter(item => {
+                    const status = item.status || item.Status;
+                    return status !== 'Hidden'; 
+                });
+
+                setAllProducts(visibleProducts);
+
             } catch (error) {
                 console.error("Lỗi:", error);
             } finally {
