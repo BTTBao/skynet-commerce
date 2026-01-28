@@ -65,7 +65,7 @@ function CheckoutPage() {
         };
         console.log("Dữ liệu gửi đi:", payload);
         try {
-            const response = await fetch('https://localhost:7215/api/Order/create', {
+            const response = await fetch('http://localhost:5198/api/Order/create', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -84,7 +84,7 @@ function CheckoutPage() {
                 // để nếu nó lỗi thì cũng không báo "Lỗi kết nối server"
                 try {
                     clearCart(); 
-                    navigate('/profile');
+                    navigate('/account');
                 } catch (err) {
                     console.error("Lỗi dọn giỏ hàng (không ảnh hưởng đơn hàng):", err);
                     // Vẫn chuyển trang kể cả khi clearCart lỗi

@@ -22,7 +22,7 @@ function SearchResults() {
                 const queryString = searchParams.toString();
                 
                 // GỌI API BACKEND (Giả sử bạn có API lọc)
-                const response = await fetch(`https://localhost:7215/api/products?${queryString}`);
+                const response = await fetch(`http://localhost:5198/api/products?${queryString}`);
                 
                 if (response.ok) {
                     const data = await response.json();

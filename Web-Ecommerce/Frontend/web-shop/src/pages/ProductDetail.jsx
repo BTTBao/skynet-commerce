@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import Navbar from "../layouts/Navbar";
 import "./ProductDetail.css";
 
 function ProductDetail() {
@@ -21,7 +20,7 @@ function ProductDetail() {
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
-                const response = await fetch(`https://localhost:7215/api/products/${id}`);
+                const response = await fetch(`http://localhost:5198/api/products/${id}`);
                 if (!response.ok) throw new Error("Lỗi tải sản phẩm");
                 const productData = await response.json();
                 
@@ -41,7 +40,7 @@ function ProductDetail() {
                     setShop(productData.shop);
                 } 
                 else if (productData.shopId) {
-                    const shopRes = await fetch(`https://localhost:7215/api/shops/${productData.shopId}`);
+                    const shopRes = await fetch(`http://localhost:5198/api/shops/${productData.shopId}`);
                     if (shopRes.ok) {
                         const shopData = await shopRes.json();
                         setShop(shopData);
