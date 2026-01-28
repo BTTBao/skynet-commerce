@@ -49,30 +49,33 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    // --- ADD TO CART ---
     const addToCart = (product, quantity = 1, variant = {}) => {
+        // [MỚI] Validate số lượng đầu vào
+        const qty = Number(quantity); // Đảm bảo là số
+        if (qty <= 0) {
+            alert("Vui lòng chọn số lượng ít nhất là 1!");
+            return;
+        }
+
         setCartItems((prevItems) => {
             const uniqueCartId = `${product.id || product.productId}-${variant.size || ''}-${variant.color || ''}`;
             const itemExists = prevItems.find((item) => item.cartId === uniqueCartId);
 
-            // CHUẨN HÓA DỮ LIỆU ĐẦU VÀO
-            // Đảm bảo dù backend trả về 'Status' hay 'status' thì ta đều lưu thống nhất
             const productStatus = product.status || product.Status || 'Active';
 
             if (itemExists) {
                 return prevItems.map((item) =>
                     item.cartId === uniqueCartId
-                        ? { ...item, quantity: item.quantity + quantity }
+                        ? { ...item, quantity: item.quantity + qty } // Cộng dồn số lượng chuẩn
                         : item
                 );
             } else {
                 return [...prevItems, { 
                     ...product, 
-                    // Map lại các trường quan trọng để tránh lỗi undefined
                     id: product.id || product.productId,
-                    status: productStatus, // <--- QUAN TRỌNG: Lưu cứng status vào
+                    status: productStatus,
                     cartId: uniqueCartId, 
-                    quantity: quantity, 
+                    quantity: qty, // Dùng số lượng chuẩn
                     selectedSize: variant.size, 
                     selectedColor: variant.color 
                 }];
