@@ -49,7 +49,7 @@
             this._pnlHeader.Controls.Add(this._lblStatus);
             this._pnlHeader.Controls.Add(this._lblTitle);
             this._pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this._pnlHeader.FillColor = System.Drawing.Color.WhiteSmoke;
+            this._pnlHeader.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(30)))), ((int)(((byte)(50)))));
             this._pnlHeader.Location = new System.Drawing.Point(0, 0);
             this._pnlHeader.Name = "_pnlHeader";
             this._pnlHeader.Size = new System.Drawing.Size(800, 60);
@@ -74,6 +74,7 @@
             this._lblStatus.AutoSize = true;
             this._lblStatus.BackColor = System.Drawing.Color.Transparent;
             this._lblStatus.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this._lblStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this._lblStatus.Location = new System.Drawing.Point(16, 37);
             this._lblStatus.Name = "_lblStatus";
             this._lblStatus.Size = new System.Drawing.Size(61, 19);
@@ -85,6 +86,7 @@
             this._lblTitle.AutoSize = true;
             this._lblTitle.BackColor = System.Drawing.Color.Transparent;
             this._lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this._lblTitle.ForeColor = System.Drawing.Color.White;
             this._lblTitle.Location = new System.Drawing.Point(12, 9);
             this._lblTitle.Name = "_lblTitle";
             this._lblTitle.Size = new System.Drawing.Size(164, 25);
@@ -116,7 +118,7 @@
             this._tabControl.TabButtonSelectedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(37)))), ((int)(((byte)(49)))));
             this._tabControl.TabButtonSelectedState.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
             this._tabControl.TabButtonSelectedState.ForeColor = System.Drawing.Color.White;
-            this._tabControl.TabButtonSelectedState.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(132)))), ((int)(((byte)(255)))));
+            this._tabControl.TabButtonSelectedState.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
             this._tabControl.TabButtonSize = new System.Drawing.Size(180, 40);
             this._tabControl.TabIndex = 1;
             this._tabControl.TabMenuBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(42)))), ((int)(((byte)(57)))));

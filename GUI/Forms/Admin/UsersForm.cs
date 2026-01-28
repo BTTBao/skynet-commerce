@@ -40,6 +40,15 @@ namespace Skynet_Commerce.GUI.Forms
             // Đăng ký sự kiện thay đổi con trỏ chuột (Cursor)
             _dgvUsers.CellMouseEnter += (s, e) => { if (e.RowIndex >= 0) _dgvUsers.Cursor = Cursors.Hand; };
             _dgvUsers.CellMouseLeave += (s, e) => { _dgvUsers.Cursor = Cursors.Default; };
+            
+            // Đăng ký event handlers
+            _dgvUsers.CellFormatting += _dgvUsers_CellFormatting;
+            _dgvUsers.SelectionChanged += _dgvUsers_SelectionChanged;
+
+            // Disable buttons ban đầu
+            _btnView.Enabled = false;
+            _btnEdit.Enabled = false;
+            _btnBan.Enabled = false;
 
             // phân trang
             _paginationHelper = new PaginationHelper(
@@ -99,7 +108,8 @@ namespace Skynet_Commerce.GUI.Forms
 
             if (user != null)
             {
-                new FormUserDetails(user, false).ShowDialog();
+                new FormUserDetails(user, user.UserID).ShowDialog();
+                _ = LoadUserDataAsync(); // Refresh data after viewing
             }
         }
 
@@ -110,15 +120,9 @@ namespace Skynet_Commerce.GUI.Forms
 
             if (user != null)
             {
-                FormUserDetails frm = new FormUserDetails(user, true);
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    if (_userService.UpdateUser(frm._user))
-                    {
-                        MessageBox.Show("Đã cập nhật!");
-                        _ = LoadUserDataAsync(); // Load lại dữ liệu để cập nhật bảng
-                    }
-                }
+                var frm = new FormUserDetails(user, user.UserID);
+                frm.ShowDialog();
+                _ = LoadUserDataAsync(); // Refresh data after form closes
             }
         }
 

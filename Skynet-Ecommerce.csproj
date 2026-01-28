@@ -146,9 +146,13 @@
     <Compile Include="BLL\Models\Admin\UserViewModel.cs" />
     <Compile Include="BLL\Services\Admin\CategoryService.cs" />
     <Compile Include="BLL\Services\Admin\DashboardService.cs" />
+    <Compile Include="BLL\Services\Admin\FraudDetectionService.cs" />
     <Compile Include="BLL\Services\Admin\OrderService.cs" />
+    <Compile Include="BLL\Services\Admin\PaymentHistoryService.cs" />
     <Compile Include="BLL\Services\Admin\ProductService.cs" />
+    <Compile Include="BLL\Services\Admin\SettlementService.cs" />
     <Compile Include="BLL\Services\Admin\ShopService.cs" />
+    <Compile Include="BLL\Services\Admin\UserDetailsService.cs" />
     <Compile Include="BLL\Services\Admin\UserService.cs" />
     <Compile Include="BLL\Services\Auth\AuthService.cs" />
     <Compile Include="BLL\Services\Seller\CategoryService.cs" />
@@ -192,6 +196,12 @@
     <Compile Include="GUI\Forms\Admin\CategoryDetailForm.Designer.cs">
       <DependentUpon>CategoryDetailForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\Admin\CloneAccountsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\CloneAccountsForm.Designer.cs">
+      <DependentUpon>CloneAccountsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\Admin\DashboardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -210,6 +220,12 @@
     <Compile Include="GUI\Forms\Admin\FormUserDetails.Designer.cs">
       <DependentUpon>FormUserDetails.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\Admin\FraudDetectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\FraudDetectionForm.Designer.cs">
+      <DependentUpon>FraudDetectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\Admin\OrderDetailForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -221,6 +237,12 @@
     </Compile>
     <Compile Include="GUI\Forms\Admin\OrdersForm.Designer.cs">
       <DependentUpon>OrdersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\PaymentHistoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\PaymentHistoryForm.Designer.cs">
+      <DependentUpon>PaymentHistoryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Forms\Admin\ProductDetailForm.cs">
       <SubType>Form</SubType>
@@ -234,11 +256,23 @@
     <Compile Include="GUI\Forms\Admin\ProductsForm.Designer.cs">
       <DependentUpon>ProductsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\Admin\SettlementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\SettlementForm.Designer.cs">
+      <DependentUpon>SettlementForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\Admin\ShopDetailForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\Forms\Admin\ShopDetailForm.Designer.cs">
       <DependentUpon>ShopDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ShopRequestDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Admin\ShopRequestDetailForm.Designer.cs">
+      <DependentUpon>ShopRequestDetailForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Forms\Admin\ShopRequestsForm.cs">
       <SubType>Form</SubType>
@@ -357,11 +391,17 @@
     <EmbeddedResource Include="GUI\Forms\Admin\FormUserDetails.resx">
       <DependentUpon>FormUserDetails.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\FraudDetectionForm.resx">
+      <DependentUpon>FraudDetectionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\OrderDetailForm.resx">
       <DependentUpon>OrderDetailForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\OrdersForm.resx">
       <DependentUpon>OrdersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\PaymentHistoryForm.resx">
+      <DependentUpon>PaymentHistoryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\ProductDetailForm.resx">
       <DependentUpon>ProductDetailForm.cs</DependentUpon>
@@ -369,8 +409,14 @@
     <EmbeddedResource Include="GUI\Forms\Admin\ProductsForm.resx">
       <DependentUpon>ProductsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\SettlementForm.resx">
+      <DependentUpon>SettlementForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\ShopDetailForm.resx">
       <DependentUpon>ShopDetailForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Admin\ShopRequestDetailForm.resx">
+      <DependentUpon>ShopRequestDetailForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Admin\ShopRequestsForm.resx">
       <DependentUpon>ShopRequestsForm.cs</DependentUpon>
