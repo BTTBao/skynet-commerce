@@ -24,7 +24,7 @@ namespace Skynet_Ecommerce.DAL.Repositories
         {
             return _context.Orders
                 .Where(o => o.ShopID == shopId &&
-                       (o.Status == "Completed" || o.Status == "Delivered"))
+                       (o.Status == "Completed" || o.Status == "Delivered" || o.Status == "Settled"))
                 .Sum(o => (decimal?)o.TotalAmount) ?? 0;
         }
 
@@ -103,7 +103,7 @@ namespace Skynet_Ecommerce.DAL.Repositories
                     .Where(o => o.ShopID == shopId &&
                            o.CreatedAt >= date &&
                            o.CreatedAt < nextDate &&
-                           (o.Status == "Completed" || o.Status == "Delivered"))
+                           (o.Status == "Completed" || o.Status == "Delivered" || o.Status == "Settled"))
                     .Sum(o => (decimal?)o.TotalAmount) ?? 0;
 
                 result.Add(date, revenue);
@@ -112,23 +112,123 @@ namespace Skynet_Ecommerce.DAL.Repositories
             return result;
         }
 
+        // FIX: Đổi tên DTO từ BestSellerProductDto2 thành BestSellerProductDto
         public List<BestSellerProductDto> GetBestSellingProducts(int shopId, int topCount = 5)
         {
-            return _context.Products
-                .Where(p => p.ShopID == shopId && p.SoldCount > 0)
-                .OrderByDescending(p => p.SoldCount)
-                .Take(topCount)
-                .Select(p => new BestSellerProductDto
-                {
-                    ProductName = p.Name,
-                    SoldCount = p.SoldCount ?? 0,
-                    StockQuantity = p.StockQuantity ?? 0,
-                    TotalRevenue = (p.Price ?? 0) * (p.SoldCount ?? 0),
-                    Status = p.StockQuantity > 50 ? "✅ Còn hàng" :
-                             p.StockQuantity > 20 ? "⭐ Nổi bật" :
-                             p.StockQuantity > 0 ? "🔥 Hot" : "❌ Hết hàng"
-                })
-                .ToList();
+            try
+            {
+                // Tính tổng số lượng bán được từ OrderDetails của các đơn Delivered
+                var productSales = _context.OrderDetails
+                    .Where(od => od.Order.ShopID == shopId &&
+                                (od.Order.Status == "Delivered" || od.Order.Status == "Settled" || od.Order.Status == "Completed"))
+                    .GroupBy(od => od.ProductID)
+                    .Select(g => new
+                    {
+                        ProductID = g.Key,
+                        TotalSold = g.Sum(od => od.Quantity ?? 0),
+                        TotalRevenue = g.Sum(od => (od.Quantity ?? 0) * (od.UnitPrice ?? 0))
+                    })
+                    .OrderByDescending(x => x.TotalSold)
+                    .Take(topCount)
+                    .ToList();
+
+                // Join với Products để lấy thông tin chi tiết
+                var bestSellers = productSales
+                    .Join(_context.Products,
+                        sale => sale.ProductID,
+                        product => product.ProductID,
+                        (sale, product) => new BestSellerProductDto
+                        {
+                            ProductName = product.Name ?? "Unknown",
+                            SoldCount = sale.TotalSold,
+                            StockQuantity = product.StockQuantity ?? 0,
+                            TotalRevenue = sale.TotalRevenue,
+                            Status = (product.StockQuantity ?? 0) > 50 ? "Còn hàng" :
+                                     (product.StockQuantity ?? 0) > 20 ? "Nổi bật" :
+                                     (product.StockQuantity ?? 0) > 0 ? "Hot" : "Hết hàng"
+                        })
+                    .ToList();
+
+                return bestSellers;
+            }
+            catch (Exception ex)
+            {
+                // Log error for debugging
+                System.Diagnostics.Debug.WriteLine("Error in GetBestSellingProducts: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Stack Trace: " + ex.StackTrace);
+                return new List<BestSellerProductDto>();
+            }
         }
+
+        // Get Settlement Stats
+        public SettlementStatsDto GetSettlementStats(int shopId)
+        {
+            try
+            {
+                var settledOrders = _context.Orders
+                    .Where(so => so.ShopID == shopId && so.Status == "Settled")
+                    .ToList();
+
+                if (!settledOrders.Any())
+                {
+                    return new SettlementStatsDto
+                    {
+                        TotalSettledOrders = 0,
+                        TotalNetRevenue = 0
+                    };
+                }
+
+                var totalCount = settledOrders.Count;
+
+                // Tính tổng tiền nhận được = OrderAmount - 5% commission
+                var totalNetRevenue = settledOrders.Sum(so =>
+                {
+                    var orderAmount = so.TotalAmount ?? 0;
+                    var commission = orderAmount * 0.05m; // 5% hoa hồng
+                    return orderAmount - commission;
+                });
+
+                return new SettlementStatsDto
+                {
+                    TotalSettledOrders = totalCount,
+                    TotalNetRevenue = totalNetRevenue
+                };
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error in GetSettlementStats: " + ex.Message);
+                return new SettlementStatsDto
+                {
+                    TotalSettledOrders = 0,
+                    TotalNetRevenue = 0
+                };
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_context != null)
+            {
+                _context.Dispose();
+            }
+        }
+    }
+
+    // ============================================================
+    // DTOs for Repository - FIX: Đổi tên thành BestSellerProductDto
+    // ============================================================
+    public class BestSellerProductDto
+    {
+        public string ProductName { get; set; }
+        public int SoldCount { get; set; }
+        public int StockQuantity { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class SettlementStatsDto
+    {
+        public int TotalSettledOrders { get; set; }
+        public decimal TotalNetRevenue { get; set; }
     }
 }

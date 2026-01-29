@@ -230,6 +230,10 @@
     <Compile Include="DAL\Entities\ChatRoom.cs" />
     <Compile Include="DAL\Entities\FlashSale.cs" />
     <Compile Include="DAL\Entities\FlashSaleProduct.cs" />
+    <Compile Include="DAL\Entities\SettledOrder.cs" />
+    <Compile Include="DAL\Entities\ShopWallet.cs" />
+    <Compile Include="DAL\Entities\WalletTransaction.cs" />
+    <Compile Include="DAL\Entities\WithdrawalRequest.cs" />
     <Compile Include="DAL\Repositories\Admin\AccountRepository.cs" />
     <Compile Include="DAL\Repositories\Admin\UserRepository.cs" />
     <Compile Include="DAL\Repositories\Seller\CategoryRepository.cs" />
@@ -429,6 +433,12 @@
     <Compile Include="GUI\Forms\Seller\SellerProductForm.Designer.cs">
       <DependentUpon>SellerProductForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerWalletForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Seller\SellerWalletForm.Designer.cs">
+      <DependentUpon>SellerWalletForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\UserControls\Components\Admin\UcInfoCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -508,6 +518,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\Seller\SellerProductForm.resx">
       <DependentUpon>SellerProductForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Seller\SellerWalletForm.resx">
+      <DependentUpon>SellerWalletForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserControls\Components\Admin\UcInfoCard.resx">
       <DependentUpon>UcInfoCard.cs</DependentUpon>

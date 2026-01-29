@@ -16,7 +16,6 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         {
             _dashboardService = new SellerDashboardService();
             _shopId = shopId;
-
             InitializeComponent();
             LoadDashboardData();
         }
@@ -26,9 +25,9 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
             try
             {
                 var data = _dashboardService.GetDashboardData(_shopId);
-
                 UpdateKPICards(data);
                 UpdateTodayStats(data);
+                UpdateSettlementStats(data); // NEW
                 UpdateRevenueChart(data.RevenueChartData);
                 UpdateBestSellersGrid(data.BestSellers);
             }
@@ -49,8 +48,14 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         {
             lblTodayOrders.Text = $"📦 Đơn hàng mới: {data.TodayNewOrders}";
             lblTodayPending.Text = $"⏳ Chờ xử lý: {data.TodayPendingOrders}";
-            lblTodayRevenue.Text = $"💰 Doanh thu:\n   {data.TodayRevenue}";
-            lblTodayGrowth.Text = $"📈 Tăng trưởng: {data.GrowthPercentage}";
+            lblTodayRevenue.Text = $"💰 Doanh thu: {data.TodayRevenue}";
+        }
+
+        // NEW: Update Settlement Stats
+        private void UpdateSettlementStats(SellerDashboardData data)
+        {
+            lblSettledOrdersValue.Text = string.Format("{0} đơn", data.TotalSettledOrders);
+            lblNetRevenueValue.Text = string.Format("₫{0:N0}", data.TotalNetRevenue);
         }
 
         private void UpdateRevenueChart(Dictionary<string, double> data)
@@ -92,7 +97,6 @@ namespace Skynet_Ecommerce.GUI.Forms.Seller
         private void UpdateBestSellersGrid(List<BestSellerItem> bestSellers)
         {
             dgvBestSellers.Rows.Clear();
-
             if (bestSellers == null || bestSellers.Count == 0)
             {
                 return;
