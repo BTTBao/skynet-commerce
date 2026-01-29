@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebEBackend.Models;
 
@@ -15,101 +15,83 @@ namespace WebEBackend.Controllers
             _context = context;
         }
 
-        // --- 1. API LẤY DANH SÁCH (Đã sửa lỗi) ---
+        // --- 1. API LẤY DANH SÁCH (Tích hợp Tìm kiếm, Lọc, Sắp xếp) ---
+        // Hàm này cân tất cả các trường hợp: Lấy hết, lấy theo tên, lấy theo giá...
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<object>>> GetProducts(
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts(
             [FromQuery] string? keyword,
-            [FromQuery] int? categoryId,
+            [FromQuery] int? categoryId, // 1. Sửa từ string? category thành int? categoryId
             [FromQuery] decimal? minPrice,
             [FromQuery] decimal? maxPrice,
             [FromQuery] string? sort)
         {
+            // Bắt đầu chuỗi truy vấn
             var query = _context.Products
                 .Include(p => p.ProductImages)
-                .Include(p => p.Reviews)
+                .Include(p => p.ProductVariants)
+                .Include(p => p.Category)
                 .Include(p => p.Shop)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(keyword))
-                query = query.Where(p => p.Name.Contains(keyword));
-            
-            if (categoryId.HasValue)
-                query = query.Where(p => p.CategoryId == categoryId);
-
-            if (minPrice.HasValue)
-                query = query.Where(p => p.Price.HasValue && p.Price.Value >= minPrice.Value);
-
-            if (maxPrice.HasValue)
-                query = query.Where(p => p.Price.HasValue && p.Price.Value <= maxPrice.Value);
-
-            switch (sort)
             {
-                case "price_asc": query = query.OrderBy(p => p.Price); break;
-                case "price_desc": query = query.OrderByDescending(p => p.Price); break;
-                case "best_sell": query = query.OrderByDescending(p => p.SoldCount); break;
-                case "newest": 
-                default: query = query.OrderByDescending(p => p.CreatedAt); break;
+                query = query.Where(p => p.Name.Contains(keyword));
+            }
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId);
             }
 
-            var result = await query.Select(p => new
+            // --- C. LỌC THEO GIÁ ---
+            if (minPrice.HasValue)
             {
-                p.ProductId,
-                p.Name,
-                p.Price,
-                p.Description,
-                p.SoldCount,
-                p.CategoryId,
-                
-                // ✅ SỬA 1: Đổi ImageURL -> ImageUrl (hoặc kiểm tra lại Model ProductImage của bạn)
-                Img = p.ProductImages.Where(i => i.IsPrimary == true).Select(i => i.ImageUrl).FirstOrDefault() 
-                      ?? p.ProductImages.Select(i => i.ImageUrl).FirstOrDefault(),
+                query = query.Where(p => p.Price.HasValue && p.Price.Value >= minPrice.Value);
+            }
 
-                // ✅ SỬA 2: Xử lý Rating. Thêm '?? 0' để tránh lỗi null và đảm bảo kiểu dữ liệu double
-                Rating = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Rating ?? 0), 1) : 0,
-                
-                ReviewCount = p.Reviews.Count()
-            })
-            .ToListAsync();
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price.HasValue && p.Price.Value <= maxPrice.Value);
+            }
 
-            return Ok(result);
+            // --- D. SẮP XẾP ---
+            switch (sort)
+            {
+                case "price_asc": // Giá tăng dần
+                    query = query.OrderBy(p => p.Price);
+                    break;
+                case "price_desc": // Giá giảm dần
+                    query = query.OrderByDescending(p => p.Price);
+                    break;
+                case "best_sell": // Bán chạy nhất
+                    query = query.OrderByDescending(p => p.SoldCount);
+                    break;
+                case "newest": // Mới nhất (Mặc định)
+                default:
+                    query = query.OrderByDescending(p => p.CreatedAt);
+                    break;
+            }
+
+            return await query.ToListAsync();
         }
 
-        // --- 2. CHI TIẾT SẢN PHẨM (Đã sửa lỗi) ---
+        // --- ĐÃ XÓA HÀM GetProducts() KHÔNG THAM SỐ Ở ĐÂY ĐỂ TRÁNH LỖI ---
+
+        // --- 2. CHI TIẾT SẢN PHẨM ---
+        // GET: api/Products/5
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+
+        public async Task<ActionResult<Product>> GetProduct(int id)
         {
             var product = await _context.Products
-                .Where(p => p.ProductId == id)
-                .Select(p => new 
-                {
-                    p.ProductId,
-                    p.Name,
-                    p.Price,
-                    p.Description,
-                    p.SoldCount,
-                    p.CategoryId,
-                    p.StockQuantity,
-                    
-                    // ✅ SỬA 3: Đổi p.Category.Name -> p.Category.CategoryName (Nếu lỗi, hãy kiểm tra file Model Category.cs)
-                    CategoryName = p.Category != null ? p.Category.CategoryName : "",
-                    
-                    ShopName = p.Shop != null ? p.Shop.ShopName : "",
-                    ShopId = p.ShopId,
-
-                    // ✅ SỬA 4: Đổi ImageURL -> ImageUrl
-                    Images = p.ProductImages.Select(i => new { i.ImageId, i.ImageUrl, i.IsPrimary }).ToList(),
-                    
-                    Variants = p.ProductVariants.Select(v => new { v.VariantId, v.Color, v.Size, v.Price, v.StockQuantity }).ToList(),
-
-                    // ✅ SỬA 5: Xử lý Rating tương tự bên trên
-                    Rating = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Rating ?? 0), 1) : 0,
-                    ReviewCount = p.Reviews.Count()
-                })
-                .FirstOrDefaultAsync();
-
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductVariants)
+                .Include(p => p.Category)
+                .Include(p => p.Shop)
+                .FirstOrDefaultAsync(p => p.ProductId == id);
             if (product == null) return NotFound(new { message = "Không tìm thấy sản phẩm" });
+            return product;
 
-            return Ok(product);
         }
 
         // --- 3. TẠO MỚI ---
@@ -127,7 +109,10 @@ namespace WebEBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
-            if (id != product.ProductId) return BadRequest();
+            if (id != product.ProductId)
+            {
+                return BadRequest();
+            }
 
             _context.Entry(product).State = EntityState.Modified;
 

@@ -32,6 +32,11 @@ namespace Skynet_Ecommerce.BLL.Services
             var growth = _repository.GetGrowthPercentage(shopId);
             data.GrowthPercentage = (growth >= 0 ? "+" : "") + growth.ToString("0.##") + "%";
 
+            // NEW: Settlement Stats
+            var settlementStats = _repository.GetSettlementStats(shopId);
+            data.TotalSettledOrders = settlementStats.TotalSettledOrders;
+            data.TotalNetRevenue = settlementStats.TotalNetRevenue;
+
             // Chart Data
             var revenueData = _repository.GetLast7DaysRevenue(shopId);
             data.RevenueChartData = revenueData.ToDictionary(
@@ -57,5 +62,43 @@ namespace Skynet_Ecommerce.BLL.Services
         {
             return "₫" + amount.ToString("N0", new CultureInfo("vi-VN"));
         }
+
+        public void Dispose()
+        {
+            if (_repository != null)
+            {
+                _repository.Dispose();
+            }
+        }
+    }
+
+    // ============================================================
+    // DTOs for Service Layer
+    // ============================================================
+    public class SellerDashboardData
+    {
+        public int TotalOrders { get; set; }
+        public string TotalRevenue { get; set; }
+        public int TotalCustomers { get; set; }
+        public int TodayNewOrders { get; set; }
+        public int TodayPendingOrders { get; set; }
+        public string TodayRevenue { get; set; }
+        public string GrowthPercentage { get; set; }
+
+        // NEW: Settlement Stats
+        public int TotalSettledOrders { get; set; }
+        public decimal TotalNetRevenue { get; set; }
+
+        public Dictionary<string, double> RevenueChartData { get; set; }
+        public List<BestSellerItem> BestSellers { get; set; }
+    }
+
+    public class BestSellerItem
+    {
+        public string ProductName { get; set; }
+        public string SoldCount { get; set; }
+        public string StockQuantity { get; set; }
+        public string Revenue { get; set; }
+        public string Status { get; set; }
     }
 }

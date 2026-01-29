@@ -435,3 +435,100 @@ CREATE INDEX IX_OrderDetail_OrderID ON OrderDetails(OrderID);
 CREATE INDEX IX_CartItems_CartID ON CartItems(CartID);
 CREATE INDEX IX_ProductImages_ProductID ON ProductImages(ProductID);
 
+USE Skynet_commerce;
+GO
+
+/* =====================================================
+   WALLET SYSTEM FOR SELLERS
+===================================================== */
+
+-- Bảng ví của Shop
+CREATE TABLE ShopWallets (
+    WalletID INT IDENTITY PRIMARY KEY,
+    ShopID INT UNIQUE NOT NULL,
+    Balance DECIMAL(18,2) DEFAULT 0 CHECK (Balance >= 0),
+    TotalRevenue DECIMAL(18,2) DEFAULT 0,
+    TotalWithdrawn DECIMAL(18,2) DEFAULT 0,
+    LastUpdated DATETIME DEFAULT GETDATE(),
+    
+    FOREIGN KEY (ShopID) REFERENCES Shops(ShopID) ON DELETE CASCADE
+);
+GO
+
+-- Bảng lịch sử giao dịch ví
+CREATE TABLE WalletTransactions (
+    TransactionID INT IDENTITY PRIMARY KEY,
+    WalletID INT NOT NULL,
+    TransactionType NVARCHAR(50) NOT NULL 
+        CHECK (TransactionType IN ('OrderPayment', 'Withdrawal', 'Refund', 'Adjustment')),
+    Amount DECIMAL(18,2) NOT NULL,
+    BalanceBefore DECIMAL(18,2) NOT NULL,
+    BalanceAfter DECIMAL(18,2) NOT NULL,
+    Description NVARCHAR(500),
+    ReferenceID INT NULL, -- OrderID hoặc WithdrawalID
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    
+    FOREIGN KEY (WalletID) REFERENCES ShopWallets(WalletID) ON DELETE CASCADE
+);
+GO
+
+-- Bảng yêu cầu rút tiền
+CREATE TABLE WithdrawalRequests (
+    WithdrawalID INT IDENTITY PRIMARY KEY,
+    WalletID INT NOT NULL,
+    ShopID INT NOT NULL,
+    Amount DECIMAL(18,2) NOT NULL CHECK (Amount > 0),
+    BankName NVARCHAR(200) NOT NULL,
+    BankAccountNumber NVARCHAR(50) NOT NULL,
+    BankAccountName NVARCHAR(200) NOT NULL,
+    Status NVARCHAR(20) DEFAULT 'Pending' 
+        CHECK (Status IN ('Pending', 'Approved', 'Rejected', 'Completed')),
+    RequestedAt DATETIME DEFAULT GETDATE(),
+    ProcessedAt DATETIME NULL,
+    ProcessedBy INT NULL,
+    RejectionReason NVARCHAR(500) NULL,
+    
+    FOREIGN KEY (WalletID) REFERENCES ShopWallets(WalletID),
+    FOREIGN KEY (ShopID) REFERENCES Shops(ShopID) ON DELETE CASCADE,
+    FOREIGN KEY (ProcessedBy) REFERENCES Accounts(AccountID)
+);
+GO
+
+-- Bảng đơn hàng đã quyết toán
+CREATE TABLE SettledOrders (
+    SettlementID INT IDENTITY PRIMARY KEY,
+    OrderID INT NOT NULL,
+    ShopID INT NOT NULL,
+    WalletID INT NOT NULL,
+    OrderAmount DECIMAL(18,2) NOT NULL,
+    CommissionRate DECIMAL(5,2) DEFAULT 5.00, -- Phần trăm hoa hồng
+    CommissionAmount AS (OrderAmount * CommissionRate / 100) PERSISTED,
+    NetAmount AS (OrderAmount - (OrderAmount * CommissionRate / 100)) PERSISTED,
+    SettledAt DATETIME DEFAULT GETDATE(),
+    
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+    FOREIGN KEY (ShopID) REFERENCES Shops(ShopID) ON DELETE CASCADE,
+    FOREIGN KEY (WalletID) REFERENCES ShopWallets(WalletID)
+);
+GO
+
+-- Trigger tự động tạo ví khi tạo Shop
+CREATE TRIGGER trg_CreateWalletForNewShop
+ON Shops
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO ShopWallets (ShopID, Balance, TotalRevenue, TotalWithdrawn)
+    SELECT ShopID, 0, 0, 0
+    FROM inserted;
+END;
+GO
+
+-- Index cho hiệu suất
+CREATE INDEX IX_WalletTransactions_WalletID ON WalletTransactions(WalletID);
+CREATE INDEX IX_WalletTransactions_CreatedAt ON WalletTransactions(CreatedAt DESC);
+CREATE INDEX IX_WithdrawalRequests_ShopID ON WithdrawalRequests(ShopID);
+CREATE INDEX IX_WithdrawalRequests_Status ON WithdrawalRequests(Status);
+CREATE INDEX IX_SettledOrders_ShopID ON SettledOrders(ShopID);
+CREATE INDEX IX_SettledOrders_OrderID ON SettledOrders(OrderID);
+GO

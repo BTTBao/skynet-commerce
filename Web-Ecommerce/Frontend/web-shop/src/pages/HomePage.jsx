@@ -57,9 +57,8 @@ function HomePage() {
     
             <header className="hero">
                 <div className="hero-content">
-                    <h1>Săn Sale Cực Khủng</h1>
-                    <p>Giảm giá lên đến 50% cho tất cả mặt hàng</p>
-                    <button className="btn-shop">Mua Ngay</button>
+                    
+                    
                 </div>
             </header>
 
